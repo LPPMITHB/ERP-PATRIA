@@ -75,10 +75,11 @@
                                             <tr>
                                                 <th width="5%">No</th>
                                                 <th width="20%">Material Number</th>
-                                                <th width="30%">Material Description</th>
-                                                <th width="15%">Quantity</th>
-                                                <th width="15%">Return Qty</th>
-                                                <th width="10%">Unit</th>
+                                                <th width="35%">Material Description</th>
+                                                <th width="10%">Shipping Date</th>
+                                                <th width="10%">Quantity</th>
+                                                <th width="10%">Return Qty</th>
+                                                <th width="5%">Unit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -86,6 +87,7 @@
                                                 <td>{{ index+1 }}</td>
                                                 <td>{{ POD.material.code }}</td>
                                                 <td>{{ POD.material.description }}</td>
+                                                <td>{{ POD.delivery_date.split('-').reverse().join('-') }}</td>
                                                 <td>{{ POD.quantity - POD.received - POD.returned }} </td>
                                                 <td class="tdEllipsis no-padding">
                                                     <input class="form-control width100" v-model="POD.returned_temp" placeholder="Please Input Returned Quantity">

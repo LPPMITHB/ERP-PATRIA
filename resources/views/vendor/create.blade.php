@@ -46,7 +46,7 @@
 
                         <div class="form-group">
                             <label for="code" class="col-sm-2 control-label">Code *</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $vendor->code == null ? $vendor_code: $vendor->code }}">
                             </div>
@@ -54,7 +54,7 @@
 
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Name *</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
                                 @if($vendor->name != null) value="{{ $vendor->name }}"
@@ -65,7 +65,7 @@
 
                         <div class="form-group">
                             <label for="type" class="col-sm-2 control-label">Type *</label>
-            
+
                             <div class="col-sm-10">
                                 <select class="form-control" name="type" id="type" required>
                                     @foreach($vendor_categories as $category)
@@ -77,18 +77,57 @@
 
                         <div class="form-group">
                             <label for="address" class="col-sm-2 control-label">Address</label>
-            
+
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" 
+                                <input type="text" class="form-control" id="address" name="address"
                                 @if($vendor->address != null) value="{{ $vendor->address }}"
                                 @else value="{{ old('address') }}"
                                 @endif>
                             </div>
                         </div>
 
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="city" class="col-sm-2 control-label">City</label>
+
+                            <div class="col-sm-10">
+                                <input type="string" class="form-control" id="city" name="city"
+                                @if($vendor->city != null) value="{{ $vendor->city }}"
+                                @else value="{{ old('city') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="province" class="col-sm-2 control-label">Province</label>
+
+                            <div class="col-sm-10">
+                                <input type="string" class="form-control" id="province" name="province"
+                                @if($vendor->province != null) value="{{ $vendor->province }}"
+                                @else value="{{ old('province') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="country" class="col-sm-2 control-label">Country</label>
+
+                            <div class="col-sm-10">
+                                <input type="string" class="form-control" id="country" name="country"
+                                @if($vendor->country != null) value="{{ $vendor->country }}"
+                                @else value="{{ old('country') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="form-group">
                             <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1"
                                 @if($vendor->phone_number_1 != null) value="{{ $vendor->phone_number_1 }}"
@@ -98,8 +137,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2</label>
-            
+                            <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2 / Fax</label>
                             <div class="col-sm-10">
                             <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2"
                             @if($vendor->phone_number_2 != null) value="{{ $vendor->phone_number_2 }}"
@@ -108,9 +146,22 @@
                             </div>
                         </div>
 
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="tax_number" class="col-sm-2 control-label">Tax Number</label>
+                            
+                            <div class="col-sm-10">
+                                <input type="numeric" onkeypress="validate(event)" class="form-control" id="tax_number" name="tax_number"
+                                @if($vendor->tax_number != null) value="{{ $vendor->tax_number }}"
+                                @else value="{{ old('tax_number') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="form-group">
                             <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="contact_name" name="contact_name"
                                 @if($vendor->contact_name != null) value="{{ $vendor->contact_name }}"
@@ -121,9 +172,9 @@
 
                         <div class="form-group">
                             <label for="email" class="col-sm-2 control-label">Email</label>
-            
+
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email" 
+                                <input type="email" class="form-control" id="email" name="email"
                                 @if($vendor->email != null) value="{{ $vendor->email }}"
                                 @else value="{{ old('email') }}"
                                 @endif>
@@ -132,7 +183,7 @@
 
                         <div class="form-group">
                             <label for="delivery_term" class="col-sm-2 control-label">Delivery Term</label>
-            
+
                             <div class="col-sm-10">
                                 <select class="form-control" name="delivery_term" id="delivery_term">
                                     <option value="" selected >Select Delivery Term</option>
@@ -145,7 +196,7 @@
 
                         <div class="form-group">
                             <label for="payment_term" class="col-sm-2 control-label">Payment Term</label>
-            
+
                             <div class="col-sm-10">
                                 <select class="form-control" name="payment_term" id="payment_term">
                                     <option value="" selected >Select Payment Term</option>
@@ -158,7 +209,7 @@
 
                         <div class="form-group">
                             <label for="description" class="col-sm-2 control-label">Description</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="description" name="description"
                                 @if($vendor->description != null) value="{{ $vendor->description }}"
@@ -169,7 +220,7 @@
 
                         <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Status *</label>
-            
+
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>
                                     <option value="1">Active</option>
@@ -221,7 +272,7 @@
         if($('#payment_term').val()==null){
             $('#payment_term').val("");
         }
-        
+
         $('div.overlay').remove();
         $('.alert').addClass('animated bounce');
 

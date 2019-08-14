@@ -38,13 +38,30 @@
                     <div class="col-md-4 col-xs-6 no-padding">Address</div>
                     <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $vendor->address }}"><b>: {{ $vendor->address }}</b></div>
 
+                    @if(in_array(2,json_decode($business_ids)))
+                    <div class="col-md-4 col-xs-6 no-padding">City</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
+
+                    <div class="col-md-4 col-xs-6 no-padding">Province</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
+
+                    <div class="col-md-4 col-xs-6 no-padding">Country</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->country}}</b></div>
+                    @endif
+
                     <div class="col-md-4 col-xs-6 no-padding">Phone Number 1</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
 
                     <div class="col-md-4 col-xs-6 no-padding">Phone Number 2</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_2}}</b></div>
+
                 </div>
                 <div class="col-xs-12 col-lg-6 col-md-12">
+
+                    @if(in_array(2,json_decode($business_ids)))
+                    <div class="col-md-4 col-xs-6 no-padding">Tax Number</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->tax_number}}</b></div>
+                    @endif
 
                     <div class="col-md-4 col-xs-6 no-padding">Contact Name</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->contact_name}}</b></div>
@@ -200,7 +217,7 @@
                     </div>
                     <div class="tab-pane" id="delivery">
                         <div class="box-body p-t-0 m-l-10 m-r-10">
-                            <table class="table table-bordered showTable deliveryTable">
+                            <table class="table table-bordered deliveryTable">
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
@@ -240,15 +257,15 @@
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-sm-12">
-                                                        <table class="table table-bordered showTable">
+                                                        <table class="table table-bordered">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Material Number</th>
                                                                     <th>Material Description</th>
-                                                                    <th>PO Required Date</th>
+                                                                    <th>PO Delivery Date</th>
                                                                     <th>GR Received Date</th>
                                                                     <th>Status</th>
-                                                                    <th>Day(s)</th>
+                                                                    <th>Difference</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -257,11 +274,11 @@
                                                                     <td class="tdEllipsis">{{grd.material_desription}}</td>
                                                                     <td>{{grd.required_date.split('-').reverse().join('-')}}</td>
                                                                     <td>{{grd.received_date.split('-').reverse().join('-')}}</td>
-                                                                    <td v-if="grd.required_date > grd.received_date"><b class="text-danger">LATE</b></td>
-                                                                    <td v-else-if="grd.required_date < grd.received_date"><b class="text-success">EARLY</b></td>
+                                                                    <td v-if="grd.required_date > grd.received_date"><b class="text-success">EARLY</b></td>
+                                                                    <td v-else-if="grd.required_date < grd.received_date"><b class="text-danger">LATE</b></td>
                                                                     <td v-else-if="grd.required_date == grd.received_date"><b class="text-success">ON TIME</b></td>
-                                                                    <td v-else></b class="text-danger">ERROR</b></td>
-                                                                    <td>{{grd.date_diff}}</td>
+                                                                    <td v-else></b class="text-danger">-</b></td>
+                                                                    <td>{{grd.date_diff}} Day(s)</td>
                                                                 </tr>
                                                             </tbody>
                                                         </table>
@@ -686,8 +703,8 @@
     });
 
     var data = {
-        modelGRDs: @json($modelGR->goodsReceiptDetails),
-        modelPODs: @json($modelGR->purchaseOrder->purchaseOrderDetails),
+        modelGRDs: @json($modelGRDs),
+        modelPODs: @json($modelPODs),
         selectedGRD: [],
         selectedPOD: [],
     };
@@ -708,10 +725,12 @@
                     if(modelGRD.goods_receipt_id == id){
                         window.axios.get('/api/getMaterialVendor/'+modelGRD.material_id).then(({ data }) => {
                             this.modelPODs.forEach(modelPOD => {
-                                if(modelPOD.material_id == modelGRD.material_id)
-                                {
-                                    modelGRD.required_date = modelPOD.delivery_date;
-                                }
+                                modelPOD.forEach(POD =>{
+                                    if(POD.material_id == modelGRD.material_id)
+                                    {
+                                        modelGRD.required_date = POD.delivery_date;
+                                    }
+                                })
                             });
                             modelGRD.material_code = data.code;
                             modelGRD.material_desription = data.description;

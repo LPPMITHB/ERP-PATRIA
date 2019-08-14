@@ -44,7 +44,7 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$vendor->name}}">{{ $vendor->name }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$vendor->address}}">{{ $vendor->address }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$vendor->description}}">{{ $vendor->description }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$vendor->status}}"> {{ $vendor->status == "1" ? "Active": "Non Active" }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $vendor->status == "1" ? "Active": "Non Active" }}"> {{ $vendor->status == "1" ? "Active": "Non Active" }}</td>
                                 </td>
                                 <td class="p-l-0 p-r-0" align="center">
                                     <a href="{{ route('vendor.show', ['id'=>$vendor->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
