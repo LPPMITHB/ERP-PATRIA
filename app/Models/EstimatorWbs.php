@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EstimateProfile extends Model
+class EstimatorWbs extends Model
 {
-    protected $table = 'mst_estimate_profile';
+    protected $table = 'mst_estimator_wbs';
 
     public function branch()
     {
@@ -18,8 +18,8 @@ class EstimateProfile extends Model
         return $this->belongsTo('App\Models\User');
     }
 
-    public function ship()
+    public function costStandards()
     {
-        return $this->belongsTo('App\Models\Ship');
+        return $this->hasMany('App\Models\EstimatorCostStandard');
     }
 }
