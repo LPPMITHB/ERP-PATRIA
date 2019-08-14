@@ -86,6 +86,45 @@
                             </div>
                         </div>
 
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="city" class="col-sm-2 control-label">City</label>
+
+                            <div class="col-sm-10">
+                                <input type="string" class="form-control" id="city" name="city"
+                                @if($vendor->city != null) value="{{ $vendor->city }}"
+                                @else value="{{ old('city') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="province" class="col-sm-2 control-label">Province</label>
+
+                            <div class="col-sm-10">
+                                <input type="string" class="form-control" id="province" name="province"
+                                @if($vendor->province != null) value="{{ $vendor->province }}"
+                                @else value="{{ old('province') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="country" class="col-sm-2 control-label">Country</label>
+
+                            <div class="col-sm-10">
+                                <input type="string" class="form-control" id="country" name="country"
+                                @if($vendor->country != null) value="{{ $vendor->country }}"
+                                @else value="{{ old('country') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
+
                         <div class="form-group">
                             <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
 
@@ -106,6 +145,19 @@
                             @endif>
                             </div>
                         </div>
+
+                        @if(in_array(2,json_decode($business_ids)))
+                        <div class="form-group">
+                            <label for="tax_number" class="col-sm-2 control-label">Tax Number</label>
+                            
+                            <div class="col-sm-10">
+                                <input type="numeric" onkeypress="validate(event)" class="form-control" id="tax_number" name="tax_number"
+                                @if($vendor->tax_number != null) value="{{ $vendor->tax_number }}"
+                                @else value="{{ old('tax_number') }}"
+                                @endif>
+                            </div>
+                        </div>
+                        @endif
 
                         <div class="form-group">
                             <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>

@@ -43,6 +43,10 @@
                                         Closed
                                     @elseif($snapshot->status == 2)
                                         Counted
+                                    @elseif($snapshot->status == 3)
+                                        Approved
+                                    @elseif($snapshot->status == 5)
+                                        Revised
                                     @endif
                                 </td>
                                 <td class="p-l-10">{{ count($snapshot->snapshotDetails) }}</td>

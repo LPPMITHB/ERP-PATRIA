@@ -242,7 +242,7 @@
 
                 data.forEach(POD => {
                     POD.quantity = POD.quantity.replace(/,/g , '');
-                    POD.received = parseFloat(POD.received);
+                    POD.received = POD.received.replace(/,/g , '');;
                     if(POD.sloc_id != ""){
                         if(this.checkedPOD.indexOf(POD.id+"") == -1){
                             isOk = true;
@@ -316,7 +316,7 @@
                         if(parseFloat(POD.quantity.replace("," , '')) < parseFloat(POD.received.replace("," , ''))){
                             POD.received = POD.quantity;
                             iziToast.warning({
-                                title: 'Cannot input more than avaiable quantity..',
+                                title: 'Cannot input more than ordered quantity..',
                                 position: 'topRight',
                                 displayMode: 'replace'
                             });

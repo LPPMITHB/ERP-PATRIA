@@ -33,7 +33,12 @@ class WBSController extends Controller
 
     public function createWbsConfiguration(Request $request)
     {
-        return view('wbs.createWbsConfiguration');
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if(in_array("2", json_decode($business_ids))){
+            $is_pami = true;
+        }
+        return view('wbs.createWbsConfiguration',compact('is_pami'));
     }
 
     public function createWbsProfile(Request $request)

@@ -27,6 +27,11 @@ class Vendor extends Model
     {
         return $this->hasMany('App\Models\PurchaseOrder');
     }
+    
+    public function goodsReceipt()
+    {
+        return $this->hasMany('App\Models\GoodsReceipt');
+    }
 
     public function resourceDetails()
     {
