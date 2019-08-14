@@ -1745,6 +1745,10 @@ Route::name('estimator.')->prefix('estimator')->group(function() {
     Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard');
 
     Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile');
+
+    Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs');
+
+    Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard');
 });
 
 // Estimator Repair Routes
@@ -1784,6 +1788,10 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
     Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard');
 
     Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile');
+
+    Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs');
+
+    Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard');
 });
 
 // Quotation Routes

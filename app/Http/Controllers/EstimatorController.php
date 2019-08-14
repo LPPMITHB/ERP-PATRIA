@@ -110,6 +110,38 @@ class EstimatorController extends Controller
         }
     }
 
+    public function deleteWbs(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try{
+            $wbs = EstimatorWbs::findOrFail($id);
+            if(count($wbs->costStandards) > 0){
+                if($route == "/estimator"){
+                    return redirect()->route('estimator.indexEstimatorWbs')->with('success','Cannot Delete WBS Cost Estimation Because Still Used In Another Cost Standard!');
+                }elseif($route == "/estimator_repair"){
+                    return redirect()->route('estimator_repair.indexEstimatorWbs')->with('success','Cannot Delete WBS Cost Estimation Because Still Used In Another Cost Standard!');
+                }
+            }else{
+                $wbs->delete();
+            }
+
+            DB::commit();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorWbs')->with('success','Success Deleted WBS Cost Estimation!');
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorWbs')->with('success','Success Deleted WBS Cost Estimation!');
+            }
+        }catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorWbs')->with('error',$e->getMessage());
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorWbs')->with('error',$e->getMessage());
+            }
+        }
+    }
+
     // public function showWbs($id)
     // {
     //     //
@@ -217,6 +249,38 @@ class EstimatorController extends Controller
                 return redirect()->route('estimator.editCostStandard',$cost_standard->id)->with('error',$e->getMessage());
             }elseif($route == "/estimator_repair"){
                 return redirect()->route('estimator_repair.editCostStandard',$cost_standard->id)->with('error',$e->getMessage());
+            }
+        }
+    }
+
+    public function deleteCostStandard(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try{
+            $cost_standard = EstimatorCostStandard::findOrFail($id);
+            if(count($cost_standard->estimatorProfileDetails) > 0){
+                if($route == "/estimator"){
+                    return redirect()->route('estimator.indexEstimatorCostStandard')->with('success','Cannot Delete Cost Standard Because Still Used In Another Estimator Profile!');
+                }elseif($route == "/estimator_repair"){
+                    return redirect()->route('estimator_repair.indexEstimatorCostStandard')->with('success','Cannot Delete Cost Standard Because Still Used In Another Estimator Profile!');
+                }
+            }else{
+                $cost_standard->delete();
+            }
+
+            DB::commit();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorCostStandard')->with('success','Success Deleted Cost Standard!');
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorCostStandard')->with('success','Success Deleted Cost Standard!');
+            }
+        }catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorCostStandard')->with('error',$e->getMessage());
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorCostStandard')->with('error',$e->getMessage());
             }
         }
     }

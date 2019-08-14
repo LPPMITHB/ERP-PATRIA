@@ -53,10 +53,12 @@
                                 @if($route == "/estimator")
                                     <td class="p-l-0 p-r-0" align="center">
                                         <a href="{{ route('estimator.editWbs', ['id'=>$wbs->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a onClick="confirmation({!! $wbs->id !!})" class="btn btn-danger btn-xs">DELETE</a>
                                     </td>
                                 @elseif($route == "/estimator_repair")
                                     <td class="p-l-0 p-r-0" align="center">
                                         <a href="{{ route('estimator_repair.editWbs', ['id'=>$wbs->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a onClick="confirmation({!! $wbs->id !!})" class="btn btn-danger btn-xs">DELETE</a>
                                     </td>
                                 @endif
                             </tr>
@@ -84,5 +86,34 @@
             }
         });
     });
+
+    function confirmation(wbs_id){
+        iziToast.show({
+            close: false,
+            overlay: true,
+            timeout : 0,
+            displayMode: 'once',
+            id: 'question',
+            zindex: 9999,
+            title: 'Confirm',
+            message: 'Are you sure you want to delete this WBS Cost Estimation?',
+            position: 'center',
+            buttons: [
+                ['<button>OK</button>', function (instance, toast) {
+                    let route = @json($route);
+                    if(route == "/estimator"){
+                        document.location.href = "/estimator/deleteWbs/"+wbs_id;
+                    }else if(route == "/estimator_repair"){
+                        document.location.href = "/estimator_repair/deleteWbs/"+wbs_id;
+                    }
+                }, true], 
+                ['<button>CANCEL</button>', function (instance, toast) {
+                    instance.hide({
+                        transitionOut: 'fadeOutUp',
+                    }, toast, 'buttonName');
+                }]
+            ],
+        });
+    }
 </script>
 @endpush

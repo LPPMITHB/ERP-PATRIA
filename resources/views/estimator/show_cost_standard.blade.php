@@ -36,7 +36,12 @@
             <div class="box-header">
                 <div class="box-title"></div>
                 <div class="box-tools pull-right p-t-5">
-                    <a href="{{ route('estimator.editCostStandard',['id'=>$cost_standard->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @if($route == "/estimator")
+                        <a href="{{ route('estimator.editCostStandard',['id'=>$cost_standard->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @elseif($route == "/estimator_repair")
+                        <a href="{{ route('estimator_repair.editCostStandard',['id'=>$cost_standard->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @endif                        
+                    <a onClick="confirmation({!! $cost_standard->id !!})" class="btn btn-danger btn-sm">DELETE</a>
                 </div>
             </div>
             <div class="box-body">
@@ -104,5 +109,34 @@
      $(document).ready(function(){
         $('div.overlay').hide();
     });
+
+    function confirmation(id){
+        iziToast.show({
+            close: false,
+            overlay: true,
+            timeout : 0,
+            displayMode: 'once',
+            id: 'question',
+            zindex: 9999,
+            title: 'Confirm',
+            message: 'Are you sure you want to delete this Cost Standard?',
+            position: 'center',
+            buttons: [
+                ['<button>OK</button>', function (instance, toast) {
+                    let route = @json($route);
+                    if(route == "/estimator"){
+                        document.location.href = "/estimator/deleteCostStandard/"+id;
+                    }else if(route == "/estimator_repair"){
+                        document.location.href = "/estimator_repair/deleteCostStandard/"+id;
+                    }
+                }, true], 
+                ['<button>CANCEL</button>', function (instance, toast) {
+                    instance.hide({
+                        transitionOut: 'fadeOutUp',
+                    }, toast, 'buttonName');
+                }]
+            ],
+        });
+    }
 </script>
 @endpush
