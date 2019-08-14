@@ -1710,32 +1710,80 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
 
 // Estimator Routes
 Route::name('estimator.')->prefix('estimator')->group(function() {
-    Route::get('/create', 'EstimatorController@create')->name('create');
+    Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs');
 
-    Route::get('/', 'EstimatorController@index')->name('index');
+    Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
 
-    Route::get('/{id}', 'EstimatorController@show')->name('show');
+    Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
+    
+    Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
 
-    Route::get('/{id}/edit', 'EstimatorController@edit')->name('edit');
+    Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
 
-    Route::patch('/{id}', 'EstimatorController@update')->name('update');
+    Route::get('/createProfile', 'EstimatorController@createProfile')->name('createProfile');
 
-    Route::post('/', 'EstimatorController@store')->name('store');
+    Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs');
+
+    Route::post('/storeCostStandard', 'EstimatorController@storeCostStandard')->name('storeCostStandard');
+
+    Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile');
+
+    Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs');
+
+    Route::get('/editCostStandard/{id}', 'EstimatorController@editCostStandard')->name('editCostStandard');
+
+    Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile');
+
+    // Route::get('/showWbs/{id}', 'EstimatorController@showWbs')->name('showWbs');
+
+    Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard');
+
+    Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile');
+
+    Route::patch('/updateWbs/{id}', 'EstimatorController@updateWbs')->name('updateWbs');
+
+    Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard');
+
+    Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile');
 });
 
 // Estimator Repair Routes
 Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
-    Route::get('/create', 'EstimatorController@create')->name('create');
+    Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs');
 
-    Route::get('/', 'EstimatorController@index')->name('index');
+    Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
 
-    Route::get('/{id}', 'EstimatorController@show')->name('show');
+    Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
+    
+    Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
 
-    Route::get('/{id}/edit', 'EstimatorController@edit')->name('edit');
+    Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
 
-    Route::patch('/{id}', 'EstimatorController@update')->name('update');
+    Route::get('/createProfile', 'EstimatorController@createProfile')->name('createProfile');
 
-    Route::post('/', 'EstimatorController@store')->name('store');
+    Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs');
+
+    Route::post('/storeCostStandard', 'EstimatorController@storeCostStandard')->name('storeCostStandard');
+
+    Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile');
+
+    Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs');
+
+    Route::get('/editCostStandard/{id}', 'EstimatorController@editCostStandard')->name('editCostStandard');
+
+    Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile');
+
+    Route::get('/showWbs/{id}', 'EstimatorController@showWbs')->name('showWbs');
+
+    Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard');
+
+    Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile');
+
+    Route::patch('/updateWbs/{id}', 'EstimatorController@updateWbs')->name('updateWbs');
+
+    Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard');
+
+    Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile');
 });
 
 // Quotation Routes
