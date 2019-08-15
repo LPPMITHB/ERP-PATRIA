@@ -28,8 +28,8 @@ class Ship extends Model
         return $this->belongsTo('App\Models\Branch');
     }
 
-    public function estimateProfiles() 
+    public function estimatorProfiles() 
     {
-        return $this->hasMany('App\Models\EstimateProfile');
+        return $this->hasMany('App\Models\EstimatorProfile');
     }
 }

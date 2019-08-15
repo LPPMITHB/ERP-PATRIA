@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class EstimateProfile extends Model
+class EstimatorProfile extends Model
 {
-    protected $table = 'mst_estimate_profile';
+    protected $table = 'mst_estimator_profile';
 
     public function branch()
     {
@@ -21,5 +21,10 @@ class EstimateProfile extends Model
     public function ship()
     {
         return $this->belongsTo('App\Models\Ship');
+    }
+
+    public function estimatorProfileDetails() 
+    {
+        return $this->hasMany('App\Models\EstimatorProfileDetail','cost_standard_id');
     }
 }

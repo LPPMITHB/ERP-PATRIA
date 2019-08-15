@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Vendor;
 use App\Models\PurchaseOrder;
+use App\Models\PurchaseOrderDetail;
 use App\Models\WorkOrder;
 use App\Models\GoodsReceipt;
+use App\Models\GoodsReceiptDetail;
 use App\Models\GoodsIssue;
 use App\Models\Configuration;
 use App\Models\Material;
@@ -40,8 +42,9 @@ class VendorController extends Controller
         $vendor_categories = Configuration::get('vendor_category');
         $payment_terms = Configuration::get('payment_terms');
         $delivery_terms = Configuration::get('delivery_terms');
+        $business_ids = Auth::user()->business_unit_id;
 
-        return view('vendor.create',compact('vendor','vendor_code','vendor_categories','payment_terms','delivery_terms'));
+        return view('vendor.create',compact('vendor','vendor_code','vendor_categories','payment_terms','delivery_terms','business_ids'));
     }
 
     /**
@@ -65,9 +68,13 @@ class VendorController extends Controller
         $vendor->name = ucwords($request->input('name'));
         $vendor->type = ucwords($request->input('type'));
         $vendor->address = ucfirst($request->input('address'));
+        $vendor->city = ucfirst($request->input('city'));
+        $vendor->province = ucfirst($request->input('province'));
+        $vendor->country = ucfirst($request->input('country'));
         $vendor->phone_number_1 = $request->input('phone_number_1');
         $vendor->phone_number_2 = $request->input('phone_number_2');
         $vendor->contact_name = $request->input('contact_name');
+        $vendor->tax_number = $request->input('tax_number');
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
         $vendor->description = $request->input('description');
@@ -98,9 +105,15 @@ class VendorController extends Controller
         $vendor = Vendor::findOrFail($id);
         $modelPOs = PurchaseOrder::where('vendor_id',$id)->get();
         $modelWOs = WorkOrder::where('vendor_id',$id)->get();
+        $business_ids = Auth::user()->business_unit_id;
         $po_ids = $modelPOs->pluck('id')->toArray();
         $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->with('goodsReceiptDetails','purchaseOrder.purchaseOrderDetails')->get();
         $gr_ids = $modelGRs->pluck('id')->toArray();
+        $modelGRDs = GoodsReceiptDetail::whereIn('goods_receipt_id',$gr_ids)->get();
+        $modelPODs = [];
+        foreach($modelGRs as $modelGR){
+            array_push($modelPODs,$modelGR->purchaseOrder->purchaseOrderDetails);
+        }
         // broken code
         /*
         $return = GoodsIssue::whereIn('purchase_order_id', $po_ids)->orWhereIn('goods_receipt_id',$gr_ids)->where('type',4)->get();
@@ -125,8 +138,7 @@ class VendorController extends Controller
                 $dt_name = $delivery_term->name;
             }
         }
-
-        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name'));
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name','business_ids','modelGRDs','modelPODs'));
     }
 
     public function edit($id)
@@ -135,8 +147,9 @@ class VendorController extends Controller
         $vendor_categories = Configuration::get('vendor_category');
         $payment_terms = Configuration::get('payment_terms');
         $delivery_terms = Configuration::get('delivery_terms');
+        $business_ids = Auth::user()->business_unit_id;
 
-        return view('vendor.create',compact('vendor','vendor_categories','payment_terms','delivery_terms'));
+        return view('vendor.create',compact('vendor','vendor_categories','payment_terms','delivery_terms','business_ids'));
     }
 
     public function update(Request $request, $id)

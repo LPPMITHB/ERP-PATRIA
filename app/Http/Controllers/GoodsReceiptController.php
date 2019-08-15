@@ -219,6 +219,7 @@ class GoodsReceiptController extends Controller
             }elseif($route == "/goods_receipt_repair"){
                 return redirect()->route('goods_receipt_repair.selectPO')->with('error', $e->getMessage());
             }
+            print_r($GR);exit();
         }
     }
 

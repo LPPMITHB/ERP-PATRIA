@@ -22,6 +22,9 @@ class CreateMstVendorTable extends Migration
             $table->string('tax_number')->nullable();
             $table->string('contact_name')->nullable();
             $table->text('address')->nullable();
+            $table->text('city')->nullable();
+            $table->text('province')->nullable();
+            $table->text('country')->nullable();
             $table->string('type')->nullable();
             $table->text('description')->nullable();
             $table->string('email')->nullable();

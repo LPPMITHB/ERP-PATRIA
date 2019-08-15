@@ -53,6 +53,12 @@
                             <td>Description</td>
                             <td>{{ $warehouse->description }}</td>
                         </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>Person In-Charge</td>
+                            <td>{{ $pic->name }}
+                        </tr>
+                        <tr>
                             <td>4</td>
                             <td>Status</td>
                             <td class="iconTd">
