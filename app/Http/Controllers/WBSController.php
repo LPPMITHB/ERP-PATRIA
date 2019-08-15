@@ -220,22 +220,6 @@ class WBSController extends Controller
         return view('wbs.createSubWbsProfile', compact('wbs','array','menu'));
     }
 
-    public function createSubWbsConfiguration($wbs_id, Request $request)
-    {
-        $wbs = WbsConfiguration::find($wbs_id);
-        $array = [
-            'Dashboard' => route('index'),
-            'Create WBS Configuration' => route('wbs_repair.createWbsConfiguration'),
-        ];
-        $iteration = 0;
-        $array_reverse = [];
-        $array_reverse = array_reverse(self::getParentsWbsConfiguration($wbs,$array_reverse, $iteration));
-        foreach ($array_reverse as $key => $value) {
-            $array[$key] = $value;
-        }
-        $array[$wbs->number] = "";
-        return view('wbs.createSubWbsConfiguration', compact('wbs','array'));
-    }
 
     public function createWBS($id, Request $request)
     {
@@ -856,18 +840,6 @@ class WBSController extends Controller
         }
     }
 
-    function getParentsWbsConfiguration($wbs, $array_reverse, $iteration) {
-        if ($wbs) {
-            if($wbs->wbs){
-                $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsConfiguration',[$wbs->wbs->id]);
-                return self::getParentsWbsConfiguration($wbs->wbs,$array_reverse, $iteration);
-            }else{
-                $array_reverse[$wbs->number] = route('wbs_repair.createSubWbsConfiguration',[$wbs->id]);
-                return $array_reverse;
-            }
-        }
-    }
-
     //BUAT BREADCRUMB DINAMIS
     function getParents($wbs, $array_reverse, $project_id, $iteration, $menu) {
         if ($wbs) {
@@ -1195,11 +1167,6 @@ class WBSController extends Controller
         return response($wbss, Response::HTTP_OK);
     }
     
-    public function getSubWbsConfigurationAPI($wbs_id){
-        $wbss = WbsConfiguration::where('wbs_id', $wbs_id)->get()->jsonSerialize();
-        return response($wbss, Response::HTTP_OK);
-    }
-
     public function getWbsAPI($project_id){
         $wbss = WBS::orderBy('planned_start_date', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);

@@ -67,7 +67,7 @@
                                         </div>
                                     </div>
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                            <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
                                             <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
                                                 MANAGE MATERIAL
                                             </a>
@@ -300,7 +300,7 @@ var vm = new Vue({
             return url;
         },
         createActivity(data){
-            var url = "/activity_repair/createActivityStandard/"+data.id;
+            var url = "/project_standard/createActivityStandard/"+data.id;
             return url;
         },
         getWBSStandard(){
