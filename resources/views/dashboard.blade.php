@@ -22,7 +22,7 @@
                                 <div class="info-box" style="min-height:30px">
                                   <span class="info-box-icon bg-aqua m-t-0" style="height:20px"></span>
                                   <div class="info-box-content p-t-0 m-t-0">
-                                    <span class="info-box-text"><b>Project Ok</b></span>
+                                    <span class="info-box-text"><b>On Track</b></span>
                                     <span class="info-box-number"></span>
                                   </div>
                                 </div>
@@ -33,7 +33,7 @@
                                 <div class="info-box" style="min-height:30px">
                                   <span class="info-box-icon m-t-0" style="height:20px; background-color: #E9E92F"> </span>
                                   <div class="info-box-content p-t-0 m-t-0">
-                                    <span class="info-box-text"><b>WBS Late</b></span>
+                                    <span class="info-box-text"><b>Low Risk</b></span>
                                     <span class="info-box-number"></span>
                                   </div>
                                 </div>
@@ -45,7 +45,7 @@
                                 <div class="info-box" style="min-height:30px">
                                   <span class="info-box-icon bg-orange m-t-0" style="height:20px"></span>
                                   <div class="info-box-content p-t-0 m-t-0">
-                                    <span class="info-box-text"><b>Project Risk</b></span>
+                                    <span class="info-box-text"><b>High Risk</b></span>
                                     <span class="info-box-number"></span>
                                   </div>
                                 </div>
@@ -56,7 +56,7 @@
                                 <div class="info-box" style="min-height:30px">
                                   <span class="info-box-icon bg-red m-t-0" style="height:20px"></span>
                                   <div class="info-box-content p-t-0 m-t-0">
-                                    <span class="info-box-text"><b>Project Late</b></span>
+                                    <span class="info-box-text"><b>Late</b></span>
                                     <span class="info-box-number"></span>
                                   </div>
                                 </div>

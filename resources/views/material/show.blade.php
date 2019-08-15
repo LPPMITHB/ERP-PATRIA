@@ -4,7 +4,6 @@
 @breadcrumb(
     [
         'title' => 'View Material',
-        'subtitle' => 'Show',
         'items' => [
             'Dashboard' => route('index'),
             'View All Materials' => route('material.index'),

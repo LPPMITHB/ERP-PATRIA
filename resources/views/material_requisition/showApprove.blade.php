@@ -94,7 +94,7 @@
                             : <b>{{ $modelMR->project->name }}</b>
                         </div>
                         <div class="col-xs-4 col-md-4">
-                            Customer Name
+                            Customer
                         </div>
                         <div class="col-xs-8 col-md-8">
                             : <b>{{ $modelMR->project->customer->name }}</b>

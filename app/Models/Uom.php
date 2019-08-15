@@ -15,6 +15,6 @@ class Uom extends Model
 
     public function costStandards()
     {
-        return $this->hasMany('App\Models\EstimateCostStandard');
+        return $this->hasMany('App\Models\EstimatorCostStandard');
     }
 }

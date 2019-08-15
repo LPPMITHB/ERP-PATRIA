@@ -223,7 +223,7 @@ class GoodsReceiptController extends Controller
         }
     }
 
-    public function ♦Wo(Request $request)
+    public function storeWo(Request $request)
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
@@ -281,7 +281,7 @@ class GoodsReceiptController extends Controller
         }
     }
 
-    public function ♦WOR(Request $request)
+    public function storeWOR(Request $request)
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);

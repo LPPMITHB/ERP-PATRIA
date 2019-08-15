@@ -18,6 +18,139 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => '.index',
         ]);
 
+        // Marketing & Sales - WBS Cost Estimation
+        $wbsCostEstimation = Menu::where('route_name','estimator.indexEstimatorWbs')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator.indexEstimatorWbs',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator.createWbs',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator.editWbs',
+        ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsCostEstimation,
+        //     'route_name' => 'estimator.showWbs',
+        // ]);
+
+        // Marketing & Sales - WBS Cost Estimation - Repair
+        $wbsCostEstimation = Menu::where('route_name','estimator_repair.indexEstimatorWbs')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator_repair.indexEstimatorWbs',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator_repair.createWbs',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator_repair.editWbs',
+        ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $wbsCostEstimation,
+        //     'route_name' => 'estimator_repair.showWbs',
+        // ]);
+
+        // Marketing & Sales - Cost Standard
+        $CostStandard = Menu::where('route_name','estimator.indexEstimatorCostStandard')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator.indexEstimatorCostStandard',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator.createCostStandard',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator.editCostStandard',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator.showCostStandard',
+        ]);
+
+        // Marketing & Sales - Cost Standard - Repair
+        $CostStandard = Menu::where('route_name','estimator_repair.indexEstimatorCostStandard')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.indexEstimatorCostStandard',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.createCostStandard',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.editCostStandard',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.showCostStandard',
+        ]);
+
+        // Marketing & Sales - Estimator Profile
+        $EstimatorProfile = Menu::where('route_name','estimator.indexEstimatorProfile')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator.indexEstimatorProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator.createEstimatorProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator.editEstimatorProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator.showEstimatorProfile',
+        ]);
+
+        // Marketing & Sales - Estimator Profile - Repair
+        $EstimatorProfile = Menu::where('route_name','estimator_repair.indexEstimatorProfile')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.indexEstimatorProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.createEstimatorProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.editEstimatorProfile',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.showEstimatorProfile',
+        ]);
+
+        // Project Management
         $manageProject = Menu::where('route_name','project.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,

@@ -810,7 +810,6 @@
                             }
                             $('div.overlay').show();            
                             window.axios.delete(url).then((response) => {
-                                console.log(response);
                                 if(response.data.error != undefined){
                                     console.log(response.data.error);
                                     response.data.error.forEach(error => {
