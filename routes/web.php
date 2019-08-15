@@ -1708,3 +1708,27 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
 
     Route::delete('/{id}', 'YardPlanController@destroy')->name('destroy');
 });
+
+//Vendor Routes
+Route::name('estimator.')->prefix('estimator')->group(function() {
+    Route::get('/create', 'EstimatorController@create')->name('create')->middleware('can:create-vendor');
+
+    Route::get('/', 'EstimatorController@index')->name('index')->middleware('can:list-vendor');
+
+    Route::get('/{id}', 'EstimatorController@show')->name('show')->middleware('can:show-vendor');
+
+    Route::get('/{id}/edit', 'EstimatorController@edit')->name('edit')->middleware('can:edit-vendor');
+
+    Route::patch('/{id}', 'EstimatorController@update')->name('update')->middleware('can:edit-vendor');
+
+    Route::post('/', 'EstimatorController@store')->name('store')->middleware('can:create-vendor');
+});
+
+//Project Standard
+Route::name('project_standard.')->prefix('project_standard')->group(function() {
+    Route::get('/createProjectStandard', 'ProjectStandardController@create')->name('create')->middleware('can:create-vendor');
+    
+    Route::get('/createWBS/{id}', 'ProjectStandardController@createWBS')->name('createWBS')->middleware('can:create-project');
+
+    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'ProjectStandardController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
+});

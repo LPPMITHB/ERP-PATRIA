@@ -48,9 +48,9 @@ class MenusTableSeeder extends Seeder
         $marketingSales =  Menu::where('name','Marketing & Sales')->where('menu_id', $building)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Configuration',
+            'name' => 'Estimator Configuration',
             'icon' => 'fa-wrench',
-            'route_name'=> 'project.index',
+            'route_name'=> 'estimator.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $marketingSales,
@@ -1113,9 +1113,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Manage WBS Configuration',
+            'name' => 'Manage Project Standard',
             'icon' => 'fa-briefcase',
-            'route_name'=> 'wbs_repair.createWbsConfiguration',
+            'route_name'=> 'project_standard.createProjectStandard',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $projectManagementRepair,
