@@ -57,7 +57,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
         
-        $configuration = Menu::where('name','Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
+        $configuration = Menu::where('name','Estimator Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'WBS Cost Estimation',
