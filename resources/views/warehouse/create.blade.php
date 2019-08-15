@@ -65,7 +65,7 @@
 
                         <div class="form-group">
                             <label for="name" class="col-sm-2 control-label">Name *</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus
                                 @if($warehouse->name != null) value="{{ $warehouse->name }}"
@@ -76,7 +76,7 @@
 
                         <div class="form-group">
                             <label for="description" class="col-sm-2 control-label">Description</label>
-            
+
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="description" name="description"
                                 @if($warehouse->description != null) value="{{ $warehouse->description }}"
@@ -86,8 +86,19 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="pic" class="col-sm-2 control-label">Person In-Charge</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" name="pic" id="pic">
+                                    @foreach($users as $pic)
+                                    <option value="{{ $pic->id }}">{{ $pic->name }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Status *</label>
-            
+
                             <div class="col-sm-10">
                                 <select class="form-control" name="status" id="status" required>
                                     <option value="1">Active</option>
@@ -117,6 +128,11 @@
 
 @push('script')
 <script>
+
+    var data = {
+        pics: @json($users),
+    };
+
     $(document).ready(function(){
         $('#status').val("{{$warehouse->status}}");
         if($('#status').val()==null){
@@ -129,7 +145,7 @@
         $('.alert').addClass('animated bounce');
 
     });
-    
+
     document.getElementById("code").readOnly = true;
 
 function validate(evt) {
@@ -149,6 +165,6 @@ function validate(evt) {
     if(theEvent.preventDefault) theEvent.preventDefault();
   }
 }
-    
+
 </script>
 @endpush

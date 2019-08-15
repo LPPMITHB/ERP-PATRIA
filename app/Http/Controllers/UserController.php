@@ -63,7 +63,7 @@ class UserController extends Controller
             'role' => 'required',
             'branch' => 'required',
         ]);
-        
+
         $stringBusinessUnit = '['.implode(',', $request->businessUnit).']';
         $configuration = Configuration::get('default-password');
         DB::beginTransaction();
@@ -76,6 +76,18 @@ class UserController extends Controller
             $user->address = ucfirst($request->address);
             $user->phone_number = $request->phone_number;
             $user->role_id = $request->role;
+            // Cek jika user bukan role system/customer. Ubah jika requirement ganti.
+            $checkArray = array(1,3,4,5);
+            if(in_array($request->role, $checkArray)){
+                $checkSystem = array(1,4,5);
+                if(in_array($request->role, $checkSystem)){
+                    $user->type = 1;
+                } else {
+                    $user->type = 3;
+                }
+            } else {
+                $user->type = 2;
+            }
             $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = $request->branch;
             $user->status = $request->status;
@@ -138,7 +150,7 @@ class UserController extends Controller
 
             if ($request->user()->can('change-role')) {
                 $arrayValidate['role']='required';
-            } 
+            }
             if ($request->user()->can('change-branch')) {
                 $arrayValidate['branch']='required';
             }
@@ -157,6 +169,18 @@ class UserController extends Controller
             }
             if ($request->user()->can('change-role')) {
                 $user->role_id = $request->role;
+            }
+            // Cek jika user bukan role system/customer. Ubah jika requirement ganti.
+            $checkArray = array(1,3,4,5);
+            if(in_array($request->role, $checkArray)){
+                $checkSystem = array(1,4,5);
+                if(in_array($request->role, $checkSystem)){
+                    $user->type = 1;
+                } else {
+                    $user->type = 3;
+                }
+            } else {
+                $user->type = 2;
             }
             $user->save();
             DB::commit();
@@ -185,7 +209,7 @@ class UserController extends Controller
             }else{
                 $user->delete();
                 DB::commit();
-    
+
                 return redirect()->route('user.index')->with('success', 'User Deleted');
             }
         } catch (\Exception $e) {
@@ -193,7 +217,7 @@ class UserController extends Controller
             return redirect()->route('user.show',$user->id)->with('error', $e->getMessage());
         }
     }
-   
+
     public function editPassword($id){
         $user = User::find($id);
 
@@ -224,7 +248,7 @@ class UserController extends Controller
             return redirect()->route('user.show',$user->id)->with('error', $e->getMessage());
         }
     }
-    
+
     public function changeDefaultPassword(){
         $configuration = Configuration::get('default-password');
 
@@ -238,10 +262,10 @@ class UserController extends Controller
         ]);
 
         $defaultPassword = Configuration::where('slug', 'default-password')->firstOrFail();
-        $array['password'] = $request->new_password;      
+        $array['password'] = $request->new_password;
         $defaultPassword->value = json_encode($array);
         $defaultPassword->save();
-        
+
         return redirect()->route('user.changeDefaultPassword')->with('success', 'Default Password Updated');
     }
 }

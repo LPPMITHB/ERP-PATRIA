@@ -21,7 +21,8 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->text('address')->nullable();
             $table->string('phone_number')->nullable();
-            $table->unsignedInteger('role_id')->nullable(); 
+            $table->unsignedInteger('type');
+            $table->unsignedInteger('role_id')->nullable();
             $table->unsignedInteger('branch_id')->nullable();
             $table->integer('status')->default(1);
             $table->text('business_unit_id');
