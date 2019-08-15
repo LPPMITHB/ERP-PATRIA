@@ -300,7 +300,7 @@ class EstimatorController extends Controller
         $route = $request->route()->getPrefix();
         $modelShip = Ship::where('status',1)->get();
         $modelWbs = EstimatorWbs::where('status',1)->get();
-        $modelCostStandard = EstimatorCostStandard::where('status',1)->get();
+        $modelCostStandard = EstimatorCostStandard::where('status',1)->with('uom','estimatorWbs')->get();
         $profile = new EstimatorProfile;
         $profile_code = self::generateProfileCode();
         
@@ -309,7 +309,42 @@ class EstimatorController extends Controller
 
     public function storeProfile(Request $request)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            $profile = new EstimatorProfile;
+            $profile->code = $datas->code;
+            $profile->description = $datas->description;
+            $profile->ship_id = $datas->ship_id;
+            $profile->status = $datas->status;
+            $profile->branch_id = Auth::user()->branch->id;
+            $profile->user_id = Auth::user()->id;
+            if(!$profile->save()){
+                return redirect()->route('estimator.createProfile')->with('error', 'Failed Save Estimator Profile !');
+            }else{
+                foreach($datas->datas as $data){
+                    $pd = new EstimatorProfileDetail;
+                    $pd->cost_standard_id = $data->cost_standard_id;
+                    $pd->profile_id = $profile->id;
+                    $pd->save();
+                }
+                DB::commit();
+                if($route == "/estimator"){
+                    return redirect()->route('estimator.showProfile', ['id' => $profile->id])->with('success', 'Estimator Profile Created');
+                }elseif($route == "/estimator_repair"){
+                    return redirect()->route('estimator_repair.showProfile', ['id' => $profile->id])->with('success', 'Estimator Profile Created');
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorProfile')->with('error', $e->getMessage());
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorProfile')->with('error', $e->getMessage());
+            }
+        }
     }
 
     public function showProfile($id)
