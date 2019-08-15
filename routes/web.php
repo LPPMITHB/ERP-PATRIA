@@ -721,17 +721,6 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
 
     Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
 
-    // WBS Configuration
-    Route::get('/createWbsConfiguration', 'WBSController@createWbsConfiguration')->name('createWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::get('/createSubWbsConfiguration/{id}', 'WBSController@createSubWbsConfiguration')->name('createSubWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::post('/storeWbsConfiguration', 'WBSController@storeWbsConfiguration')->name('storeWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::put('updateWbsConfiguration/{id}', 'WBSController@updateWbsConfiguration')->name('updateWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::delete('/deleteWbsConfiguration/{id}', 'WBSController@destroyWbsConfiguration')->name('destroyWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile-repair');
 
@@ -1726,9 +1715,25 @@ Route::name('estimator.')->prefix('estimator')->group(function() {
 
 //Project Standard
 Route::name('project_standard.')->prefix('project_standard')->group(function() {
-    Route::get('/createProjectStandard', 'ProjectStandardController@create')->name('create')->middleware('can:create-vendor');
+    //Project Standard
+    Route::get('/createProjectStandard', 'ProjectStandardController@createProjectStandard')->name('createProjectStandard')->middleware('can:manage-project-standard');
     
-    Route::get('/createWBS/{id}', 'ProjectStandardController@createWBS')->name('createWBS')->middleware('can:create-project');
+    Route::post('/storeProjectStandard', 'ProjectStandardController@storeProjectStandard')->name('storeProjectStandard')->middleware('can:manage-project-standard');
+    
+    Route::put('updateProjectStandard/{id}', 'ProjectStandardController@updateProjectStandard')->name('updateProjectStandard')->middleware('can:manage-project-standard');
 
-    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'ProjectStandardController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
+    Route::delete('/deleteProjectStandard/{id}', 'ProjectStandardController@destroyProjectStandard')->name('destroyProjectStandard')->middleware('can:manage-project-standard');
+    
+    // WBS Standard
+    Route::get('/createWbsStandard/{id}', 'ProjectStandardController@createWbsStandard')->name('createWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::get('/createSubWbsStandard/{project_id}/{wbs_id}', 'ProjectStandardController@createSubWbsStandard')->name('createSubWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::put('updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::delete('/deleteWbsStandard/{id}', 'ProjectStandardController@destroyWbsStandard')->name('destroyWbsStandard')->middleware('can:manage-project-standard');
+
+
 });
