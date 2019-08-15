@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
-class EstimatorController extends Controller
+class ProjectStandardController extends Controller
 {
     //
 }
