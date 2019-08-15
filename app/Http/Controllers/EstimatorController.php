@@ -9,6 +9,7 @@ use App\Models\EstimatorCostStandard;
 use App\Models\EstimatorProfile;
 use App\Models\EstimatorProfileDetail;
 use App\Models\Uom;
+use App\Models\Ship;
 use DB;
 use Auth;
 
@@ -285,14 +286,25 @@ class EstimatorController extends Controller
         }
     }
 
-    public function indexEstimatorProfile()
+    // Estimator Profile
+    public function indexEstimatorProfile(Request $request)
     {
-        
+        $route = $request->route()->getPrefix();
+        $modelProfile = EstimatorProfile::all();
+
+        return view('estimator.index_estimator_profile', compact('modelProfile','route'));
     }
 
-    public function createProfile()
+    public function createProfile(Request $request)
     {
+        $route = $request->route()->getPrefix();
+        $modelShip = Ship::where('status',1)->get();
+        $modelWbs = EstimatorWbs::where('status',1)->get();
+        $modelCostStandard = EstimatorCostStandard::where('status',1)->get();
+        $profile = new EstimatorProfile;
+        $profile_code = self::generateProfileCode();
         
+        return view('estimator.create_profile', compact('modelShip','route','modelWbs','modelCostStandard','profile','profile_code'));
     }
 
     public function storeProfile(Request $request)
@@ -345,5 +357,18 @@ class EstimatorController extends Controller
 
         $cost_standard_code = $code.''.sprintf('%04d', $number);
 		return $cost_standard_code;
+    }
+
+    public function generateProfileCode(){
+        $code = 'EPF';
+        $modelProfile = EstimatorProfile::orderBy('code', 'desc')->first();
+        
+        $number = 1;
+		if(isset($modelProfile)){
+            $number += intval(substr($modelProfile->code, -4));
+		}
+
+        $profile_code = $code.''.sprintf('%04d', $number);
+		return $profile_code;
     }
 }

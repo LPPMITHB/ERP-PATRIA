@@ -1748,6 +1748,8 @@ Route::name('estimator.')->prefix('estimator')->group(function() {
 
     Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs');
 
+    Route::get('/deleteProfile/{id}', 'EstimatorController@deleteProfile')->name('deleteProfile');
+
     Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard');
 });
 
@@ -1777,7 +1779,7 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
 
     Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile');
 
-    Route::get('/showWbs/{id}', 'EstimatorController@showWbs')->name('showWbs');
+    // Route::get('/showWbs/{id}', 'EstimatorController@showWbs')->name('showWbs');
 
     Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard');
 
@@ -1792,6 +1794,8 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
     Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs');
 
     Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard');
+
+    Route::get('/deleteProfile/{id}', 'EstimatorController@deleteProfile')->name('deleteProfile');
 });
 
 // Quotation Routes

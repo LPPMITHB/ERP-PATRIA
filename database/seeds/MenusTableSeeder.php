@@ -48,7 +48,7 @@ class MenusTableSeeder extends Seeder
         $marketingSales =  Menu::where('name','Marketing & Sales')->where('menu_id', $building)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Configuration',
+            'name' => 'Estimator Configuration',
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
