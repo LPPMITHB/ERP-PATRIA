@@ -22,4 +22,9 @@ class EstimatorProfile extends Model
     {
         return $this->belongsTo('App\Models\Ship');
     }
+
+    public function estimatorProfileDetails() 
+    {
+        return $this->hasMany('App\Models\EstimatorProfileDetail','cost_standard_id');
+    }
 }

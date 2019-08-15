@@ -27,4 +27,9 @@ class EstimatorCostStandard extends Model
     {
         return $this->belongsTo('App\Models\Uom');
     }
+
+    public function estimatorProfileDetails() 
+    {
+        return $this->hasMany('App\Models\EstimatorProfileDetail','cost_standard_id');
+    }
 }
