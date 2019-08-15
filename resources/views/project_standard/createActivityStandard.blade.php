@@ -3,10 +3,10 @@
     @if($wbs->wbs != null)
         @breadcrumb(
             [
-                'title' => "Manage Activities Configuration",
+                'title' => "Manage Activities Standard",
                 'items' => [
                     'Dashboard' => route('index'),
-                    $wbs->number => route('wbs_repair.createSubWbsConfiguration', $wbs->wbs->id),
+                    $wbs->number => route('project_standard.createSubWbsStandard', $wbs->wbs->id),
                     "Manage Activities" => ""
                 ]
             ]
@@ -15,10 +15,10 @@
     @else
         @breadcrumb(
             [
-                'title' => "Manage Activities Configuration",
+                'title' => "Manage Activities Standard",
                 'items' => [
                     'Dashboard' => route('index'),
-                    $wbs->number => route('wbs_repair.createWbsConfiguration'),
+                    $wbs->number => route('project_standard.createWbsStandard'),
                     "Manage Activities" => ""
                 ]
             ]
@@ -32,7 +32,20 @@
         <div class="box box-solid">
             <div class="box-header no-padding">
                 <div class="box-header p-b-0">
-                    <div class="col-xs-12 col-lg-4 col-md-12 p-l-5">    
+                    <div class="col-xs-12 col-lg-4 col-md-12 p-l-5">
+                        <div class="col-sm-12 no-padding"><b>Project Standard Information</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Ship Type</div>
+                        <div class="col-md-7 col-xs-8 no-padding" data-container="body" data-toggle="tooltip" title="{{$project_standard->ship->type}}"><b>: {{$project_standard->ship->type}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">Name</div>
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project_standard->name}}"><b>: {{$project_standard->name}}</b></div>
+                        
+                        <div class="col-md-3 col-xs-4 no-padding">Description</div>
+                        <div class="col-md-7 col-xs-8 no-padding" data-container="body" data-toggle="tooltip" title="{{$project_standard->description}}"><b>: {{$project_standard->description}}</b></div>
+                    </div>
+
+                    <div class="col-xs-12 col-lg-4 col-md-12 p-l-5">  
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                         
                         <div class="col-md-3 col-xs-4 no-padding">Name</div>
@@ -77,13 +90,13 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newActivityConfiguration.name" class="form-control width100" rows="3" id="name" name="name" placeholder="Name"></textarea>
+                                    <textarea v-model="newActivityStandard.name" class="form-control width100" rows="3" id="name" name="name" placeholder="Name"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newActivityConfiguration.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
+                                    <textarea v-model="newActivityStandard.description" class="form-control width100" rows="3" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newActivityConfiguration.duration" rows="3" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
+                                    <textarea v-model="newActivityStandard.duration" rows="3" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>                                        
                                 </td>
                                 <td class="textCenter p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -104,17 +117,17 @@
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="name" class="control-label">Name</label>
-                                        <textarea id="name" v-model="editActivityConfiguration.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>                                                
+                                        <textarea id="name" v-model="editActivityStandard.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>                                                
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="description" class=" control-label">Description</label>
-                                        <textarea id="description" v-model="editActivityConfiguration.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
+                                        <textarea id="description" v-model="editActivityStandard.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="duration" class=" control-label">Duration</label>
-                                        <input v-model="editActivityConfiguration.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
+                                        <input v-model="editActivityStandard.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >               
                                     </div>                             
                                 </div>
                                 <div class="modal-footer">
@@ -147,13 +160,13 @@ $(document).ready(function(){
 var data = {
     activities :[],
     newIndex : "",
-    newActivityConfiguration : {
+    newActivityStandard : {
         name : "",
         description : "",
         duration : "",
         wbs_id : @json($wbs->id), 
     },
-    editActivityConfiguration : {
+    editActivityStandard : {
         activity_id : "",
         name : "",
         description : "",
@@ -176,8 +189,8 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newActivityConfiguration.name == ""
-                || this.newActivityConfiguration.duration == "")
+                if(this.newActivityStandard.name == ""
+                || this.newActivityStandard.duration == "")
                 {
                     isOk = true;
                 }
@@ -185,8 +198,8 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editActivityConfiguration.name == ""
-                || this.editActivityConfiguration.duration == "")
+                if(this.editActivityStandard.name == ""
+                || this.editActivityStandard.duration == "")
                 {
                     isOk = true;
                 }
@@ -199,13 +212,13 @@ var vm = new Vue({
         },
         openModalEditActivity(data){
             document.getElementById("edit_activity_code").innerHTML= data.name;
-            this.editActivityConfiguration.activity_id = data.id;
-            this.editActivityConfiguration.name = data.name;
-            this.editActivityConfiguration.description = data.description;
-            this.editActivityConfiguration.duration  = data.duration;
+            this.editActivityStandard.activity_id = data.id;
+            this.editActivityStandard.name = data.name;
+            this.editActivityStandard.description = data.description;
+            this.editActivityStandard.duration  = data.duration;
         },
         getActivities(){
-            window.axios.get('/api/getActivitiesConfiguration/'+this.newActivityConfiguration.wbs_id).then(({ data }) => {
+            window.axios.get('/api/getActivityStandard/'+this.newActivityStandard.wbs_id).then(({ data }) => {
                 this.activities = data;
                 this.newIndex = Object.keys(this.activities).length+1;
 
@@ -241,7 +254,7 @@ var vm = new Vue({
                 position: 'center',
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
-                        var url  = "/activity_repair/deleteActivityConfiguration/"+data.id;
+                        var url  = "/project_standard/deleteActivityStandard/"+data.id;
                         $('div.overlay').show();            
                         window.axios.delete(url)
                         .then((response) => {
@@ -284,12 +297,12 @@ var vm = new Vue({
             });
         },
         add(){      
-            this.newActivityConfiguration.duration = parseInt((this.newActivityConfiguration.duration+"").replace(/,/g , ''));
-            var newActivityConfiguration = this.newActivityConfiguration;
-            newActivityConfiguration = JSON.stringify(newActivityConfiguration);
-            var url = "{{ route('activity_repair.storeActivityConfiguration') }}";
+            this.newActivityStandard.duration = parseInt((this.newActivityStandard.duration+"").replace(/,/g , ''));
+            var newActivityStandard = this.newActivityStandard;
+            newActivityStandard = JSON.stringify(newActivityStandard);
+            var url = "{{ route('project_standard.storeActivityStandard') }}";
             $('div.overlay').show();            
-            window.axios.post(url,newActivityConfiguration)
+            window.axios.post(url,newActivityStandard)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -305,9 +318,9 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                     this.getActivities();  
-                    this.newActivityConfiguration.name = "";
-                    this.newActivityConfiguration.description = "";
-                    this.newActivityConfiguration.duration = "";                
+                    this.newActivityStandard.name = "";
+                    this.newActivityStandard.description = "";
+                    this.newActivityStandard.duration = "";                
                 }
             })
             .catch((error) => {
@@ -322,11 +335,11 @@ var vm = new Vue({
 
         },
         update(){            
-            var editActivityConfiguration = this.editActivityConfiguration;
-            var url = "/activity_repair/updateActivityConfiguration/"+editActivityConfiguration.activity_id;
-            editActivityConfiguration = JSON.stringify(editActivityConfiguration);
+            var editActivityStandard = this.editActivityStandard;
+            var url = "/project_standard/updateActivityStandard/"+editActivityStandard.activity_id;
+            editActivityStandard = JSON.stringify(editActivityStandard);
             $('div.overlay').show();            
-            window.axios.put(url,editActivityConfiguration)
+            window.axios.put(url,editActivityStandard)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -357,13 +370,13 @@ var vm = new Vue({
         },
     },
     watch: {
-        newActivityConfiguration:{
+        newActivityStandard:{
             handler: function(newValue) {
             },
             deep: true
         },
-        'newActivityConfiguration.duration':function(newValue){
-            this.newActivityConfiguration.duration = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+        'newActivityStandard.duration':function(newValue){
+            this.newActivityStandard.duration = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
         }
     },
     created: function() {

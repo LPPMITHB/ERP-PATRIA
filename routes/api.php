@@ -203,6 +203,6 @@ Route::get('/getMaterialVendor/{id}', 'VendorController@getMaterialAPI')->name('
 
 //Project Standard
 Route::get('/getProjectStandard', 'ProjectStandardController@getProjectStandardAPI')->name('api.wbs.getProjectStandardAPI');
-Route::get('/getWbsStandard', 'ProjectStandardController@getWbsStandardAPI')->name('api.wbs.getWbsStandardAPI');
+Route::get('/getWbsStandard/{id}', 'ProjectStandardController@getWbsStandardAPI')->name('api.wbs.getWbsStandardAPI');
 Route::get('/getSubWbsStandard/{id}', 'ProjectStandardController@getSubWbsStandardAPI')->name('api.wbs.getSubWbsStandardAPI');
 Route::get('/getActivityStandard/{id}', 'ProjectStandardController@getActivityStandardAPI')->name('api.activity.getActivityStandardAPI');

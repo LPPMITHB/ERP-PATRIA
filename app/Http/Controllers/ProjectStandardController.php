@@ -99,33 +99,61 @@ class ProjectStandardController extends Controller
     }
 
     //WBS
-    public function storeWbsConfiguration(Request $request)
+    public function createWbsStandard(Request $request,$id)
+    {
+        $project_standard = ProjectStandard::find($id);
+
+        return view('project_standard.createWbsStandard', compact('project_standard'));
+    }
+
+    public function createSubWbsStandard($wbs_id, Request $request)
+    {
+        $wbs = WbsStandard::find($wbs_id);
+        $project_standard = $wbs->projectStandard;
+        $array = [
+            'Dashboard' => route('index'),
+            'Project Standard |'.$project_standard->name => route('project_standard.createProjectStandard'),
+            'Create WBS Standard' => route('project_standard.createWbsStandard',$project_standard->id),
+        ];
+        $iteration = 0;
+        $array_reverse = [];
+        $array_reverse = array_reverse(self::getParentsWbsStandard($wbs,$array_reverse, $iteration));
+        foreach ($array_reverse as $key => $value) {
+            $array[$key] = $value;
+        }
+
+        $array["WBS ".$wbs->number] = "";
+        return view('project_standard.createSubWbsStandard', compact('wbs','array','project_standard'));
+    }
+
+    public function storeWbsStandard(Request $request)
     {
         $data = $request->json()->all();
-        $modelWbsConfig = WbsConfiguration::where('number',$data['number'])->first();
-        if($modelWbsConfig != null){
+        $modelWbsStandard = WbsStandard::where('number',$data['number'])->first();
+        if($modelWbsStandard != null){
             return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
         }
         DB::beginTransaction();
         try {
-            $wbsConfiguration = new WbsConfiguration;
-            $wbsConfiguration->number = $data['number'];
-            $wbsConfiguration->description = $data['description'];
-            $wbsConfiguration->deliverables = $data['deliverables'];
-            $wbsConfiguration->duration = $data['duration'];
+            $wbsStandard = new WbsStandard;
+            $wbsStandard->number = $data['number'];
+            $wbsStandard->project_standard_id = $data['project_standard_id'];
+            $wbsStandard->description = $data['description'];
+            $wbsStandard->deliverables = $data['deliverables'];
+            $wbsStandard->duration = $data['duration'];
 
             if(isset($data['wbs_configuration_id'])){
-                $wbsConfiguration->wbs_id = $data['wbs_configuration_id'];
+                $wbsStandard->wbs_id = $data['wbs_configuration_id'];
             }
 
-            $wbsConfiguration->user_id = Auth::user()->id;
-            $wbsConfiguration->branch_id = Auth::user()->branch->id;
+            $wbsStandard->user_id = Auth::user()->id;
+            $wbsStandard->branch_id = Auth::user()->branch->id;
 
-            if(!$wbsConfiguration->save()){
+            if(!$wbsStandard->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
                 DB::commit();
-                return response(["response"=>"Success to create new WBS Configuration"],Response::HTTP_OK);
+                return response(["response"=>"Success to create new WBS Standard"],Response::HTTP_OK);
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -133,12 +161,12 @@ class ProjectStandardController extends Controller
         }
     }
 
-    public function updateWbsConfiguration(Request $request, $id)
+    public function updateWbsStandard(Request $request, $id)
     {
         $data = $request->json()->all();
-        $wbs_ref = WbsConfiguration::find($id);
-        $modelWbsConfig = WbsConfiguration::where('number',$data['number'])->where('id','!=',$id)->first();
-        if($modelWbsConfig != null){
+        $wbs_ref = WbsStandard::find($id);
+        $modelWbsStandard = WbsStandard::where('number',$data['number'])->where('id','!=',$id)->first();
+        if($modelWbsStandard != null){
             return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
         }
         DB::beginTransaction();
@@ -160,28 +188,28 @@ class ProjectStandardController extends Controller
         }
     }
 
-    public function destroyWbsConfiguration(Request $request, $id)
+    public function destroyWbsStandard(Request $request, $id)
     {
         DB::beginTransaction();
         try {
-            $wbsConfiguration = WbsConfiguration::find($id);
+            $wbsStandard = WbsStandard::find($id);
             $error = [];
-            if(count($wbsConfiguration->wbss)>0){
+            if(count($wbsStandard->wbss)>0){
                 array_push($error, ["Failed to delete, this WBS have child WBS"]);
             }
 
-            if(count($wbsConfiguration->activities)>0){
+            if(count($wbsStandard->activities)>0){
                 array_push($error, ["Failed to delete, this WBS have activities"]);
             }
 
-            if(count($wbsConfiguration->wbssProject)>0){
+            if(count($wbsStandard->wbssProject)>0){
                 array_push($error, ["Failed to delete, this WBS already been used by a project"]);
             }
             
             if(count($error)>0){
                 return response(["error"=> $error],Response::HTTP_OK);
             }
-            if(!$wbsConfiguration->delete()){
+            if(!$wbsStandard->delete()){
                 array_push($error, ["Failed to delete, please try again!"]);
                 return response(["error"=> $error],Response::HTTP_OK);
             }else{
@@ -194,9 +222,123 @@ class ProjectStandardController extends Controller
         }
     }
 
+    //Activity
+    public function createActivityStandard($id, Request $request)
+    {
+        $wbs = WbsStandard::find($id);
+        $project_standard = $wbs->projectStandard;
+
+        return view('project_standard.createActivityStandard', compact('wbs', 'project_standard'));
+    }
+
+    public function storeActivityStandard(Request $request)
+    {
+        $data = $request->json()->all();
+        $modelActConfig = ActivityStandard::where('wbs_id',$data['wbs_id'])->where('name',$data['name'])->first();
+        if($modelActConfig != null){
+            return response(["error"=> "Activity name on This WBS must be UNIQUE"],Response::HTTP_OK);
+        }
+        DB::beginTransaction();
+        try {
+            $activity = new ActivityStandard;
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];
+            $activity->wbs_id = $data['wbs_id'];            
+            $activity->duration = $data['duration'];
+            $activity->user_id = Auth::user()->id;
+            $activity->branch_id = Auth::user()->branch->id;
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to create new activity configuration"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function updateActivityStandard(Request $request, $id)
+    {
+        $data = $request->json()->all();
+        $activity = ActivityStandard::find($id);
+        $modelActConfig = ActivityStandard::where('wbs_id',$activity->wbs_id)->where('name',$data['name'])->where('id','!=',$id)->first();
+        if($modelActConfig != null){
+            return response(["error"=> "Activity name on This WBS must be UNIQUE"],Response::HTTP_OK);
+        }
+        DB::beginTransaction();
+        try {
+            $activity->name = $data['name'];
+            $activity->description = $data['description'];         
+            $activity->duration = $data['duration'];
+
+            if(!$activity->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to update activity configuration ".$activity->name],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function destroyActivityStandard(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $activityStandard = ActivityStandard::find($id);
+            if(count($activityStandard->activitiesProject)>0){
+                return response(["error"=> "Failed to delete, this Activity already been used by a project"],Response::HTTP_OK);
+            }
+            
+            if(!$activityStandard->delete()){
+                return response(["error"=> "Failed to delete, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    //Methods
+    function getParentsWbsStandard($wbs, $array_reverse, $iteration) {
+        if ($wbs) {
+            if($wbs->wbs){
+                $array_reverse["WBS ".$wbs->number] = route('project_standard.createSubWbsStandard',[$wbs->wbs->id]);
+                return self::getParentsWbsStandard($wbs->wbs,$array_reverse, $iteration);
+            }else{
+                $array_reverse["WBS ".$wbs->number] = route('project_standard.createSubWbsStandard',[$wbs->id]);
+                return $array_reverse;
+            }
+        }
+    }
+
     //API
     public function getProjectStandardAPI(){
         $project_standards = ProjectStandard::with('ship')->get()->jsonSerialize();
         return response($project_standards, Response::HTTP_OK);
+    }
+
+    public function getWbsStandardAPI($project_standard_id){
+        $wbs_standards = WbsStandard::where('project_standard_id',$project_standard_id)->where('wbs_id',null)->get()->jsonSerialize();
+        return response($wbs_standards, Response::HTTP_OK);
+    }
+    
+    public function getSubWbsStandardAPI($wbs_id){
+        $wbss = WbsStandard::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($wbss, Response::HTTP_OK);
+    }
+
+    public function getActivityStandardAPI($wbs_id){
+        $activities = ActivityStandard::where('wbs_id', $wbs_id)->get()->jsonSerialize();
+        return response($activities, Response::HTTP_OK);
     }
 }

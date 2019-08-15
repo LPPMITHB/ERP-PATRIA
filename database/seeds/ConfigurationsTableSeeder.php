@@ -511,15 +511,19 @@ class ConfigurationsTableSeeder extends Seeder
         $standar_price = array(
             0 => array(
                 'id' => 1,
-                'value' => 'last_price',
+                'value' => 'fixed price',
             ),
             1 => array(
                 'id' => 2,
-                'value' => 'fifo',
+                'value' => 'last price',
             ),
             2 => array(
                 'id' => 3,
-                'value' => 'average',
+                'value' => 'fifo price',
+            ),
+            3 => array(
+                'id' => 4,
+                'value' => 'average price',
                 'moving_range' => 'null',
             ),
         );

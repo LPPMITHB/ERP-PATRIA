@@ -822,15 +822,6 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
 
     Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
 
-    //Activity Profile
-    Route::get('/createActivityConfiguration/{id}', 'ActivityController@createActivityConfiguration')->name('createActivityConfiguration')->middleware('can:create-project-repair');
-
-    Route::post('/storeActivityConfiguration', 'ActivityController@storeActivityConfiguration')->name('storeActivityConfiguration')->middleware('can:create-project-repair');
-
-    Route::put('updateActivityConfiguration/{id}', 'ActivityController@updateActivityConfiguration')->name('updateActivityConfiguration')->middleware('can:edit-project-repair');
-
-    Route::delete('/deleteActivityConfiguration/{id}', 'ActivityController@destroyActivityConfiguration')->name('destroyActivityConfiguration');
-
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');
 
@@ -1712,13 +1703,22 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
     // WBS Standard
     Route::get('/createWbsStandard/{id}', 'ProjectStandardController@createWbsStandard')->name('createWbsStandard')->middleware('can:manage-project-standard');
 
-    Route::get('/createSubWbsStandard/{project_id}/{wbs_id}', 'ProjectStandardController@createSubWbsStandard')->name('createSubWbsStandard')->middleware('can:manage-project-standard');
+    Route::get('/createSubWbsStandard/{wbs_id}', 'ProjectStandardController@createSubWbsStandard')->name('createSubWbsStandard')->middleware('can:manage-project-standard');
 
     Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
 
     Route::put('updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');
 
     Route::delete('/deleteWbsStandard/{id}', 'ProjectStandardController@destroyWbsStandard')->name('destroyWbsStandard')->middleware('can:manage-project-standard');
+
+    //Activity Standard
+    Route::get('/createActivityStandard/{id}', 'ProjectStandardController@createActivityStandard')->name('createActivityStandard')->middleware('can:manage-project-standard');
+
+    Route::post('/storeActivityStandard', 'ProjectStandardController@storeActivityStandard')->name('storeActivityStandard')->middleware('can:manage-project-standard');
+
+    Route::put('updateActivityStandard/{id}', 'ProjectStandardController@updateActivityStandard')->name('updateActivityStandard')->middleware('can:manage-project-standard');
+
+    Route::delete('/deleteActivityStandard/{id}', 'ProjectStandardController@destroyActivityStandard')->name('destroyActivityStandard')->middleware('can:manage-project-standard');
 });
 
 // Estimator Routes
