@@ -31,16 +31,6 @@ use Auth;
 class WBSController extends Controller
 {
 
-    public function createWbsConfiguration(Request $request)
-    {
-        $is_pami = false;
-        $business_ids = Auth::user()->business_unit_id;
-        if(in_array("2", json_decode($business_ids))){
-            $is_pami = true;
-        }
-        return view('wbs.createWbsConfiguration',compact('is_pami'));
-    }
-
     public function createWbsProfile(Request $request)
     {
         $project_type = Configuration::get('project_type');
@@ -407,40 +397,7 @@ class WBSController extends Controller
         }
     }
 
-    public function storeWbsConfiguration(Request $request)
-    {
-        $data = $request->json()->all();
-        $modelWbsConfig = WbsConfiguration::where('number',$data['number'])->first();
-        if($modelWbsConfig != null){
-            return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
-        }
-        DB::beginTransaction();
-        try {
-            $wbsConfiguration = new WbsConfiguration;
-            $wbsConfiguration->number = $data['number'];
-            $wbsConfiguration->description = $data['description'];
-            $wbsConfiguration->deliverables = $data['deliverables'];
-            $wbsConfiguration->duration = $data['duration'];
-
-            if(isset($data['wbs_configuration_id'])){
-                $wbsConfiguration->wbs_id = $data['wbs_configuration_id'];
-            }
-
-            $wbsConfiguration->user_id = Auth::user()->id;
-            $wbsConfiguration->branch_id = Auth::user()->branch->id;
-
-            if(!$wbsConfiguration->save()){
-                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
-            }else{
-                DB::commit();
-                return response(["response"=>"Success to create new WBS Configuration"],Response::HTTP_OK);
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
-        }
-    }
-
+    
     public function adoptWbs(Request $request)
     {
         $data = $request->json()->all();
@@ -544,33 +501,6 @@ class WBSController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
-
-public function updateWbsConfiguration(Request $request, $id)
-{
-    $data = $request->json()->all();
-    $wbs_ref = WbsConfiguration::find($id);
-    $modelWbsConfig = WbsConfiguration::where('number',$data['number'])->where('id','!=',$id)->first();
-    if($modelWbsConfig != null){
-        return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
-    }
-    DB::beginTransaction();
-    try {
-        $wbs_ref->number = $data['number'];
-        $wbs_ref->description = $data['description'];
-        $wbs_ref->deliverables = $data['deliverables'];
-        $wbs_ref->duration = $data['duration'];
-
-        if(!$wbs_ref->save()){
-            return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
-        }else{
-            DB::commit();
-            return response(["response"=>"Success to Update WBS ".$wbs_ref->number],Response::HTTP_OK);
-        }
-    } catch (\Exception $e) {
-        DB::rollback();
-        return response(["error"=> $e->getMessage()],Response::HTTP_OK);
-    }
-}
 
     public function createSubWBS($project_id, $wbs_id, Request $request)
     {
@@ -806,39 +736,6 @@ public function updateWbsConfiguration(Request $request, $id)
         }
     }
 
-    public function destroyWbsConfiguration(Request $request, $id)
-    {
-        DB::beginTransaction();
-        try {
-            $wbsConfiguration = WbsConfiguration::find($id);
-            $error = [];
-            if(count($wbsConfiguration->wbss)>0){
-                array_push($error, ["Failed to delete, this WBS have child WBS"]);
-            }
-
-            if(count($wbsConfiguration->activities)>0){
-                array_push($error, ["Failed to delete, this WBS have activities"]);
-            }
-
-            if(count($wbsConfiguration->wbssProject)>0){
-                array_push($error, ["Failed to delete, this WBS already been used by a project"]);
-            }
-            
-            if(count($error)>0){
-                return response(["error"=> $error],Response::HTTP_OK);
-            }
-            if(!$wbsConfiguration->delete()){
-                array_push($error, ["Failed to delete, please try again!"]);
-                return response(["error"=> $error],Response::HTTP_OK);
-            }else{
-                DB::commit();
-                return response(["response"=>"Success to delete WBS"],Response::HTTP_OK);
-            }
-        } catch (\Exception $e) {
-            DB::rollback();
-                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
-        }
-    }
 
     public function destroyWbs(Request $request, $id)
     {
@@ -1292,11 +1189,6 @@ public function updateWbsConfiguration(Request $request, $id)
         return response($wbss, Response::HTTP_OK);
     }
 
-    public function getWbsConfigurationAPI(){
-
-        $wbss = WbsConfiguration::where('wbs_id', null)->get()->jsonSerialize();
-        return response($wbss, Response::HTTP_OK);
-    }
 
     public function getSubWbsProfileAPI($wbs_id){
         $wbss = WbsProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();

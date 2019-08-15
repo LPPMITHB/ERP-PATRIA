@@ -114,6 +114,7 @@
     })
 
     var data = {
+        ships : @json($modelShip)
         submittedForm:{},
         ship_id : "",
         description : "",

@@ -134,7 +134,6 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Sales Order',
             'icon' => 'fa-wrench',
-            'route_name'=> 'estimator.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $marketingSales,
