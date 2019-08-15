@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Configuration extends Model
+class MaterialSummay extends Model
 {
     
 

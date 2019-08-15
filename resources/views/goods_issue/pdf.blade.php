@@ -78,7 +78,7 @@
                     <hr style="height:1.5px;border:none;color:#333;background-color:#333;" />
                 </div>
             </div>
-            <div style="margin-top: -47px">
+            <div style="margin-top: -45px">
                 <div class="p-l-5" style="height: 60px;word-wrap:break-word;width: 400px; border: black 1px solid; border-radius: 5px;margin-top: 34px;">
                     <div style="font-size: 11px"><b>Description</b></div>
                     <div style="font-size: 11px">{{$modelGI->description}}</div>
@@ -97,9 +97,21 @@
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
-                        <div style="font-size: 11px;">Date  </div>
+                        <div style="font-size: 11px;">Document Date  </div>
                         <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
                             : {{date("d-m-Y", strtotime($modelGI->created_at))}}
+                        </div>
+                    </div>
+                    <div style="margin-left: 450px; ">
+                        <div style="font-size: 11px;">Issued Date  </div>
+                        <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                            : {{date("d-m-Y", strtotime($modelGI->issue_date))}}
+                        </div>
+                    </div>
+                    <div style="margin-left: 450px; ">
+                        <div style="font-size: 11px;">Delivery Date  </div>
+                        <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+                            : {{date("d-m-Y", strtotime($modelGI->materialRequisition->delivery_date))}}
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
@@ -111,7 +123,7 @@
                 </div>
             </div>
         </header>
-        <main style="margin-top: -5px">
+        <main style="margin-top: 30px">
             <div class="row">
                 <div class="col-xs-12">
                     <div>

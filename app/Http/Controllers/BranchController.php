@@ -122,25 +122,24 @@ class BranchController extends Controller
             'name' => 'required|string|max:255',
             'address' => 'required|string|max:255', 
             'phone_number' => 'required|numeric',           
-            'fax' => 'nullable|numeric|unique:mst_branch,fax,'.$id.',id',          
             'email' => 'required|email|unique:mst_branch,email,'.$id.',id|string|max:255'
         ]);
 
         DB::beginTransaction();
         try {
-        $branch = Branch::find($id);
-        $branch->code = strtoupper($request->input('code'));
-        $branch->name = ucwords($request->input('name'));
-        $branch->address = $request->input('address');
-        $branch->phone_number = $request->input('phone_number');
-        $branch->fax = ucfirst($request->input('fax'));
-        $branch->email = $request->input('email');
-        $branch->status = $request->input('status');
-        $branch->company_id = $request->input('company');
-        $branch->update();
+            $branch = Branch::find($id);
+            $branch->code = strtoupper($request->input('code'));
+            $branch->name = ucwords($request->input('name'));
+            $branch->address = $request->input('address');
+            $branch->phone_number = $request->input('phone_number');
+            $branch->fax = ucfirst($request->input('fax'));
+            $branch->email = $request->input('email');
+            $branch->status = $request->input('status');
+            $branch->company_id = $request->input('company');
+            $branch->update();
 
-        DB::commit();
-        return redirect()->route('branch.show',$branch->id)->with('success', 'Branch Updated Succesfully');
+            DB::commit();
+            return redirect()->route('branch.show',$branch->id)->with('success', 'Branch Updated Succesfully');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('branch.update',$branch->id)->with('error', $e->getMessage());

@@ -13,6 +13,26 @@ class Snapshot extends Model
         return $this->belongsTo('App\Models\User');
     }
 
+    /**
+     * updatedBy Relationship function
+     * untuk membuat relasi dengan tabel user
+     * @return void
+     */
+    public function updatedBy()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'updated_by');
+    }
+
+    /**
+     * auditedBy Relationship function
+     * untuk membuat relasi dengan tabel user
+     * @return void
+     */
+    public function auditedBy()
+    {
+        return $this->hasOne('App\Models\User', 'id', 'audited_by');
+    }
+
     public function branch()
     {
         return $this->belongsTo('App\Models\Branch');

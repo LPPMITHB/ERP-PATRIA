@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="row" v-if="modelPR.type == 3">
                                         <div class="col-sm-5 p-t-15">
-                                            <label for="delivery_date_subcon">Delivery Date</label>
+                                            <label for="delivery_date_subcon">Delivery Date Subcon</label>
                                         </div>
                                         <div class="col-sm-7 p-t-13 p-l-0">
                                             <input v-model="delivery_date_subcon" autocomplete="off" type="text" class="form-control datepicker" name="delivery_date_subcon" id="delivery_date_subcon" placeholder="Delivery Date">

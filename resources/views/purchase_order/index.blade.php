@@ -195,7 +195,6 @@
         // Date range filter
         minDateFilter = "";
         maxDateFilter = "";
-
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
@@ -214,7 +213,6 @@
                         return false;
                     }
                 }
-
                 return true;
             }
         );
