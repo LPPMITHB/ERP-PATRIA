@@ -4,18 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class WbsConfiguration extends Model
+class WbsStandard extends Model
 {
-    protected $table = 'mst_wbs_configuration';
+    protected $table = 'mst_wbs_standard';
   
     public function activities()
     {
-        return $this->hasMany('App\Models\ActivityConfiguration', 'wbs_id');
+        return $this->hasMany('App\Models\ActivityStandard', 'wbs_id');
     }
 
     public function wbssProject() 
     {
-        return $this->hasMany('App\Models\WBS','wbs_configuration_id');
+        return $this->hasMany('App\Models\WBS','wbs_standard_id');
     }
 
     public function wbss() 
@@ -27,4 +27,10 @@ class WbsConfiguration extends Model
     {
         return $this->belongsTo(self::class, 'wbs_id');
     }
+
+    public function projectStandard() 
+    {
+        return $this->belongsTo('App\Models\ProjectStandard');
+    }
+
 }

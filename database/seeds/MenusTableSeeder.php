@@ -48,7 +48,7 @@ class MenusTableSeeder extends Seeder
         $marketingSales =  Menu::where('name','Marketing & Sales')->where('menu_id', $building)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Configuration',
+            'name' => 'Estimator Configuration',
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
@@ -57,7 +57,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
         
-        $configuration = Menu::where('name','Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
+        $configuration = Menu::where('name','Estimator Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'WBS Cost Estimation',
@@ -137,31 +137,6 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $marketingSales,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Create Sales Order',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $sales_order,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'View & Edit Sales Order',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $sales_order,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1185,139 +1160,6 @@ class MenusTableSeeder extends Seeder
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
-            'name' => 'Marketing & Sales',
-            'icon' => 'fa-money',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $repair,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        $marketingSales =  Menu::where('name','Marketing & Sales')->where('menu_id', $repair)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Configuration',
-            'icon' => 'fa-wrench',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $marketingSales,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-        
-        $configuration = Menu::where('name','Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'WBS Cost Estimation',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'estimator_repair.indexEstimatorWbs',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $configuration,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Cost Standard',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'estimator_repair.indexEstimatorCostStandard',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $configuration,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Estimator Profile',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'estimator_repair.indexEstimatorProfile',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $configuration,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Quotation',
-            'icon' => 'fa-wrench',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $marketingSales,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        $quotation = Menu::where('name','Quotation')->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Create Quotation',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'quotation_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $quotation,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'View & Edit Quotation',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'quotation_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $quotation,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Sales Order',
-            'icon' => 'fa-wrench',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $marketingSales,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'Create Sales Order',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $sales_order,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'View & Edit Sales Order',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order_repair.index',
-            'is_active' => true,
-            'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $sales_order,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        // project management
-        DB::table('menus')->insert([
-            'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
@@ -1354,9 +1196,9 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Manage WBS Configuration',
+            'name' => 'Manage Project Standard',
             'icon' => 'fa-briefcase',
-            'route_name'=> 'wbs_repair.createWbsConfiguration',
+            'route_name'=> 'project_standard.createProjectStandard',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $projectManagementRepair,
@@ -2397,7 +2239,7 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $configuration =  Menu::where('name','Configuration')->where('level',1)->select('id')->first()->id;
+        $configuration =  Menu::where('name','Configuration')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Menus',
