@@ -1721,21 +1721,6 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
     Route::delete('/deleteWbsStandard/{id}', 'ProjectStandardController@destroyWbsStandard')->name('destroyWbsStandard')->middleware('can:manage-project-standard');
 });
 
-//Vendor Routes
-Route::name('estimator.')->prefix('estimator')->group(function() {
-    Route::get('/create', 'EstimatorController@create')->name('create')->middleware('can:create-vendor');
-
-    Route::get('/', 'EstimatorController@index')->name('index')->middleware('can:list-vendor');
-
-    Route::get('/{id}', 'EstimatorController@show')->name('show')->middleware('can:show-vendor');
-
-    Route::get('/{id}/edit', 'EstimatorController@edit')->name('edit')->middleware('can:edit-vendor');
-
-    Route::patch('/{id}', 'EstimatorController@update')->name('update')->middleware('can:edit-vendor');
-
-    Route::post('/', 'EstimatorController@store')->name('store')->middleware('can:create-vendor');
-});
-
 // Estimator Routes
 Route::name('estimator.')->prefix('estimator')->group(function() {
     Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs');
