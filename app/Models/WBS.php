@@ -30,7 +30,7 @@ class WBS extends Model
 
     public function wbsConfig()
     {
-        return $this->belongsTo('App\Models\WbsConfiguration', 'wbs_configuration_id');
+        return $this->belongsTo('App\Models\WbsStandard', 'wbs_configuration_id');
     }
 
     public function bom()

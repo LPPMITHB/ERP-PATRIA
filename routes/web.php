@@ -805,7 +805,7 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');
 
     //Activity
-    Route::get('/create/{id}', 'ActivityController@createActivityRepair')->name('create')->middleware('can:create-project-repair');
+    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project-repair');
 
     Route::put('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project-repair');
 
