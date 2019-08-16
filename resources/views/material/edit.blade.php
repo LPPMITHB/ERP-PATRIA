@@ -50,6 +50,22 @@
                                 </div>
                             </div>
 
+                            <div class="form-group" v-if="true">
+                                <label for="standard_price_config" class="col-sm-2 control-label">Cost Standard Price Type*</label>
+                                <div class="col-sm-10">
+                                    <selectize name="standard_price_config" id="standard_price_config" v-model="submittedForm.standard_price_config" :settings="standard_price_config_settings">
+                                        <option v-for="(standard_price_config, index) in standard_prices_config" :value="standard_price_config.id">{{ standard_price_config.value | capitalize  }}</option>
+                                    </selectize>
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="submittedForm.standard_price_config == 4">
+                                <label for="standard_price_config_range_id" class="col-sm-2 control-label">Range*</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="standard_price_config_range_id" name="standard_price_config_range" required v-model="submittedForm.standard_price_config_range">
+                                </div>
+                            </div>
+
                             <div class="form-group">
                                 <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp) *</label>
 
@@ -251,12 +267,18 @@
     $(document).ready(function(){
         $('div.overlay').hide();
     });
+    Vue.filter('capitalize', function(value) {
+            if (!value) return ''
+            value = value.toString()
+            return value.charAt(0).toUpperCase() + value.slice(1)
+        });
 
     var data = {
         uoms : @json($uoms),
-        is_pami = @json($is_pami),
+        is_pami : @json($is_pami),
         material_families : @json($material_families),
         densities : @json($densities),
+        standard_prices_config: @json($standard_prices_config),
         submittedForm :{
             code : @json($material->code),
             description : @json($material->description),
@@ -280,6 +302,8 @@
             density_id : @json($material->density_id),
             dimension_type_id : @json($material->dimension_type_id),
             location_detail : @json($material->location_detail),
+            standard_price_config:@json($materialStandardPriceConfigID),
+            standard_price_config_range: @json($materialStandardPriceConfigRange),
         },
         dimension_types : @json($dimension_types),
         selectedDimensionType : JSON.parse(@json($material->dimensions_value)),
@@ -315,6 +339,9 @@
         dimension_type_settings: {
             placeholder: 'Select Dimension Type!',
         },
+        standard_price_config_settings: {
+                placeholder: 'Select Standard Price'
+            },
     }
 
     var vm = new Vue({
@@ -327,7 +354,7 @@
                 if(this.submittedForm.code == "" || this.submittedForm.description == "" || this.submittedForm.uom_id == ""){
                     isOk = true;
                 }
-                if(this.is_pami && this.submittedForm.location_detail == ""){
+                if(this.is_pami && (this.submittedForm.location_detail == ""  || this.submittedForm.standard_price_config == "")){
                     isOk = true;
                 }
 
@@ -408,7 +435,8 @@
                     dimension.value = (dimension.value+"").replace(/,/g , '');
                 });
                 this.submittedForm.selectedDimensionType = this.selectedDimensionType;
-                
+                this.submittedForm.standard_price_config = (this.submittedForm.standard_price_config + "").replace(/,/g, '');
+                this.submittedForm.standard_price_config_range = (this.submittedForm.standard_price_config_range + "").replace(/,/g, '');
                 this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
                 this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
                 this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');

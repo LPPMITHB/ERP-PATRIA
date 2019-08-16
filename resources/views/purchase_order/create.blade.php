@@ -460,11 +460,11 @@
             dataOk: function(){
                 let isOk = false;
                 if(this.modelPR.type != 3){
-                    if(this.vendor_id == "" || this.delivery_date == "" || this.currency == ""){
+                    if(this.vendor_id == "" || this.delivery_date == "" || this.currency == "" || this.delivery_term == "" || this.payment_term == ""){
                         isOk = true;
                     }
                 }else{
-                    if(this.vendor_id == "" || this.currency == ""){
+                    if(this.vendor_id == "" || this.currency == "" || this.delivery_term == "" || this.payment_term == ""){
                         isOk = true;
                     }
                 }

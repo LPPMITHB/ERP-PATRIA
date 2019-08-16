@@ -60,7 +60,7 @@
                                     <tr>
                                         <td>4</td>
                                         <td>Cost Standard Price / Kg</td>
-                                        <td>Rp {{ number_format($material->cost_standard_price_kg,2) }}</td>
+                                        <td>Rp {{ number_format($material->cost_standard_price_per_kg,2) }}</td>
                                     </tr>
 
                                     <tr>

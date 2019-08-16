@@ -157,6 +157,7 @@ Route::get('/getDataGantt/{id}', 'ProjectController@getDataGanttAPI')->name('api
 Route::get('/getDataChart/{id}', 'ProjectController@getDataChartAPI')->name('api.project.getDataChartAPI');
 Route::get('/getDataJstree/{id}', 'ProjectController@getDataJstreeAPI')->name('api.project.getDataJstreeAPI');
 Route::get('/getActualStartDate/{id}', 'ProjectController@getActualStartDateAPI')->name('api.project.getActualStartDateAPI');
+Route::get('/getProjectStandard/{id}', 'ProjectController@getProjectStandardAPI')->name('api.project.getProjectStandardAPI');
 
 // wbs
 Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');

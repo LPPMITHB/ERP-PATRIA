@@ -60,5 +60,8 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxGoodsReceiptDetailTableSeeder::class);
         $this->call(MstStorageLocationDetailTableSeeder::class);
         $this->call(MstStockTableSeeder::class);
+        $this->call(MstProjectStandardTableSeeder::class);
+        $this->call(MstWbsStandardTableSeeder::class);
+        $this->call(MstActivityStandardTableSeeder::class);
     }
 }

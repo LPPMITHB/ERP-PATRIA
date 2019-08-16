@@ -50,7 +50,15 @@
                             PR Number
                         </div>
                         <div class="col-md-8 col-xs-8">
-                            : <b> {{ $modelPO->purchaseRequisition->number }} </b>
+                                @if(isset($modelPO->purchaseRequisition))
+                                    @if($route == "/purchase_order")
+                                        : <a href="{{ route('purchase_requisition.show', ['id'=>$modelPO->purchaseRequisition->id]) }}" class="text-primary"><b>{{$modelPO->purchaseRequisition->number}}</b></a>
+                                    @else
+                                        : <a href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPO->purchaseRequisition->id]) }}" class="text-primary"><b>{{$modelPO->purchaseRequisition->number}}</b></a>
+                                    @endif
+                                @else
+                                    -
+                                @endif
                         </div>
                         <div class="col-md-4 col-xs-4" >
                             Vendor Name

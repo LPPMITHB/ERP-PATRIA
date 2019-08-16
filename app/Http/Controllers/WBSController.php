@@ -12,7 +12,7 @@ use App\Models\WBS;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\WbsProfile;
-use App\Models\WbsConfiguration;
+use App\Models\WbsStandard;
 use App\Models\ActivityProfile;
 use App\Models\BomProfile;
 use App\Models\ResourceProfile;
@@ -240,9 +240,9 @@ class WBSController extends Controller
         $project = Project::find($id);
         $menu = "repair";
         $businessUnit = 2;
-        $wbs_config = WbsConfiguration::where('wbs_id', null)->get();
+        $wbs_standard = WbsStandard::where('wbs_id', null)->get();
 
-        return view('wbs.createWbsRepair', compact('project','menu','wbs_config'));
+        return view('wbs.createWbsRepair', compact('project','menu','wbs_standard'));
     }
 
 // public function createWbsRepair($id, Request $request)

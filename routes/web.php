@@ -622,7 +622,11 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project-repair');
 
+    Route::get('/selectStructure/{project_standard_id}/{project_id}', 'ProjectController@selectStructure')->name('selectStructure')->middleware('can:create-project-repair');
+
     Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
+    
+    Route::post('/storeSelectedStructure', 'ProjectController@storeSelectedStructure')->name('storeSelectedStructure')->middleware('can:create-project-repair');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
 
@@ -632,7 +636,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::patch('/{id}', 'ProjectController@update')->name('update')->middleware('can:edit-project-repair');
 
-    Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project-repair');
+    Route::post('/', 'ProjectController@storeGeneralInfo')->name('storeGeneralInfo')->middleware('can:create-project-repair');
 
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project-repair');
 

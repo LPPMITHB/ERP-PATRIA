@@ -312,6 +312,10 @@ class MaterialController extends Controller
     public function edit($id)
     {
         $material = Material::findOrFail($id);
+        $materialStandardPriceConfig = json_decode($material->cost_standard_price_config);
+        $materialStandardPriceConfigID = $materialStandardPriceConfig->id;
+        $materialStandardPriceConfigRange = $materialStandardPriceConfig->range;
+        $standard_prices_config = Configuration::get('standar-price');
         if ($material->family_id != null) {
             $dataFamily = json_decode($material->family_id);
         } else {
@@ -332,7 +336,7 @@ class MaterialController extends Controller
             }
         }
 
-        return view('material.edit', compact('material', 'uoms', 'material_families', 'densities', 'dataFamily', 'dimension_types', 'is_pami'));
+        return view('material.edit', compact('material', 'uoms', 'material_families', 'densities', 'dataFamily', 'dimension_types', 'is_pami','materialStandardPriceConfigID','materialStandardPriceConfigRange','standard_prices_config'));
     }
 
     /**
@@ -345,12 +349,17 @@ class MaterialController extends Controller
     public function update(Request $request, $id)
     {
         $data = json_decode($request->datas);
+        $jsonCostStandardPriceConfig = array(
+            'id' => $data->standard_price_config,
+            'range' => ($data->standard_price_config_range == null) ? 1 : $data->standard_price_config_range,
+        );
         $request = new Request([
             'code' => $data->code,
             // 'name' => $data->name,
             'description' => $data->description,
             'cost_standard_price' => $data->cost_standard_price,
             'cost_standard_price_service' => $data->cost_standard_service,
+            'cost_standard_price_config' => $jsonCostStandardPriceConfig,
             'weight' => $data->weight,
             'height' => $data->height,
             'length' => $data->lengths,
@@ -374,18 +383,20 @@ class MaterialController extends Controller
             'location_detail' => 'nullable',
 
         ]);
-
+           
         DB::beginTransaction();
         try {
             $material = Material::find($id);
             $material->code = $data->code;
+           
             // $material->name = $data->name;
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
-
+            $material->cost_standard_price_config = $jsonCostStandardPriceConfig;
             $dimensions = json_encode($data->selectedDimensionType);
             $material->dimension_type_id = $data->dimension_type_id;
             $material->dimensions_value = $dimensions;
+            $value = 1;
             if ($data->dimension_uom_id != "") {
                 $uom = Uom::where('id', $data->dimension_uom_id)->first();
                 if ($uom->unit == "M") {
@@ -403,9 +414,9 @@ class MaterialController extends Controller
                 }
 
                 $result = $data->lengths * $data->width * $data->height * $value;
-                $material->cost_standard_price_kg = 1 / $result * $data->cost_standard_price;
+                $material->cost_standard_price_per_kg = 1 / $result * $data->cost_standard_price;
             } else {
-                $material->cost_standard_price_kg = 0;
+                $material->cost_standard_price_per_kg = 0;
             }
             $material->cost_standard_price_service = $data->cost_standard_service == "" ? 0 : $data->cost_standard_service;
             $material->uom_id = $data->uom_id;
