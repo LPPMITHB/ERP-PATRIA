@@ -84,6 +84,7 @@
                                     </selectize>
                                 </div>
                             </div>
+                            
                             <div class="form-group" v-if="selectedPriceType == 4">
                                 <label for="standard_price_config_range_id" class="col-sm-2 control-label">Range*</label>
                                 <div class="col-sm-10">
