@@ -1,12 +1,17 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class ProjectStandard extends Model
 {
     protected $table = 'mst_project_standard';
+
+    public function ship()
+    {
+        return $this->belongsTo('App\Models\Ship');
+    }
 
     public function user()
     {
@@ -20,6 +25,11 @@ class ProjectStandard extends Model
 
     public function wbss()
     {
-        return $this->hasMany('App\Models\WBS');
+        return $this->hasMany('App\Models\WbsStandard');
+    }
+
+    public function projects()
+    {
+        return $this->hasMany('App\Models\Project');
     }
 }

@@ -2,10 +2,10 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Manage WBS Configuration',
+            'title' => 'Manage Project Standard',
             'items' => [
                 'Dashboard' => route('index'),
-                'Create WBS Configuration' => route('wbs_repair.createWbsConfiguration'),
+                'Create Project Standard' => route('project_standard.createProjectStandard'),
             ]
         ]
     )
@@ -16,47 +16,40 @@
     <div class="col-md-12">
         <div class="box">
             @verbatim
-            <div id="add_wbs">
+            <div id="add_project_standard">
                 <div class="box-body">
-                    <table id="wbs-table" class="table table-bordered tableFixed">
+                    <table id="project-standard-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
                                 <th width=5%>No</th>
-                                <th width=20%>WBS</th>
-                                <th width=25%>Description</th>
-                                <th width=23%>Deliverables</th>
-                                <th style="width: 11%" v-if="!is_pami">Duration</th>
-                                <th width=27%></th>
+                                <th width=20%>Ship Type</th>
+                                <th width=25%>Name</th>
+                                <th width=35%>Description</th>
+                                <th width=15%></th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in wbs">
+                            <tr v-for="(data,index) in project">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.number)">{{ data.number }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.deliverables }}</td>
-                                <td v-if="!is_pami">{{ data.duration }} Day(s)</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.ship.type)">{{ data.ship.type }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.description }}</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                        <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="manageWbs(data)">
                                                 MANAGE WBS
-                                            </a>
-                                        </div>
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
-                                                MANAGE ACTIVITY
                                             </a>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                            <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(data)" data-toggle="modal" href="#edit_project">
                                                 EDIT
                                             </a>
                                         </div>
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteWbs(data)" data-toggle="modal">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteProjectStandard(data)" data-toggle="modal">
                                                 DELETE
                                             </a>
                                         </div>
@@ -68,16 +61,15 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbsConfiguration.number" class="form-control width100" rows="2" name="number" placeholder="WBS"></textarea>
+                                    <selectize v-model="newProjectStandard.shipType" :settings="shipTypeSettings">
+                                        <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.type }}</option>
+                                    </selectize>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbsConfiguration.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
+                                    <textarea v-model="newProjectStandard.name" class="form-control width100" rows="2" name="name" placeholder="Name"></textarea>
                                 </td>
                                 <td class="p-l-0">
-                                    <textarea v-model="newWbsConfiguration.deliverables" class="form-control width100" rows="2" name="deliverables" placeholder="Deliverables"></textarea>
-                                </td>
-                                <td class="p-l-0">
-                                    <textarea v-model="newWbsConfiguration.duration" rows="2" class="form-control width100" id="duration" name="duration" placeholder="Duration"></textarea>
+                                    <textarea v-model="newProjectStandard.description" class="form-control width100" rows="2" name="description" placeholder="Description"></textarea>
                                 </td>
                                 <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -85,32 +77,30 @@
                             </tr>
                         </tfoot>
                     </table>
-                    <div class="modal fade" id="edit_wbs">
+                    <div class="modal fade" id="edit_project">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Edit Work Breakdown Structures <b id="wbs_code"></b></h4>
+                                    <h4 class="modal-title">Edit Project <b id="project_code"></b></h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="form-group col-sm-12">
-                                            <label for="number" class="control-label">WBS</label>
-                                            <input id="number" type="text" class="form-control" v-model="editWbsConfiguration.number" placeholder="Insert WBS Title here..." >
+                                            <label for="number" class="control-label">Ship Type</label>
+                                            <selectize v-model="editProjectStandard.shipType" :settings="shipTypeSettings">
+                                                <option v-for="(ship, index) in ships" :value="ship.id">{{ ship.type }}</option>
+                                            </selectize>
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="name" class="control-label">Name</label>
+                                            <textarea id="name" v-model="editProjectStandard.name" class="form-control" rows="2" placeholder="Insert Name here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
                                             <label for="description" class="control-label">Description</label>
-                                            <textarea id="description" v-model="editWbsConfiguration.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
-                                        </div>
-                                        <div class="form-group col-sm-12">
-                                            <label for="deliverables" class="control-label">Deliverables</label>
-                                            <textarea id="deliverables" v-model="editWbsConfiguration.deliverables" class="form-control" rows="2" placeholder="Insert Deliverables here..."></textarea>
-                                        </div>
-                                        <div class="form-group col-sm-12">
-                                            <label for="duration" class=" control-label">Duration</label>
-                                            <input v-model="editWbsConfiguration.duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >
+                                            <textarea id="description" v-model="editProjectStandard.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -142,26 +132,23 @@ $(document).ready(function(){
 });
 
 var data = {
-    wbs : "",
-    is_pami : @json($is_pami),
+    project : "",
+    ships : @json($ships),
     newIndex : "",
-    newWbsConfiguration : {
-        number : "",
+    newProjectStandard : {
+        shipType : "",
+        name : "",
         description : "",
-        deliverables : "",
-        project_type : "",
-        duration : "",
     },
-    editWbsConfiguration : {
-        wbs_id: "",
-        number : "",
+    editProjectStandard : {
+        project_standard_id: "",
+        shipType : "",
+        name : "",
         description : "",
-        deliverables : "",
-        duration : "",
     },
     active_id : "",
-    projectTypeSettings: {
-        placeholder: 'Please Select Project Type'
+    shipTypeSettings: {
+        placeholder: 'Please Select Ship Type'
     },
 };
 
@@ -174,14 +161,13 @@ Vue.directive('tooltip', function(el, binding){
 })
 
 var vm = new Vue({
-    el: '#add_wbs',
+    el: '#add_project_standard',
     data: data,
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newWbsConfiguration.number == ""
-                || this.newWbsConfiguration.duration == ""
-                || this.newWbsConfiguration.deliverables == "")
+                if(this.newProjectStandard.shipType == ""
+                || this.newProjectStandard.name == "")
                 {
                     isOk = true;
                 }
@@ -189,9 +175,8 @@ var vm = new Vue({
         },
         updateOk: function(){
             let isOk = false;
-                if(this.editWbsConfiguration.number == ""
-                || this.editWbsConfiguration.duration == ""
-                || this.editWbsConfiguration.deliverables == "")
+                if(this.editProjectStandard.shipType == ""
+                || this.editProjectStandard.name == "")
                 {
                     isOk = true;
                 }
@@ -203,7 +188,7 @@ var vm = new Vue({
         tooltipText: function(text) {
             return text
         },
-        deleteWbs(data){
+        deleteProjectStandard(data){
             iziToast.question({
                 close: false,
                 overlay: true,
@@ -212,11 +197,11 @@ var vm = new Vue({
                 id: 'question',
                 zindex: 9999,
                 title: 'Confirm',
-                message: 'Are you sure you want to delete this WBS?',
+                message: 'Are you sure you want to delete this Project Standard?',
                 position: 'center',
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
-                        var url = "/wbs_repair/deleteWbsConfiguration/"+data.id;
+                        var url = "/project_standard/deleteProjectStandard/"+data.id;
                         $('div.overlay').show();
                         window.axios.delete(url)
                         .then((response) => {
@@ -236,7 +221,7 @@ var vm = new Vue({
                                     position: 'topRight',
                                 });
                                 $('div.overlay').hide();
-                                vm.getWBSConfiguration();
+                                vm.getProjectStandard();
                             }
                         })
                         .catch((error) => {
@@ -261,29 +246,24 @@ var vm = new Vue({
             });
         },
         openEditModal(data){
-            document.getElementById("wbs_code").innerHTML= data.number;
-            this.editWbsConfiguration.wbs_id = data.id;
+            document.getElementById("project_code").innerHTML= data.number;
+            this.editProjectStandard.project_id = data.id;
             this.active_id = data.id;
-            this.editWbsConfiguration.number = data.number;
-            this.editWbsConfiguration.description = data.description;
-            this.editWbsConfiguration.deliverables = data.deliverables;
-            this.editWbsConfiguration.duration = data.duration;
+            this.editProjectStandard.shipType = data.ship_id;
+            this.editProjectStandard.name = data.name;
+            this.editProjectStandard.description = data.description;
         },
-        createSubWBS(data){
-            var url = "/wbs_repair/createSubWbsConfiguration/"+data.id;
+        manageWbs(data){
+            var url = "/project_standard/createWbsStandard/"+data.id;
             return url;
         },
-        createActivity(data){
-            var url = "/activity_repair/createActivityConfiguration/"+data.id;
-            return url;
-        },
-        getWBSConfiguration(){
-            window.axios.get('/api/getWbsConfiguration/').then(({ data }) => {
-                this.wbs = data;
-                this.newIndex = Object.keys(this.wbs).length+1;
-                $('#wbs-table').DataTable().destroy();
+        getProjectStandard(){
+            window.axios.get('/api/getProjectStandard/').then(({ data }) => {
+                this.project = data;
+                this.newIndex = Object.keys(this.project).length+1;
+                $('#project-standard-table').DataTable().destroy();
                 this.$nextTick(function() {
-                    $('#wbs-table').DataTable({
+                    $('#project-standard-table').DataTable({
                         'paging'      : true,
                         'lengthChange': false,
                         'searching'   : false,
@@ -295,11 +275,11 @@ var vm = new Vue({
             });
         },
         add(){
-            var newWbsConfiguration = this.newWbsConfiguration;
-            newWbsConfiguration = JSON.stringify(newWbsConfiguration);
-            var url = "{{ route('wbs_repair.storeWbsConfiguration') }}";
+            var newProjectStandard = this.newProjectStandard;
+            newProjectStandard = JSON.stringify(newProjectStandard);
+            var url = "{{ route('project_standard.storeProjectStandard') }}";
             $('div.overlay').show();
-            window.axios.post(url,newWbsConfiguration)
+            window.axios.post(url,newProjectStandard)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -317,11 +297,10 @@ var vm = new Vue({
                     $('div.overlay').hide();
                 }
 
-                this.getWBSConfiguration();
-                this.newWbsConfiguration.number = "";
-                this.newWbsConfiguration.description = "";
-                this.newWbsConfiguration.deliverables = "";
-                this.newWbsConfiguration.duration = "";
+                this.getProjectStandard();
+                this.newProjectStandard.shipType = "";
+                this.newProjectStandard.name = "";
+                this.newProjectStandard.description = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -330,16 +309,16 @@ var vm = new Vue({
 
         },
         update(){
-            var editWbsConfiguration = this.editWbsConfiguration;
+            var editProjectStandard = this.editProjectStandard;
             var url = "";
             if(this.menu == "building"){
-                var url = "/wbs/updateWbsConfiguration/"+editWbsConfiguration.wbs_id;
+                var url = "/project/updateProjectStandard/"+editProjectStandard.project_id;
             }else{
-                var url = "/wbs_repair/updateWbsConfiguration/"+editWbsConfiguration.wbs_id;
+                var url = "/project_standard/updateProjectStandard/"+editProjectStandard.project_id;
             }
-            editWbsConfiguration = JSON.stringify(editWbsConfiguration);
+            editProjectStandard = JSON.stringify(editProjectStandard);
             $('div.overlay').show();
-            window.axios.put(url,editWbsConfiguration)
+            window.axios.put(url,editProjectStandard)
             .then((response) => {
                 if(response.data.error != undefined){
                     iziToast.warning({
@@ -357,7 +336,7 @@ var vm = new Vue({
                     $('div.overlay').hide();
                 }
 
-                this.getWBSConfiguration();
+                this.getProjectStandard();
             })
             .catch((error) => {
                 iziToast.warning({
@@ -372,21 +351,21 @@ var vm = new Vue({
         }
     },
     watch : {
-        // 'editWbsConfiguration.process_cost_string': function(newValue) {
+        // 'editProjectStandard.process_cost_string': function(newValue) {
         //     var string_newValue = newValue+"";
-        //     this.editWbsConfiguration.process_cost = newValue;
+        //     this.editProjectStandard.process_cost = newValue;
         //     process_cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //     Vue.nextTick(() => this.editWbsConfiguration.process_cost_string = process_cost_string);
+        //     Vue.nextTick(() => this.editProjectStandard.process_cost_string = process_cost_string);
         // },
-        // 'editWbsConfiguration.other_cost_string': function(newValue) {
+        // 'editProjectStandard.other_cost_string': function(newValue) {
         //     var string_newValue = newValue+"";
-        //     this.editWbsConfiguration.other_cost = newValue;
+        //     this.editProjectStandard.other_cost = newValue;
         //     other_cost_string = string_newValue.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-        //     Vue.nextTick(() => this.editWbsConfiguration.other_cost_string = other_cost_string);
+        //     Vue.nextTick(() => this.editProjectStandard.other_cost_string = other_cost_string);
         // },
     },
     created: function() {
-        this.getWBSConfiguration();
+        this.getProjectStandard();
     },
 
 });

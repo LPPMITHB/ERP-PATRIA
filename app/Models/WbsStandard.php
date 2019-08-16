@@ -27,4 +27,10 @@ class WbsStandard extends Model
     {
         return $this->belongsTo(self::class, 'wbs_id');
     }
+
+    public function projectStandard() 
+    {
+        return $this->belongsTo('App\Models\ProjectStandard');
+    }
+
 }

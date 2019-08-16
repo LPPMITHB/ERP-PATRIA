@@ -622,7 +622,11 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::get('/copyProjectStructure/{old_id}/{new_id}', 'ProjectController@copyProjectStructure')->name('copyProjectStructure')->middleware('can:create-project-repair');
 
+    Route::get('/selectStructure/{project_standard_id}/{project_id}', 'ProjectController@selectStructure')->name('selectStructure')->middleware('can:create-project-repair');
+
     Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
+    
+    Route::post('/storeSelectedStructure', 'ProjectController@storeSelectedStructure')->name('storeSelectedStructure')->middleware('can:create-project-repair');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
 
@@ -632,7 +636,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::patch('/{id}', 'ProjectController@update')->name('update')->middleware('can:edit-project-repair');
 
-    Route::post('/', 'ProjectController@store')->name('store')->middleware('can:create-project-repair');
+    Route::post('/', 'ProjectController@storeGeneralInfo')->name('storeGeneralInfo')->middleware('can:create-project-repair');
 
     Route::delete('/{id}', 'ProjectController@destroy')->name('destroy')->middleware('can:destroy-project-repair');
 
@@ -720,17 +724,6 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');
 
     Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
-
-    // WBS Configuration
-    Route::get('/createWbsConfiguration', 'WBSController@createWbsConfiguration')->name('createWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::get('/createSubWbsConfiguration/{id}', 'WBSController@createSubWbsConfiguration')->name('createSubWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::post('/storeWbsConfiguration', 'WBSController@storeWbsConfiguration')->name('storeWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::put('updateWbsConfiguration/{id}', 'WBSController@updateWbsConfiguration')->name('updateWbsConfiguration')->middleware('can:manage-wbs-configuration');
-
-    Route::delete('/deleteWbsConfiguration/{id}', 'WBSController@destroyWbsConfiguration')->name('destroyWbsConfiguration')->middleware('can:manage-wbs-configuration');
 
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile-repair');
@@ -832,15 +825,6 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::put('updateActivityProfile/{id}', 'ActivityController@updateActivityProfile')->name('updateActivityProfile')->middleware('can:edit-project-repair');
 
     Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
-
-    //Activity Profile
-    Route::get('/createActivityConfiguration/{id}', 'ActivityController@createActivityConfiguration')->name('createActivityConfiguration')->middleware('can:create-project-repair');
-
-    Route::post('/storeActivityConfiguration', 'ActivityController@storeActivityConfiguration')->name('storeActivityConfiguration')->middleware('can:create-project-repair');
-
-    Route::put('updateActivityConfiguration/{id}', 'ActivityController@updateActivityConfiguration')->name('updateActivityConfiguration')->middleware('can:edit-project-repair');
-
-    Route::delete('/deleteActivityConfiguration/{id}', 'ActivityController@destroyActivityConfiguration')->name('destroyActivityConfiguration');
 
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project-repair');
@@ -1709,14 +1693,46 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
     Route::delete('/{id}', 'YardPlanController@destroy')->name('destroy');
 });
 
-//Estimator
+//Project Standard
+Route::name('project_standard.')->prefix('project_standard')->group(function() {
+    //Project Standard
+    Route::get('/createProjectStandard', 'ProjectStandardController@createProjectStandard')->name('createProjectStandard')->middleware('can:manage-project-standard');
+    
+    Route::post('/storeProjectStandard', 'ProjectStandardController@storeProjectStandard')->name('storeProjectStandard')->middleware('can:manage-project-standard');
+    
+    Route::put('updateProjectStandard/{id}', 'ProjectStandardController@updateProjectStandard')->name('updateProjectStandard')->middleware('can:manage-project-standard');
+
+    Route::delete('/deleteProjectStandard/{id}', 'ProjectStandardController@destroyProjectStandard')->name('destroyProjectStandard')->middleware('can:manage-project-standard');
+    
+    // WBS Standard
+    Route::get('/createWbsStandard/{id}', 'ProjectStandardController@createWbsStandard')->name('createWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::get('/createSubWbsStandard/{wbs_id}', 'ProjectStandardController@createSubWbsStandard')->name('createSubWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::put('updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::delete('/deleteWbsStandard/{id}', 'ProjectStandardController@destroyWbsStandard')->name('destroyWbsStandard')->middleware('can:manage-project-standard');
+
+    //Activity Standard
+    Route::get('/createActivityStandard/{id}', 'ProjectStandardController@createActivityStandard')->name('createActivityStandard')->middleware('can:manage-project-standard');
+
+    Route::post('/storeActivityStandard', 'ProjectStandardController@storeActivityStandard')->name('storeActivityStandard')->middleware('can:manage-project-standard');
+
+    Route::put('updateActivityStandard/{id}', 'ProjectStandardController@updateActivityStandard')->name('updateActivityStandard')->middleware('can:manage-project-standard');
+
+    Route::delete('/deleteActivityStandard/{id}', 'ProjectStandardController@destroyActivityStandard')->name('destroyActivityStandard')->middleware('can:manage-project-standard');
+});
+
+// Estimator Routes
 Route::name('estimator.')->prefix('estimator')->group(function() {
     Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs');
 
     Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
 
     Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
-
+    
     Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
 
     Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
@@ -1761,7 +1777,7 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
     Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
 
     Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
-
+    
     Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
 
     Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
@@ -1856,6 +1872,5 @@ Route::name('sales_order_repair.')->prefix('sales_order_repair')->group(function
 
     Route::patch('/{id}', 'SalesOrderController@update')->name('update');
 
-    Route::get('/createSubWBS/{project_id}/{wbs_id}', 'ProjectStandardController@createSubWBS')->name('createSubWBS')->middleware('can:create-project');
+    Route::post('/', 'SalesOrderController@store')->name('store');
 });
-
