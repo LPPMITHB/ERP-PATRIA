@@ -773,6 +773,7 @@ class ProjectController extends Controller
                     $wbs->description = $wbs_standard->description;
                     $wbs->deliverables = $wbs_standard->deliverables;
                     $wbs->planned_duration = $wbs_standard->duration;
+                    $wbs->wbs_standard_id = $wbs_standard_id;
 
                     $wbs->code = self::generateWbsCode($project_id);
                     if(isset($wbsIdConverter[$wbs_standard->wbs_id])){
@@ -821,6 +822,7 @@ class ProjectController extends Controller
                     $act->name = $act_standard->name;
                     $act->description = $act_standard->description;
                     $act->planned_duration = $act_standard->duration;
+                    $act->activity_standard_id = $act_standard_id;
 
                     if(isset($wbsIdConverter[$act_standard->wbs_id])){
                         $act->code = self::generateActivityCode($wbsIdConverter[$act_standard->wbs_id]);
