@@ -560,7 +560,6 @@
                 data.project_number = this.editInput.project_number 
                 data.required_date = this.editInput.required_date 
                 data.alocation = this.editInput.alocation 
-                
                 iziToast.success({
                     title: this.pr_type+' Updated !',
                     position: 'topRight',
