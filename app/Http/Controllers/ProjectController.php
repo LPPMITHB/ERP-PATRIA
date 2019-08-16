@@ -29,6 +29,9 @@ use App\Models\PurchaseRequisitionDetail;
 use App\Models\Rap;
 use App\Models\RapDetail;
 use App\Models\Stock;
+use App\Models\ProjectStandard;
+use App\Models\WbsStandard;
+use App\Models\ActivityStandard;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use DB;
@@ -264,6 +267,70 @@ class ProjectController extends Controller
         return view('project.copyProjectStructure', compact('dataWbs','project','mainMenu','newProject'));
     }
 
+    public function selectStructure($project_standard_id, $project_id){
+        $projectStandard = ProjectStandard::find($project_standard_id);
+        $newProject = Project::find($project_id);
+        $mainMenu = $newProject->business_unit_id == "1" ? "building" : "repair";
+        $wbss = $projectStandard->wbss;
+        $dataWbs = Collection::make();
+
+        $totalWeightProject = $projectStandard->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => "PRO".$projectStandard->id, 
+            "parent" => "#",
+            "text" => $projectStandard->name,
+            "icon" => "fa fa-ship"
+        ]);
+    
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                if(count($wbs->activities)>0){
+                    $dataWbs->push([
+                        "id" => "WBS".$wbs->id, 
+                        "parent" => "WBS".$wbs->wbs->id,
+                        "text" => $wbs->number." - ".$wbs->description,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                    foreach($wbs->activities as $activity){
+                        $dataWbs->push([
+                            "id" => "ACT".$activity->id, 
+                            "parent" => "WBS".$activity->wbs->id,
+                            "text" => $activity->name,
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }else{
+                    $dataWbs->push([
+                        "id" => "WBS".$wbs->id, 
+                        "parent" => "WBS".$wbs->wbs->id,
+                        "text" => $wbs->number." - ".$wbs->description,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }
+            }else{
+                if(count($wbs->activities)>0){
+                    foreach($wbs->activities as $activity){
+                        $dataWbs->push([
+                            "id" => "ACT".$activity->id, 
+                            "parent" => "WBS".$activity->wbs->id,
+                            "text" => $activity->name,
+                            "icon" => "fa fa-clock-o",
+                        ]);
+                    }
+                }
+
+                $dataWbs->push([
+                    "id" => "WBS".$wbs->id, 
+                    "parent" => "PRO".$projectStandard->id,
+                    "text" => $wbs->number." - ".$wbs->description,
+                    "icon" => "fa fa-suitcase",
+                ]);
+            } 
+        }
+        
+        return view('project.selectStructure', compact('dataWbs','projectStandard','mainMenu','newProject'));
+    }
+
     public function index(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
@@ -296,7 +363,11 @@ class ProjectController extends Controller
         $project = new Project;
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
 
-        return view('project.create', compact('customers','ships','project','menu','projectType'));
+        if($menu == "building"){
+            return view('project.create', compact('customers','ships','project','menu','projectType'));
+        }else{
+            return view('project.createRepair', compact('customers','ships','project','menu','projectType'));
+        }
     }
 // public function create(Request $request)
 // {
@@ -596,6 +667,178 @@ class ProjectController extends Controller
                 return redirect()->route('project_repair.create')->with( 'error',$e->getMessage())->withInput();
             }
         }
+    }
+
+    public function storeGeneralInfo(Request $request)
+    {
+        $this->validate($request, [
+            'number' => 'required',
+            'customer' => 'required',
+            'ship' => 'required',
+            'project_type' => 'required',
+            'planned_start_date' => 'required',
+            'planned_end_date' => 'required',
+            'planned_duration' => 'required',
+            'drawing' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000'
+        ]);
+        $projects = Project::all();
+        foreach ($projects as $project) {
+            if($project->name == $request->name){
+                if($request->name != null){
+                    return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
+                }
+            }
+            if($project->number == $request->number){
+                return redirect()->route('project_repair.create')->with('error','The project number has been taken')->withInput();
+            }
+        }
+
+        DB::beginTransaction();
+        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
+        try {
+            $project = new Project;
+            $project->number =  $request->number;
+            $project->project_sequence = $modelProject != null ? $modelProject->project_sequence + 1 : 1;
+            $project->name = $request->name;
+            $project->description = $request->description;
+            $project->customer_id = $request->customer;
+            $project->budget_value = $request->budget_value_int;
+            $project->ship_id = $request->ship;
+            $project->project_standard_id = $request->project_standard;
+            $project->project_type = $request->project_type;
+            $project->person_in_charge = $request->person_in_charge;
+
+            $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
+            $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
+
+            if($planStartDate){
+                $project->planned_start_date = $planStartDate->format('Y-m-d');
+            }else{
+                $project->planned_start_date = null;
+            }
+            if($planEndDate){
+                $project->planned_end_date = $planEndDate->format('Y-m-d');
+            }else{
+                $project->planned_end_date = null;
+            }
+            $project->planned_duration =  $request->planned_duration;
+            $project->progress = 0;
+            $project->business_unit_id = $request->business_unit_id;
+            $project->user_id = Auth::user()->id;
+            $project->branch_id = Auth::user()->branch->id;
+            
+            if($request->hasFile('drawing')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('drawing')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('drawing')->storeAs('documents/project',$fileNameToStore);
+            }else{
+                $fileNameToStore =  null;
+            }
+            $project->drawing = $fileNameToStore;
+            $project->save();
+            
+            DB::commit();
+            return redirect()->route('project_repair.selectStructure', ['project_standard_id' => $request->project_standard,'project_id' => $project->id])->with('success', 'Project Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project_repair.create')->with( 'error',$e->getMessage())->withInput();
+        }
+    }
+
+    public function storeSelectedStructure(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $datas = json_decode($request->structures);
+        $project_id = $request->project_id;
+        $project_ref = Project::find($project_id);
+        
+        $wbsIdConverter = [];
+
+        DB::beginTransaction();
+        try {
+            foreach ($datas as $dataTree) {
+                if(strpos($dataTree, 'WBS') !== false) {
+                    $wbs_standard_id = str_replace("WBS", "", $dataTree);
+                    $wbs_standard = WbsStandard::find($wbs_standard_id);
+
+                    $wbs = new WBS;
+                    $wbs->number = $wbs_standard->number;
+                    $wbs->description = $wbs_standard->description;
+                    $wbs->deliverables = $wbs_standard->deliverables;
+                    $wbs->planned_duration = $wbs_standard->duration;
+
+                    $wbs->code = self::generateWbsCode($project_id);
+                    if(isset($wbsIdConverter[$wbs_standard->wbs_id])){
+                        $wbs->wbs_id = $wbsIdConverter[$wbs_standard->wbs_id];
+                    }
+                    $wbs->project_id = $project_id;
+                    $wbs->user_id = Auth::user()->id;
+                    $wbs->branch_id = Auth::user()->branch->id;
+                    $wbs->save();
+                    $wbsIdConverter[$wbs_standard_id] = $wbs->id;
+                    // $bom_ref = Bom::where('wbs_id', $wbs_standard->id)->first();
+                    // if($bom_ref != null){
+                    //     $bom = new Bom;
+                    //     $bom = $bom_ref->replicate();
+                    //     $bom->code = self::generateBomCode($project_id);
+                    //     $bom->wbs_id = $wbs->id;
+                    //     $bom->project_id = $project_id;
+                    //     $bom->user_id = Auth::user()->id;
+                    //     $bom->branch_id = Auth::user()->branch->id;
+                    //     $bom->save();
+    
+                    //     foreach ($bom_ref->bomDetails as $bomD) {
+                    //         $bom_detail = new BomDetail;
+                    //         $bom_detail = $bomD->replicate();
+                    //         $bom_detail->bom_id = $bom->id;
+                    //         $bom_detail->save();
+                    //     }
+                    // }
+    
+                    // $resource_ref = ResourceTrx::where('wbs_id', $wbs_ref->id)->get();
+                    // if(count($resource_ref) > 0){
+                    //     foreach ($resource_ref as $resource) {
+                    //         $resource_input = new ResourceTrx;
+                    //         $resource_input = $resource->replicate();
+                    //         $resource_input->wbs_id = $wbs->id;
+                    //         $resource_input->project_id = $project_id;
+                    //         $resource_input->user_id = Auth::user()->id;
+                    //         $resource_input->branch_id = Auth::user()->branch->id;
+                    //         $resource_input->save();
+                    //     }
+                    // }
+                }elseif(strpos($dataTree, 'ACT') !== false){
+                    $act_standard_id = str_replace("ACT", "", $dataTree);
+                    $act_standard = ActivityStandard::find($act_standard_id);
+                    $act = new Activity;
+                    $act->name = $act_standard->name;
+                    $act->description = $act_standard->description;
+                    $act->planned_duration = $act_standard->duration;
+
+                    if(isset($wbsIdConverter[$act_standard->wbs_id])){
+                        $act->code = self::generateActivityCode($wbsIdConverter[$act_standard->wbs_id]);
+                        $act->wbs_id = $wbsIdConverter[$act_standard->wbs_id];
+                    }
+                    $act->user_id = Auth::user()->id;
+                    $act->branch_id = Auth::user()->branch->id;
+                    $act->save();
+                }
+            }
+            DB::commit();
+
+            return redirect()->route('project_repair.show', ['id' => $request->project_id])->with('success', 'Project Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project_repair.selectStructure', ['project_standard_id' => $request->project_standard_id,'project_id' => $project_id])->with('error', "Please Try Again, ".$e->getMessage());
+        }
+
     }
 // public function store(Request $request)
 // {
@@ -2316,6 +2559,11 @@ class ProjectController extends Controller
             "categories" => $categories, 
         ]);
         return response($data->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getProjectStandardAPI($ship_id){
+        $project_standards = ProjectStandard::where('ship_id',$ship_id)->get()->jsonSerialize();
+        return response($project_standards, Response::HTTP_OK);
     }
     
 }
