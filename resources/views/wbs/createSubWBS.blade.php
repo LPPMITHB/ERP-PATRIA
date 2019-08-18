@@ -586,6 +586,7 @@ var vm = new Vue({
                 this.newSubWBS.planned_duration = "";         
                 this.newSubWBS.totalWeight = "";
                 this.newSubWBS.weight = "";
+                this.newSubWBS.totalWeight = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -629,6 +630,7 @@ var vm = new Vue({
                 this.editWbs.planned_duration = "";                
                 this.editWbs.totalWeight = "";
                 this.editWbs.weight = "";   
+                this.editWbs.totalWeight = "";
             })
             .catch((error) => {
                 console.log(error);

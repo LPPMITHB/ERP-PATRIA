@@ -17,7 +17,7 @@ use App\Models\Material;
 use App\Models\Service;
 use App\Models\Vendor;
 use App\Models\WbsProfile;
-use App\Models\WbsConfiguration;
+use App\Models\WbsStandard;
 use App\Models\Configuration;
 use App\Models\ActivityProfile;
 use App\Models\ActivityConfiguration;
@@ -35,29 +35,28 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
-        return view('activity.create', compact('project', 'wbs','menu'));
+        if($wbs->weight == null){
+            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
+        }else{
+            return view('activity.create', compact('project', 'wbs','menu'));
+        }
+
     }
     
     public function createActivityRepair($id, Request $request)
     {
         $wbs = WBS::find($id);
-        if(count($wbs->wbsConfig->activities)>0){
-            $activity_config = $wbs->wbsConfig->activities;
-    
-            $materials = Material::with('dimensionUom')->get();
-            foreach ($materials as $material) {
-                $material['selected'] = false;
-            }
-            $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
-            $vendors = Vendor::all();
-            $uoms = Uom::all();
-            $project = $wbs->project;
-            $menu = "repair";
-    
-            return view('activity.createActivityRepair', compact('vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
-        }else{
-            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please Make Activity Configuration for WBS '.$wbs->number.' - '.$wbs->description);
+        $materials = Material::with('dimensionUom')->get();
+        foreach ($materials as $material) {
+            $material['selected'] = false;
         }
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
+        $vendors = Vendor::all();
+        $uoms = Uom::all();
+        $project = $wbs->project;
+        $menu = "repair";
+    
+        return view('activity.createActivityRepair', compact('vendors','uoms','materials','services','project', 'wbs','menu'));
     }
 
     public function createActivityProfile($id, Request $request)

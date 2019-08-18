@@ -168,7 +168,7 @@
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
-                                <td>{{ ((data.weight/wbsWeight)*100).toFixed(2) }} %</td>
+                                <td>{{ Number.isNaN(((data.weight/wbsWeight)*100)) ? "-" : ((data.weight/wbsWeight)*100).toFixed(2) }} %</td>
                                 <td>{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
                                     <td class="p-l-0 p-r-0 p-b-0 textCenter">
@@ -750,7 +750,8 @@ var vm = new Vue({
             this.editActivity.name = data.name;
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
-            this.editActivity.totalWeight = ((data.weight/this.wbsWeight)*100).toFixed(2);
+            this.editActivity.planned_duration = data.planned_duration;
+            this.editActivity.totalWeight = Number.isNaN(((data.weight/this.wbsWeight)*100)) ? "" : ((data.weight/this.wbsWeight)*100).toFixed(2);
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
             }else{
