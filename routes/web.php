@@ -18,7 +18,7 @@ Auth::routes();
 Route::name('approval.')->prefix('approval')->group(function() {
     Route::get('/', 'ConfigurationController@approvalIndex')->name('index');
 
-    Route::post('/', 'ConfigurationController@approvalSave')->name('save');
+    Route::put('/', 'ConfigurationController@approvalSave')->name('save');
 });
 
 // Cost Type Routes
