@@ -361,25 +361,41 @@ class SidenavsTableSeeder extends Seeder
         //     'route_name' => 'wbs_repair.createResourceProfile',
         // ]);
 
-        $wbsConfigRepair = Menu::where('route_name','project_standard.createProjectStandard')->select('id')->first()->id;
+        $project_standard = Menu::where('route_name','project_standard.createProjectStandard')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $wbsConfigRepair,
+            'menu_id' => $project_standard,
             'route_name' => 'project_standard.createProjectStandard',
         ]);
         
         DB::table('sidenav')->insert([
-            'menu_id' => $wbsConfigRepair,
+            'menu_id' => $project_standard,
             'route_name' => 'project_standard.createWbsStandard',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $wbsConfigRepair,
+            'menu_id' => $project_standard,
             'route_name' => 'project_standard.createSubWbsStandard',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $wbsConfigRepair,
+            'menu_id' => $project_standard,
             'route_name' => 'project_standard.createActivityStandard',
+        ]);
+
+        $material_standard = Menu::where('route_name','project_standard.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $material_standard,
+            'route_name' => 'project_standard.selectProject',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $material_standard,
+            'route_name' => 'project_standard.selectWbs',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $material_standard,
+            'route_name' => 'project_standard.manageMaterial',
         ]);
 
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;

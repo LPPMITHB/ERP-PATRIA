@@ -1715,6 +1715,10 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
 
     Route::get('/manageMaterial/{wbs_id}', 'ProjectStandardController@manageMaterial')->name('manageMaterial')->middleware('can:manage-project-standard');
 
+    Route::get('/showMaterialStandard/{wbs_id}', 'ProjectStandardController@showMaterialStandard')->name('showMaterialStandard')->middleware('can:manage-project-standard');
+
+    Route::post('/storeMaterialStandard', 'ProjectStandardController@storeMaterialStandard')->name('storeMaterialStandard')->middleware('can:manage-project-standard');
+
     Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
 
     Route::put('updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');

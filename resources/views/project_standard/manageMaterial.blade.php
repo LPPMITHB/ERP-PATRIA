@@ -3,12 +3,12 @@
 @if ($wbs->wbs != null)
     @breadcrumb(
         [
-            'title' => 'Manage Bill Of Material',
+            'title' => 'Manage Material',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
                 $wbs->number => route('project_standard.createSubWbsStandard', $wbs->wbs->id),
-                'Manage Bill Of Material' => '',
+                'Manage Material' => '',
             ]
         ]
     )
@@ -16,12 +16,12 @@
 @else
     @breadcrumb(
         [
-            'title' => 'Manage Bill Of Material',
+            'title' => 'Manage Material',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
                 $wbs->number => route('project_standard.createWbsStandard', $wbs->project_standard_id),
-                'Manage Bill Of Material' => '',
+                'Manage Material' => '',
             ]
         ]
     )
@@ -34,7 +34,7 @@
     <div class="col-xs-12 p-b-50">
         <div class="box">
             <div class="box-body no-padding p-b-10">
-                <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
+                <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.storeMaterialStandard') }}">
                 @csrf
                     @verbatim
                     <div id="bom">
@@ -64,12 +64,6 @@
         
                                 <div class="col-xs-4 no-padding">Deliverable</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
-                            </div>
-                            <div class="col-xs-12 col-md-4">
-                                <div class="col-xs-12 no-padding"><b>BOM Description</b></div>
-                                <div class="col-xs-12 no-padding">
-                                    <textarea class="form-control" rows="3" v-model="submittedForm.description"></textarea>  
-                                </div>
                             </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-5">
@@ -198,7 +192,6 @@
         submittedForm :{
             project_id : @json($project->id),
             wbs_id : @json($wbs->id),
-            description : ""
         },
         input : {
             material_id : "",
