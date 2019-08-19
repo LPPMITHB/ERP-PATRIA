@@ -527,6 +527,13 @@ class WBSController extends Controller
     public function createSubWbsRepair($project_id, $wbs_id, Request $request)
     {
         $wbs = WBS::find($wbs_id);
+        if($wbs->weight == null){
+            if($wbs->wbs != null){
+                return redirect()->route('wbs_repair.createSubWBS', [$wbs->project_id,$wbs->wbs_id])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
+            }else{
+                return redirect()->route('wbs_repair.createWBS', [$wbs->project_id])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
+            }
+        }
         $wbs_standard = WbsStandard::where('wbs_id', $wbs->wbs_standard_id)->get();
         $project = Project::find($project_id);
         $menu = "repair";
