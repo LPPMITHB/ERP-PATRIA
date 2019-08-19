@@ -22,9 +22,13 @@ class QuotationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $quotation = new Quotation;
+        $wbs_code = self::generateWbsCode();
+
+        return view('estimator.create_wbs', compact('wbs', 'wbs_code','route'));
     }
 
     /**

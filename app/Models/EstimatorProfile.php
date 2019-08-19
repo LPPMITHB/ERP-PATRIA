@@ -25,6 +25,6 @@ class EstimatorProfile extends Model
 
     public function estimatorProfileDetails() 
     {
-        return $this->hasMany('App\Models\EstimatorProfileDetail','cost_standard_id');
+        return $this->hasMany('App\Models\EstimatorProfileDetail','profile_id');
     }
 }

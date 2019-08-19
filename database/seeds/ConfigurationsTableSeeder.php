@@ -481,17 +481,13 @@ class ConfigurationsTableSeeder extends Seeder
 
         $approval_pr = array(
             0 => array(
-                'type' => "1 Stage",
-                'level_1' => array(
+                'type' => "Single Approval",
+                'value' => array(
                     0 => array(
                         'minimum' => 0,
                         'maximum' => 1000000,
-                        'role_id' => 1,
-                    ),
-                    1 => array(
-                        'minimum' => 0,
-                        'maximum' => 1000000,
-                        'role_id' => 1,
+                        'role_id_1' => 1,
+                        'role_id_2' => null,
                     ),
                 ),
             ),
@@ -511,15 +507,19 @@ class ConfigurationsTableSeeder extends Seeder
         $standar_price = array(
             0 => array(
                 'id' => 1,
-                'value' => 'last_price',
+                'value' => 'fixed price',
             ),
             1 => array(
                 'id' => 2,
-                'value' => 'fifo',
+                'value' => 'last price',
             ),
             2 => array(
                 'id' => 3,
-                'value' => 'average',
+                'value' => 'fifo price',
+            ),
+            3 => array(
+                'id' => 4,
+                'value' => 'average price',
                 'moving_range' => 'null',
             ),
         );

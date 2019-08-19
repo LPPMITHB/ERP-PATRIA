@@ -121,8 +121,8 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0" colspan="1">
-                                    <selectize class="selectizeFull" v-model="newWbs.wbs_configuration_id" :settings="wbsConfigSettings">
-                                        <option v-for="(wbs_config, index) in wbs_configs" :value="wbs_config.id">{{ wbs_config.number }} - {{ wbs_config.description }}</option>
+                                    <selectize class="selectizeFull" v-model="newWbs.wbs_standard_id" :settings="wbsStandardSettings">
+                                        <option v-for="(wbs_standard, index) in wbs_standards" :value="wbs_standard.id">{{ wbs_standard.number }} - {{ wbs_standard.description }}</option>
                                     </selectize>
                                 </td>
                                 <td class="p-l-0">
@@ -171,9 +171,9 @@
                                             </textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="description" class="control-label">WBS Configuration</label>
-                                            <selectize v-model="editWbs.wbs_configuration_id" :settings="wbsConfigSettings">
-                                                <option v-for="(wbs_config, index) in wbs_configs" :value="wbs_config.id">{{ wbs_config.number }} - {{ wbs_config.description }}</option>
+                                            <label for="description" class="control-label">WBS Standard</label>
+                                            <selectize v-model="editWbs.wbs_standard_id" :settings="wbsStandardSettings">
+                                                <option v-for="(wbs_standard, index) in wbs_standards" :value="wbs_standard.id">{{ wbs_standard.number }} - {{ wbs_standard.description }}</option>
                                             </selectize>    
                                         </div>
                                         <div class="form-group col-sm-4">
@@ -248,7 +248,7 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        wbs_configuration_id : "",
+        wbs_standard_id : "",
     },
     editWbs : {
         wbs_id: "",
@@ -260,14 +260,14 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        wbs_configuration_id : "",
+        wbs_standard_id : "",
     },
     maxWeight : 0,
     totalWeight : 0,
     active_id : "",
-    wbs_configs : @json($wbs_config),
-    wbsConfigSettings: {
-        placeholder: 'WBS Configuration',
+    wbs_standards : @json($wbs_standard),
+    wbsStandardSettings: {
+        placeholder: 'WBS Standard',
     },
     openModalFirstTime : false,
 };
@@ -328,7 +328,7 @@ var vm = new Vue({
         createOk: function(){
             let isOk = false;
                 if(this.newWbs.number == ""
-                || this.newWbs.wbs_configuration_id == ""
+                || this.newWbs.wbs_standard_id == ""
                 || this.newWbs.weight == ""
                 || this.newWbs.planned_start_date == ""
                 || this.newWbs.planned_end_date == ""
@@ -341,7 +341,7 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editWbs.number == ""
-                || this.editWbs.wbs_configuration_id == ""
+                || this.editWbs.wbs_standard_id == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_start_date == ""
                 || this.editWbs.planned_end_date == ""
@@ -375,7 +375,7 @@ var vm = new Vue({
             this.active_id = data.id;
             this.editWbs.number = data.number;
             this.editWbs.description = data.description;
-            this.editWbs.wbs_configuration_id = data.wbs_configuration_id;
+            this.editWbs.wbs_standard_id = data.wbs_standard_id;
             this.editWbs.weight = data.weight;
             this.editWbs.planned_duration = data.planned_duration;
             if(data.planned_start_date != null){
@@ -451,7 +451,7 @@ var vm = new Vue({
                     this.getWBS();
                     this.newWbs.number = "";
                     this.newWbs.description = "";
-                    this.newWbs.wbs_configuration_id = "";
+                    this.newWbs.wbs_standard_id = "";
                     this.newWbs.deliverables = "";
                     this.newWbs.planned_start_date = "";                
                     this.newWbs.planned_end_date = "";                
@@ -496,7 +496,7 @@ var vm = new Vue({
                     this.editWbs.number = "";
                     this.editWbs.description = "";
                     this.editWbs.deliverables = "";
-                    this.editWbs.wbs_configuration_id = "";
+                    this.editWbs.wbs_standard_id = "";
                     this.editWbs.planned_start_date = "";                
                     this.editWbs.planned_end_date = "";                
                     this.editWbs.planned_duration = "";               
@@ -773,12 +773,12 @@ var vm = new Vue({
                 this.editWbs.weight = maxWeightEdit;
             }
         },
-        'newWbs.wbs_configuration_id' : function(newValue){
+        'newWbs.wbs_standard_id' : function(newValue){
             if(newValue != ""){
-                this.wbs_configs.forEach(wbs_config => {
-                    if(newValue == wbs_config.id){
-                        this.newWbs.number = wbs_config.number;
-                        this.newWbs.description = wbs_config.description;
+                this.wbs_standards.forEach(wbs_standard => {
+                    if(newValue == wbs_standard.id){
+                        this.newWbs.number = wbs_standard.number;
+                        this.newWbs.description = wbs_standard.description;
                     }
                 });
             }else{
@@ -786,15 +786,15 @@ var vm = new Vue({
             }
 
         },
-        'editWbs.wbs_configuration_id' : function(newValue){
+        'editWbs.wbs_standard_id' : function(newValue){
             if(newValue != ""){
                 if(this.openModalFirstTime){
                     this.openModalFirstTime = false;
                 }else{
-                    this.wbs_configs.forEach(wbs_config => {
-                        if(newValue == wbs_config.id){
-                            this.editWbs.number = wbs_config.number;
-                            this.editWbs.description = wbs_config.description;
+                    this.wbs_standards.forEach(wbs_standard => {
+                        if(newValue == wbs_standard.id){
+                            this.editWbs.number = wbs_standard.number;
+                            this.editWbs.description = wbs_standard.description;
                         }
                     });
                 }

@@ -100,6 +100,7 @@
                                 <th style="width: 7%">Start Date</th>
                                 <th style="width: 7%">End Date</th>
                                 <th style="width: 7%">Duration</th>
+                                <th style="width: 30px">Total Weight</th>
                                 <th style="width: 30px">Weight</th>
                                 <th style="width: 75px"></th>
                             </tr>
@@ -113,6 +114,7 @@
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
+                                <td>{{ Number.isNaN(((data.weight/parentWbsWeight)*100)) ? "-" : ((data.weight/parentWbsWeight)*100).toFixed(2) }} %</td>
                                 <td>{{ data.weight }} %</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
@@ -141,8 +143,8 @@
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0" colspan="1">
-                                    <selectize class="selectizeFull" v-model="newSubWBS.wbs_configuration_id" :settings="wbsConfigSettings">
-                                        <option v-for="(wbs_config, index) in wbs_configs" :value="wbs_config.id">{{ wbs_config.number }} - {{ wbs_config.description }}</option>
+                                    <selectize class="selectizeFull" v-model="newSubWBS.wbs_standard_id" :settings="wbsStandardSettings">
+                                        <option v-for="(wbs_standard, index) in wbs_standards" :value="wbs_standard.id">{{ wbs_standard.number }} - {{ wbs_standard.description }}</option>
                                     </selectize>
                                 </td>
                                 <td class="p-l-0">
@@ -162,7 +164,10 @@
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newSubWBS.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
+                                    <input v-model="newSubWBS.totalWeight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
+                                </td>
+                                <td class="p-l-0">
+                                    <input disabled v-model="newSubWBS.weight" type="text" class="form-control width100" id="weight" placeholder="Weight (%)">
                                 </td>
                                 <td align="center" class="p-l-0">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">CREATE</button>
@@ -191,9 +196,9 @@
                                             </textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="description" class="control-label">WBS Configuration</label>
-                                            <selectize v-model="editWbs.wbs_configuration_id" :settings="wbsConfigSettings">
-                                                <option v-for="(wbs_config, index) in wbs_configs" :value="wbs_config.id">{{ wbs_config.number }} - {{ wbs_config.description }}</option>
+                                            <label for="description" class="control-label">WBS Standard</label>
+                                            <selectize v-model="editWbs.wbs_standard_id" :settings="wbsStandardSettings">
+                                                <option v-for="(wbs_standard, index) in wbs_standards" :value="wbs_standard.id">{{ wbs_standard.number }} - {{ wbs_standard.description }}</option>
                                             </selectize>    
                                         </div>
                                         <div class="form-group col-sm-4">
@@ -221,8 +226,12 @@
                                             <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editWbs.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
                                         </div>
                                         <div class="form-group col-sm-12">
+                                            <label for="totalWeight" class="control-label">Total Weight (Max = 100%)</label>
+                                            <input id="totalWeight" type="text" class="form-control" v-model="editWbs.totalWeight" placeholder="Insert Total Weight here..." >
+                                        </div>
+                                        <div class="form-group col-sm-12">
                                             <label for="weight" class="control-label">Weight (%)</label>
-                                            <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
+                                            <input disabled id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +281,8 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        wbs_configuration_id : "",
+        wbs_standard_id : "",
+        totalWeight : "",
     },
     editWbs : {
         wbs_id: "",
@@ -284,14 +294,15 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        wbs_configuration_id : "",
+        wbs_standard_id : "",
+        totalWeight : "",
     },
     maxWeight : 0,
     totalWeight : 0,
     active_id : "",
-    wbs_configs : @json($wbs_config),
-    wbsConfigSettings: {
-        placeholder: 'WBS Configuration',
+    wbs_standards : @json($wbs_standard),
+    wbsStandardSettings: {
+        placeholder: 'WBS Standard',
     },
     openModalFirstTime : false,
 };
@@ -352,7 +363,7 @@ var vm = new Vue({
         createOk: function(){
             let isOk = false;
                 if(this.newSubWBS.number == ""
-                || this.newSubWBS.wbs_configuration_id == ""
+                || this.newSubWBS.wbs_standard_id == ""
                 || this.newSubWBS.weight == ""
                 || this.newSubWBS.planned_start_date == ""
                 || this.newSubWBS.planned_end_date == ""
@@ -365,7 +376,7 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editWbs.number == ""
-                || this.editWbs.wbs_configuration_id == ""
+                || this.editWbs.wbs_standard_id == ""
                 || this.editWbs.weight == ""
                 || this.editWbs.planned_start_date == ""
                 || this.editWbs.planned_end_date == ""
@@ -409,8 +420,10 @@ var vm = new Vue({
             this.active_id = data.id;
             this.editWbs.number = data.number;
             this.editWbs.description = data.description;
-            this.editWbs.wbs_configuration_id = data.wbs_configuration_id;
+            this.editWbs.wbs_standard_id = data.wbs_standard_id;
+            this.editWbs.totalWeight =  Number.isNaN(((data.weight/this.parentWbsWeight)*100)) ? "" :(data.weight/this.parentWbsWeight)*100; 
             this.editWbs.weight = data.weight;
+            this.editWbs.planned_duration = data.planned_duration;
             if(data.planned_start_date != null){
                 this.editWbs.planned_start_date = data.planned_start_date;
                 $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
@@ -492,11 +505,12 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                     this.getSubWBS();
                     this.newSubWBS.number = "";
-                    this.newSubWBS.wbs_configuration_id = "";
+                    this.newSubWBS.wbs_standard_id = "";
                     this.newSubWBS.planned_start_date = "";                
                     this.newSubWBS.planned_end_date = "";                
                     this.newSubWBS.planned_duration = "";         
                     this.newSubWBS.weight = "";
+                    this.newSubWBS.totalWeight = "";
                 }
             })
             .catch((error) => {
@@ -533,11 +547,12 @@ var vm = new Vue({
                     $('div.overlay').hide();            
                     this.getSubWBS(); 
                     this.editWbs.number = "";
-                    this.editWbs.wbs_configuration_id = "";
+                    this.editWbs.wbs_standard_id = "";
                     this.editWbs.planned_start_date = "";                
                     this.editWbs.planned_end_date = "";                
                     this.editWbs.planned_duration = "";                
                     this.editWbs.weight = "";   
+                    this.editWbs.totalWeight = "";
                 }
                 
             })
@@ -836,6 +851,19 @@ var vm = new Vue({
                 $('#edit_planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
         },
+        'newSubWBS.totalWeight': function(newValue){
+            this.newSubWBS.totalWeight = (this.newSubWBS.totalWeight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2) > 100){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total Total Weight cannot exceed 100%',
+                    position: 'topRight',
+                });
+                this.newSubWBS.totalWeight = 100;
+            }else{
+                this.newSubWBS.weight = ((this.newSubWBS.totalWeight/100)*this.parentWbsWeight).toFixed(2);  
+            }
+        },
         'newSubWBS.weight': function(newValue){
             this.newSubWBS.weight = (this.newSubWBS.weight+"").replace(/[^0-9.]/g, "");  
             if(roundNumber(newValue,2)>this.maxWeight){
@@ -845,6 +873,20 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.newSubWBS.weight = this.maxWeight;
+                this.newSubWBS.totalWeight = ((this.maxWeight/this.parentWbsWeight)*100);
+            }
+        },
+        'editWbs.totalWeight': function(newValue){
+            this.editWbs.totalWeight = (this.editWbs.totalWeight+"").replace(/[^0-9.]/g, "");  
+            if(roundNumber(newValue,2) > 100){
+                iziToast.warning({
+                    displayMode: 'replace',
+                    title: 'Total Total Weight cannot exceed 100%',
+                    position: 'topRight',
+                });
+                this.editWbs.totalWeight = 100;
+            }else{
+                this.editWbs.weight = ((this.editWbs.totalWeight/100)*this.parentWbsWeight).toFixed(2);  
             }
         },
         'editWbs.weight': function(newValue){
@@ -863,14 +905,15 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 this.editWbs.weight = maxWeightEdit;
+                this.editWbs.totalWeight = ((maxWeightEdit/this.parentWbsWeight)*100);
             }
         },
-        'newSubWBS.wbs_configuration_id' : function(newValue){
+        'newSubWBS.wbs_standard_id' : function(newValue){
             if(newValue != ""){
-                this.wbs_configs.forEach(wbs_config => {
-                    if(newValue == wbs_config.id){
-                        this.newSubWBS.number = wbs_config.number;
-                        this.newSubWBS.description = wbs_config.description;
+                this.wbs_standards.forEach(wbs_standard => {
+                    if(newValue == wbs_standard.id){
+                        this.newSubWBS.number = wbs_standard.number;
+                        this.newSubWBS.description = wbs_standard.description;
                     }
                 });
             }else{
@@ -878,15 +921,15 @@ var vm = new Vue({
             }
 
         },
-        'editWbs.wbs_configuration_id' : function(newValue){
+        'editWbs.wbs_standard_id' : function(newValue){
             if(newValue != ""){
                 if(this.openModalFirstTime){
                     this.openModalFirstTime = false;
                 }else{
-                    this.wbs_configs.forEach(wbs_config => {
-                        if(newValue == wbs_config.id){
-                            this.editWbs.number = wbs_config.number;
-                            this.editWbs.description = wbs_config.description;
+                    this.wbs_standards.forEach(wbs_standard => {
+                        if(newValue == wbs_standard.id){
+                            this.editWbs.number = wbs_standard.number;
+                            this.editWbs.description = wbs_standard.description;
                         }
                     });
                 }

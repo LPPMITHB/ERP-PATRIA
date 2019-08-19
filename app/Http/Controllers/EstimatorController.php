@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use App\Models\EstimatorWbs;
 use App\Models\EstimatorCostStandard;
 use App\Models\EstimatorProfile;
 use App\Models\EstimatorProfileDetail;
 use App\Models\Uom;
+use App\Models\Ship;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 use DB;
 use Auth;
 
@@ -285,39 +287,195 @@ class EstimatorController extends Controller
         }
     }
 
-    public function indexEstimatorProfile()
+    // Estimator Profile
+    public function indexEstimatorProfile(Request $request)
     {
-        
+        $route = $request->route()->getPrefix();
+        $modelProfile = EstimatorProfile::all();
+
+        return view('estimator.index_estimator_profile', compact('modelProfile','route'));
     }
 
-    public function createProfile()
+    public function createProfile(Request $request)
     {
+        $route = $request->route()->getPrefix();
+        $modelShip = Ship::where('status',1)->get();
+        $modelWbs = EstimatorWbs::where('status',1)->get();
+        $modelCostStandard = EstimatorCostStandard::where('status',1)->with('uom','estimatorWbs')->get();
+        $profile = new EstimatorProfile;
+        $profile_code = self::generateProfileCode();
         
+        return view('estimator.create_profile', compact('modelShip','route','modelWbs','modelCostStandard','profile','profile_code'));
     }
 
     public function storeProfile(Request $request)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            $profile = new EstimatorProfile;
+            $profile->code = $datas->code;
+            $profile->description = $datas->description;
+            $profile->ship_id = $datas->ship_id;
+            $profile->status = $datas->status;
+            $profile->branch_id = Auth::user()->branch->id;
+            $profile->user_id = Auth::user()->id;
+            if(!$profile->save()){
+                return redirect()->route('estimator.createProfile')->with('error', 'Failed Save Estimator Profile !');
+            }else{
+                foreach($datas->datas as $data){
+                    $pd = new EstimatorProfileDetail;
+                    $pd->cost_standard_id = $data->cost_standard_id;
+                    $pd->profile_id = $profile->id;
+                    $pd->save();
+                }
+                DB::commit();
+                if($route == "/estimator"){
+                    return redirect()->route('estimator.showProfile', ['id' => $profile->id])->with('success', 'Estimator Profile Created');
+                }elseif($route == "/estimator_repair"){
+                    return redirect()->route('estimator_repair.showProfile', ['id' => $profile->id])->with('success', 'Estimator Profile Created');
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorProfile')->with('error', $e->getMessage());
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorProfile')->with('error', $e->getMessage());
+            }
+        }
     }
 
-    public function showProfile($id)
+    public function showProfile(Request $request,$id)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $profile = EstimatorProfile::findOrFail($id);
+
+        $tree = Collection::make();
+        $wbs_ids = [];
+
+        $tree->push([
+            "id" => $profile->ship->type , 
+            "parent" => "#",
+            "text" => $profile->ship->type,
+            "icon" => "fa fa-ship"
+        ]);
+
+        foreach($profile->estimatorProfileDetails as $pd){
+            array_push($wbs_ids,$pd->estimatorCostStandard->estimator_wbs_id);
+        }
+        $wbs_ids = array_unique($wbs_ids);
+
+        foreach($wbs_ids as $wbs_id){
+            $wbs = EstimatorWbs::findOrFail($wbs_id);
+            $tree->push([
+                "id" => $wbs->code , 
+                "parent" => $profile->ship->type,
+                "text" => $wbs->name,
+                "icon" => "fa fa-briefcase"
+            ]);
+            foreach($profile->estimatorProfileDetails as $pd){
+                if($pd->estimatorCostStandard->estimator_wbs_id == $wbs_id){
+                    $tree->push([
+                        "id" => $pd->estimatorCostStandard->code , 
+                        "parent" => $wbs->code,
+                        "text" => $pd->estimatorCostStandard->name,
+                        "icon" => "fa fa-cog"
+                    ]);
+                }
+            }
+        }
+
+        return view('estimator.show_profile', compact('profile','route','tree'));
     }
 
-    public function editProfile($id)
+    public function editProfile(Request $request, $id)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $modelShip = Ship::where('status',1)->get();
+        $modelWbs = EstimatorWbs::where('status',1)->get();
+        $modelCostStandard = EstimatorCostStandard::where('status',1)->with('uom','estimatorWbs')->get();
+        $profile = EstimatorProfile::where('id',$id)->with('estimatorProfileDetails','estimatorProfileDetails.estimatorCostStandard','estimatorProfileDetails.estimatorCostStandard.uom','estimatorProfileDetails.estimatorCostStandard.estimatorWbs')->first();
+        $profile_code = '';
+        
+        return view('estimator.create_profile', compact('modelShip','route','modelWbs','modelCostStandard','profile','profile_code','profileDetails'));
     }
     
     public function updateProfile(Request $request, $id)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            $profile = EstimatorProfile::where('code',$datas->code)->first();
+            $profile->description = $datas->description;
+            $profile->ship_id = $datas->ship_id;
+            $profile->status = $datas->status;
+            if(!$profile->update()){
+                return redirect()->route('estimator.createProfile')->with('error', 'Failed Update Estimator Profile !');
+            }else{
+                foreach($datas->datas as $data){
+                    if(isset($data->id)){
+                        $pd = EstimatorProfileDetail::findOrFail($data->id);
+                        $pd->cost_standard_id = $data->cost_standard_id;
+                        $pd->update();
+                    }else{
+                        $pd = new EstimatorProfileDetail;
+                        $pd->cost_standard_id = $data->cost_standard_id;
+                        $pd->profile_id = $profile->id;
+                        $pd->save();
+                    }
+                }
+
+                foreach($datas->deleted_id as $id){
+                    $pd = EstimatorProfileDetail::findOrFail($id);
+                    $pd->delete();
+                }
+                DB::commit();
+                if($route == "/estimator"){
+                    return redirect()->route('estimator.showProfile', ['id' => $profile->id])->with('success', 'Estimator Profile Updated');
+                }elseif($route == "/estimator_repair"){
+                    return redirect()->route('estimator_repair.showProfile', ['id' => $profile->id])->with('success', 'Estimator Profile Updated');
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorProfile')->with('error', $e->getMessage());
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorProfile')->with('error', $e->getMessage());
+            }
+        }
     }
 
-    public function destroy($id)
-    {
-        //
+    public function deleteProfile(Request $request, $id){
+        $route = $request->route()->getPrefix();
+
+        DB::beginTransaction();
+        try{
+            $profile = EstimatorProfile::findOrFail($id);
+            foreach($profile->estimatorProfileDetails as $pd){
+                $pd->delete();
+            }
+            $profile->delete();
+
+            DB::commit();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorProfile')->with('success','Success Deleted Estimator Profile!');
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorProfile')->with('success','Success Deleted Estimator Profile!');
+            }
+        }catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/estimator"){
+                return redirect()->route('estimator.indexEstimatorProfile')->with('error',$e->getMessage());
+            }elseif($route == "/estimator_repair"){
+                return redirect()->route('estimator_repair.indexEstimatorProfile')->with('error',$e->getMessage());
+            }
+        }
     }
 
     // function
@@ -345,5 +503,18 @@ class EstimatorController extends Controller
 
         $cost_standard_code = $code.''.sprintf('%04d', $number);
 		return $cost_standard_code;
+    }
+
+    public function generateProfileCode(){
+        $code = 'EPF';
+        $modelProfile = EstimatorProfile::orderBy('code', 'desc')->first();
+        
+        $number = 1;
+		if(isset($modelProfile)){
+            $number += intval(substr($modelProfile->code, -4));
+		}
+
+        $profile_code = $code.''.sprintf('%04d', $number);
+		return $profile_code;
     }
 }

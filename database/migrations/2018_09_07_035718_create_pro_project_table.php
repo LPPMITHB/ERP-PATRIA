@@ -18,6 +18,7 @@ class CreateProProjectTable extends Migration
             $table->increments('id');
             $table->string('number')->unique();
             $table->string('drawing')->nullable();
+            $table->unsignedInteger('project_standard_id')->nullable();;
             $table->unsignedInteger('business_unit_id');
             $table->unsignedInteger('project_sequence');
             $table->unsignedInteger('ship_id');
@@ -50,6 +51,7 @@ class CreateProProjectTable extends Migration
             $table->unsignedInteger('branch_id');            
             $table->timestamps();
 
+            $table->foreign('project_standard_id')->references('id')->on('mst_project_standard');
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
             $table->foreign('user_id')->references('id')->on('users');

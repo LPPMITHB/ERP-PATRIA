@@ -20,6 +20,7 @@ class CreateMstMaterialTable extends Migration
             $table->integer('cost_standard_price')->default(0);
             $table->float('cost_standard_price_per_kg', 15,2)->default(0);
             $table->integer('cost_standard_price_service')->default(0);
+            $table->string('cost_standard_price_config')->default('{"id":1,"range":1}');
             $table->integer('latest_price')->default(0);
             $table->integer('average_price')->default(0);
             $table->unsignedInteger('uom_id')->nullable();
