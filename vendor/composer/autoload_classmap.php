@@ -167,6 +167,7 @@ return array(
     'App\\Providers\\PHPExcelMacroServiceProvider' => $baseDir . '/app/Providers/PHPExcelMacroServiceProvider.php',
     'App\\Providers\\RouteServiceProvider' => $baseDir . '/app/Providers/RouteServiceProvider.php',
     'App\\Providers\\numberConverter' => $baseDir . '/app/Providers/numberConverter.php',
+    'App\\Quotation' => $baseDir . '/app/Quotation.php',
     'Barryvdh\\DomPDF\\Facade' => $vendorDir . '/barryvdh/laravel-dompdf/src/Facade.php',
     'Barryvdh\\DomPDF\\PDF' => $vendorDir . '/barryvdh/laravel-dompdf/src/PDF.php',
     'Barryvdh\\DomPDF\\ServiceProvider' => $vendorDir . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',

@@ -610,6 +610,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Providers\\PHPExcelMacroServiceProvider' => __DIR__ . '/../..' . '/app/Providers/PHPExcelMacroServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\Providers\\numberConverter' => __DIR__ . '/../..' . '/app/Providers/numberConverter.php',
+        'App\\Quotation' => __DIR__ . '/../..' . '/app/Quotation.php',
         'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
         'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',
