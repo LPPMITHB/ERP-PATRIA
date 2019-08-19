@@ -136,7 +136,7 @@
                                             </tr>
                                         </tbody>
                                             <tr>
-                                                <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin</b></td>
+                                                <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin :</b></td>
                                                 <td>{{ dataInput.margin }}%</td>
                                             </tr>
                                             <tr>

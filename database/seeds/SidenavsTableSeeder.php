@@ -150,6 +150,98 @@ class SidenavsTableSeeder extends Seeder
         //     'route_name' => 'estimator_repair.showEstimatorProfile',
         // ]);
 
+        // Quotation
+        $createQuotation = Menu::where('route_name','quotation.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQuotation,
+            'route_name' => 'quotation.create',
+        ]);
+
+        $viewQuotation = Menu::where('route_name','quotation.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQuotation,
+            'route_name' => 'quotation.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQuotation,
+            'route_name' => 'quotation.show',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQuotation,
+            'route_name' => 'quotation.edit',
+        ]);
+
+        // Quotation Repair
+        // $createQuotation = Menu::where('route_name','quotation_repair.create')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createQuotation,
+        //     'route_name' => 'quotation_repair.create',
+        // ]);
+
+        // $viewQuotation = Menu::where('route_name','quotation_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewQuotation,
+        //     'route_name' => 'quotation_repair.index',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewQuotation,
+        //     'route_name' => 'quotation_repair.show',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewQuotation,
+        //     'route_name' => 'quotation_repair.edit',
+        // ]);
+
+        // Sales Order
+        $createSO = Menu::where('route_name','sales_order.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createSO,
+            'route_name' => 'sales_order.create',
+        ]);
+
+        $viewSO = Menu::where('route_name','sales_order.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewSO,
+            'route_name' => 'sales_order.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewSO,
+            'route_name' => 'sales_order.show',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewSO,
+            'route_name' => 'sales_order.edit',
+        ]);
+
+        // Sales Order Repair
+        // $createSO = Menu::where('route_name','sales_order_repair.create')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createSO,
+        //     'route_name' => 'sales_order_repair.create',
+        // ]);
+
+        // $viewSO = Menu::where('route_name','sales_order_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewSO,
+        //     'route_name' => 'sales_order_repair.index',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewSO,
+        //     'route_name' => 'sales_order_repair.show',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewSO,
+        //     'route_name' => 'sales_order_repair.edit',
+        // ]);
+
         // Project Management
         $manageProject = Menu::where('route_name','project.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([

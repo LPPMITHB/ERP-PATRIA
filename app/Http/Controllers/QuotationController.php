@@ -21,9 +21,12 @@ class QuotationController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $modelQTs = Quotation::all();
+
+        return view('quotation.index', compact('modelQTs', 'route'));
     }
 
     /**
@@ -56,12 +59,12 @@ class QuotationController extends Controller
         DB::beginTransaction();
         try {
             $quotation = new Quotation;
-            $quotation->code = $qt_number;
+            $quotation->number = $qt_number;
             $quotation->profile_id = $data->profile_id;
             $quotation->customer_id = ($data->customer_id != "") ? $data->customer_id : null;
             $quotation->description = $data->description;
-            $quotation->price = 0;
-            $quotation->total_price = 0;
+            $quotation->price = $data->price;
+            $quotation->total_price = $data->total_price;
             $quotation->margin = $data->margin;
             $quotation->status = 1;
             $quotation->terms_of_payment = json_encode($data->top);
@@ -106,9 +109,26 @@ class QuotationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $modelQT = Quotation::findOrFail($id);
+        if ($modelQT->status == 1) {
+            $statusQT = 'OPEN';
+        } elseif ($modelQT->status == 0) {
+            $statusQT = 'CONVERTED TO SO';
+        } elseif ($modelPO->status == 2) {
+            $statusQT = 'CANCELED';
+        }
+
+        $wbs = [];
+        foreach($modelQT->quotationDetails as $qd){
+            array_push($wbs,$qd->estimatorCostStandard->estimatorWbs);
+        }
+        $wbs = array_unique($wbs);
+        $tops = json_decode($modelQT->terms_of_payment);
+
+        return view('quotation.show', compact('route', 'modelQT', 'statusQT','wbs','tops'));
     }
 
     /**
