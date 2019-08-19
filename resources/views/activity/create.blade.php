@@ -148,15 +148,15 @@
                     <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
                         <thead>
                             <tr>
-                                <th style="width: 4%">No</th>
+                                <th style="width: 5%">No</th>
                                 <th style="width: 14%">Name</th>
                                 <th style="width: 16%">Description</th>
                                 <th style="width: 10%">Start Date</th>
                                 <th style="width: 10%">End Date</th>
-                                <th style="width: 7%" >Duration</th>
+                                <th style="width: 8%" >Duration</th>
                                 <th style="width: 7%">Total Weight</th>
                                 <th style="width: 7%">Weight</th>
-                                <th style="width: 19%">Predecessor</th> 
+                                <th style="width: 19%">Predecessor</th>
                                 <th style="width: 13%"></th>
                             </tr>
                         </thead>
@@ -212,13 +212,13 @@
                                     <input autocomplete="off" v-model="newActivity.planned_end_date" type="text" class="form-control datepicker width100 create_date" id="planned_end_date" name="planned_end_date" placeholder="End Date">
                                 </td>
                                 <td class="p-l-0">
-                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >                                        
+                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivity.totalWeight"  type="text" class="form-control width100" id="totalWeight" name="totalWeight" placeholder="Weight" >                                        
+                                    <input v-model="newActivity.totalWeight"  type="text" class="form-control width100" id="totalWeight" name="totalWeight" placeholder="Weight" >
                                 </td>
                                 <td class="p-l-0">
-                                    <input disabled v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >                                        
+                                    <input disabled v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >
                                 </td>
                                 <td class="p-l-0 textCenter p-r-5 p-l-5">
                                     <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
@@ -356,12 +356,12 @@
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="name" class="control-label">Name</label>
-                                        <textarea id="name" v-model="editActivity.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>                                                
+                                        <textarea id="name" v-model="editActivity.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="description" class=" control-label">Description</label>
-                                        <textarea id="description" v-model="editActivity.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>                                                
+                                        <textarea id="description" v-model="editActivity.description" class="form-control" rows="2" placeholder="Insert Description here..."></textarea>
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-4">
@@ -370,33 +370,33 @@
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
+                                            <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">
                                         </div>
                                     </div>
-                                            
+
                                     <div class="p-l-0 form-group col-sm-4">
                                         <label for="edit_planned_end_date" class=" control-label">End Date</label>
                                         <div class="input-group date">
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                            <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">
                                         </div>
                                     </div>
-                                    
+
                                     <div class="p-l-0 form-group col-sm-4">
                                         <label for="duration" class=" control-label">Duration</label>
-                                        <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
+                                        <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editActivity.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >
                                     </div>
-                                        
+
                                     <div class="p-l-0 form-group col-sm-6">
                                         <label for="totalWeight" class=" control-label">Total Weight (Max = 100%)</label>
-                                        <input v-model="editActivity.totalWeight"  type="text" class="form-control" id="edit_totalWeight" placeholder="Weight" >                                        
+                                        <input v-model="editActivity.totalWeight"  type="text" class="form-control" id="edit_totalWeight" placeholder="Weight" >
                                     </div>
-                                    
+
                                     <div class="p-l-0 form-group col-sm-6">
                                         <label for="weight" class=" control-label">Weight</label>
-                                        <input disabled v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >                                        
+                                        <input disabled v-model="editActivity.weight"  type="text" class="form-control" id="edit_weight" placeholder="Weight" >
                                     </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
@@ -415,7 +415,7 @@
                                     <div class="p-l-0 form-group col-sm-2">
                                         <button  :disabled="predecessoreEditOk" type="button" class="btn btn-primary" @click="addPredecessorEdit">ADD PREDECESSOR</button>
                                     </div>
-                                            
+
                                     <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
                                         <thead>
                                             <tr>
@@ -448,7 +448,7 @@
                                                 </td>
                                             </tr>
                                         </tbody>
-                                    </table>                                
+                                    </table>
                                 </div>
                                 <div class="modal-footer">
                                     <button :disabled="updateOk" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
@@ -466,7 +466,7 @@
                 <i class="fa fa-refresh fa-spin"></i>
             </div>
             <div id="myPopoverContent" style="display : none;">
-                
+
             </div>
         </div>
     </div>
@@ -496,7 +496,7 @@ var data = {
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
-        wbs_id : @json($wbs->id), 
+        wbs_id : @json($wbs->id),
         predecessor : "",
         predecessorType : "",
         weight : "",
@@ -540,7 +540,7 @@ Vue.directive('tooltip', function(el, binding){
     $(el).tooltip({
         title: binding.value,
         placement: binding.arg,
-        trigger: 'hover'             
+        trigger: 'hover'
     })
 })
 
@@ -627,7 +627,7 @@ var vm = new Vue({
                 }
             return isOk;
         },
-    }, 
+    },
     methods:{
         addPredecessor() {
             this.allActivities.forEach(elementAllActivities => {
@@ -738,7 +738,7 @@ var vm = new Vue({
                         if(predecessor[0]==activityRef.id){
                             activityRef["type"] = predecessor[1];
                             this.predecessorTableView.push(activityRef);
-                        } 
+                        }
                     });
                 });
             }
@@ -780,14 +780,14 @@ var vm = new Vue({
                     });
                 }
             });
-            
+
         },
         setEndDateNew(){
             if(this.newActivity.planned_duration != "" && this.newActivity.planned_start_date != ""){
                 var planned_duration = parseInt(this.newActivity.planned_duration);
                 var planned_start_date = this.newActivity.planned_start_date;
                 var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
-                
+
                 planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                 $('#planned_end_date').datepicker('setDate', planned_end_date);
             }else{
@@ -799,7 +799,7 @@ var vm = new Vue({
                 var planned_duration = parseInt(this.editActivity.planned_duration);
                 var planned_start_date = this.editActivity.planned_start_date;
                 var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
-                
+
                 planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                 $('#edit_planned_end_date').datepicker('setDate', planned_end_date);
             }else{
@@ -823,11 +823,11 @@ var vm = new Vue({
                     this.newIndex = Object.keys(this.activities).length+1;
                     this.activities.forEach(data => {
                         if(data.planned_start_date != null){
-                            data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");   
+                            data.planned_start_date = data.planned_start_date.split("-").reverse().join("-");
                         }
 
                         if(data.planned_end_date != null){
-                            data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");   
+                            data.planned_end_date = data.planned_end_date.split("-").reverse().join("-");
                         }
                     });
                     this.maxWeight = roundNumber((this.wbsWeight-this.totalWeight),2);
@@ -850,16 +850,16 @@ var vm = new Vue({
             })
 
         },
-        add(){            
+        add(){
             var newActivity = this.newActivity;
             newActivity = JSON.stringify(newActivity);
             var url = "";
             if(this.menu == "building"){
                 url = "{{ route('activity.store') }}";
             }else{
-                url = "{{ route('activity_repair.store') }}";              
+                url = "{{ route('activity_repair.store') }}";
             }
-            $('div.overlay').show();            
+            $('div.overlay').show();
             window.axios.post(url,newActivity)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -876,14 +876,14 @@ var vm = new Vue({
                         position: 'topRight',
                     });
                     this.getActivities();
-                    this.getAllActivities();   
+                    this.getAllActivities();
                     this.newActivity.name = "";
                     this.newActivity.description = "";
                     this.newActivity.planned_start_date = "";
                     this.newActivity.planned_end_date = "";
                     this.newActivity.planned_duration = "";
                     this.newActivity.weight = "";
-                    this.newActivity.allPredecessor = [];                     
+                    this.newActivity.allPredecessor = [];
                 }
             })
             .catch((error) => {
@@ -893,11 +893,11 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 console.log(error);
-                $('div.overlay').hide();            
+                $('div.overlay').hide();
             })
 
         },
-        update(){            
+        update(){
             var editActivity = this.editActivity;
             var url = "";
             if(this.menu == "building"){
@@ -906,7 +906,7 @@ var vm = new Vue({
                 var url = "/activity_repair/update/"+editActivity.activity_id;
             }
             editActivity = JSON.stringify(editActivity);
-            $('div.overlay').show();            
+            $('div.overlay').show();
             window.axios.put(url,editActivity)
             .then((response) => {
                 if(response.data.error != undefined){
@@ -915,7 +915,7 @@ var vm = new Vue({
                         title: response.data.error,
                         position: 'topRight',
                     });
-                    $('div.overlay').hide();            
+                    $('div.overlay').hide();
                 }else{
                     iziToast.success({
                         displayMode: 'replace',
@@ -924,7 +924,7 @@ var vm = new Vue({
                     });
                 }
                 this.getActivities();
-                this.getAllActivities(); 
+                this.getAllActivities();
             })
             .catch((error) => {
                 iziToast.warning({
@@ -933,7 +933,7 @@ var vm = new Vue({
                     position: 'topRight',
                 });
                 console.log(error);
-                $('div.overlay').hide();            
+                $('div.overlay').hide();
             })
         },
         deleteActivity(data){
@@ -956,7 +956,7 @@ var vm = new Vue({
                         }else{
                             url = "/activity_repair/deleteActivity/"+data.id;
                         }
-                        $('div.overlay').show();            
+                        $('div.overlay').show();
                         window.axios.delete(url)
                         .then((response) => {
                             if(response.data.error != undefined){
@@ -975,7 +975,7 @@ var vm = new Vue({
                                     position: 'topRight',
                                 });
                                 vm.getActivities();
-                                vm.getAllActivities();   
+                                vm.getAllActivities();
                             }
                         })
                         .catch((error) => {
@@ -985,16 +985,16 @@ var vm = new Vue({
                                 position: 'topRight',
                             });
                             console.log(error);
-                            $('div.overlay').hide();            
+                            $('div.overlay').hide();
                         })
 
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            
+
                     }, true],
                     ['<button>NO</button>', function (instance, toast) {
-            
+
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-            
+
                     }],
                 ],
             });
@@ -1063,7 +1063,7 @@ var vm = new Vue({
         //     }
         // },
         'editActivity.totalWeight': function(newValue){
-            this.editActivity.totalWeight = (this.editActivity.totalWeight+"").replace(/[^0-9.]/g, "");  
+            this.editActivity.totalWeight = (this.editActivity.totalWeight+"").replace(/[^0-9.]/g, "");
             if(roundNumber(newValue,2) > 100){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -1072,25 +1072,25 @@ var vm = new Vue({
                 });
                 this.editActivity.totalWeight = 100;
             }else{
-                this.editActivity.weight = ((this.editActivity.totalWeight/100)*this.wbsWeight).toFixed(2);  
+                this.editActivity.weight = ((this.editActivity.totalWeight/100)*this.wbsWeight).toFixed(2);
             }
         },
         'editActivity.weight': function(newValue){
-            this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");  
+            this.editActivity.weight = (this.editActivity.weight+"").replace(/[^0-9.]/g, "");
             if(newValue != ""){
                 if(this.oldValueWeight == ""){
                     this.oldValueWeight = this.editActivity.weight;
                     window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
                         this.totalWeight = data;
                         var totalEdit = roundNumber(data - this.constWeightAct,2);
-                        maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                        maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2);
                         if(this.editActivity.weight>maxWeightEdit){
                             iziToast.warning({
                                 displayMode: 'replace',
                                 title: 'Total weight cannot exceed '+this.wbsWeight+'%',
                                 position: 'topRight',
                             });
-                            this.editActivity.weight = maxWeightEdit;                  
+                            this.editActivity.weight = maxWeightEdit;
                         }
                     });
                 }else if(this.oldValueWeight != this.editActivity.weight){
@@ -1098,21 +1098,21 @@ var vm = new Vue({
                     window.axios.get('/api/getWeightWbs/'+this.newActivity.wbs_id).then(({ data }) => {
                         this.totalWeight = data;
                         var totalEdit = roundNumber(data - this.constWeightAct,2);
-                        maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2); 
+                        maxWeightEdit = roundNumber(this.wbsWeight - totalEdit,2);
                         if(this.editActivity.weight>maxWeightEdit){
                             iziToast.warning({
                                 displayMode: 'replace',
                                 title: 'Total weight cannot exceed '+this.wbsWeight+'%',
                                 position: 'topRight',
                             });
-                            this.editActivity.weight = maxWeightEdit;                  
+                            this.editActivity.weight = maxWeightEdit;
                         }
                     });
                 }
             }
         },
         'newActivity.totalWeight': function(newValue){
-            this.newActivity.totalWeight = (this.newActivity.totalWeight+"").replace(/[^0-9.]/g, "");  
+            this.newActivity.totalWeight = (this.newActivity.totalWeight+"").replace(/[^0-9.]/g, "");
             if(roundNumber(newValue,2) > 100){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -1121,11 +1121,11 @@ var vm = new Vue({
                 });
                 this.newActivity.totalWeight = 100;
             }else{
-                this.newActivity.weight = ((this.newActivity.totalWeight/100)*this.wbsWeight).toFixed(2);  
+                this.newActivity.weight = ((this.newActivity.totalWeight/100)*this.wbsWeight).toFixed(2);
             }
         },
         'newActivity.weight': function(newValue){
-            this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");  
+            this.newActivity.weight = (this.newActivity.weight+"").replace(/[^0-9.]/g, "");
             if(roundNumber(newValue,2)>this.maxWeight){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -1176,7 +1176,7 @@ var vm = new Vue({
             var wbs_start_date = new Date(wbs_start_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            
+
             if(activity_start_date > wbs_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -1218,7 +1218,7 @@ var vm = new Vue({
             var wbs_start_date = new Date(wbs_start_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            
+
             if(activity_end_date > wbs_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -1248,7 +1248,7 @@ var vm = new Vue({
                 });
                 $('#planned_end_date').datepicker('setDate', pro_planned_end_date);
             }
-        },        
+        },
         'editActivity.planned_start_date' : function(newValue){
             var pro_planned_start_date = new Date(this.project_start_date).toDateString();
             var pro_planned_end_date = new Date(this.project_end_date).toDateString();
@@ -1260,7 +1260,7 @@ var vm = new Vue({
             var wbs_start_date = new Date(wbs_start_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            
+
             if(activity_start_date > wbs_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
@@ -1302,7 +1302,7 @@ var vm = new Vue({
             var wbs_start_date = new Date(wbs_start_date);
             var pro_planned_start_date = new Date(pro_planned_start_date);
             var pro_planned_end_date = new Date(pro_planned_end_date);
-            
+
             if(activity_end_date > wbs_end_date){
                 iziToast.warning({
                     displayMode: 'replace',
