@@ -56,24 +56,24 @@
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="manageSubWBS(data)">
                                                 MANAGE WBS
                                             </a>
                                         </div>
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="manageActivity(data)">
                                                 MANAGE ACTIVITY
                                             </a>
                                         </div>
                                     </div>
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createSubWBS(data)">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="manageMaterial(data)">
                                                 MANAGE MATERIAL
                                             </a>
                                         </div>
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                            <a class="btn btn-primary btn-xs col-xs-12" :href="createActivity(data)">
+                                            <a class="btn btn-primary btn-xs col-xs-12" :href="manageActivity(data)">
                                                 MANAGE RESOURCE
                                             </a>
                                         </div>
@@ -295,12 +295,16 @@ var vm = new Vue({
             this.editWbsStandard.deliverables = data.deliverables;
             this.editWbsStandard.duration = data.duration;
         },
-        createSubWBS(data){
+        manageSubWBS(data){
             var url = "/project_standard/createSubWbsStandard/"+data.id;
             return url;
         },
-        createActivity(data){
+        manageActivity(data){
             var url = "/project_standard/createActivityStandard/"+data.id;
+            return url;
+        },
+        manageMaterial(data){
+            var url = "/project_standard/manageMaterial/"+data.id;
             return url;
         },
         getWBSStandard(){

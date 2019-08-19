@@ -521,6 +521,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\BomDetail' => __DIR__ . '/../..' . '/app/Models/BomDetail.php',
         'App\\Models\\BomPrep' => __DIR__ . '/../..' . '/app/Models/BomPrep.php',
         'App\\Models\\BomProfile' => __DIR__ . '/../..' . '/app/Models/BomProfile.php',
+        'App\\Models\\BomStandard' => __DIR__ . '/../..' . '/app/Models/BomStandard.php',
         'App\\Models\\Branch' => __DIR__ . '/../..' . '/app/Models/Branch.php',
         'App\\Models\\BusinessUnit' => __DIR__ . '/../..' . '/app/Models/BusinessUnit.php',
         'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',

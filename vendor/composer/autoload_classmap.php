@@ -78,6 +78,7 @@ return array(
     'App\\Models\\BomDetail' => $baseDir . '/app/Models/BomDetail.php',
     'App\\Models\\BomPrep' => $baseDir . '/app/Models/BomPrep.php',
     'App\\Models\\BomProfile' => $baseDir . '/app/Models/BomProfile.php',
+    'App\\Models\\BomStandard' => $baseDir . '/app/Models/BomStandard.php',
     'App\\Models\\Branch' => $baseDir . '/app/Models/Branch.php',
     'App\\Models\\BusinessUnit' => $baseDir . '/app/Models/BusinessUnit.php',
     'App\\Models\\Category' => $baseDir . '/app/Models/Category.php',

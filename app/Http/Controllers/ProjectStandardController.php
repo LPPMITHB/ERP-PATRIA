@@ -9,6 +9,7 @@ use App\Models\Ship;
 use App\Models\ProjectStandard;
 use App\Models\WbsStandard;
 use App\Models\ActivityStandard;
+use App\Models\Material;
 use DB;
 use Auth;
 
@@ -124,6 +125,88 @@ class ProjectStandardController extends Controller
 
         $array["WBS ".$wbs->number] = "";
         return view('project_standard.createSubWbsStandard', compact('wbs','array','project_standard'));
+    }
+
+    public function selectProject(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+
+        if($route == '/bom'){
+            $projects = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == '/bom_repair'){
+            $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+
+        return view('project_standard.selectProject', compact('projects','route'));
+    }
+
+    public function selectWBS(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $project = Project::find($id);
+        $wbss = $project->wbss;
+        $data = Collection::make();
+
+        $data->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        
+        foreach($wbss as $wbs){
+            $bom_code = "";
+            $bom = Bom::where('wbs_id',$wbs->id)->first();
+            if($bom){
+                $bom_code = " - ".$bom->code;
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                    ]);
+                } 
+            }else{
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "icon" => "fa fa-suitcase",
+                        "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                    ]);
+                } 
+            } 
+        }
+        return view('bom.selectWBS', compact('project','data','route'));
+    }
+
+    public function manageMaterial($wbs_id, Request $request)
+    {
+        $wbs = WbsStandard::find($wbs_id);
+        $project = ProjectStandard::where('id',$wbs->project_standard_id)->with('ship')->first();
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
+        
+        return view('project_standard.manageMaterial', compact('project','materials','wbs'));
     }
 
     public function storeWbsStandard(Request $request)

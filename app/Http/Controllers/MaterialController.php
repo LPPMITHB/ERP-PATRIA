@@ -392,7 +392,7 @@ class MaterialController extends Controller
             // $material->name = $data->name;
             $material->description = $data->description;
             $material->cost_standard_price = $data->cost_standard_price == "" ? 0 : $data->cost_standard_price;
-            $material->cost_standard_price_config = $jsonCostStandardPriceConfig;
+            $material->cost_standard_price_config = json_encode($jsonCostStandardPriceConfig);
             $dimensions = json_encode($data->selectedDimensionType);
             $material->dimension_type_id = $data->dimension_type_id;
             $material->dimensions_value = $dimensions;
