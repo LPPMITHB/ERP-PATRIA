@@ -20,8 +20,50 @@ class ConfigurationController extends Controller
         return view('approval.index', compact('roles','approvalPR'));
     }
 
-    public function approvalSave(){
+    public function approvalSave(Request $request){
+        $slug = "";
+        $data = $request->json()->all();
 
+        // define slug from transaction's type
+        if($data['selectedTransaction'] == "Purchase Requisition"){
+            $slug = "approval-pr";
+        }elseif($data['selectedTransaction'] == "Purchase Order"){
+            $slug = "approval-po";
+        }elseif($data['selectedTransaction'] == "Material Requisition"){
+            $slug = "approval-mr";
+        }elseif($data['selectedTransaction'] == "Material Write Off"){
+            $slug = "approval-mwo";
+        }
+        
+        DB::beginTransaction();
+        try {
+            $approval = Configuration::where('slug',$slug)->first();
+            if(count($data['data']) > 0){
+                $approval->value = json_encode($data['data']);
+            }else{
+                $approval_pr = array(
+                    0 => array(
+                        'type' => $data['selectedType'],
+                        'value' => array(
+                            0 => array(
+                                'minimum' => $data['value']['minimum'],
+                                'maximum' => $data['value']['maximum'],
+                                'role_id_1' => $data['value']['role_id_1'],
+                                'role_id_2' => $data['value']['role_id_2'],
+                            ),
+                        ),
+                    ),
+                );
+                $approval->value = json_encode($approval_pr);
+            }
+            $approval->update();
+
+            DB::commit();
+            return response(json_encode($approval),Response::HTTP_OK);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('approval.index')->with('error', $e->getMessage());
+        }
     }
 
     public function costTypeIndex(){

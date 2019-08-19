@@ -129,7 +129,7 @@
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ profile.wbs_code }} - {{ profile.wbs_name }}</td>
                                             <td class="tdEllipsis">{{ profile.cost_standard_code }} - {{ profile.cost_standard_name }}</td>
-                                            <td class="tdEllipsis">{{ profile.value }}</td>
+                                            <td class="tdEllipsis">Rp.{{ profile.value }}</td>
                                             <td class="tdEllipsis">{{ profile.uom_name }}</td>
                                             <td class="p-l-5" align="center">
                                                 <a class="btn btn-primary btn-xs" @click="openEditModal(profile,index)">
@@ -167,7 +167,12 @@
                             </div>
 
                             <div class="col-md-12 p-t-10 p-r-0">
-                                <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                                <template v-if="profile.length != undefined">
+                                    <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                                </template>
+                                <template v-else>
+                                    <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
+                                </template>
                             </div>
 
                             <div class="modal fade" id="edit_item">
@@ -238,6 +243,7 @@
         profileDetails: [],
         cost_standard_ids: [],
         cost_standard_ids_modal: [],
+        deleted_id : [],
         submittedForm:{
             ship_id : "",
             description : "",
@@ -398,6 +404,9 @@
             },
             removeRow(profile){
                 $('div.overlay').show();
+                if(profile.id != "" && profile.id != null && profile.id != undefined){
+                    this.deleted_id.push(profile.id);
+                }
                 var index_cost_standard_id = "";
                 var index_profile_detail = "";
 
@@ -437,6 +446,7 @@
                     data.value = (data.value+"").replace(/,/g , '');
                 })
                 this.submittedForm.datas = this.profileDetails;
+                this.submittedForm.deleted_id = this.deleted_id;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -537,7 +547,29 @@
                 this.submittedForm.code = @json($profile_code);
                 this.submittedForm.status = 1;
             }else{
+                this.submittedForm.code = this.profile.code;
+                this.submittedForm.description = this.profile.description;
+                this.submittedForm.ship_id = this.profile.ship_id;
+                this.submittedForm.status = this.profile.status;
 
+                this.profile.estimator_profile_details.forEach(pd =>{
+                    var data = {
+                        id : pd.id,
+                        cost_standard_id : pd.cost_standard_id,
+                        cost_standard_name : pd.estimator_cost_standard.name,
+                        cost_standard_code : pd.estimator_cost_standard.code,
+                        wbs_id : pd.estimator_cost_standard.estimator_wbs_id,
+                        wbs_name : pd.estimator_cost_standard.estimator_wbs.name,
+                        wbs_code : pd.estimator_cost_standard.estimator_wbs.code,
+                        uom_id : pd.estimator_cost_standard.uom_id,
+                        uom_name : pd.estimator_cost_standard.uom.unit,
+                        value : (pd.estimator_cost_standard.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","),
+                    }
+                    var dataTemp = JSON.stringify(data);
+                    dataTemp = JSON.parse(dataTemp);
+                    this.profileDetails.push(dataTemp);
+                    this.cost_standard_ids.push(data.cost_standard_id);
+                })
             }
             this.newIndex = this.profileDetails.length + 1;
         },
