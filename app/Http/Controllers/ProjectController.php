@@ -676,6 +676,7 @@ class ProjectController extends Controller
             'customer' => 'required',
             'ship' => 'required',
             'project_type' => 'required',
+            'project_standard' => 'required',
             'planned_start_date' => 'required',
             'planned_end_date' => 'required',
             'planned_duration' => 'required',
