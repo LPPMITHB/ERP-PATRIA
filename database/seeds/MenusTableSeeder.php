@@ -110,7 +110,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Quotation',
             'icon' => 'fa-wrench',
-            'route_name'=> 'quotation.index',
+            'route_name'=> 'quotation.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $quotation,

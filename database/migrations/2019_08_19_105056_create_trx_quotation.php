@@ -15,9 +15,10 @@ class CreateTrxQuotation extends Migration
     {
         Schema::create('trx_quotation', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('code')->unique();
             $table->unsignedInteger('profile_id');
             $table->unsignedInteger('customer_id')->nullable();
-            $table->text('description')->nullable();
+            $table->longText('description')->nullable();
             $table->integer('price')->default(0);
             $table->float('margin',15,2)->default(0);
             $table->integer('total_price')->default(0);
