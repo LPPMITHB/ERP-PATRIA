@@ -1196,7 +1196,43 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Project Standard',
+            'icon' => 'fa-briefcase',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $projectStandard =  Menu::where('name','Project Standard')->where('menu_id', $projectManagementRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
             'name' => 'Manage Project Standard',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'project_standard.createProjectStandard',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectStandard,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Manage Material Standard',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'project_standard.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectStandard,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage Resource Standard',
             'icon' => 'fa-briefcase',
             'route_name'=> 'project_standard.createProjectStandard',
             'is_active' => true,

@@ -33,10 +33,10 @@
                             <th width=5%>No</th>
                             <th width=12%>Code</th>
                             <th width=25%>Description</th>
-                            <th width=25%>Ship Type</th>
+                            <th width=20%>Ship Type</th>
                             <th width=13%>Status</th>
                             <th width=15%>Created At</th>
-                            <th width=10%></th>
+                            <th width=15%></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -53,11 +53,13 @@
                                 @if($route == "/estimator")
                                     <td class="p-l-0 p-r-0" align="center">
                                         <a href="{{ route('estimator.editProfile', ['id'=>$profile->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('estimator.showProfile', ['id'=>$profile->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         <a onClick="confirmation({!! $profile->id !!})" class="btn btn-danger btn-xs">DELETE</a>
                                     </td>
                                 @elseif($route == "/estimator_repair")
                                     <td class="p-l-0 p-r-0" align="center">
                                         <a href="{{ route('estimator_repair.editProfile', ['id'=>$profile->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                        <a href="{{ route('estimator_repair.showProfile', ['id'=>$profile->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         <a onClick="confirmation({!! $profile->id !!})" class="btn btn-danger btn-xs">DELETE</a>
                                     </td>
                                 @endif

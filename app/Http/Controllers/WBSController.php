@@ -248,9 +248,9 @@ class WBSController extends Controller
 // public function createWbsRepair($id, Request $request)
 // {
 //     $project = Project::find($id);
-//     $wbs_config = WbsConfiguration::where('wbs_id', null)->get();
+//     $wbs_standard = WbsStandard::where('wbs_id', null)->get();
 
-//     return view('wbs.createWbsRepair', compact('project','wbs_config'));
+//     return view('wbs.createWbsRepair', compact('project','wbs_standard'));
 // }
 
 
@@ -303,13 +303,13 @@ class WBSController extends Controller
             return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
         }
         try {
-            $wbsConfig = WbsConfiguration::find($data['wbs_configuration_id']);
+            $wbsStandard = WbsStandard::find($data['wbs_standard_id']);
             $wbs = new WBS;
             $wbs->code = self::generateWbsCode($data['project_id']);
             $wbs->number = $data['number'];
             $wbs->description = $data['description'];
-            $wbs->deliverables = $wbsConfig->deliverables;
-            $wbs->wbs_configuration_id = $wbsConfig->id;
+            $wbs->deliverables = $wbsStandard->deliverables;
+            $wbs->wbs_standard_id = $wbsStandard->id;
             $wbs->project_id = $data['project_id'];
 
             if(isset($data['wbs_id'])){
@@ -527,7 +527,14 @@ class WBSController extends Controller
     public function createSubWbsRepair($project_id, $wbs_id, Request $request)
     {
         $wbs = WBS::find($wbs_id);
-        $wbs_config = WbsConfiguration::where('wbs_id', $wbs->wbs_configuration_id)->get();
+        if($wbs->weight == null){
+            if($wbs->wbs != null){
+                return redirect()->route('wbs_repair.createSubWBS', [$wbs->project_id,$wbs->wbs_id])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
+            }else{
+                return redirect()->route('wbs_repair.createWBS', [$wbs->project_id])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
+            }
+        }
+        $wbs_standard = WbsStandard::where('wbs_id', $wbs->wbs_standard_id)->get();
         $project = Project::find($project_id);
         $menu = "repair";
         $businessUnit = 2;
@@ -547,7 +554,7 @@ class WBSController extends Controller
         }
         
         $array["WBS ".$wbs->number] = "";
-        return view('wbs.createSubWbsRepair', compact('project', 'wbs','array','menu','wbs_config'));
+        return view('wbs.createSubWbsRepair', compact('project', 'wbs','array','menu','wbs_standard'));
     }
 
     public function update(Request $request, $id)
@@ -590,7 +597,7 @@ class WBSController extends Controller
     {
         $data = $request->json()->all();
         $wbs_ref = WBS::find($id);
-        $wbs_config = WbsConfiguration::find($data['wbs_configuration_id']);
+        $wbs_standard = WbsStandard::find($data['wbs_standard_id']);
         $modelWbs = WBS::where('id','!=',$id)->where('project_id',$wbs_ref->project_id)->where('number',$data['number'])->first();
         if($modelWbs != null){
             return response(["error"=> "WBS Number must be UNIQUE"],Response::HTTP_OK);
@@ -599,8 +606,8 @@ class WBSController extends Controller
         try {
             $wbs_ref->number = $data['number'];
             $wbs_ref->description = $data['description'];
-            $wbs_ref->deliverables = $wbs_config->deliverables;
-            $wbs_ref->wbs_configuration_id = $wbs_config->id;
+            $wbs_ref->deliverables = $wbs_standard->deliverables;
+            $wbs_ref->wbs_standard_id = $wbs_standard->id;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
             

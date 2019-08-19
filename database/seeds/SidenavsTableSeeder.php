@@ -115,17 +115,17 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $EstimatorProfile,
-            'route_name' => 'estimator.createEstimatorProfile',
+            'route_name' => 'estimator.createProfile',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $EstimatorProfile,
-            'route_name' => 'estimator.editEstimatorProfile',
+            'route_name' => 'estimator.editProfile',
         ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $EstimatorProfile,
-            'route_name' => 'estimator.showEstimatorProfile',
+            'route_name' => 'estimator.showProfile',
         ]);
 
         // Marketing & Sales - Estimator Profile - Repair

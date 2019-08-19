@@ -247,7 +247,7 @@ class PermissionsTableSeeder extends Seeder
         // ]);
 
         // Project Standard Repair
-        $manageProjectStandard = Menu::where('name','Manage Project Standard')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
+        $manageProjectStandard = Menu::where('name','Manage Project Standard')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Project Standard',
             'menu_id' => $manageProjectStandard,

@@ -18,7 +18,7 @@ Auth::routes();
 Route::name('approval.')->prefix('approval')->group(function() {
     Route::get('/', 'ConfigurationController@approvalIndex')->name('index');
 
-    Route::post('/', 'ConfigurationController@approvalSave')->name('save');
+    Route::put('/', 'ConfigurationController@approvalSave')->name('save');
 });
 
 // Cost Type Routes
@@ -805,7 +805,7 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
     Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');
 
     //Activity
-    Route::get('/create/{id}', 'ActivityController@createActivityRepair')->name('create')->middleware('can:create-project-repair');
+    Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project-repair');
 
     Route::put('update/{id}', 'ActivityController@update')->name('update')->middleware('can:edit-project-repair');
 
@@ -1708,6 +1708,12 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
     Route::get('/createWbsStandard/{id}', 'ProjectStandardController@createWbsStandard')->name('createWbsStandard')->middleware('can:manage-project-standard');
 
     Route::get('/createSubWbsStandard/{wbs_id}', 'ProjectStandardController@createSubWbsStandard')->name('createSubWbsStandard')->middleware('can:manage-project-standard');
+
+    Route::get('/selectProject', 'ProjectStandardController@selectProject')->name('selectProject')->middleware('can:list-bom');
+
+    Route::get('/selectWBS/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
+
+    Route::get('/manageMaterial/{wbs_id}', 'ProjectStandardController@manageMaterial')->name('manageMaterial')->middleware('can:manage-project-standard');
 
     Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
 
