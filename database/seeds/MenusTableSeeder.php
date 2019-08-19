@@ -1237,7 +1237,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'project_standard.createProjectStandard',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectManagementRepair,
+            'menu_id'=> $projectStandard,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
