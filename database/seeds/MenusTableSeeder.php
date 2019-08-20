@@ -110,7 +110,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Quotation',
             'icon' => 'fa-wrench',
-            'route_name'=> 'quotation.index',
+            'route_name'=> 'quotation.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $quotation,
@@ -137,6 +137,31 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create Sales Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'sales_order.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $sales_order,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit Sales Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'sales_order.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $sales_order,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1196,12 +1221,48 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Project Standard',
+            'icon' => 'fa-briefcase',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectManagementRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $projectStandard =  Menu::where('name','Project Standard')->where('menu_id', $projectManagementRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
             'name' => 'Manage Project Standard',
             'icon' => 'fa-briefcase',
             'route_name'=> 'project_standard.createProjectStandard',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectManagementRepair,
+            'menu_id'=> $projectStandard,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Manage Material Standard',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'project_standard.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectStandard,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage Resource Standard',
+            'icon' => 'fa-briefcase',
+            'route_name'=> 'project_standard.createProjectStandard',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id'=> $projectStandard,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

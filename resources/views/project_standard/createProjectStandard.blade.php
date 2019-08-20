@@ -32,8 +32,8 @@
                             <tr v-for="(data,index) in project">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.ship.type)">{{ data.ship.type }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.name }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.deliverables)">{{ data.description }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                         <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">

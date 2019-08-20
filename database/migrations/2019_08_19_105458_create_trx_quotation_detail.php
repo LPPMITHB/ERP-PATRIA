@@ -18,7 +18,7 @@ class CreateTrxQuotationDetail extends Migration
             $table->unsignedInteger('quotation_id');
             $table->unsignedInteger('cost_standard_id');
             $table->float('value',15,2)->default(0);
-            $table->integer('price')->default(0);
+            $table->bigInteger('price')->default(0);
             $table->timestamps();
             
             $table->foreign('quotation_id')->references('id')->on('trx_quotation');
