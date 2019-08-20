@@ -8,6 +8,11 @@ class WbsStandard extends Model
 {
     protected $table = 'mst_wbs_standard';
   
+    public function materialStandards()
+    {
+        return $this->hasMany('App\Models\MaterialStandard', 'wbs_standard_id');
+    }
+
     public function activities()
     {
         return $this->hasMany('App\Models\ActivityStandard', 'wbs_id');
