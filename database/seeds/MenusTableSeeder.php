@@ -110,7 +110,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Quotation',
             'icon' => 'fa-wrench',
-            'route_name'=> 'quotation.index',
+            'route_name'=> 'quotation.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $quotation,
@@ -137,6 +137,31 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create Sales Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'sales_order.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $sales_order,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit Sales Order',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'sales_order.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $sales_order,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
