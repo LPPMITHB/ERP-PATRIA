@@ -31,6 +31,7 @@ class CreateProProjectTable extends Migration
             $table->date('planned_start_date')->nullable();
             $table->date('planned_end_date')->nullable();
             $table->string('planned_duration')->nullable();
+            $table->date('arrival_date')->nullable();
             $table->date('actual_start_date')->nullable();
             $table->date('actual_end_date')->nullable();
             $table->string('actual_duration')->nullable();
@@ -48,7 +49,7 @@ class CreateProProjectTable extends Migration
             $table->unsignedInteger('project_type');
             $table->integer('status')->default(1);
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('branch_id');            
+            $table->unsignedInteger('branch_id');
             $table->timestamps();
 
             $table->foreign('project_standard_id')->references('id')->on('mst_project_standard');
@@ -60,7 +61,7 @@ class CreateProProjectTable extends Migration
             // $table->foreign('sales_order_id')->references('id')->on('trx_sales_order');
         });
     }
-    
+
     /**
      * Reverse the migrations.
      *
