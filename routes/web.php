@@ -861,6 +861,19 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
+    //===============start approval project plan cost
+    Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:create-actual-other-cost');
+
+    Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost');
+
+    Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost');
+
+    Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
+
+    Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
+    // /rap/getCostsPlanned/
+    //===============end approval project plan cost
+
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
     Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');

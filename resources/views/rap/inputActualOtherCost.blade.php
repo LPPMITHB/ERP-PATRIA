@@ -217,7 +217,7 @@
                 this.editCost.cost_type = data.cost_type;
             },
             getCosts(){
-            window.axios.get('/rap/getCosts/'+this.newCost.project_id).then(({ data }) => {
+            window.axios.get('/rap/getCostsApproved/'+this.newCost.project_id).then(({ data }) => {
 
                 this.costs = data;
                 this.costs.forEach(cost => {
