@@ -33,7 +33,7 @@
     <div class="col-md-12">
         <div class="box box-solid p-t-20">
             <div class="box-body">
-                @if($project->id)                    
+                @if($project->id)
                     <form class="form-horizontal" method="POST" action="{{ route('project_repair.update',['id'=>$project->id]) }}" enctype="multipart/form-data">
                     <input type="hidden" name="_method" value="PATCH">
                 @else
@@ -146,6 +146,18 @@
                                 <label for="planned_duration" class="col-sm-2 control-label">Duration (Days)</label>
                                 <div class="col-sm-5">
                                     <input type="number" class="form-control" id="planned_duration" name="planned_duration" placeholder="Duration" >
+                                </div>
+                            </div>
+
+                            <div class="form-group" v-if="(menu=='repair')">
+                                <label for="arrival_date" class="col-sm-2 control-label">Arrival Date *</label>
+                                <div class="col-sm-5">
+                                    <div class="input-group date">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-calendar"></i>
+                                        </div>
+                                        <input autocomplete="off" type="text" class="form-control datepicker" name="arrival_date" id="arrival_date" placeholder="Arrival Date">
+                                    </div>
                                 </div>
                             </div>
 
