@@ -58,7 +58,7 @@
 
                                     <div class="col-md-4 col-xs-4 no-padding">Ship Date</div>
                                     <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->ship_date) ? date('d-m-Y', strtotime($modelGR->ship_date)) : '-'}} </b></div>
-                                    
+
                                 </div>
                             </div>
                     </div>
@@ -69,7 +69,7 @@
                                     <div class="col-md-4 col-xs-4 no-padding">Status</div>
                                     <div class="col-md-6 no-padding">: <b> REVERSED </b></div>
                                 @endif
-                                
+
                                 <div class="col-md-4 col-xs-4 no-padding">Description</div>
                                 <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelGR->description}}">: <b> {{ $modelGR->description }} </b></div>
                             </div>
@@ -86,7 +86,7 @@
                                     <th width="20%">Material Number</th>
                                     <th width="20%">Material Description</th>
                                     <th width="5%">Unit</th>
-                                    <th width="10%">Quantity</th>
+                                    <th width="10%">Quantity Received</th>
                                     <th width="25%">Storage Location</th>
                                     <th width="15%">Received Date</th>
                                 </tr>

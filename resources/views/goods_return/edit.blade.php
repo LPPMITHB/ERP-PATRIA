@@ -114,8 +114,8 @@
                                                 <th width="30%">Material Name</th>
                                                 <th width="30%">Material Description</th>
                                                 <th width="5%">Unit</th>
-                                                <th width="15%">Quantity</th>
-                                                <th width="15%">Return Qty</th>
+                                                <th width="15%">Material Quantity</th>
+                                                <th width="15%">Return Quantity</th>
                                             </tr>
                                         </thead>
                                         <tbody>

@@ -88,7 +88,7 @@
                                                 <th style="width: 22%">Resource Number</th>
                                                 <th style="width: 25%">Resource Description</th>
                                             </template>
-                                            <th style="width: 12%">Quantity</th>
+                                            <th style="width: 12%">Request Quantity</th>
                                             <th style="width: 8%">Unit</th>
                                             <th style="width: 15%">Project Number</th>
                                             <th style="width: 13%">Required Date</th>
@@ -150,10 +150,10 @@
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.project_id" :settings="projectSettings">
                                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
-                                                </selectize>  
+                                                </selectize>
                                             </td>
                                             <td class="no-padding p-l-0 textLeft">
-                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">  
+                                                <input v-model="dataInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_required_date" id="input_required_date" placeholder="Required Date">
                                             </td>
                                             <td class="no-padding textLeft">
                                                 <selectize v-model="dataInput.alocation" :settings="alocationSettings" :disabled="resourceOk">
@@ -199,17 +199,17 @@
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="subConInput.project_id" :settings="projectSettings">
                                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
-                                                </selectize>  
+                                                </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="subConInput.wbs_id" :settings="wbsSettings" >
                                                     <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
-                                                </selectize>  
+                                                </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft">
                                                 <input class="form-control" v-model="subConInput.job_order" placeholder="Please Input Job Order">
                                             </td>                                            </td>
-                                            <td class="p-l-0  textCenter"> 
+                                            <td class="p-l-0  textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                             </td>
                                         </tr>
@@ -238,7 +238,7 @@
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-6">
-                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <label for="quantity" class="control-label">Request Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
                                             <div class="col-sm-6">
@@ -249,11 +249,11 @@
                                                 <label for="type" class="control-label">Project Number</label>
                                                 <selectize v-model="editInput.project_id" :settings="projectSettings">
                                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
-                                                </selectize> 
+                                                </selectize>
                                             </div>
-                                            <div class="col-sm-12"> 
+                                            <div class="col-sm-12">
                                                 <label for="type" class="control-label">Required Date</label>
-                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="alocation" class="control-label">Allocation</label>
@@ -296,11 +296,11 @@
                                                 <label for="type" class="control-label">Project Number</label>
                                                 <selectize v-model="editInput.project_id" :settings="projectSettings">
                                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.number }}</option>
-                                                </selectize> 
+                                                </selectize>
                                             </div>
-                                            <div class="col-sm-12"> 
+                                            <div class="col-sm-12">
                                                 <label for="type" class="control-label">Required Date</label>
-                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">  
+                                                <input v-model="editInput.required_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_required_date" id="edit_required_date" placeholder="Required Date">
                                             </div>
                                         </div>
                                     </div>
@@ -446,7 +446,7 @@
         computed : {
             resourceOk: function(){
                 let isOk = false;
-                
+
                 if(this.resource == "ok"){
                     isOk = true;
                     this.dataInput.alocation = "";
@@ -456,7 +456,7 @@
             },
             dataOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length > 0){
                     isOk = true;
                 }
@@ -465,7 +465,7 @@
             },
             allOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length < 1){
                     isOk = true;
                 }
@@ -549,7 +549,7 @@
                     prd.quantity = (prd.quantity+"").replace(/,/g , '');
                 });
 
-                this.submittedForm.datas = this.dataMaterial;  
+                this.submittedForm.datas = this.dataMaterial;
                 this.submittedForm.description = this.modelPR.description;
                 this.submittedForm.deletedId = this.deletedId;
                 this.submittedForm.pr_id = this.modelPR.id;
@@ -571,12 +571,12 @@
                 data.resource_id = this.editInput.resource_id;
                 data.resource_code = this.editInput.resource_code;
                 data.resource_name = this.editInput.resource_name;
-                data.quantity = this.editInput.quantity 
-                data.unit = this.editInput.unit 
-                data.project_id = this.editInput.project_id 
-                data.project_number = this.editInput.project_number 
-                data.required_date = this.editInput.required_date 
-                data.alocation = this.editInput.alocation 
+                data.quantity = this.editInput.quantity
+                data.unit = this.editInput.unit
+                data.project_id = this.editInput.project_id
+                data.project_number = this.editInput.project_number
+                data.required_date = this.editInput.required_date
+                data.alocation = this.editInput.alocation
                 console.log(data);
                 if(this.modelPR.type == 1){
                     var type = "Material";
@@ -606,8 +606,8 @@
                 this.editInput.project_number = data.project_number;
                 this.editInput.required_date = data.required_date;
                 this.editInput.alocation = data.alocation;
-                this.editInput.index = index;                
-                this.editInput.is_decimal = data.is_decimal;           
+                this.editInput.index = index;
+                this.editInput.is_decimal = data.is_decimal;
             },
             add(){
                 $('div.overlay').show();
@@ -656,7 +656,7 @@
                 if(this.modelPR.type == 1){
                     var is_decimal = this.dataInput.is_decimal;
                     if(is_decimal == 0){
-                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                        this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }else{
                         var decimal = newValue.replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -678,7 +678,7 @@
                 if(this.modelPR.type == 1){
                     var is_decimal = this.editInput.is_decimal;
                     if(is_decimal == 0){
-                        this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                        this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }else{
                         var decimal = newValue.replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -854,7 +854,7 @@
                 }else{
                     prd.quantity = (prd.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
-                
+
                 prd.prd_id = prd.id;
 
                 this.dataMaterial.push(prd);

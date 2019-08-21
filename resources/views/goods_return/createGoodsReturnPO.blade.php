@@ -77,8 +77,8 @@
                                                 <th width="20%">Material Number</th>
                                                 <th width="35%">Material Description</th>
                                                 <th width="10%">Shipping Date</th>
-                                                <th width="10%">Quantity</th>
-                                                <th width="10%">Return Qty</th>
+                                                <th width="15%">Material Quantity</th>
+                                                <th width="15%">Return Quantity</th>
                                                 <th width="5%">Unit</th>
                                             </tr>
                                         </thead>

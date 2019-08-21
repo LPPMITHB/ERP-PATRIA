@@ -84,7 +84,7 @@
                         <div class="col-md-4 col-xs-4" >
                             Project Number
                         </div>
-                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($modelPO->project != null) ? $modelPO->project->number : '-' }}"> 
+                        <div class="col-md-8 col-xs-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ ($modelPO->project != null) ? $modelPO->project->number : '-' }}">
                             : <b> {{ ($modelPO->project != null) ? $modelPO->project->number : '-' }} </b>
                         </div>
                     </div>
@@ -99,7 +99,7 @@
                         </div>
                         <div class="col-xs-12 no-padding"><b>Revision Description</b></div>
                         <div class="col-xs-12 no-padding">
-                            <textarea class="form-control" rows="3" id="rev_desc"></textarea>  
+                            <textarea class="form-control" rows="3" id="rev_desc"></textarea>
                         </div>
                     </div>
                 </div>
@@ -118,11 +118,11 @@
                             @else
                                 <th colspan="2" width="14%">Job Order</th>
                             @endif
-                            <th width="6%">Qty</th>
+                            <th width="6%">Order Quantity</th>
                             <th width="5%">Disc.</th>
                             @if($modelPO->purchaseRequisition->type != 3)
                                 <th width="13%">Price / pcs ({{$unit}})</th>
-                            @else 
+                            @else
                                 <th width="13%">Price / service ({{$unit}})</th>
                             @endif
                             <th width="15%">Sub Total Price ({{$unit}})</th>
@@ -141,7 +141,7 @@
                                     @elseif($modelPO->purchaseRequisition->type == 2)
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_code'] }}">{{ $POD['resource_code'] }}</td>
                                         <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['resource_name'] }}">{{ $POD['resource_name'] }}</td>
-                                    @else 
+                                    @else
                                         <td colspan="2" class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $POD['job_order'] }}">{{ $POD['job_order'] }}</td>
                                     @endif
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ number_format($POD['quantity'],2) }}">{{ number_format($POD['quantity'],2) }}</td>

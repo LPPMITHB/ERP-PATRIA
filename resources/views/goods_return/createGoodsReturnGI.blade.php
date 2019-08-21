@@ -43,14 +43,14 @@
                     <div id="gid">
                         <div class="col-sm-12 no-padding">
                             <div class="box-header p-t-0">
-                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">GI Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGI.number }}</b></div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">MR Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGI.material_requisition.number }}</b></div>
-                                        
+
                                         <div class="col-md-4 col-xs-4 no-padding">Project</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGI.material_requisition.project.number }}</b></div>
 
@@ -58,7 +58,7 @@
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelGI.description)"><b>: {{ modelGI.description }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-8 col-lg-7 col-xs-12 no-padding">Goods Return Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
                                         </div>
@@ -73,8 +73,8 @@
                                                 <th width="5%">No</th>
                                                 <th width="20%">Material Number</th>
                                                 <th width="30%">Material Description</th>
-                                                <th width="10%">Quantity</th>
-                                                <th width="10%">Return Qty</th>
+                                                <th width="10%">Material Quantity</th>
+                                                <th width="10%">Return Quantity</th>
                                                 <th width="5%">Unit</th>
                                                 <th width="15%">Storage Location</th>
                                             </tr>
@@ -92,7 +92,7 @@
                                                 <td class="no-padding">
                                                     <selectize v-model="GID.sloc_id" :settings="slocSettings" :disabled="returnOk(GID)" :id="giveId(GID.id)">
                                                         <option v-for="(storageLocation, index) in modelSloc" :value="storageLocation.id">{{storageLocation.code}} - {{storageLocation.name}}</option>
-                                                    </selectize> 
+                                                    </selectize>
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -157,7 +157,7 @@
             },
             returnOk(GID){
                 if((GID.returned_temp+"").replace(/,/g , '') > 0){
-                    return false;                        
+                    return false;
                 }else{
                     GID.sloc_id = "";
                     return true;
@@ -169,11 +169,11 @@
             // changeText(){
             //     if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
             //         if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelGR.vendor.address ){
-            //             document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelGR.vendor.address;    
+            //             document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelGR.vendor.address;
             //         }
             //     }
-            // }, 
-            
+            // },
+
             submitForm(){
                 $('div.overlay').show();
                 var data = this.modelGID;
@@ -181,7 +181,7 @@
                 data = JSON.parse(data)
 
                 data.forEach(GID => {
-                    GID.returned_temp = GID.returned_temp.replace(/,/g , '');   
+                    GID.returned_temp = GID.returned_temp.replace(/,/g , '');
                 });
                 this.submittedForm.GID = data;
                 this.submittedForm.goods_issue_id = this.modelGI.id;
@@ -207,10 +207,10 @@
                                 displayMode: 'replace'
                             });
                         }
-                        
+
                         var is_decimal = GID.is_decimal;
                         if(is_decimal == 0){
-                            GID.returned_temp = (GID.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                            GID.returned_temp = (GID.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }else{
                             var decimal = (GID.returned_temp+"").replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){
@@ -223,7 +223,7 @@
                             }else{
                                 GID.returned_temp = (GID.returned_temp+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
-                        }   
+                        }
                     });
                 },
                 deep: true
@@ -233,7 +233,7 @@
             this.modelGID.forEach(GID => {
                 var is_decimal = GID.is_decimal;
                 if(is_decimal == 0){
-                    GID.available = (GID.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    GID.available = (GID.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = (GID.available+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -246,7 +246,7 @@
                     }else{
                         GID.available = (GID.available+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }   
+                }
             });
         },
     });
