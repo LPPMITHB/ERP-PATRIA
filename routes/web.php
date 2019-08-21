@@ -861,6 +861,19 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
 
+    //===============start approval project plan cost
+    Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:create-actual-other-cost');
+
+    Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost');
+
+    Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost');
+
+    Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
+
+    Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
+    // /rap/getCostsPlanned/
+    //===============end approval project plan cost
+
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
 
     Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');
@@ -1721,7 +1734,9 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
 
     Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
 
-    Route::put('updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');
+    Route::patch('/updateMaterialStandard', 'ProjectStandardController@updateMaterialStandard')->name('updateMaterialStandard')->middleware('can:manage-project-standard');
+
+    Route::put('/updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');
 
     Route::delete('/deleteWbsStandard/{id}', 'ProjectStandardController@destroyWbsStandard')->name('destroyWbsStandard')->middleware('can:manage-project-standard');
 
@@ -1730,7 +1745,7 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
 
     Route::post('/storeActivityStandard', 'ProjectStandardController@storeActivityStandard')->name('storeActivityStandard')->middleware('can:manage-project-standard');
 
-    Route::put('updateActivityStandard/{id}', 'ProjectStandardController@updateActivityStandard')->name('updateActivityStandard')->middleware('can:manage-project-standard');
+    Route::put('/updateActivityStandard/{id}', 'ProjectStandardController@updateActivityStandard')->name('updateActivityStandard')->middleware('can:manage-project-standard');
 
     Route::delete('/deleteActivityStandard/{id}', 'ProjectStandardController@destroyActivityStandard')->name('destroyActivityStandard')->middleware('can:manage-project-standard');
 });

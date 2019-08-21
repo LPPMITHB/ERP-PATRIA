@@ -153,7 +153,7 @@ class ProjectStandardController extends Controller
         
         foreach($wbss as $wbs){
             $bom_code = "";
-            $bom = BomStandard::where('wbs_standard_id',$wbs->id)->first();
+            $bom = MaterialStandard::where('wbs_standard_id',$wbs->id)->first();
             if($bom){
                 $bom_code = " - this WBS Standard has Material Standard Click to Edit";
                 if($wbs->wbs){
@@ -162,7 +162,7 @@ class ProjectStandardController extends Controller
                         "parent" => "WBS".$wbs->wbs->id,
                         "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$bom->id)],
+                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$wbs->id)],
                     ]);
                 }else{
                     $data->push([
@@ -170,7 +170,7 @@ class ProjectStandardController extends Controller
                         "parent" => "PRO".$project->id,
                         "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$bom->id)],
+                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$wbs->id)],
                     ]);
                 } 
             }else{
@@ -201,8 +201,22 @@ class ProjectStandardController extends Controller
         $wbs = WbsStandard::find($wbs_id);
         $project = ProjectStandard::where('id',$wbs->project_standard_id)->with('ship')->first();
         $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $existing_data = null;
+
+        $material_ids = [];
+        $edit = false;
+        if(count($wbs->materialStandards)>0){
+            $edit = true;
+            $existing_data = MaterialStandard::where('wbs_standard_id', $wbs->id)->with('material.uom')->get();
+            foreach ($existing_data as $material) {
+                array_push($material_ids,$material->material_id);
+                $material->material_code = $material->material->code;
+                $material->material_name = $material->material->description;
+                $material->unit = $material->material->uom->unit;
+            }
+        }
         
-        return view('project_standard.manageMaterial', compact('project','materials','wbs'));
+        return view('project_standard.manageMaterial', compact('project','materials','wbs','edit','existing_data','material_ids'));
     }
 
     public function storeMaterialStandard(Request $request)
@@ -222,6 +236,45 @@ class ProjectStandardController extends Controller
             }
             DB::commit();
             return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Bill Of Material Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project_standard.selectProject')->with('error', $e->getMessage());
+        }
+    }
+
+    public function updateMaterialStandard(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            foreach ($datas->deleted_id as $id) {
+                $materialStandard = MaterialStandard::find($id);
+                $materialStandard->delete();
+            }
+            foreach($datas->materials as $material){
+                if(isset($material->id)){
+                    $materialStandard = MaterialStandard::find($material->id);
+                    $materialStandard->material_id = $material->material_id;
+                    $materialStandard->quantity = $material->quantity;
+                    $materialStandard->source = $material->source;
+                    $materialStandard->update();
+                }else{
+                    $materialStandard = new MaterialStandard;
+                    $materialStandard->project_standard_id = $datas->project_id;
+                    $materialStandard->wbs_standard_id = $datas->wbs_id;
+                    $materialStandard->material_id = $material->material_id;
+                    $materialStandard->quantity = $material->quantity;
+                    $materialStandard->source = $material->source;
+                    $materialStandard->save();
+                }
+            }
+            DB::commit();
+            if($datas->edit){
+                return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Bill Of Material Updated');
+            }else{
+                return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Bill Of Material Created');
+            }
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('project_standard.selectProject')->with('error', $e->getMessage());

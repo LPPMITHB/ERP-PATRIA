@@ -19,6 +19,9 @@ class CreateTrxRapOtherCostTable extends Migration
             $table->double('plan_cost');
             $table->unsignedInteger('cost_type');
             $table->double('actual_cost')->nullable();
+            $table->integer('status')->default(1);
+            $table->date('approval_date')->nullable();
+            $table->unsignedInteger('approved_by')->nullable();
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('user_id');

@@ -490,6 +490,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project_standard.manageMaterial',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $material_standard,
+            'route_name' => 'project_standard.showMaterialStandard',
+        ]);
+
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $projectConfig,
@@ -594,6 +599,12 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $inputActualOtherCost,
             'route_name' => 'rap.selectProjectActualOtherCost',
+        ]);
+
+        $projectPlanOtherCost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $projectPlanOtherCost,
+            'route_name' => 'rap.selectProjectPlanOtherCost',
         ]);
         
         DB::table('sidenav')->insert([

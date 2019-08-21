@@ -53,7 +53,7 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
+   
     public function listWBS($id, $menu){
         $project = Project::find($id);
         $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
@@ -99,13 +99,13 @@ class ProjectController extends Controller
             $route = "";
             $menuTitle = "Select WBS";
         }
-
+    
         foreach($wbss as $wbs){
             if($wbs->wbs){
                 if(count($wbs->activities)>0){
                     $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
                     $dataWbs->push([
-                        "id" => $wbs->code ,
+                        "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
                         "text" => $wbs->number." - ".$wbs->description." | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,
