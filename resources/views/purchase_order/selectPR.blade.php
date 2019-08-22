@@ -145,7 +145,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[4].split("-");                    
+                    var temp = aData[3].split("-");    
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 

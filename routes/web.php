@@ -1018,6 +1018,8 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/{id}', 'PurchaseRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition');
 
+    Route::get('showViaNotification/{id}', 'PurchaseRequisitionController@showViaNotification')->name('showViaNotification')->middleware('can:show-purchase-requisition');
+
     Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove')->middleware('can:approve-purchase-requisition');
 
     Route::get('/edit/{id}', 'PurchaseRequisitionController@edit')->name('edit')->middleware('can:edit-purchase-requisition');
@@ -1052,6 +1054,8 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
     Route::get('/create', 'PurchaseRequisitionController@create')->name('create')->middleware('can:create-purchase-requisition-repair');
 
     Route::get('/{id}', 'PurchaseRequisitionController@show')->name('show')->middleware('can:show-purchase-requisition-repair');
+
+    Route::get('showViaNotification/{id}', 'PurchaseRequisitionController@showViaNotification')->name('showViaNotification')->middleware('can:show-purchase-requisition');
 
     Route::get('/showApprove/{id}', 'PurchaseRequisitionController@showApprove')->name('showApprove')->middleware('can:approve-purchase-requisition-repair');
 

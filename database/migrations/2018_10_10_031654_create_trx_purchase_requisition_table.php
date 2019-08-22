@@ -26,8 +26,12 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->integer('status')->default(1);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('approved_by')->nullable();
-            $table->date('approval_date')->nullable();
+            $table->unsignedInteger('role_approve_1')->nullable();
+            $table->unsignedInteger('role_approve_2')->nullable();
+            $table->unsignedInteger('approved_by_1')->nullable();
+            $table->unsignedInteger('approved_by_2')->nullable();
+            $table->date('approval_date_1')->nullable();
+            $table->date('approval_date_2')->nullable();
             $table->timestamps();
 
             $table->foreign('purchase_requisition_id')->references('id')->on('trx_purchase_requisition');
@@ -35,7 +39,10 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->foreign('bom_id')->references('id')->on('mst_bom');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('approved_by')->references('id')->on('users');
+            $table->foreign('approved_by_1')->references('id')->on('users');
+            $table->foreign('approved_by_2')->references('id')->on('users');
+            $table->foreign('role_approve_1')->references('id')->on('roles');
+            $table->foreign('role_approve_2')->references('id')->on('roles');
         });
     }
 

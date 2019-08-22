@@ -7,7 +7,7 @@
             'title' => 'Create Goods Return',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Purchase Order' => route('goods_return.selectPO'),
+                'Select Goods Receipt' => route('goods_return.selectGR'),
                 'Details' => '',
             ]
         ]
@@ -19,7 +19,7 @@
             'title' => 'Create Goods Return',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Purchase Order' => route('goods_return_repair.selectPO'),
+                'Select Goods Receipt' => route('goods_return_repair.selectGR'),
                 'Details' => '',
             ]
         ]
@@ -192,7 +192,6 @@
             },
 
             submitForm(){
-                $('div.overlay').show();
                 var data = this.modelGRD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
