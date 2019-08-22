@@ -197,10 +197,10 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // Sales Order
-        $createSO = Menu::where('route_name','sales_order.create')->select('id')->first()->id;
+        $createSO = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createSO,
-            'route_name' => 'sales_order.create',
+            'route_name' => 'sales_order.selectQT',
         ]);
 
         $viewSO = Menu::where('route_name','sales_order.index')->select('id')->first()->id;

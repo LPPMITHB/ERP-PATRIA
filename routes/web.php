@@ -1872,7 +1872,9 @@ Route::name('quotation_repair.')->prefix('quotation_repair')->group(function() {
 
 // Sales Order Routes
 Route::name('sales_order.')->prefix('sales_order')->group(function() {
-    Route::get('/create', 'SalesOrderController@create')->name('create');
+    Route::get('/selectQT', 'SalesOrderController@selectQT')->name('selectQT');
+
+    Route::get('/create/{id}', 'SalesOrderController@create')->name('create');
 
     Route::get('/', 'SalesOrderController@index')->name('index');
 
@@ -1887,7 +1889,9 @@ Route::name('sales_order.')->prefix('sales_order')->group(function() {
 
 // Sales Order Repair Routes
 Route::name('sales_order_repair.')->prefix('sales_order_repair')->group(function() {
-    Route::get('/create', 'SalesOrderController@create')->name('create');
+    Route::get('/selectQT', 'SalesOrderController@selectQT')->name('selectQT');
+
+    Route::get('/create/{id}', 'SalesOrderController@create')->name('create');
 
     Route::get('/', 'SalesOrderController@index')->name('index');
 
