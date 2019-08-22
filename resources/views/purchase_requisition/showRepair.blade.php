@@ -3,7 +3,7 @@
 @section('content-header')
 @if($modelPR->type == 1)
     @php($type = 'Material')
-@else  
+@else
     @php($type = 'Resource')
 @endif
 @if($route == "/purchase_requisition")
@@ -111,7 +111,7 @@
                                     <th width="20%">Resource Number</th>
                                     <th width="25%">Resource Description</th>
                                 @endif
-                                <th width="8%">Qty</th>
+                                <th width="8%">Request Quantity</th>
                                 <th width="7%">Unit</th>
                                 <th width="14%">Project Number</th>
                                 <th width="13%">Required Date</th>
@@ -209,7 +209,7 @@
             lengthChange    : false,
             info            : false,
         });
-        
+
         $('div.overlay').hide();
     });
 </script>

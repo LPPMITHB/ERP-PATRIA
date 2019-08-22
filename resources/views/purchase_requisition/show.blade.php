@@ -3,7 +3,7 @@
 @section('content-header')
 @if($modelPR->type == 1)
     @php($type = 'Material')
-@else  
+@else
     @php($type = 'Resource')
 @endif
 @if($route == "/purchase_requisition")
@@ -57,7 +57,7 @@
                         <div class="col-xs-8 col-md-8">
                             : <b>{{ $status }}</b>
                         </div>
-                        
+
                         <div class="col-xs-4 col-md-4">
                             Created By
                         </div>
@@ -97,7 +97,7 @@
                             : <b> {{ $modelPR->approvedBy->name }} </b>
                         </div>
                     @endif
-                    
+
                     <?php
                         $approval_date = "";
                         if($modelPR->approval_date != NULL){
@@ -136,7 +136,7 @@
                                     <th width="20%">Resource Number</th>
                                     <th width="25%">Resource Description</th>
                                 @endif
-                                <th width="8%">Qty</th>
+                                <th width="8%">Request Quantity</th>
                                 <th width="7%">Unit</th>
                                 <th width="14%">Project Number</th>
                                 <th width="13%">Required Date</th>
@@ -231,7 +231,7 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        
+
         });
     });
 
@@ -256,12 +256,12 @@
                     }
 
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }, true],
                 ['<button>NO</button>', function (instance, toast) {
-        
+
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }],
             ],
         });
@@ -288,12 +288,12 @@
                     }
 
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }, true],
                 ['<button>NO</button>', function (instance, toast) {
-        
+
                     instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-        
+
                 }],
             ],
         });

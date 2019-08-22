@@ -122,7 +122,7 @@
                                     <th style="font-size: 11px" width="30%" class="text-center" >Material Number</th>
                                     <th style="font-size: 11px" width="30%" class="text-center" >Material Description</th>
                                     <th style="font-size: 11px" width="10%" class="text-center" >Unit</th>
-                                    <th style="font-size: 11px" width="10%" class="text-center">Quantity</th>
+                                    <th style="font-size: 11px" width="10%" class="text-center">Material Quantity</th>
                                 </tr>
                             </thead>
                             <tbody>

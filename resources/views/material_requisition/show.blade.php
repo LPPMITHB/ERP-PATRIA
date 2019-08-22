@@ -161,14 +161,14 @@
                         @endif
                     </div>
                 </div>
-            </div> 
+            </div>
             <div class="box-body p-t-0 p-b-0">
                 <table class="table table-bordered showTable tableFixed" id="details-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="40%">Material Desc.</th>
-                            <th width="25%">Quantity</th>
+                            <th width="25%">Request Quantity</th>
                             <th width="30%">WBS Name</th>
                         </tr>
                     </thead>

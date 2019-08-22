@@ -45,7 +45,7 @@
                                 <div class="col-xs-12 col-md-4">
                                     <div class="col-xs-5 no-padding">PR Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{modelPO.purchase_requisition.number}}</b></div>
-                                    
+
                                     <div class="col-sm-5 no-padding p-t-15">
                                         <label for="estimated_freight">Estimated Freight </label>
                                     </div>
@@ -154,10 +154,10 @@
                                                     <th width="15%">Resource Number</th>
                                                     <th width="21%">Resource Description</th>
                                                 </template>
-                                                <th style="width: 9%">Qty</th>
-                                                <th style="width: 9%">Order</th>
+                                                <th style="width: 8%">Requested Quantity</th>
+                                                <th style="width: 8%">Order Quantity</th>
                                                 <th style="width: 6%">Unit</th>
-                                                <th style="width: 12%">Price / pcs ({{selectedCurrency}})</th>
+                                                <th style="width: 10%">Price per pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 7%">Disc. (%)</th>
                                                 <th style="width: 10%">Delivery Date</th>
                                                 <th style="width: 8%"></th>
@@ -320,7 +320,7 @@
             });
             $(".delivery_date").datepicker().on(
                 "changeDate", () => {
-                    this.PODetail.forEach(POD => { 
+                    this.PODetail.forEach(POD => {
                         POD.delivery_date = $('#datepicker'+POD.id).val();
                     });
                 }
@@ -376,7 +376,7 @@
                     }
                     if(parseFloat(POD.total_price.replace(/,/g , '')) != ref.replace(/,/g, '')){
                         isOk = true;
-                    }   
+                    }
                 });
                 return isOk;
             }
@@ -391,7 +391,7 @@
                     $(el).tooltip({
                         title: text,
                         placement: binding.arg,
-                        trigger: 'hover'             
+                        trigger: 'hover'
                     })
                 })
                 return text
@@ -430,8 +430,8 @@
 
                 this.modelPO.estimated_freight = this.modelPO.estimated_freight.replace(/,/g , '');
                 data.forEach(POD => {
-                    POD.quantity = POD.quantity.replace(/,/g , '');      
-                    POD.total_price = POD.total_price.replace(/,/g , '');      
+                    POD.quantity = POD.quantity.replace(/,/g , '');
+                    POD.total_price = POD.total_price.replace(/,/g , '');
                 });
 
                 this.submittedForm.modelPO = this.modelPO;
@@ -491,7 +491,7 @@
                         // quantity
                         if(POD.purchase_requisition_detail.purchase_requisition.type == 1){
                             if(POD.material.uom.is_decimal == 0){
-                                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }else{
                                 var decimal = (POD.quantity+"").replace(/,/g, '').split('.');
                                 if(decimal[1] != undefined){
@@ -503,7 +503,7 @@
                                     }
                                 }else{
                                     POD.quantity = (POD.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                } 
+                                }
                             }
                             // delivery date
                             if(POD.delivery_date == null || POD.delivery_date == ""){
@@ -514,7 +514,7 @@
                                 this.delivery_date = "ok";
                             }
                         }else if(POD.purchase_requisition_detail.purchase_requisition.type == 2){
-                            POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                            POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
                             // delivery date
                             if(POD.delivery_date == null || POD.delivery_date == ""){
@@ -525,7 +525,7 @@
                                 this.delivery_date = "ok";
                             }
                         }else{
-                            POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","); 
+                            POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
 
                     });
@@ -612,7 +612,7 @@
                     POD.delivery_date = POD.delivery_date.split("-").reverse().join("-");
                 }
                 POD.price = parseFloat((POD.total_price / POD.quantity+"").replace(/,/g , ''));
-                POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;    
+                POD.total_price = (POD.total_price / this.modelPO.value) / POD.quantity;
 
                 // quantity
                 if(POD.purchase_requisition_detail.purchase_requisition.type == 1){
@@ -630,7 +630,7 @@
                         }else{
                             POD.purchase_requisition_detail.quantity = (POD.purchase_requisition_detail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
-                    }    
+                    }
                 }
                 var decimal = (POD.total_price+"").replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
@@ -642,7 +642,7 @@
                     }
                 }else{
                     POD.total_price = (POD.total_price+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                } 
+                }
 
                 if(POD.purchase_requisition_detail.purchase_requisition.type != 3){
                     if(POD.delivery_date == null || POD.delivery_date == ""){

@@ -32,7 +32,7 @@
                                         GR Description
                                     </div>
                                     <div class="col-sm-12 p-l-0">
-                                        <textarea class="form-control" rows="3" v-model="description" style="width:326px"></textarea>                                                    
+                                        <textarea class="form-control" rows="3" v-model="description" style="width:326px"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-xs-12 col-lg-3 col-md-12">
@@ -51,7 +51,7 @@
                                             <th style="width: 17%">Material Number</th>
                                             <th style="width: 20%">Material Description</th>
                                             <th style="width: 5%">Unit</th>
-                                            <th style="width: 10%">Received</th>
+                                            <th style="width: 10%">Quantity Received</th>
                                             <th style="width: 28%">Storage Location</th>
                                             <th style="width: 12%">Received Date</th>
                                             <th style="width: 10%"></th>
@@ -96,7 +96,7 @@
                                                 </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft">
-                                                <input v-model="dataInput.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_received_date" id="input_received_date" placeholder="Received Date">  
+                                                <input v-model="dataInput.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_received_date" id="input_received_date" placeholder="Received Date">
                                             </td>
                                             <td class="p-l-0 textCenter">
                                                 <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
@@ -142,9 +142,9 @@
                                                         <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{sloc.code}} - {{sloc.name}}</option>
                                                     </selectize>
                                                 </div>
-                                                <div class="col-sm-12"> 
+                                                <div class="col-sm-12">
                                                     <label for="type" class="control-label">Received Date</label>
-                                                    <input v-model="editInput.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_received_date" id="edit_received_date" placeholder="Received Date">  
+                                                    <input v-model="editInput.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="edit_received_date" id="edit_received_date" placeholder="Received Date">
                                                 </div>
                                             </div>
                                         </div>
@@ -193,7 +193,7 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
-    
+
         slocSettings: {
             placeholder: 'Please Select Storage Location'
         },
@@ -262,7 +262,7 @@
 
             allOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length < 1){
                     isOk = true;
                 }
@@ -330,7 +330,7 @@
                         this.dataInput.quantityFloat = this.dataInput.quantity.replace(',', '');
                     }
                 }else{
-                    this.dataInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    this.dataInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.dataInput.quantityFloat = this.dataInput.quantity.replace(',', '');
                 }
             },
@@ -351,7 +351,7 @@
                         this.editInput.quantityFloat = this.editInput.quantity.replace(',', '');
                     }
                 }else{
-                    this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
+                    this.editInput.quantity = (newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.editInput.quantityFloat = this.editInput.quantity.replace(',', '');
                 }
             },
@@ -400,7 +400,7 @@
             },
         },
         methods : {
-            
+
             submitForm(){
                 this.dataMaterial.forEach(material => {
                     material.quantity = parseFloat((material.quantity+"").replace("," , ''));
@@ -453,7 +453,7 @@
                     $('div.overlay').hide();
                 })
             },
-           
+
             openEditModal(data,index){
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
@@ -468,16 +468,16 @@
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
-                
-                
+
+
                 this.material_id_modal.forEach(id => {
                     if(id == data.material_id){
                         var index = this.material_id_modal.indexOf(id);
-                        
+
                     }
                 });
             },
-            
+
             add(){
                 var material_id = this.dataInput.material_id;
                 $('div.overlay').show();
@@ -502,13 +502,13 @@
                     this.dataInput.unit = "";
                     this.dataInput.sloc_name = "";
                     this.dataInput.received_date = "";
-                    
+
                     this.newIndex = Object.keys(this.dataMaterial).length+1;
 
                     // var jsonMaterialId = JSON.stringify(this.material_id);
 
                     // this.getNewMaterials(jsonMaterialId);
-                    
+
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -526,20 +526,20 @@
 
                 // var jsonMaterialId = JSON.stringify(this.material_id);
                 // this.getNewMaterials(jsonMaterialId);
-                
+
                 this.newIndex = this.dataMaterial.length + 1;
             }
-        }, 
+        },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
             Vue.directive('tooltip', function(el, binding){
                 $(el).tooltip({
                     title: binding.value,
                     placement: binding.arg,
-                    trigger: 'hover'             
+                    trigger: 'hover'
                 })
             })
-        }, 
+        },
     });
 </script>
 @endpush
