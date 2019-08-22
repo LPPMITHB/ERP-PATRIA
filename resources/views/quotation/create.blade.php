@@ -79,7 +79,7 @@
                                         <label for="" >Estimator Profile</label>
                                     </div>
                                     <div class="col-xs-12 col-md-8 p-t-10">
-                                        <selectize v-model="dataInput.profile_id" :settings="profile_settings">
+                                        <selectize v-model="dataInput.profile_id" :settings="profile_settings" :disabled="edit">
                                             <option v-for="(profile, index) in profiles" :value="profile.id">{{ profile.code }} - {{ profile.ship.type }}</option>
                                         </selectize>  
                                     </div>
@@ -108,46 +108,91 @@
                             </div>
 
                             <template v-if="dataInput.profile_id != ''">
-                                <div class="col-md-12 p-t-10 p-l-0 p-r-0">
-                                    <table class="table table-bordered tableFixed m-b-0">
-                                        <thead>
-                                            <tr>
-                                                <th width="20%">Cost Standard</th>
-                                                <th width="25%">Description</th>
-                                                <th width="20%">Value</th>
-                                                <th width="10%">Unit</th>
-                                                <th width="25%">Sub Total</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody v-for="(wbs, index) in dataWbs">
-                                            <tr>
-                                                <td colspan="5" class="p-t-13 p-b-13 bg-primary"><b>{{ wbs.code }} - {{ wbs.name }}</b></td>
-                                                <tr v-for="(pd,index) in selectedProfile[0].estimator_profile_details">
-                                                    <template v-if="pd.estimator_cost_standard.estimator_wbs_id == wbs.id">
-                                                        <td>{{ pd.estimator_cost_standard.code }} - {{ pd.estimator_cost_standard.name }}</td>
-                                                        <td>{{ pd.estimator_cost_standard.description ? pd.estimator_cost_standard.description : '-' }}</td>
-                                                        <td class="no-padding">
-                                                            <input class="form-control" type="text" v-model="pd.value" placeholder="Please input value">
-                                                        </td>
-                                                        <td>{{ pd.estimator_cost_standard.uom.unit }}</td>
-                                                        <td>Rp.{{ pd.total_price }}</td>
-                                                    </template>
+                                <template v-if="quotation.length != undefined">
+                                    <div class="col-md-12 p-t-10 p-l-0 p-r-0">
+                                        <table class="table table-bordered tableFixed m-b-0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="20%">Cost Standard</th>
+                                                    <th width="25%">Description</th>
+                                                    <th width="20%">Value</th>
+                                                    <th width="10%">Unit</th>
+                                                    <th width="25%">Sub Total</th>
                                                 </tr>
-                                            </tr>
-                                        </tbody>
-                                            <tr>
-                                                <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin :</b></td>
-                                                <td>{{ dataInput.margin }}%</td>
-                                            </tr>
-                                            <tr>
-                                                <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Total Price :</b></td>
-                                                <td>Rp.{{ totalPrice }}</td>
-                                            </tr>
-                                    </table>
-                                </div>
-                                <div class="col-md-12 p-t-10 p-r-0">
-                                    <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
-                                </div>
+                                            </thead>
+                                            <tbody v-for="(wbs, index) in dataWbs">
+                                                <tr>
+                                                    <td colspan="5" class="p-t-13 p-b-13 bg-primary"><b>{{ wbs.code }} - {{ wbs.name }}</b></td>
+                                                    <tr v-for="(pd,index) in selectedProfile[0].estimator_profile_details">
+                                                        <template v-if="pd.estimator_cost_standard.estimator_wbs_id == wbs.id">
+                                                            <td>{{ pd.estimator_cost_standard.code }} - {{ pd.estimator_cost_standard.name }}</td>
+                                                            <td>{{ pd.estimator_cost_standard.description ? pd.estimator_cost_standard.description : '-' }}</td>
+                                                            <td class="no-padding">
+                                                                <input class="form-control" type="text" v-model="pd.value" placeholder="Please input value">
+                                                            </td>
+                                                            <td>{{ pd.estimator_cost_standard.uom.unit }}</td>
+                                                            <td>Rp.{{ pd.total_price }}</td>
+                                                        </template>
+                                                    </tr>
+                                                </tr>
+                                            </tbody>
+                                                <tr>
+                                                    <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin :</b></td>
+                                                    <td>{{ dataInput.margin }}%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Total Price :</b></td>
+                                                    <td>Rp.{{ totalPrice }}</td>
+                                                </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12 p-t-10 p-r-0">
+                                        <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                                    </div>
+                                </template>
+
+                                <template v-else>
+                                    <div class="col-md-12 p-t-10 p-l-0 p-r-0">
+                                        <table class="table table-bordered tableFixed m-b-0">
+                                            <thead>
+                                                <tr>
+                                                    <th width="20%">Cost Standard</th>
+                                                    <th width="25%">Description</th>
+                                                    <th width="20%">Value</th>
+                                                    <th width="10%">Unit</th>
+                                                    <th width="25%">Sub Total</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody v-for="(wbs, index) in dataWbs">
+                                                <tr>
+                                                    <td colspan="5" class="p-t-13 p-b-13 bg-primary"><b>{{ wbs.code }} - {{ wbs.name }}</b></td>
+                                                    <tr v-for="(qd,index) in quotation.quotation_details">
+                                                        <template v-if="qd.estimator_cost_standard.estimator_wbs_id == wbs.id">
+                                                            <td>{{ qd.estimator_cost_standard.code }} - {{ qd.estimator_cost_standard.name }}</td>
+                                                            <td>{{ qd.estimator_cost_standard.description ? qd.estimator_cost_standard.description : '-' }}</td>
+                                                            <td class="no-padding">
+                                                                <input class="form-control" type="text" v-model="qd.value" placeholder="Please input value">
+                                                            </td>
+                                                            <td>{{ qd.estimator_cost_standard.uom.unit }}</td>
+                                                            <td>Rp.{{ qd.total_price }}</td>
+                                                        </template>
+                                                    </tr>
+                                                </tr>
+                                            </tbody>
+                                                <tr>
+                                                    <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin :</b></td>
+                                                    <td>{{ dataInput.margin }}%</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Total Price :</b></td>
+                                                    <td>Rp.{{ totalPrice }}</td>
+                                                </tr>
+                                        </table>
+                                    </div>
+                                    <div class="col-md-12 p-t-10 p-r-0">
+                                        <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
+                                    </div>
+                                </template>
                             </template>
 
                             <div class="modal fade" id="top">
@@ -230,6 +275,7 @@
     })
 
     var data = {
+        quotation : @json($quotation),
         customers : @json($customers),
         profiles : @json($profiles),
         dataInput: {
@@ -253,12 +299,22 @@
         },
         newIndex:"",
         submittedForm : {},
+        quotationDetails : [],
     }
 
     var vm = new Vue({
         el : '#quotation',
         data : data,
         computed: {
+            edit: function(){
+                let isOk = false;
+
+                if(this.quotation.length == undefined){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
             createOk: function(){
                 let isOk = false;
 
@@ -266,23 +322,41 @@
                     isOk = true;
                 }
 
-                this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
-                    if(pd.value == undefined || pd.value == ""){
-                        isOk = true;
-                    }
-                })
+                if(this.quotation.length != undefined){
+                    this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
+                        if(pd.value == undefined || pd.value == ""){
+                            isOk = true;
+                        }
+                    })
+                }else{
+                    this.quotation.quotation_details.forEach(qd =>{
+                        if(qd.value == undefined || qd.value == ""){
+                            isOk = true;
+                        }
+                    })
+                }
 
                 return isOk;
             },
             totalPrice: function(){
                 let total_price = 0;
-                this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
-                    if(pd.value != undefined){
-                        total_price += (pd.value+"").replace(/,/g , '') * pd.estimator_cost_standard.value;
-                    }
-                });
-                total_price = total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100);
-                total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                if(this.quotation.length != undefined){
+                    this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
+                        if(pd.value != undefined){
+                            total_price += (pd.value+"").replace(/,/g , '') * pd.estimator_cost_standard.value;
+                        }
+                    });
+                    total_price = total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100);
+                    total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }else{
+                    this.quotation.quotation_details.forEach(qd =>{
+                        if(qd.value != undefined){
+                            total_price += (qd.value+"").replace(/,/g , '') * qd.price;
+                        }
+                    });
+                    total_price = Math.ceil(total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100));
+                    total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
                 return total_price;
             },
             inputOk: function(){
@@ -363,17 +437,28 @@
             submitForm(){
                 $('div.overlay').show();
                 document.body.appendChild(form);
+
                 this.tops.forEach(top=>{
                     top.project_progress = (top.project_progress+"").replace(/,/g , '');
                     top.payment_percentage = (top.payment_percentage+"").replace(/,/g , '');
                 })
 
                 let total_price = 0;
-                this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
-                    pd.value = (pd.value+"").replace(/,/g , '');
-                    pd.total_price = (pd.total_price+"").replace(/,/g , '');
-                    total_price += parseFloat((pd.total_price+"").replace(/,/g , ''));
-                })
+                if(this.quotation.length != undefined){
+                    this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
+                        pd.value = (pd.value+"").replace(/,/g , '');
+                        pd.total_price = (pd.total_price+"").replace(/,/g , '');
+                        total_price += parseFloat((pd.total_price+"").replace(/,/g , ''));
+                    })
+                    this.submittedForm.pd = this.selectedProfile;
+                }else{
+                    this.quotation.quotation_details.forEach(qd =>{
+                        qd.value = (qd.value+"").replace(/,/g , '');
+                        qd.total_price = (qd.total_price+"").replace(/,/g , '');
+                        total_price += parseFloat((qd.total_price+"").replace(/,/g , ''));
+                    })
+                    this.submittedForm.pd = this.quotation;
+                }
 
                 this.submittedForm.profile_id = this.dataInput.profile_id;
                 this.submittedForm.customer_id = this.dataInput.customer_id;
@@ -381,7 +466,6 @@
                 this.submittedForm.description = this.dataInput.description;
                 this.submittedForm.price = total_price;
                 this.submittedForm.total_price = total_price * (1 + parseFloat(this.dataInput.margin) / 100);
-                this.submittedForm.pd = this.selectedProfile;
                 this.submittedForm.top = this.tops;
 
                 let struturesElem = document.createElement('input');
@@ -414,33 +498,64 @@
                 this.selectedProfile = [];
                 this.dataWbs = [];
                 if(newValue != ""){
-                    this.profiles.forEach(profile =>{
-                        if(profile.id == newValue){
-                            this.selectedProfile.push(profile);
-                            this.selectedProfile[0].estimator_profile_details.forEach(spd =>{
-                                spd.total_price = 0;
-                                let status = true;
-                                if(this.dataWbs.length > 0){
-                                    this.dataWbs.forEach(wbs =>{
-                                        if(wbs.id == spd.estimator_wbs_id){
-                                            status = false;
-                                        }
-                                    })
-                                }
-                                if(status){
-                                    let statusWbs = true;
-                                    this.dataWbs.forEach(wbs =>{
-                                        if(wbs.id == spd.estimator_cost_standard.estimator_wbs_id){
-                                            statusWbs = false;
-                                        }
-                                    })
-                                    if(statusWbs){
-                                        this.dataWbs.push(spd.estimator_cost_standard.estimator_wbs);
+                    if(this.quotation.length != undefined){
+                        // create quotation
+                        this.profiles.forEach(profile =>{
+                            if(profile.id == newValue){
+                                this.selectedProfile.push(profile);
+                                this.selectedProfile[0].estimator_profile_details.forEach(spd =>{
+                                    spd.total_price = 0;
+                                    let status = true;
+                                    if(this.dataWbs.length > 0){
+                                        this.dataWbs.forEach(wbs =>{
+                                            if(wbs.id == spd.estimator_wbs_id){
+                                                status = false;
+                                            }
+                                        })
                                     }
-                                }
-                            })
-                        }
-                    })
+                                    if(status){
+                                        let statusWbs = true;
+                                        this.dataWbs.forEach(wbs =>{
+                                            if(wbs.id == spd.estimator_cost_standard.estimator_wbs_id){
+                                                statusWbs = false;
+                                            }
+                                        })
+                                        if(statusWbs){
+                                            this.dataWbs.push(spd.estimator_cost_standard.estimator_wbs);
+                                        }
+                                    }
+                                })
+                            }
+                        })
+                    }else{
+                        // edit quotation
+                        this.profiles.forEach(profile =>{
+                            if(profile.id == newValue){
+                                this.selectedProfile.push(profile);
+                                this.quotation.quotation_details.forEach(qd =>{
+                                    let status = true;
+                                    if(this.dataWbs.length > 0){
+                                        this.dataWbs.forEach(wbs =>{
+                                            if(wbs.id == qd.estimator_cost_standard.estimator_wbs_id){
+                                                status = false;
+                                            }
+                                        })
+                                    }
+                                    if(status){
+                                        let statusWbs = true;
+                                        this.dataWbs.forEach(wbs =>{
+                                            if(wbs.id == qd.estimator_cost_standard.estimator_wbs_id){
+                                                statusWbs = false;
+                                            }
+                                        })
+                                        if(statusWbs){
+                                            this.dataWbs.push(qd.estimator_cost_standard.estimator_wbs);
+                                        }
+                                    }
+                                })
+                            }
+                        })
+                    }
                 }
             },
             selectedProfile:{
@@ -460,6 +575,28 @@
                             }
                         // kalkulasi total price (value {inputan user} * harga pada cost standard)
                         pd.total_price = (((pd.value+"").replace(/,/g , '') * pd.estimator_cost_standard.value)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        }
+                    })
+                },
+                deep: true
+            },
+            quotation:{
+                handler: function(newValue) {
+                    this.quotation.quotation_details.forEach(qd =>{
+                        if(qd.value != undefined){
+                            var decimal = (qd.value+"").replace(/,/g, '').split('.');
+                            if(decimal[1] != undefined){
+                                var maxDecimal = 2;
+                                if((decimal[1]+"").length > maxDecimal){
+                                    qd.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                }else{
+                                    qd.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                }
+                            }else{
+                                qd.value = (qd.value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                            // kalkulasi total price (value {inputan user} * harga pada cost standard)
+                            qd.total_price = (((qd.value+"").replace(/,/g , '') * qd.price)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
                     })
                 },
@@ -515,8 +652,27 @@
             }
         },
         created : function(){
-            this.dataInput.margin = 0;
-            this.newIndex = this.tops.length + 1;
+            if(this.quotation.length != undefined){
+                this.dataInput.margin = 0;
+                this.newIndex = this.tops.length + 1;
+            }else{
+                // fill data header
+                this.dataInput.profile_id = this.quotation.profile_id;
+                this.dataInput.margin = this.quotation.margin;
+                this.dataInput.description = this.quotation.description;
+                this.dataInput.customer_id = this.quotation.customer_id;
+
+                // fill terms of payment
+                this.tops = JSON.parse(this.quotation.terms_of_payment);
+                this.newIndex = this.tops.length + 1;
+
+                // sub total
+                this.quotation.quotation_details.forEach(qd =>{
+                    qd.total_price = 0;
+                    qd.value = qd.value+1;
+                    qd.value = qd.value-1;
+                })
+            }
         }
     });
 
