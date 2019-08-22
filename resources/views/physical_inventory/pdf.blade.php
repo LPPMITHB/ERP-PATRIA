@@ -92,7 +92,7 @@
                                     <th style="font-size: 11px" width="5%" class="text-center" >Unit</th>
                                     <th style="font-size: 11px" width="20%" class="text-center" >Storage Location</th>
                                     <th style="font-size: 11px" width="20%"  class="text-center">Location Detail</th>
-                                    <th style="font-size: 11px" width="5%" class="text-center">Quantity</th>
+                                    <th style="font-size: 11px" width="5%" class="text-center">Stock Quantity</th>
                                     <th style="font-size: 11px" width="5%" class="text-center">Count</th>
                                 </tr>
                             </thead>

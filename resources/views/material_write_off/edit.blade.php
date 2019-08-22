@@ -47,7 +47,7 @@
                                         <th style="width: 7%">Unit</th>
                                         <th style="width: 9%">Available</th>
                                         <th style="width: 12%">Amount / Unit</th>
-                                        <th style="width: 7%">Qty</th>
+                                        <th style="width: 7%">Write-Off Quantity</th>
                                         <th style="width: 12%"></th>
                                     </tr>
                                 </thead>
@@ -153,7 +153,7 @@
                                                 <input type="text" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-6">
-                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <label for="quantity" class="control-label">Write-Off Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-6">

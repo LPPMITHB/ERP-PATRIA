@@ -39,13 +39,13 @@
                                     <tr>
                                         <th style="width: 5%">No</th>
                                         <th style="width: 12%">Warehouse</th>
-                                        <th style="width: 12%">S.Loc</th>
+                                        <th style="width: 10%">S.Loc</th>
                                         <th style="width: 15%">Material Number</th>
                                         <th style="width: 15%">Material Description</th>
                                         <th style="width: 8%">Available</th>
                                         <th style="width: 5%">Unit</th>
                                         <th style="width: 12%">Amount / Unit</th>
-                                        <th style="width: 6%">Qty</th>
+                                        <th style="width: 8%">Write-Off Quantity</th>
                                         <th style="width: 10%"></th>
                                     </tr>
                                 </thead>
@@ -150,7 +150,7 @@
                                                 <input type="text" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-6">
-                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <label for="quantity" class="control-label">Write-Off Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-6">
@@ -179,7 +179,7 @@
 @push('script')
 <script>
     const form = document.querySelector('form#create-mwo');
-    
+
     $(document).ready(function(){
         $('div.overlay').hide();
     });
@@ -239,7 +239,7 @@ var vm = new Vue({
     computed : {
         allOk: function(){
             let isOk = false;
-            
+
             if(this.dataMaterial.length < 1){
                 isOk = true;
             }
@@ -268,20 +268,20 @@ var vm = new Vue({
     methods : {
         add(){
             var material_id = this.dataInput.material_id;
-            var sloc_id = this.dataInput.sloc_id; 
+            var sloc_id = this.dataInput.sloc_id;
             var warehouse_id = this.dataInput.warehouse_id;
             $('div.overlay').show();
                 window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
-                    
+
                     this.dataInput.material_name = data.description;
                     this.dataInput.material_code = data.code;
                     window.axios.get('/api/getSloc/'+sloc_id).then(({ data }) => {
-                        
+
                         this.dataInput.sloc_name = data.name;
                         this.dataInput.warehouse_name = data.warehouse.name;
                         var temp_data = JSON.stringify(this.dataInput);
                         temp_data = JSON.parse(temp_data);
-                        
+
                         this.dataMaterial.push(temp_data);
 
                         this.dataInput.material_id = "";
@@ -354,7 +354,7 @@ var vm = new Vue({
                 });
                 $('div.overlay').hide();
             })
-        
+
         },
         submitForm(){
             $('div.overlay').show();
@@ -363,7 +363,7 @@ var vm = new Vue({
                 data.amount = parseFloat(data.amount.replace(/,/g , ''));
             });
             this.submittedForm.description = this.description;
-            this.submittedForm.materials = this.dataMaterial;    
+            this.submittedForm.materials = this.dataMaterial;
 
             let struturesElem = document.createElement('input');
             struturesElem.setAttribute('type', 'hidden');
@@ -423,7 +423,7 @@ var vm = new Vue({
         },
         removeRow(index){
             this.dataMaterial.splice(index, 1);
-            
+
             this.newIndex = this.dataMaterial.length + 1;
         },
     },
@@ -437,7 +437,7 @@ var vm = new Vue({
                 window.axios.get('/api/getStorloc/'+newValue).then(({ data }) => {
                     // mengambil sloc pada warehouse tersebut
                     this.slocs = data;
-                    
+
                     var $material = $(document.getElementById('material')).selectize();
                     var $slocs = $(document.getElementById('sloc')).selectize();
                     $slocs[0].selectize.focus();
@@ -483,7 +483,7 @@ var vm = new Vue({
                             });
                         }
                     });
-                    
+
                     var $material = $(document.getElementById('material')).selectize();
                     if(this.editInput.old_sloc_id != newValue){
                         this.editInput.quantity = "";
@@ -568,7 +568,7 @@ var vm = new Vue({
             if(newValue != ""){
                 var is_decimal = this.dataInput.is_decimal;
                 if(is_decimal == 0){
-                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -581,7 +581,7 @@ var vm = new Vue({
                     }else{
                         this.dataInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }   
+                }
                 if(parseFloat((this.dataInput.quantity+"").replace(/,/g , '')) >  parseFloat((this.dataInput.available+"").replace(/,/g , ''))){
                     iziToast.warning({
                         title: 'Cannot insert more than available quantity !',
@@ -590,7 +590,7 @@ var vm = new Vue({
                     });
 
                     this.dataInput.quantity = this.dataInput.available;
-                }    
+                }
             }
         },
         // 'editInput.sloc_id' : function(newValue){
@@ -634,24 +634,24 @@ var vm = new Vue({
         //             });
         //             $('div.overlay').hide();
         //         })
-                
+
         //         this.slocDetails.forEach(element => {
         //             if(element.storage_location_id == this.editInput.sloc_id && this.editInput.material_id == element.material_id){
         //                 this.editInput.available = element.quantity;
         //                 this.editInput.available = (this.editInput.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
         //             }
         //         });
-                
+
         //         if(this.editInput.old_material_id != newValue){
         //             this.editInput.quantity = "";
         //         }
         //     }
         // },
         'editInput.quantity' : function(newValue){
-            if(newValue != ""){      
+            if(newValue != ""){
                 var is_decimal = this.editInput.is_decimal;
                 if(is_decimal == 0){
-                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -664,7 +664,7 @@ var vm = new Vue({
                     }else{
                         this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }   
+                }
 
                 if(parseFloat(this.editInput.quantity.replace(/,/g , '')) >  parseFloat(this.editInput.available.replace(/,/g , ''))){
                     iziToast.warning({
@@ -674,7 +674,7 @@ var vm = new Vue({
                     });
 
                     this.editInput.quantity = this.editInput.available;
-                }  
+                }
             }
         },
     },

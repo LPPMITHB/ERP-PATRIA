@@ -99,9 +99,9 @@
                                             <th style="width: 5%">No</th>
                                             <th style="width: 15%">Material Number</th>
                                             <th style="width: 25%">Material Description</th>
-                                            <th style="width: 6.66%">Quantity</th>
-                                            <th style="width: 6.66%">Reserved</th>
-                                            <th style="width: 6.66%">Available</th>
+                                            <th style="width: 6.66%">Stock Quantity</th>
+                                            <th style="width: 6.66%">Reserved Stock</th>
+                                            <th style="width: 6.66%">Available Stock</th>
                                             <th style="width: 5%">Unit</th>
                                             <th style="width: 15%">Total Value</th>
                                         </thead>
@@ -128,7 +128,7 @@
                                             <th style="width: 15%">Material Number</th>
                                             <th style="width: 25%">Material Description</th>
                                             <th style="width: 5%">Unit</th>
-                                            <th style="width: 10%">Quantity</th>
+                                            <th style="width: 10%">Material Quantity</th>
                                             <th style="width: 15%">Total Value</th>
                                         </thead>
                                         <tbody>

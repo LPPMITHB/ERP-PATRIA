@@ -157,7 +157,7 @@
                             @if($modelMWO->status == 1)
                                 <th width="8%">Available</th>
                             @endif
-                            <th width="8%">Quantity</th>
+                            <th width="8%">Write-Off Quantity</th>
                             <th width="5%">Unit</th>
                             <th width=10%>Amount / Unit</th>
                         </tr>
