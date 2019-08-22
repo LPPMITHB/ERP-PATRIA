@@ -30,13 +30,13 @@
                         <div class="box-header no-padding">
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-                                
+
                                 <div class="col-xs-5 no-padding">Project Number</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.number : "-"}}</b></div>
-                                
+
                                 <div class="col-xs-5 no-padding">Ship Type</div>
                                 <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject != null ? selectedProject.ship.type : "-"}}</b></div>
-        
+
                                 <div class="col-xs-5 no-padding">Customer</div>
                                 <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject != null ? selectedProject.customer.name : '-')"><b>: {{selectedProject != null ? selectedProject.customer.name : "-" }}</b></div>
 
@@ -82,9 +82,9 @@
                                             <th style="width: 5%">No</th>
                                             <th style="width: 23%" v-show="selectedProject != null" >WBS Name</th>
                                             <th style="width: 38%">Material Name</th>
-                                            <th style="width: 15%" v-show="selectedProject != null">Planned Qty (BOM)</th>
-                                            <th style="width: 12%">Available Qty</th>
-                                            <th style="width: 12%">Requested Qty</th>
+                                            <th style="width: 15%" v-show="selectedProject != null">Planned Quantity (BOM)</th>
+                                            <th style="width: 12%">Available Quantity</th>
+                                            <th style="width: 12%">Request Quantity</th>
                                             <th style="width: 6%">Unit</th>
                                             <th style="width: 10%"></th>
                                         </tr>
@@ -118,7 +118,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == '' && selectedProject != null">
                                                 <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
-                                                </selectize>  
+                                                </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0 && selectedProject != null">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
@@ -170,14 +170,14 @@
                                         <div class="row">
                                             <div class="col-sm-12" v-show="selectedProject != null">
                                                 <label for="wbs" class="control-label">WBS Name</label>
-                                                <input type="text" id="wbs" class="form-control" disabled>  
+                                                <input type="text" id="wbs" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-12">
                                                 <label for="material" class="control-label">Material</label>
-                                                <input type="text" id="material" class="form-control" disabled>                                                
+                                                <input type="text" id="material" class="form-control" disabled>
                                             </div>
                                             <div class="col-sm-9" v-show="selectedProject != null">
-                                                <label for="planned_quantity" class="control-label">Planned Quantity</label>
+                                                <label for="planned_quantity" class="control-label">Planned Quantity (BOM)</label>
                                                 <input disabled type="text" id="planned_quantity" v-model="editInput.planned_quantity" class="form-control" placeholder="">
                                             </div>
                                             <div class="col-sm-3 m-t-25" v-show="selectedProject != null">
@@ -191,7 +191,7 @@
                                                 <input disabled type="text" id="unit" v-model="editInput.unit" class="form-control" placeholder="">
                                             </div>
                                             <div class="col-sm-9">
-                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <label for="quantity" class="control-label">Request Quantity</label>
                                                 <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-3 m-t-25">
@@ -231,10 +231,10 @@
     if(@json($modelMR->delivery_date) != null){
         date = delivery_date_meta.getDate();
         month = delivery_date_meta.getMonth()+1;
-        
+
         if(date<10){
             date = '0'+date;
-        } 
+        }
         if(month<10){
             month = '0'+ month;
         }
@@ -345,7 +345,7 @@
             },
             dataOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length > 0){
                     isOk = true;
                 }
@@ -354,7 +354,7 @@
             },
             allOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length < 1){
                     isOk = true;
                 }
@@ -393,7 +393,7 @@
                     $(el).tooltip({
                         title: text,
                         placement: binding.arg,
-                        trigger: 'hover'             
+                        trigger: 'hover'
                     })
                 })
                 return text
@@ -401,9 +401,9 @@
             submitForm(){
                 this.submittedForm.description = this.description;
                 this.submittedForm.delivery_date = this.delivery_date;
-                this.submittedForm.project_id = this.project_id;     
-                this.submittedForm.materials = this.dataMaterial;    
-                this.submittedForm.deleted_mrd = this.deleted_mrd;    
+                this.submittedForm.project_id = this.project_id;
+                this.submittedForm.materials = this.dataMaterial;
+                this.submittedForm.deleted_mrd = this.deleted_mrd;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -436,7 +436,7 @@
                 document.getElementById('wbs').value = data.wbs_number;
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
-                
+
                 this.material_id_modal.forEach(id => {
                     if(id == data.material_id){
                         var index = this.material_id_modal.indexOf(id);
@@ -482,8 +482,8 @@
                     this.dataInput.material_id = "";
                     this.dataInput.wbs_id = "";
                     this.dataInput.wbs_number = "";
-                    
-                    this.newIndex = Object.keys(this.dataMaterial).length+1;                    
+
+                    this.newIndex = Object.keys(this.dataMaterial).length+1;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -503,8 +503,8 @@
                             stock.available = stock.quantity - stock.reserved;
                         }
                     });
-    
-                    this.dataMaterial.splice(index, 1);                
+
+                    this.dataMaterial.splice(index, 1);
                     this.newIndex = this.dataMaterial.length + 1;
                 }else{
                     this.stocks.forEach(stock => {
@@ -513,7 +513,7 @@
                         }
                     });
                     this.deleted_mrd.push(this.dataMaterial[index].mrd_id);
-                    this.dataMaterial.splice(index, 1);                
+                    this.dataMaterial.splice(index, 1);
                     this.newIndex = this.dataMaterial.length + 1;
                 }
             }
@@ -523,7 +523,7 @@
                 if(newValue != ""){
                     var temp = parseFloat((newValue+"").replace(",", ""));
                     this.dataInput.quantityFloat = temp;
-                                        
+
                     if(this.dataInput.is_decimal){
                         var decimal = (newValue+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -560,7 +560,7 @@
                 if(newValue != ""){
                     var temp = parseFloat((newValue+"").replace(",", ""));
                     this.editInput.quantityFloat = temp;
-                                        
+
                     if(this.editInput.is_decimal){
                         var decimal = (newValue+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -626,9 +626,9 @@
                     }
                 }else{
                     this.editInput.availableStr = ((newValue+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
-                    
+
                 }
-                
+
             },
             'dataInput.wbs_id': function(newValue){
                 this.dataInput.material_id = "";
@@ -778,7 +778,7 @@
         },
         created: function() {
             this.newIndex = Object.keys(this.dataMaterial).length+1;
-            
+
         },
     });
 </script>

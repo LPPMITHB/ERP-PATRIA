@@ -3,7 +3,7 @@
 @section('content-header')
 @if($modelPR->type == 1)
     @php($type = 'Material')
-@else  
+@else
     @php($type = 'Resource')
 @endif
 @if($route == "/purchase_requisition")
@@ -87,7 +87,7 @@
                 <div class="col-xs-12 col-md-4 m-t-10">
                     <div class="col-xs-12 no-padding"><b>Revision Description</b></div>
                     <div class="col-xs-12 no-padding">
-                        <textarea class="form-control" rows="3" id="rev_desc"></textarea>  
+                        <textarea class="form-control" rows="3" id="rev_desc"></textarea>
                     </div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                                     <th width="20%">Resource Number</th>
                                     <th width="25%">Resource Description</th>
                                 @endif
-                                <th width="8%">Qty</th>
+                                <th width="8%">Request Quantity</th>
                                 <th width="7%">Unit</th>
                                 <th width="14%">Project Number</th>
                                 <th width="13%">Required Date</th>

@@ -91,10 +91,10 @@
                                                 <th width="4%">No</th>
                                                 <th width="10%">Material Number</th>
                                                 <th width="12%">Material Description</th>
-                                                <th width="4%">Qty</th>
-                                                <th width="6.5%">Received</th>
+                                                <th width="5.5%">Ordered Quantity</th>
+                                                <th width="6%">Quantity Received</th>
                                                 <th width="4%">Unit</th>
-                                                <th width="14%">Storage Location</th>
+                                                <th width="12%">Storage Location</th>
                                                 <th width="9%">Received Date</th>
                                                 <th width="7%">Item OK</th>
                                             </tr>

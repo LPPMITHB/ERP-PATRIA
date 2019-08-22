@@ -171,10 +171,10 @@
                                                     <th width="15%">Resource Number</th>
                                                     <th width="20%">Resource Description</th>
                                                 </template>
-                                                <th style="width: 6%">Qty</th>
-                                                <th style="width: 6%">Order</th>
+                                                <th style="width: 8%">Requested Quantity</th>
+                                                <th style="width: 8%">Order Quantity</th>
                                                 <th style="width: 6%">Unit</th>
-                                                <th style="width: 14%">Price / pcs ({{selectedCurrency}})</th>
+                                                <th style="width: 10%">Price per pcs ({{selectedCurrency}})</th>
                                                 <th style="width: 10%">Disc. (%)</th>
                                                 <th style="width: 12%">Delivery Date</th>
                                                 <th style="width: 8%"></th>

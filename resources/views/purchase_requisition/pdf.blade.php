@@ -3,14 +3,14 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="initial-scale=1.0">
-    
+
         <link rel="stylesheet" href="{{ asset('css/app.css') }}" type="text/css" media="all">
         <style>
-                /** 
+                /**
                     Set the margins of the page to 0, so the footer and the header
                     can be of the full height and width !
                  **/
-                 
+
                 /** Define now the real margins of every page in the PDF **/
                 @page{
                     margin-top:230px;
@@ -46,10 +46,10 @@
                     <div class="box-header no-padding" style="margin-bottom : 47px">
                         <div class="col-sm-3 col-md-3 col-lg-3 no-padding-left m-b-7">
                             @if($route == '/purchase_requisition')
-                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">    
-                            @else 
-                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">    
-                            @endif                    
+                            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">
+                            @else
+                            <img src="{{ asset('images/logo-PAMI.jpg') }}" alt="" srcset="">
+                            @endif
                         </div>
                         <div class="row" style="margin-left: -5px;">
                             <div class="col-sm-12" style="font-size: 11px;line-height: 13px">
@@ -69,25 +69,25 @@
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Request Date  </div>
                             <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                                : {{date("d-m-Y", strtotime($modelPR->created_at))}}                   
+                                : {{date("d-m-Y", strtotime($modelPR->created_at))}}
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Request Number  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                                : {{$modelPR->number}}                    
+                                : {{$modelPR->number}}
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Department  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                                : {{$modelPR->user->role->name}}                    
+                                : {{$modelPR->user->role->name}}
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
                             <div style="font-size: 11px;">Project  </div>
                             <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                                : {{($modelPR->project) ? $modelPR->project->number : '-'}}                    
+                                : {{($modelPR->project) ? $modelPR->project->number : '-'}}
                             </div>
                         </div>
                         <div style="margin-left: 450px; ">
@@ -108,13 +108,13 @@
                                 @elseif($modelPR->status == 6)
                                     @php($status = "CONSOLIDATED")
                                 @endif
-                                : {{$status}}                    
+                                : {{$status}}
                             </div>
                             {{-- @if($modelPR->status == 2)
                                 <div style="margin-left: 450px; ">
                                     <div style="font-size: 11px;">Approved By  </div>
                                     <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                                        : {{($modelPR->approvedBy->name) ? $modelPR->approvedBy->name : '-'}}                    
+                                        : {{($modelPR->approvedBy->name) ? $modelPR->approvedBy->name : '-'}}
                                     </div>
                                 </div>
                             @endif --}}
@@ -139,7 +139,7 @@
                                             <th style="font-size: 11px" width="15%" class="text-center" >Resource Number</th>
                                             <th style="font-size: 11px" width="25%" class="text-center">Resource Description</th>
                                         @endif
-                                        <th style="font-size: 11px" width="8%" class="text-center">Qty</th>
+                                        <th style="font-size: 11px" width="8%" class="text-center">Request Quantity</th>
                                         <th style="font-size: 11px" width="7%" class="text-center">Unit</th>
                                         <th style="font-size: 11px" width="13%" class="text-center">Required Date</th>
                                         <th style="font-size: 11px" width="14%" class="text-center">Department</th>
@@ -219,7 +219,7 @@
                                 <div style="margin-top: -20px;font-size: 11px">Date</div>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div> <!-- /.col-xs-12 -->
             </div> <!-- /.row -->
         </main>

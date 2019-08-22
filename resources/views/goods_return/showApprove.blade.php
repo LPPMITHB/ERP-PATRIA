@@ -84,7 +84,7 @@
                             <th width="5%">No</th>
                             <th width="20%">Material Number</th>
                             <th width="20%">Material Description</th>
-                            <th width="25%">Quantity</th>
+                            <th width="25%">Return Quantity</th>
                             <th width="30%">Storage Location</th>
                         </tr>
                     </thead>
@@ -160,7 +160,7 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        }); 
+        });
     });
 
     var data = {
