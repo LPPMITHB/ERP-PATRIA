@@ -331,6 +331,8 @@ class ConfigurationController extends Controller
             $slug = 'approval-po';
         }elseif($type == "Material Requisition"){
             $slug = 'approval-mr';
+        }elseif($type == "Material Write Off"){
+            $slug = "approval-mwo";
         }
         
         return response(Configuration::get($slug), Response::HTTP_OK);
