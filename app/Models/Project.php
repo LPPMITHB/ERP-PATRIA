@@ -77,4 +77,9 @@ class Project extends Model
     {
         return $this->hasMany('App\Models\DailyManHour');
     }
+
+    public function cost()
+    {
+        return $this->hasMany('App\Models\Cost');
+    }
 }

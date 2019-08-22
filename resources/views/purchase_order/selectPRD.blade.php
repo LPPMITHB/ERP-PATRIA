@@ -60,9 +60,9 @@
                                             <th width="15%">Resource Number</th>
                                             <th width="25%">Resource Description</th>
                                         </template>
-                                        <th width="8%">Qty</th>
-                                        <th width="8%">Ord</th>
-                                        <th width="8%">Rmn</th>
+                                        <th width="8%">Requested Quantity</th>
+                                        <th width="8%">Quantity Reserved</th>
+                                        <th width="8%">Remaining Quantity</th>
                                         <th width="6%">Unit</th>
                                         <th width="15%">Project Number</th>
                                         <th width="10%">Allocation</th>

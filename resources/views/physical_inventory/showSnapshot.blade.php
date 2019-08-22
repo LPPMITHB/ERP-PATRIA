@@ -68,7 +68,7 @@
                             <th style="width: 7%">Unit</th>
                             <th style="width: 19%">Storage Location</th>
                             <th style="width: 29%">Location Detail</th>
-                            <th style="width: 10%">Quantity</th>
+                            <th style="width: 10%">Stock Quantity</th>
                         </tr>
                     </thead>
                     <tbody>

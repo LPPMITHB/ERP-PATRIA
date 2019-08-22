@@ -25,6 +25,6 @@ class Quotation extends Model
 
     public function quotationDetails() 
     {
-        return $this->belongsTo('App\Models\QuotationDetail');
+        return $this->hasMany('App\Models\QuotationDetail');
     }
 }

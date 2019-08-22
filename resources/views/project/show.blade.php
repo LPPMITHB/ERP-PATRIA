@@ -38,7 +38,13 @@
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE ACTIVITIES</a>
             <a href="{{ route('project.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
             <a href="{{ route('activity.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
+            <a href="{{ route('project.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">
+                @if($is_pami)
+                    PROJECT COST MONITORING
+                @else
+                    PROJECT COST EVALUATION
+                @endif
+                </a>
         </div>
     @else
         <div class="box-tools pull-left m-l-15">
@@ -48,7 +54,13 @@
             <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE ACTIVITIES</a>
             <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
             <a href="{{ route('activity_repair.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-            <a href="{{ route('project_repair.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST EVALUATION</a>
+            <a href="{{ route('project_repair.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">
+                @if($is_pami)
+                    PROJECT COST MONITORING
+                @else
+                    PROJECT COST EVALUATION
+                @endif
+            </a>
         </div>
     @endif
 </div>
@@ -57,11 +69,11 @@
     <div class="col-sm-12">
         <div class="box box-solid">
             <div class="box-body">
-                <div class="col-xs-12 col-lg-4 col-md-12">    
+                <div class="col-xs-12 col-lg-4 col-md-12">
                     <div class="box-body">
                         <div class="col-md-4 col-xs-6 no-padding">Project Code</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->number}}</b></div>
-                        
+
                         <div class="col-md-4 col-xs-6 no-padding">Ship Name</div>
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->name}}</b></div>
 
@@ -81,31 +93,31 @@
                         <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->status == 1 ? "OPEN" : "CLOSED" }}</b></div>
                     </div>
                 </div>
-                <div class="col-xs-12 col-lg-3 col-md-12">    
+                <div class="col-xs-12 col-lg-3 col-md-12">
                     <div class="box-body">
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned Start Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: 
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>:
                                 @if($project->planned_start_date != null)
                                     @php
                                         $date = DateTime::createFromFormat('Y-m-d', $project->planned_start_date);
                                         $date = $date->format('d-m-Y');
                                         echo $date;
                                     @endphp
-                                @else 
+                                @else
                                     -
                                 @endif
                             </b>
                         </div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Planned End Date</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: 
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>:
                                 @if($project->planned_end_date != null)
                                     @php
                                         $date = DateTime::createFromFormat('Y-m-d', $project->planned_end_date);
                                         $date = $date->format('d-m-Y');
                                         echo $date;
                                     @endphp
-                                @else 
+                                @else
                                     -
                                 @endif
                             </b>
@@ -141,14 +153,27 @@
                         </div>
 
                         <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Actual Duration</div>
-                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->actual_duration != null ? $project->actual_duration : '-' }}</b></div>                        
+                        <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: {{$project->actual_duration != null ? $project->actual_duration : '-' }}</b></div>
+
+                        @if($menu == "repair")
+                            <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Arrival Date</div>
+                            <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
+                                    if($project->arrival_date){
+                                        $date = DateTime::createFromFormat('Y-m-d', $project->arrival_date);
+                                        $date = $date->format('d-m-Y');
+                                        echo $date;
+                                    } else{
+                                        echo "-";
+                                    }
+                                    @endphp</b></div>
+                        @endif
                     </div>
                 </div>
-                <div class="col-xs-12 col-lg-4 col-md-12">    
+                <div class="col-xs-12 col-lg-4 col-md-12">
                     <div class="box-body">
                         <div class="col-md-4 col-xs-6 no-padding">Owner CP</div>
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->contact_name}} | {{$project->customer->phone_number_1}}"><b>: {{$project->customer->contact_name}} | {{$project->customer->phone_number_1}}</b></div>
-                        
+
                         @if($menu == "building")
                             <div class="col-md-4 col-xs-6 no-padding">Flag</div>
                             <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->flag}}</b></div>
@@ -158,10 +183,10 @@
 
                             <div class="col-md-4 col-xs-6 no-padding">Class CP Name</div>
                             <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_name}}</b></div>
-                            
+
                             <div class="col-md-4 col-xs-6 no-padding">Class CP Phone</div>
                             <div class="col-md-8 col-xs-6 no-padding"><b>: {{$project->class_contact_person_phone}}</b></div>
-                            
+
                             <div class="col-md-4 col-xs-6 no-padding">Class CP Email</div>
                             <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->class_contact_person_email}}"><b>: {{$project->class_contact_person_email}}</b></div>
                         @endif
@@ -201,7 +226,7 @@
                         <div class="progress" style="height:20px">
                             <div :class="progressBarColor" role="progressbar" :style="styleProgressBar(project.progress)" :aria-valuenow="project.progress" aria-valuemin="0" aria-valuemax="100">
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
             </div>
@@ -322,7 +347,7 @@
                                         </template>
                                         <template v-else>
                                             <i class='fa fa-times'></i>
-                                        </template>    
+                                        </template>
                                     </td>
                                 </tr>
                             </tbody>
@@ -335,33 +360,33 @@
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
+                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">
                             </div>
                         </div>
-                                
+
                         <div class="form-group col-sm-6">
                             <label for="actual_end_date" class=" control-label">Actual End Date</label>
                             <div class="input-group date">
                                 <div class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </div>
-                                <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                                <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">
                             </div>
                         </div>
-                        
-                        
+
+
                     </div>
                     <div class="row">
                         <div class="form-group col-sm-6">
                             <label for="duration" class=" control-label">Actual Duration (Days)</label>
-                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
-                        </div> 
+                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >
+                        </div>
                         <div class="form-group col-sm-6">
                             <label for="duration" class=" control-label">Current Progress (%)</label>
-                            <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
-                        </div> 
+                            <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >
+                        </div>
                     </div>
-                    
+
                 </div>
                 <div class="modal-footer">
                     <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
@@ -657,7 +682,7 @@
     </div>
 </div>
 @endverbatim
-        
+
 <div class="row">
     <div class="col-sm-12" style="margin-top: -5px;">
         <div class="box box-solid">
@@ -715,7 +740,7 @@
             <div class="box-header with-border"><h4><b>Outstanding Item Report</b></h4></div>
             <div class="box-body">
                 <div id="treeview" class="tdEllipsis">
-                
+
                 </div>
             </div>
         </div>
@@ -848,12 +873,12 @@
                 "style": "rgba(255, 0, 0, .4)",
                 "text": "Budget Value"
             }],
-            elements: { 
-                point: { 
-                    radius: 4, 
-                    hitRadius: 4, 
-                    hoverRadius: 6 
-                } 
+            elements: {
+                point: {
+                    radius: 4,
+                    hitRadius: 4,
+                    hoverRadius: 6
+                }
             },
             tooltips: {
                 callbacks: {
@@ -867,7 +892,7 @@
                     }
                 } // end callbacks:
             }, //end tooltips
-            responsive: true,  
+            responsive: true,
             scales: {
                 xAxes: [{
                     type: 'time',
@@ -912,19 +937,19 @@
                     data: @json($dataPlannedProgress),
                 },
                 {
-                    label: "Actual Progress", 
+                    label: "Actual Progress",
                     borderColor: "green",
                     data: @json($dataActualProgress),
                 }
             ]
         },
         options: {
-            elements: { 
-                point: { 
-                    radius: 4, 
-                    hitRadius: 4, 
-                    hoverRadius: 6 
-                } 
+            elements: {
+                point: {
+                    radius: 4,
+                    hitRadius: 4,
+                    hoverRadius: 6
+                }
             },
             tooltips: {
                 callbacks: {
@@ -934,7 +959,7 @@
                     }
                 } // end callbacks:
             }, //end tooltips
-            responsive: true,  
+            responsive: true,
             scales: {
                 xAxes: [{
                     type: 'time',
@@ -951,10 +976,10 @@
                         beginAtZero:true,
                         callback: function(value, index, values) {
                             return value + "%";
-                       }    
+                       }
                     }
                 }]
-            } 
+            }
         }
     };
 
@@ -972,9 +997,9 @@
         });
         var project = @json($ganttData);
         var links = @json($links);
-        
-       
-        gantt.config.columns = [ 
+
+
+        gantt.config.columns = [
             {name:"text", label:"Task name", width:"*", tree:true,
                 template:function(obj){
                     var text = "";
@@ -996,9 +1021,9 @@
                     return text ;
                 }
             },
-            
+
             {name:"progress", label:"Progress", align: "center",
-                template:function(obj){  
+                template:function(obj){
                     if(obj.status != undefined){
                         if(obj.status == 0){
                             return "<i class='fa fa-check text-success'></i>"
@@ -1011,7 +1036,7 @@
                 },
                 width:"70px"
             },
-        ]; 
+        ];
 
         gantt.config.grid_width = 290;
 
@@ -1043,33 +1068,33 @@
                 }
             }
         };
-        
-        
+
+
         var tasks = {
             data:project,
             links:links
         };
-        
-        var markerId = gantt.addMarker({  
-            start_date: new Date(), 
-            css: "today", 
-            text: "Now", 
-            title: new Date().toString(), 
+
+        var markerId = gantt.addMarker({
+            start_date: new Date(),
+            css: "today",
+            text: "Now",
+            title: new Date().toString(),
         });
         gantt.getMarker(markerId); //->{css:"today", text:"Now", id:...}
         gantt.config.readonly = true;
         gantt.config.open_tree_initially = true;
-        gantt.templates.grid_folder = function(item) { 
-            return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
+        gantt.templates.grid_folder = function(item) {
+            return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>";
         };
-        gantt.templates.grid_file = function(item) { 
+        gantt.templates.grid_file = function(item) {
             if(item.id.indexOf("WBS") != -1){
-                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
+                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>";
             }else{
-                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>"; 
+                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>";
             }
         };
-        
+
         /* global gantt */
         function setScaleConfig(level) {
             switch (level) {
@@ -1078,38 +1103,38 @@
                     gantt.config.step = 1;
                     gantt.config.date_scale = "%d %M";
                     gantt.templates.date_scale = null;
-        
+
                     gantt.config.scale_height = 27;
-        
+
                     gantt.config.subscales = [];
                     break;
                 case "month":
                     gantt.config.scale_unit = "month";
                     gantt.config.date_scale = "%F, %Y";
                     gantt.templates.date_scale = null;
-        
+
                     gantt.config.scale_height = 50;
-        
+
                     gantt.config.subscales = [
                         {unit: "week", step: 1, date: "%j"}
                     ];
-        
+
                     break;
                 case "year":
                     gantt.config.scale_unit = "year";
                     gantt.config.step = 1;
                     gantt.config.date_scale = "%Y";
                     gantt.templates.date_scale = null;
-        
+
                     gantt.config.min_column_width = 50;
                     gantt.config.scale_height = 90;
-        
+
                     gantt.config.subscales = [
                         {unit: "month", step: 1, date: "%M"}
                     ];
                     break;
             }
-        }      
+        }
 
         setScaleConfig("month");
         gantt.init("ganttChart");
@@ -1134,11 +1159,11 @@
             $(el).tooltip({
                 title: binding.value,
                 placement: binding.arg,
-                trigger: 'hover'             
+                trigger: 'hover'
             })
         })
 
-        
+
         var data = {
             menu : @json($menu),
             project_id : @json($project->id),
@@ -1207,9 +1232,9 @@
                         classStyle = "progress-bar progress-bar-success";
                     }
                     return classStyle;
-                }   
+                }
 
-            }, 
+            },
             methods:{
                 openPr(id){
                     if(this.menu == "building"){
@@ -1217,7 +1242,7 @@
                     }else{
                         url = "/purchase_requisition_repair/"+id;
                     }
-                    
+
                     return url
                 },
                 openPo(id){
@@ -1226,7 +1251,7 @@
                     }else{
                         url = "/purchase_order_repair/"+id;
                     }
-                    
+
                     return url
                 },
                 openGr(id){
@@ -1235,7 +1260,7 @@
                     }else{
                         url = "/goods_receipt_repair/"+id;
                     }
-                    
+
                     return url
                 },
                 openMr(id){
@@ -1244,7 +1269,7 @@
                     }else{
                         url = "/material_requisition_repair/"+id;
                     }
-                    
+
                     return url
                 },
                 openGi(id){
@@ -1253,7 +1278,7 @@
                     }else{
                         url = "/goods_issue_repair/"+id;
                     }
-                    
+
                     return url
                 },
                 openProd(id){
@@ -1262,7 +1287,7 @@
                     }else{
                         url = "/production_order_repair/"+id;
                     }
-                    
+
                     return url
                 },
                 getStatus:function(data){
@@ -1333,7 +1358,7 @@
                             this.predecessorActivities = [];
                         }
                         this.confirmActivity.current_progress = this.activity.progress;
-                        
+
                         if(isOkPredecessor){
                             $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
                             $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
@@ -1358,14 +1383,14 @@
                             this.confirmActivity.actual_end_date = "";
                             this.confirmActivity.actual_duration = "";
                         }
-                        
+
                         document.getElementById("confirm_activity_code").innerHTML= this.activity.code;
                         document.getElementById("planned_start_date").innerHTML= this.activity.planned_start_date;
                         document.getElementById("planned_end_date").innerHTML= this.activity.planned_end_date;
                         document.getElementById("planned_duration").innerHTML= this.activity.planned_duration+" Days";
-    
+
                         this.confirmActivity.activity_id = this.activity.id;
-                        
+
                     });
                 },
                 setEndDateEdit(){
@@ -1373,14 +1398,14 @@
                         var actual_duration = parseInt(this.confirmActivity.actual_duration);
                         var actual_start_date = this.confirmActivity.actual_start_date;
                         var actual_end_date = new Date(actual_start_date);
-                        
+
                         actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
                         $('#actual_end_date').datepicker('setDate', actual_end_date);
                     }else{
                         this.confirmActivity.actual_end_date = "";
                     }
                 },
-                confirm(){            
+                confirm(){
                     var confirmActivity = this.confirmActivity;
                     var url = "";
                     if(this.menu == "building"){
@@ -1421,11 +1446,11 @@
 
                         window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
                             this.project = data;
-                        });   
+                        });
 
                         window.axios.get('/api/getActualStartDate/'+this.project_id).then(({ data }) => {
                             document.getElementById('project-actual_start_date').innerHTML = "<b>: "+data+"</b>";
-                        });                   
+                        });
 
                         window.axios.get('/api/getDataChart/'+this.project_id).then(({ data }) => {
                             var updateChart =[
@@ -1435,7 +1460,7 @@
                                     data: data.dataPlannedProgress,
                                 },
                                 {
-                                    label: "Actual Progress", 
+                                    label: "Actual Progress",
                                     backgroundColor: "rgba(0, 0, 255, 0.7)",
                                     data:data.dataActualProgress,
                                 }
@@ -1449,8 +1474,8 @@
                             $('#treeview').jstree(true).settings.core.data = data;
                             $('#treeview').jstree(true).refresh();
                         });
-      
-                        
+
+
                         this.confirmActivity.activity_id = "";
                         this.confirmActivity.actual_start_date = "";
                         this.confirmActivity.actual_end_date = "";
@@ -1477,8 +1502,8 @@
                             document.getElementById("actual_duration").disabled = false;
                             document.getElementById("btnSave").disabled = false;
                             document.getElementById("current_progress").disabled = false;
-                        }         
-                        
+                        }
+
                         this.predecessorActivities.forEach(activity => {
                             if(activity.status == 1){
                                 document.getElementById("actual_start_date").disabled = true;
@@ -1511,7 +1536,7 @@
                         $('#actual_end_date').datepicker('setDate', null);
                         this.confirmActivity.actual_duration = "";
                     }
-                },   
+                },
                 'confirmActivity.actual_duration' : function(newValue){
                     this.confirmActivity.actual_duration = newValue+"".replace(/\D/g, "");
                         if(parseInt(newValue) < 1 ){
@@ -1523,7 +1548,7 @@
                             this.confirmActivity.actual_duration = "";
                             this.confirmActivity.actual_end_date = "";
                         }
-                },    
+                },
             },
             created: function(){
                 this.progressStatus.last_week_actual = parseFloat(this.progressStatus.last_week_actual).toFixed(2);
@@ -1556,18 +1581,18 @@
                         var temp_mr = [];
                         var temp_gi = [];
                         var temp_prod = [];
-        
+
                         vm.wbss.forEach(wbs => {
                             if(wbs.code == id){
                                 if(wbs.bom != null){
                                     if(wbs.bom.purchase_requisition != null){
-                                        temp_pr.push(wbs.bom.purchase_requisition);  
+                                        temp_pr.push(wbs.bom.purchase_requisition);
                                         wbs.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
                                             temp_po.push(purchase_order);
                                             purchase_order.goods_receipts.forEach(gr => {
                                                 temp_gr.push(gr);
                                             });
-                                        });     
+                                        });
                                     }
                                 }
                                 if(wbs.production_order != null){
@@ -1583,10 +1608,10 @@
                                         }
                                     });
                                 }
-            
+
                                 temp_mr.forEach(mr => {
                                     mr.goods_issues.forEach(gi => {
-                                        temp_gi.push(gi); 
+                                        temp_gi.push(gi);
                                     });
                                 });
                             }
@@ -1599,7 +1624,7 @@
                         vm.active_mr = [];
                         vm.active_gi = [];
                         vm.active_prod = [];
-        
+
                         vm.active_pr = temp_pr;
                         vm.active_po = temp_po;
                         vm.active_gr = temp_gr;
@@ -1623,15 +1648,15 @@
                                     if(act_detail.material_id != null){
                                         act_detail.bom_prep.bom_details.forEach(bom_detail => {
                                             if(bom_detail.bom.purchase_requisition != null){
-                                                temp_pr.push(bom_detail.bom.purchase_requisition);  
+                                                temp_pr.push(bom_detail.bom.purchase_requisition);
                                                 bom_detail.bom.purchase_requisition.purchase_orders.forEach(purchase_order => {
                                                     temp_po.push(purchase_order);
                                                     purchase_order.goods_receipts.forEach(gr => {
                                                         temp_gr.push(gr);
                                                     });
-                                                });                                     
+                                                });
                                             }
-                                        }); 
+                                        });
                                     }
                                 });
                                 if(activity.wbs.production_order != null){
@@ -1650,10 +1675,10 @@
 
                                 temp_mr.forEach(mr => {
                                     mr.goods_issues.forEach(gi => {
-                                    temp_gi.push(gi); 
+                                    temp_gi.push(gi);
                                     });
                                 });
-                            } 
+                            }
                         });
                         vm.active_pr = [];
                         vm.active_po = [];
@@ -1675,6 +1700,6 @@
             return true;
         });
     });
-    
+
 </script>
 @endpush

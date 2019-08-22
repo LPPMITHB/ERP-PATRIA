@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Bill Of Materials » Select Project',
+        'title' => 'Manage Material Standard» Select Project',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => '',
@@ -18,13 +18,12 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tablePaging tableFixed">
+                <table id="project-table" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="15%">Project Number</th>
-                            <th width="30%">Customer</th>
-                            <th width="20%">Ship Name</th>
+                            <th width="15%">Project Name</th>
+                            <th width="30%">Description</th>
                             <th width="20%">Ship Type</th>
                             <th width="10%"></th>
                         </tr>
@@ -33,16 +32,11 @@
                         @foreach($projects as $project)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="tdEllipsis">{{ $project->number }}</td>
-                                <td class="tdEllipsis">{{ $project->customer->name }}</td>
                                 <td class="tdEllipsis">{{ $project->name }}</td>
+                                <td class="tdEllipsis">{{ $project->description }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
-                                    @if($route == '/bom')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom.indexBom', ['id'=>$project->id]) }}">SELECT</a>
-                                    @elseif($route == '/bom_repair')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.show', ['id'=>$project->id]) }}">SELECT</a>
-                                    @endif
+                                    <a class="btn btn-primary btn-xs" href="{{ route('project_standard.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -60,7 +54,17 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('div.overlay').hide();
+        $('#project-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

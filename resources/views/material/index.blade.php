@@ -26,16 +26,16 @@
             </div>
             @verbatim
                 <div id="index_material">
-                    <table id="material-table" class="table table-bordered tableFixed" id="material-table">
+                    <table id="material-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 10%">Item Number</th>
-                                <th style="width: 35%">Description</th>
+                                <th style="width: 12%">Item Number</th>
+                                <th style="width: 33%">Description</th>
                                 <th style="width: 10%">Type</th>
                                 <th style="width: 10%">Status</th>
                                 <th style="width: 10%"></th>
-    
+
                             </tr>
                         </thead>
                         <tbody>

@@ -3,12 +3,12 @@
 @if ($wbs->wbs != null)
     @breadcrumb(
         [
-            'title' => 'Manage Bill Of Material',
+            'title' => 'Manage Material',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
                 $wbs->number => route('project_standard.createSubWbsStandard', $wbs->wbs->id),
-                'Manage Bill Of Material' => '',
+                'Manage Material' => '',
             ]
         ]
     )
@@ -16,12 +16,12 @@
 @else
     @breadcrumb(
         [
-            'title' => 'Manage Bill Of Material',
+            'title' => 'Manage Material',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
                 $wbs->number => route('project_standard.createWbsStandard', $wbs->project_standard_id),
-                'Manage Bill Of Material' => '',
+                'Manage Material' => '',
             ]
         ]
     )
@@ -34,7 +34,12 @@
     <div class="col-xs-12 p-b-50">
         <div class="box">
             <div class="box-body no-padding p-b-10">
-                <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.store') }}">
+                @if ($edit)
+                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.updateMaterialStandard') }}">
+                    <input type="hidden" name="_method" value="PATCH">
+                @else
+                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.storeMaterialStandard') }}">
+                @endif
                 @csrf
                     @verbatim
                     <div id="bom">
@@ -65,12 +70,6 @@
                                 <div class="col-xs-4 no-padding">Deliverable</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
                             </div>
-                            <div class="col-xs-12 col-md-4">
-                                <div class="col-xs-12 no-padding"><b>BOM Description</b></div>
-                                <div class="col-xs-12 no-padding">
-                                    <textarea class="form-control" rows="3" v-model="submittedForm.description"></textarea>  
-                                </div>
-                            </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-5">
                             <table class="table table-bordered tableFixed m-b-0 tablePagingVue">
@@ -97,7 +96,7 @@
                                             <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
-                                            <a href="#" @click="removeRow(material.material_id)" class="btn btn-danger btn-xs">
+                                            <a href="#" @click="removeRow(material)" class="btn btn-danger btn-xs">
                                                 <div class="btn-group">DELETE</div>
                                             </a>
                                         </td>
@@ -128,7 +127,8 @@
                             </table>
                         </div>
                         <div class="col-md-12 p-t-5">
-                            <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                            <button v-if="submittedForm.edit" id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
+                            <button v-else id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
                         </div>
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
@@ -198,7 +198,8 @@
         submittedForm :{
             project_id : @json($project->id),
             wbs_id : @json($wbs->id),
-            description : ""
+            edit : @json($edit),
+            deleted_id : [],
         },
         input : {
             material_id : "",
@@ -221,14 +222,14 @@
             is_decimal : "",
             material_ok : ""
         },
-        materialTable : [],
+        materialTable : @json($existing_data),
         materialSettings: {
             placeholder: 'Please Select Material'
         },
         sourceSettings: {
             placeholder: 'Please Select Source'
         },
-        material_id:[],
+        material_id:@json($material_ids),
         material_id_modal:[],
         materials_modal :[],
     }
@@ -416,18 +417,21 @@
                     this.input.quantityInt = 0;
                 }
             },
-            removeRow: function(materialId) {
+            removeRow: function(material) {
                 $('div.overlay').show();
                 var index_materialId = "";
                 var index_materialTable = "";
-
+                if(typeof material.id !== 'undefined'){
+                    this.submittedForm.deleted_id.push(material.id);
+                }
+                
                 this.material_id.forEach(id => {
-                    if(id == materialId){
+                    if(id == material.material_id){
                         index_materialId = this.material_id.indexOf(id);
                     }
                 });
                 for (var i in this.materialTable) { 
-                    if(this.materialTable[i].material_id == materialId){
+                    if(this.materialTable[i].material_id == material.material_id){
                         index_materialTable = i;
                     }
                 }
@@ -549,7 +553,7 @@
                 if(is_decimal == 0){
                     this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
@@ -565,6 +569,8 @@
         },
         created: function() {
             this.newIndex = this.materialTable.length + 1;
+            var jsonMaterialId = JSON.stringify(this.material_id);
+            this.getNewMaterials(jsonMaterialId);        
         }
     });
        

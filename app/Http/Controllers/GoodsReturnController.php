@@ -308,7 +308,7 @@ class GoodsReturnController extends Controller
             }elseif($datas->status == "need-revision"){
                 $modelGRT->status = 3;
                 $modelGRT->approved_by = Auth::user()->id;
-                $modelGRT->revision_description = "";
+                $modelGRT->revision_description = null;
                 $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){
@@ -505,7 +505,7 @@ class GoodsReturnController extends Controller
                 $GR->purchase_order_id = $datas->purchase_order_id;
             }
             $GR->description = $datas->description;
-            $GR->revision_description = $datas->revision_description;
+            $GR->revision_description = null;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();

@@ -177,7 +177,7 @@
                             @else
                                 <th colspan="2" width="14%">Job Order</th>
                             @endif
-                            <th width="6%">Qty</th>
+                            <th width="6%">Order Quantity</th>
                             <th width="5%">Disc.</th>
                             @if($modelPO->purchaseRequisition->type != 3)
                                 <th width="13%">Price / pcs ({{$unit}})</th>

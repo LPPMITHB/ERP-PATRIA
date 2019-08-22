@@ -43,7 +43,7 @@
                     <div id="pod">
                         <div class="col-sm-12 no-padding">
                             <div class="box-header">
-                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">GR Number</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGR.number }}</b></div>
@@ -56,7 +56,7 @@
 
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ vendor.name }}</b></div>
-                
+
                                         <div class="col-md-4 col-xs-4 no-padding">Address</div>
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{ vendor.address }}</b></div>
 
@@ -67,7 +67,7 @@
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis" data-container="body" data-toogle="tooltip" :title="tooltipText(modelGR.description)"><b>: {{ modelGR.description }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-8 col-lg-7 col-xs-12 no-padding">Goods Return Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
                                         </div>
@@ -82,8 +82,8 @@
                                                 <th width="5%">No</th>
                                                 <th width="20%">Material Number</th>
                                                 <th width="30%">Material Description</th>
-                                                <th width="15%">Quantity</th>
-                                                <th width="15%">Return Qty</th>
+                                                <th width="15%">Material Quantity</th>
+                                                <th width="15%">Return Quantity</th>
                                                 <th width="10%">Unit</th>
                                             </tr>
                                         </thead>
@@ -186,18 +186,18 @@
             changeText(){
                 if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
                     if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelGR.vendor.address ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelGR.vendor.address;    
+                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelGR.vendor.address;
                     }
                 }
-            }, 
-            
+            },
+
             submitForm(){
                 var data = this.modelGRD;
                 data = JSON.stringify(data)
                 data = JSON.parse(data)
 
                 data.forEach(GRD => {
-                    GRD.returned_temp = GRD.returned_temp.replace(/,/g , '');   
+                    GRD.returned_temp = GRD.returned_temp.replace(/,/g , '');
                 });
                 this.submittedForm.GRD = data;
                 this.submittedForm.purchase_order_id = this.modelGR.purchase_order_id;
@@ -224,10 +224,10 @@
                                 displayMode: 'replace'
                             });
                         }
-                        
+
                         var is_decimal = GRD.is_decimal;
                         if(is_decimal == 0){
-                            GRD.returned_temp = (GRD.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                            GRD.returned_temp = (GRD.returned_temp+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }else{
                             var decimal = (GRD.returned_temp+"").replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){
@@ -240,7 +240,7 @@
                             }else{
                                 GRD.returned_temp = (GRD.returned_temp+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
-                        }   
+                        }
                     });
                 },
                 deep: true
@@ -250,7 +250,7 @@
             this.modelGRD.forEach(GRD => {
                 var is_decimal = GRD.is_decimal;
                 if(is_decimal == 0){
-                    GRD.available = (GRD.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    GRD.available = (GRD.available+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = (GRD.available+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -263,7 +263,7 @@
                     }else{
                         GRD.available = (GRD.available+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }   
+                }
             });
         },
     });

@@ -122,7 +122,7 @@
                                     <th width="5%">No</th>
                                     <th width="20%">Material Number</th>
                                     <th width="30%">Material Description</th>
-                                    <th width="10%">Quantity</th>
+                                    <th width="10%">Return Quantity</th>
                                     <th width="10%">Unit</th>
                                     <th width="20%">Storage Location</th>
                                 </tr>
