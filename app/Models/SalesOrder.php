@@ -22,4 +22,9 @@ class SalesOrder extends Model
     {
         return $this->belongsTo('App\Models\User');
     }
+
+    public function salesOrderDetails() 
+    {
+        return $this->hasMany('App\Models\SalesOrderDetail');
+    }
 }

@@ -341,20 +341,22 @@
             totalPrice: function(){
                 let total_price = 0;
                 if(this.quotation.length != undefined){
+                    // create quotation
                     this.selectedProfile[0].estimator_profile_details.forEach(pd =>{
                         if(pd.value != undefined){
                             total_price += (pd.value+"").replace(/,/g , '') * pd.estimator_cost_standard.value;
                         }
                     });
-                    total_price = total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100);
+                    total_price = Math.floor(total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100));
                     total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
+                    // edit quotation
                     this.quotation.quotation_details.forEach(qd =>{
                         if(qd.value != undefined){
                             total_price += (qd.value+"").replace(/,/g , '') * qd.price;
                         }
                     });
-                    total_price = Math.ceil(total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100));
+                    total_price = Math.floor(total_price * (1 + (this.dataInput.margin+"").replace(/,/g , '')/100));
                     total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
                 return total_price;
@@ -582,23 +584,25 @@
             },
             quotation:{
                 handler: function(newValue) {
-                    this.quotation.quotation_details.forEach(qd =>{
-                        if(qd.value != undefined){
-                            var decimal = (qd.value+"").replace(/,/g, '').split('.');
-                            if(decimal[1] != undefined){
-                                var maxDecimal = 2;
-                                if((decimal[1]+"").length > maxDecimal){
-                                    qd.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    if(newValue.length == undefined){
+                        this.quotation.quotation_details.forEach(qd =>{
+                            if(qd.value != undefined){
+                                var decimal = (qd.value+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        qd.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        qd.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
                                 }else{
-                                    qd.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    qd.value = (qd.value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 }
-                            }else{
-                                qd.value = (qd.value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                // kalkulasi total price (value {inputan user} * harga pada cost standard)
+                                qd.total_price = (((qd.value+"").replace(/,/g , '') * qd.price)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
-                            // kalkulasi total price (value {inputan user} * harga pada cost standard)
-                            qd.total_price = (((qd.value+"").replace(/,/g , '') * qd.price)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        }
-                    })
+                        })
+                    }
                 },
                 deep: true
             },

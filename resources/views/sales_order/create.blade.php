@@ -74,64 +74,95 @@
                         @verbatim
                         <div id="sales-order">
                             <div class="box-header no-padding">
-                                <div class="col-sm-5 no-padding">
-                                    <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
-                                        <label for="" >Quotation Number</label>
+                                <template v-if="sales_order.length != undefined">
+                                    <div class="col-sm-5 no-padding">
+                                        <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
+                                            <label for="" >Quotation Number</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8 p-t-10">
+                                            <input v-model="quotation.number" type="text" class="form-control width100" name="number" id="number" disabled>
+                                        </div>
+                                        <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
+                                            <label for="" >Customer</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8 p-t-10">
+                                            <selectize v-model="quotation.customer_id" :settings="customer_settings">
+                                                <option v-for="(customer, index) in customers" :value="customer.id">{{ customer.code }} - {{ customer.name }}</option>
+                                            </selectize>  
+                                        </div>
+                                        <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
+                                            <label for="" >Margin (%)</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8 p-t-10">
+                                            <input v-model="quotation.margin" type="text" class="form-control width100" name="margin" id="margin" placeholder="Please Input Margin">
+                                        </div>
                                     </div>
-                                    <div class="col-xs-12 col-md-8 p-t-10">
-                                        <input v-model="quotation.number" type="text" class="form-control width100" name="number" id="number" disabled>
+                                    <div class="col-sm-4">
+                                        <label for="">Description</label>
+                                        <textarea class="form-control" rows="3" v-model="quotation.description"></textarea>
                                     </div>
-                                    <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
-                                        <label for="" >Customer</label>
+                                </template>
+                                <template v-else>
+                                    <div class="col-sm-5 no-padding">
+                                        <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
+                                            <label for="" >Quotation Number</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8 p-t-10">
+                                            <input v-model="sales_order.quotation.number" type="text" class="form-control width100" name="number" id="number" disabled>
+                                        </div>
+                                        <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
+                                            <label for="" >Customer</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8 p-t-10">
+                                            <selectize v-model="sales_order.customer_id" :settings="customer_settings">
+                                                <option v-for="(customer, index) in customers" :value="customer.id">{{ customer.code }} - {{ customer.name }}</option>
+                                            </selectize>  
+                                        </div>
+                                        <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
+                                            <label for="" >Margin (%)</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-8 p-t-10">
+                                            <input v-model="sales_order.margin" type="text" class="form-control width100" name="margin" id="margin" placeholder="Please Input Margin">
+                                        </div>
                                     </div>
-                                    <div class="col-xs-12 col-md-8 p-t-10">
-                                        <selectize v-model="quotation.customer_id" :settings="customer_settings">
-                                            <option v-for="(customer, index) in customers" :value="customer.id">{{ customer.code }} - {{ customer.name }}</option>
-                                        </selectize>  
+                                    <div class="col-sm-4">
+                                        <label for="">Description</label>
+                                        <textarea class="form-control" rows="3" v-model="sales_order.description"></textarea>
                                     </div>
-                                    <div class="col-xs-12 col-md-4 p-t-15 p-l-0">
-                                        <label for="" >Margin (%)</label>
-                                    </div>
-                                    <div class="col-xs-12 col-md-8 p-t-10">
-                                        <input v-model="quotation.margin" type="text" class="form-control width100" name="margin" id="margin" placeholder="Please Input Margin">
-                                    </div>
-                                </div>
-                                <div class="col-sm-4">
-                                    <label for="">Description</label>
-                                    <textarea class="form-control" rows="3" v-model="quotation.description"></textarea>
-                                </div>
+                                </template>
                                 <div class="col-sm-3 p-r-0">
                                     <a href="#top" class="btn btn-sm btn-primary pull-right" data-toggle="modal">Terms Of Payment</a>
                                 </div>
                             </div>
 
-                            <div class="col-md-12 p-t-10 p-l-0 p-r-0">
-                                <table class="table table-bordered tableFixed m-b-0">
-                                    <thead>
-                                        <tr>
-                                            <th width="20%">Cost Standard</th>
-                                            <th width="25%">Description</th>
-                                            <th width="20%">Value</th>
-                                            <th width="10%">Unit</th>
-                                            <th width="25%">Sub Total</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody v-for="(wbs, index) in dataWbs">
-                                        <tr>
-                                            <td colspan="5" class="p-t-13 p-b-13 bg-primary"><b>{{ wbs.code }} - {{ wbs.name }}</b></td>
-                                            <tr v-for="(qd,index) in quotation.quotation_details">
-                                                <template v-if="qd.estimator_cost_standard.estimator_wbs_id == wbs.id">
-                                                    <td>{{ qd.estimator_cost_standard.code }} - {{ qd.estimator_cost_standard.name }}</td>
-                                                    <td>{{ qd.estimator_cost_standard.description ? qd.estimator_cost_standard.description : '-' }}</td>
-                                                    <td class="no-padding">
-                                                        <input class="form-control" type="text" v-model="qd.value" placeholder="Please input value">
-                                                    </td>
-                                                    <td>{{ qd.estimator_cost_standard.uom.unit }}</td>
-                                                    <td>Rp.{{ qd.total_price }}</td>
-                                                </template>
+                            <template v-if="sales_order.length != undefined">
+                                <div class="col-md-12 p-t-10 p-l-0 p-r-0">
+                                    <table class="table table-bordered tableFixed m-b-0">
+                                        <thead>
+                                            <tr>
+                                                <th width="20%">Cost Standard</th>
+                                                <th width="25%">Description</th>
+                                                <th width="20%">Value</th>
+                                                <th width="10%">Unit</th>
+                                                <th width="25%">Sub Total</th>
                                             </tr>
-                                        </tr>
-                                    </tbody>
+                                        </thead>
+                                        <tbody v-for="(wbs, index) in dataWbs">
+                                            <tr>
+                                                <td colspan="5" class="p-t-13 p-b-13 bg-primary"><b>{{ wbs.code }} - {{ wbs.name }}</b></td>
+                                                <tr v-for="(qd,index) in quotation.quotation_details">
+                                                    <template v-if="qd.estimator_cost_standard.estimator_wbs_id == wbs.id">
+                                                        <td>{{ qd.estimator_cost_standard.code }} - {{ qd.estimator_cost_standard.name }}</td>
+                                                        <td>{{ qd.estimator_cost_standard.description ? qd.estimator_cost_standard.description : '-' }}</td>
+                                                        <td class="no-padding">
+                                                            <input class="form-control" type="text" v-model="qd.value" placeholder="Please input value">
+                                                        </td>
+                                                        <td>{{ qd.estimator_cost_standard.uom.unit }}</td>
+                                                        <td>Rp.{{ qd.total_price }}</td>
+                                                    </template>
+                                                </tr>
+                                            </tr>
+                                        </tbody>
                                         <tr>
                                             <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin :</b></td>
                                             <td>{{ quotation.margin }}%</td>
@@ -140,11 +171,55 @@
                                             <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Total Price :</b></td>
                                             <td>Rp.{{ totalPrice }}</td>
                                         </tr>
-                                </table>
-                            </div>
-                            <div class="col-md-12 p-t-10 p-r-0">
-                                <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
-                            </div>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 p-t-10 p-r-0">
+                                    <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                                </div>
+                            </template>
+
+                            <template v-else>
+                                <div class="col-md-12 p-t-10 p-l-0 p-r-0">
+                                    <table class="table table-bordered tableFixed m-b-0">
+                                        <thead>
+                                            <tr>
+                                                <th width="20%">Cost Standard</th>
+                                                <th width="25%">Description</th>
+                                                <th width="20%">Value</th>
+                                                <th width="10%">Unit</th>
+                                                <th width="25%">Sub Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody v-for="(wbs, index) in dataWbs">
+                                            <tr>
+                                                <td colspan="5" class="p-t-13 p-b-13 bg-primary"><b>{{ wbs.code }} - {{ wbs.name }}</b></td>
+                                                <tr v-for="(sod,index) in sales_order.sales_order_details">
+                                                    <template v-if="sod.estimator_cost_standard.estimator_wbs_id == wbs.id">
+                                                        <td>{{ sod.estimator_cost_standard.code }} - {{ sod.estimator_cost_standard.name }}</td>
+                                                        <td>{{ sod.estimator_cost_standard.description ? sod.estimator_cost_standard.description : '-' }}</td>
+                                                        <td class="no-padding">
+                                                            <input class="form-control" type="text" v-model="sod.value" placeholder="Please input value">
+                                                        </td>
+                                                        <td>{{ sod.estimator_cost_standard.uom.unit }}</td>
+                                                        <td>Rp.{{ sod.total_price }}</td>
+                                                    </template>
+                                                </tr>
+                                            </tr>
+                                        </tbody>
+                                        <tr>
+                                            <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Margin :</b></td>
+                                            <td>{{ sales_order.margin }}%</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-t-13 p-b-13" colspan="4" align="right"><b>Total Price :</b></td>
+                                            <td>Rp.{{ totalPrice }}</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-12 p-t-10 p-r-0">
+                                    <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
+                                </div>
+                            </template>
 
                             <div class="modal fade" id="top">
                                 <div class="modal-dialog">
@@ -226,14 +301,9 @@
     })
 
     var data = {
-        quotation : @json($quotation),
+        sales_order : [],
+        quotation : [],
         customers : @json($customers),
-        dataInput: {
-            profile_id : "",
-            margin : "",
-            description : "",
-            customer_id : "",
-        },
         customer_settings: {
             placeholder: 'Please Select Customer!'
         },
@@ -264,7 +334,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.profile_id == ""){
+                if(this.quotation.customer_id == ""){
                     isOk = true;
                 }
 
@@ -279,13 +349,23 @@
             totalPrice: function(){
                 let total_price = 0;
 
-                this.quotation.quotation_details.forEach(qd =>{
-                    if(qd.value != undefined){
-                        total_price += (qd.value+"").replace(/,/g , '') * qd.price;
-                    }
-                });
-                total_price = Math.ceil(total_price * (1 + (this.quotation.margin+"").replace(/,/g , '')/100));
-                total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                if(this.sales_order.length != undefined){
+                    this.quotation.quotation_details.forEach(qd =>{
+                        if(qd.value != undefined){
+                            total_price += (qd.value+"").replace(/,/g , '') * qd.price;
+                        }
+                    });
+                    total_price = Math.floor(total_price * (1 + (this.quotation.margin+"").replace(/,/g , '')/100));
+                    total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }else{
+                    this.sales_order.sales_order_details.forEach(sod =>{
+                        if(sod.value != undefined){
+                            total_price += (sod.value+"").replace(/,/g , '') * sod.price;
+                        }
+                    });
+                    total_price = Math.floor(total_price * (1 + (this.sales_order.margin+"").replace(/,/g , '')/100));
+                    total_price = (total_price+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
 
                 return total_price;
             },
@@ -365,8 +445,8 @@
                 });
             },
             submitForm(){
-                $('div.overlay').show();
                 document.body.appendChild(form);
+                $('div.overlay').show();
 
                 this.tops.forEach(top=>{
                     top.project_progress = (top.project_progress+"").replace(/,/g , '');
@@ -375,18 +455,32 @@
 
                 let total_price = 0;
 
-                this.quotation.quotation_details.forEach(qd =>{
-                    qd.value = (qd.value+"").replace(/,/g , '');
-                    qd.total_price = (qd.total_price+"").replace(/,/g , '');
-                    total_price += parseFloat((qd.total_price+"").replace(/,/g , ''));
-                })
-                this.submittedForm.pd = this.quotation;
+                if(this.sales_order.length != undefined){
+                    this.quotation.quotation_details.forEach(qd =>{
+                        qd.value = (qd.value+"").replace(/,/g , '');
+                        qd.total_price = (qd.total_price+"").replace(/,/g , '');
+                        total_price += parseFloat((qd.total_price+"").replace(/,/g , ''));
+                    })
+                    this.submittedForm.pd = this.quotation;
 
-                this.submittedForm.customer_id = this.quotation.customer_id;
-                this.submittedForm.margin = this.quotation.margin;
-                this.submittedForm.description = this.quotation.description;
+                    this.submittedForm.customer_id = this.quotation.customer_id;
+                    this.submittedForm.margin = this.quotation.margin;
+                    this.submittedForm.description = this.quotation.description;
+                    this.submittedForm.total_price = total_price * (1 + parseFloat(this.quotation.margin) / 100);
+                }else{
+                    this.sales_order.sales_order_details.forEach(qd =>{
+                        qd.value = (qd.value+"").replace(/,/g , '');
+                        qd.total_price = (qd.total_price+"").replace(/,/g , '');
+                        total_price += parseFloat((qd.total_price+"").replace(/,/g , ''));
+                    })
+                    this.submittedForm.pd = this.sales_order;
+
+                    this.submittedForm.customer_id = this.sales_order.customer_id;
+                    this.submittedForm.margin = this.sales_order.margin;
+                    this.submittedForm.description = this.sales_order.description;
+                    this.submittedForm.total_price = total_price * (1 + parseFloat(this.sales_order.margin) / 100);
+                }
                 this.submittedForm.price = total_price;
-                this.submittedForm.total_price = total_price * (1 + parseFloat(this.quotation.margin) / 100);
                 this.submittedForm.top = this.tops;
 
                 let struturesElem = document.createElement('input');
@@ -415,33 +509,21 @@
                     this.quotation.margin = 0;
                 }
             },
-            'dataInput.profile_id': function(newValue){
-                this.dataWbs = [];
+            'sales_order.margin': function(newValue){
                 if(newValue != ""){
-                    // create sales order
-                    this.quotation.quotation_details.forEach(qd =>{
-                        this.quotation.quotation_details.forEach(qd =>{
-                            let status = true;
-                            if(this.dataWbs.length > 0){
-                                this.dataWbs.forEach(wbs =>{
-                                    if(wbs.id == qd.estimator_cost_standard.estimator_wbs_id){
-                                        status = false;
-                                    }
-                                })
-                            }
-                            if(status){
-                                let statusWbs = true;
-                                this.dataWbs.forEach(wbs =>{
-                                    if(wbs.id == qd.estimator_cost_standard.estimator_wbs_id){
-                                        statusWbs = false;
-                                    }
-                                })
-                                if(statusWbs){
-                                    this.dataWbs.push(qd.estimator_cost_standard.estimator_wbs);
-                                }
-                            }
-                        })
-                    })
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.sales_order.margin = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.sales_order.margin = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.sales_order.margin = (this.sales_order.margin+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }else{
+                    this.sales_order.margin = 0;
                 }
             },
             quotation:{
@@ -463,6 +545,30 @@
                             qd.total_price = (((qd.value+"").replace(/,/g , '') * qd.price)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }
                     })
+                },
+                deep: true
+            },
+            sales_order:{
+                handler: function(newValue) {
+                    if(this.sales_order.length == undefined){
+                        this.sales_order.sales_order_details.forEach(sod =>{
+                            if(sod.value != undefined){
+                                var decimal = (sod.value+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        sod.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        sod.value = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
+                                }else{
+                                    sod.value = (sod.value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                                // kalkulasi total price (value {inputan user} * harga pada cost standard)
+                                sod.total_price = (((sod.value+"").replace(/,/g , '') * sod.price)+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            }
+                        })
+                    }
                 },
                 deep: true
             },
@@ -516,27 +622,59 @@
             }
         },
         created : function(){
-            if(this.quotation.length != undefined){
-                this.dataInput.margin = 0;
-                this.newIndex = this.tops.length + 1;
-            }else{
-                // fill data header
-                this.dataInput.profile_id = this.quotation.profile_id;
-                this.dataInput.margin = this.quotation.margin;
-                this.dataInput.description = this.quotation.description;
-                this.dataInput.customer_id = this.quotation.customer_id;
+            this.sales_order = @json($sales_order);
+            this.quotation = @json($quotation);
 
-                // fill terms of payment
-                this.tops = JSON.parse(this.quotation.terms_of_payment);
-                this.newIndex = this.tops.length + 1;
-
-                // sub total
+            if(this.sales_order.length !=undefined){
+                // create sales order
                 this.quotation.quotation_details.forEach(qd =>{
-                    qd.total_price = 0;
-                    qd.value = qd.value+1;
-                    qd.value = qd.value-1;
+                    let status = true;
+                    if(this.dataWbs.length > 0){
+                        this.dataWbs.forEach(wbs =>{
+                            if(wbs.id == qd.estimator_cost_standard.estimator_wbs_id){
+                                status = false;
+                            }
+                        })
+                    }
+                    if(status){
+                        let statusWbs = true;
+                        this.dataWbs.forEach(wbs =>{
+                            if(wbs.id == qd.estimator_cost_standard.estimator_wbs_id){
+                                statusWbs = false;
+                            }
+                        })
+                        if(statusWbs){
+                            this.dataWbs.push(qd.estimator_cost_standard.estimator_wbs);
+                        }
+                    }
                 })
+                this.tops = JSON.parse(this.quotation.terms_of_payment);
+            }else{
+                // edit sales order
+                this.sales_order.sales_order_details.forEach(sod =>{
+                    let status = true;
+                    if(this.dataWbs.length > 0){
+                        this.dataWbs.forEach(wbs =>{
+                            if(wbs.id == sod.estimator_cost_standard.estimator_wbs_id){
+                                status = false;
+                            }
+                        })
+                    }
+                    if(status){
+                        let statusWbs = true;
+                        this.dataWbs.forEach(wbs =>{
+                            if(wbs.id == sod.estimator_cost_standard.estimator_wbs_id){
+                                statusWbs = false;
+                            }
+                        })
+                        if(statusWbs){
+                            this.dataWbs.push(sod.estimator_cost_standard.estimator_wbs);
+                        }
+                    }
+                })
+                this.tops = JSON.parse(this.sales_order.terms_of_payment);
             }
+            this.newIndex = this.tops.length + 1;
         }
     });
 
