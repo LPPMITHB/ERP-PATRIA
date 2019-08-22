@@ -20,7 +20,7 @@
             <div class="box-body">
                 @if($menu == 'building')
                     <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition.store') }}">
-                @else       
+                @else
                     <form id="create-mr" class="form-horizontal" method="POST" action="{{ route('material_requisition_repair.store') }}">
                 @endif
                 @csrf
@@ -30,13 +30,13 @@
                             <template v-if="selectedProject.length > 0">
                                 <div class="col-xs-12 col-md-4">
                                     <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-            
+
                                     <div class="col-xs-5 no-padding">Project Number</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
-                                    
+
                                     <div class="col-xs-5 no-padding">Ship Type</div>
                                     <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
-            
+
                                     <div class="col-xs-5 no-padding">Customer</div>
                                     <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
 
@@ -51,7 +51,7 @@
                                 <label for="" >Project Name</label>
                                 <selectize v-model="project_id" :settings="projectSettings" :disabled="dataOk">
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
-                                </selectize>  
+                                </selectize>
                             </div>
                             <div class="col-xs-12 col-md-4" v-show="project_id != ''">
                                 <label for="" >Delivery Date</label>
@@ -83,9 +83,9 @@
                                             <th style="width: 5%">No</th>
                                             <th style="width: 23%">WBS Name</th>
                                             <th style="width: 38%">Material Name</th>
-                                            <th style="width: 15%">Planned Qty (BOM)</th>
-                                            <th style="width: 12%">Available Qty</th>
-                                            <th style="width: 12%">Requested Qty</th>
+                                            <th style="width: 15%">Planned Quantity (BOM)</th>
+                                            <th style="width: 12%">Available Quantity</th>
+                                            <th style="width: 12%">Request Quantity</th>
                                             <th style="width: 6%">Unit</th>
                                             <th style="width: 10%"></th>
                                         </tr>
@@ -123,7 +123,7 @@
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id == ''">
                                                 <selectize disabled v-model="dataInput.id" :settings="nullSettings" disabled>
-                                                </selectize>  
+                                                </selectize>
                                             </td>
                                             <td class="p-l-0 textLeft" v-show="dataInput.wbs_id != '' && materials.length == 0">
                                                 <selectize disabled v-model="dataInput.material_id" :settings="materialNullSettings">
@@ -190,10 +190,10 @@
                                             <div class="col-sm-9" v-show="editInput.wbs_id == ''">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize disabled :settings="nullSettings" disabled >
-                                                </selectize>  
+                                                </selectize>
                                             </div>
                                             <div class="col-sm-9">
-                                                <label for="planned_quantity" class="control-label">Planned Quantity</label>
+                                                <label for="planned_quantity" class="control-label">Planned Quantity (BOM)</label>
                                                 <input disabled type="text" id="planned_quantity" v-model="editInput.planned_quantity" class="form-control" placeholder="">
                                             </div>
                                             <div class="col-sm-3 m-t-25">
@@ -207,7 +207,7 @@
                                                 <input disabled type="text" id="unit" v-model="editInput.unit" class="form-control" placeholder="">
                                             </div>
                                             <div class="col-sm-9">
-                                                <label for="quantity" class="control-label">Quantity</label>
+                                                <label for="quantity" class="control-label">Request Quantity</label>
                                                 <input :disabled="materialEditOk" type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity">
                                             </div>
                                             <div class="col-sm-3 m-t-25">
@@ -347,7 +347,7 @@
             },
             dataOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length > 0){
                     isOk = true;
                 }
@@ -356,7 +356,7 @@
             },
             allOk: function(){
                 let isOk = false;
-                
+
                 if(this.dataMaterial.length < 1){
                     isOk = true;
                 }
@@ -395,7 +395,7 @@
                     $(el).tooltip({
                         title: text,
                         placement: binding.arg,
-                        trigger: 'hover'             
+                        trigger: 'hover'
                     })
                 })
                 return text
@@ -404,8 +404,8 @@
                 $('div.overlay').show();
                 this.submittedForm.description = this.description;
                 this.submittedForm.delivery_date = this.delivery_date;
-                this.submittedForm.project_id = this.project_id;     
-                this.submittedForm.materials = this.dataMaterial;    
+                this.submittedForm.project_id = this.project_id;
+                this.submittedForm.materials = this.dataMaterial;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -457,7 +457,7 @@
                 window.axios.get('/api/getMaterialMR/'+new_material_id).then(({ data }) => {
                     material.material_description = data.description;
                     material.material_code = data.code;
-                    
+
                     window.axios.get('/api/getWbsMR/'+this.editInput.wbs_id).then(({ data }) => {
                         material.wbs_number = data.wbs.number;
                         $('div.overlay').hide();
@@ -497,7 +497,7 @@
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
-                
+
                 this.material_id_modal.forEach(id => {
                     if(id == data.material_id){
                         var index = this.material_id_modal.indexOf(id);
@@ -516,7 +516,7 @@
                         this.dataInput.wbs_description = wbs.description;
                     }
                 });
-                
+
                 window.axios.get('/api/getMaterialPR/'+material_id).then(({ data }) => {
                     this.dataInput.material_description = data.description;
                     this.dataInput.material_code = data.code;
@@ -542,8 +542,8 @@
                     this.dataInput.wbs_number = "";
                     this.dataInput.unit = "";
                     this.dataInput.is_decimal = "";
-                    
-                    this.newIndex = Object.keys(this.dataMaterial).length+1;                    
+
+                    this.newIndex = Object.keys(this.dataMaterial).length+1;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -563,7 +563,7 @@
                     }
                 });
 
-                this.dataMaterial.splice(index, 1);                
+                this.dataMaterial.splice(index, 1);
                 this.newIndex = this.dataMaterial.length + 1;
             }
         },
@@ -582,8 +582,8 @@
 
                         if(data.boms[0].bom_details.length > 0){
                             data.boms[0].bom_details.forEach(bomd => {
-                                 this.materials.push(bomd.material);                               
-                                 this.materialsEdit.push(bomd.material);                               
+                                 this.materials.push(bomd.material);
+                                 this.materialsEdit.push(bomd.material);
                             });
 
                         }
@@ -605,7 +605,7 @@
                 if(newValue != ""){
                     var temp = parseFloat((newValue+"").replace(",", ""));
                     this.dataInput.quantityFloat = temp;
-                                        
+
                     if(this.dataInput.is_decimal){
                         var decimal = (newValue+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){
@@ -642,7 +642,7 @@
                 if(newValue != ""){
                     var temp = parseFloat((newValue+"").replace(",", ""));
                     this.editInput.quantityFloat = temp;
-                                        
+
                     if(this.editInput.is_decimal){
                         var decimal = (newValue+"").replace(/,/g, '').split('.');
                         if(decimal[1] != undefined){

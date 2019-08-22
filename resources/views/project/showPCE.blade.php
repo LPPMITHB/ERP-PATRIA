@@ -1,14 +1,23 @@
 @extends('layouts.main')
 @section('content-header')
+    @if($is_pami)
+        @php
+            $labelPCE = "Project Cost Monitoring";
+        @endphp
+    @else
+        @php
+            $labelPCE = "Project Cost Evaluation";
+        @endphp
+    @endif
     @if ($menu == "building")
         @breadcrumb(
-            [
-                'title' => 'Project Cost Evaluation » '.$project->name,
+            [   
+                'title' => $labelPCE . ' » '.$project->name,
                 'items' => [
                     'Dashboard' => route('index'),
                     'View all Projects' => route('project.index'),
                     'Project|'.$project->number => route('project.show',$project->id),
-                    'Project Cost Evaluation' => ""
+                    $labelPCE => ""
                 ]
             ]
         )
@@ -16,12 +25,12 @@
     @else
         @breadcrumb(
             [
-                'title' => 'Project Cost Evaluation » '.$project->name,
+                'title' => $labelPCE . ' » '.$project->name,
                 'items' => [
                     'Dashboard' => route('index'),
                     'View all Projects' => route('project_repair.index'),
                     'Project|'.$project->number => route('project_repair.show',$project->id),
-                    'Project Cost Evaluation' => ""
+                    $labelPCE => ""
                 ]
             ]
         )

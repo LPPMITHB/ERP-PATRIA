@@ -54,10 +54,10 @@
                             <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->PurchaseRequisition->number) ? $modelGR->purchaseOrder->PurchaseRequisition->number : '-' }} </b></div>
 
                             <div class="col-md-4 col-xs-4 no-padding">PO Number</div>
-                            <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
+                            <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->number : '-' }} </b></div>
 
                             <div class="col-md-4 col-xs-4 no-padding">Vendor Name</div>
-                            <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
+                            <div class="col-md-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->vendor->name : '-'}}">: <b> {{ isset($modelGR->purchaseOrder) ? $modelGR->purchaseOrder->vendor->name : '-'}} </b></div>
 
                             <div class="col-md-4 col-xs-4 no-padding">Ship Date</div>
                             <div class="col-md-6 no-padding">: <b> {{ isset($modelGR->ship_date) ? date('d-m-Y', strtotime($modelGR->ship_date)) : '-'}} </b></div>
@@ -122,7 +122,7 @@
                                     <th width="5%">No</th>
                                     <th width="20%">Material Number</th>
                                     <th width="30%">Material Description</th>
-                                    <th width="10%">Quantity</th>
+                                    <th width="10%">Return Quantity</th>
                                     <th width="10%">Unit</th>
                                     <th width="20%">Storage Location</th>
                                 </tr>

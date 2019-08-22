@@ -53,7 +53,7 @@ class ProjectController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-
+   
     public function listWBS($id, $menu){
         $project = Project::find($id);
         $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
@@ -99,13 +99,13 @@ class ProjectController extends Controller
             $route = "";
             $menuTitle = "Select WBS";
         }
-
+    
         foreach($wbss as $wbs){
             if($wbs->wbs){
                 if(count($wbs->activities)>0){
                     $totalWeight = $wbs->wbss->sum('weight') + $wbs->activities->sum('weight');
                     $dataWbs->push([
-                        "id" => $wbs->code ,
+                        "id" => $wbs->code , 
                         "parent" => $wbs->wbs->code,
                         "text" => $wbs->number." - ".$wbs->description." | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,
@@ -1051,7 +1051,11 @@ class ProjectController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = $project->wbss;
         $today = date("Y-m-d");
-
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if (in_array("2", json_decode($business_ids))) {
+            $is_pami = true;
+        }
         //planned
         $dataPlannedCost = Collection::make();
         $modelBom = Bom::where('project_id',$id)->get();
@@ -1297,7 +1301,7 @@ class ProjectController extends Controller
         }
 
         $project_done = $project->progress == 100 ? true:false;
-        return view('project.show', compact('activities','wbss','project','today','ganttData','links',
+        return view('project.show', compact('activities','wbss','project','today','ganttData','links','is_pami',
         'outstanding_item','modelPrO','menu','dataPlannedCost','dataActualCost','project_done',
         'dataActualProgress','dataPlannedProgress', 'progressStatus','str_expected_date','expectedStatus','dataEvm'));
     }
@@ -1472,6 +1476,12 @@ class ProjectController extends Controller
         $planned = Collection::make();
         $materialEvaluation = Collection::make();
 
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if (in_array("2", json_decode($business_ids))) {
+            $is_pami = true;
+        }
+
         $actual = Collection::make();
         foreach($project->wbss as $wbs){
             $actualCostPerWbs = 0;
@@ -1563,7 +1573,7 @@ class ProjectController extends Controller
             }
         }
 
-        return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation','menu'));
+        return view('project.showPCE', compact('modelWBS','project','actual','planned','materialEvaluation','menu','is_pami'));
     }
 
     // Configuration WBS & Estimator

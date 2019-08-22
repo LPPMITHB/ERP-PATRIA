@@ -36,8 +36,7 @@ class GoodsReturnController extends Controller
             $business_unit = 1;
         }
 
-        $modelGIs = GoodsReturn::where('business_unit_id',$business_unit)->get();
-
+        $modelGIs = GoodsReturn::where('business_unit_id',$business_unit)->with('purchaseOrder')->with('goodsReceipt')->get();
         return view ('goods_return.index', compact('modelGIs','menu'));
     }
 
@@ -309,7 +308,7 @@ class GoodsReturnController extends Controller
             }elseif($datas->status == "need-revision"){
                 $modelGRT->status = 3;
                 $modelGRT->approved_by = Auth::user()->id;
-                $modelGRT->revision_description = "";
+                $modelGRT->revision_description = null;
                 $modelGRT->update();
                 DB::commit();
                 if($route == "/goods_return"){
@@ -372,6 +371,7 @@ class GoodsReturnController extends Controller
         foreach($modelPOD as $POD){
             $POD['returned_temp'] = 0;
         }
+        
 
         return view('goods_return.createGoodsReturnPO', compact('modelPO','modelPOD','route','vendor'));
     }
@@ -505,7 +505,7 @@ class GoodsReturnController extends Controller
                 $GR->purchase_order_id = $datas->purchase_order_id;
             }
             $GR->description = $datas->description;
-            $GR->revision_description = $datas->revision_description;
+            $GR->revision_description = null;
             $GR->branch_id = Auth::user()->branch->id;
             $GR->user_id = Auth::user()->id;
             $GR->save();

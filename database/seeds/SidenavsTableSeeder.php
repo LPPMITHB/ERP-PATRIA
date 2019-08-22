@@ -600,6 +600,12 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $inputActualOtherCost,
             'route_name' => 'rap.selectProjectActualOtherCost',
         ]);
+
+        $projectPlanOtherCost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $projectPlanOtherCost,
+            'route_name' => 'rap.selectProjectPlanOtherCost',
+        ]);
         
         DB::table('sidenav')->insert([
             'menu_id' => $inputActualOtherCost,
