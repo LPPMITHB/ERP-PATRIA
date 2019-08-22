@@ -20,7 +20,7 @@ class CreateNotificationsTable extends Migration
             $table->unsignedInteger('role_id');
             $table->date('notification_date');
             $table->longText('data');
-            $table->string('status')->default(1);
+            $table->longText('user_data');
             $table->timestamps();
 
             $table->foreign('role_id')->references('id')->on('roles'); 
