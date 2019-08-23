@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Create Purchase Order » Select Purchase Requisition',
+        'title' => 'Create Sales Order » Select Quotation',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'Select Purchase Requisition' => '',
+            'Select Quotation' => '',
         ]
     ]
 )
@@ -26,56 +26,40 @@
                             <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                         </div>
                     </div> 
-                <table class="table table-bordered tableFixed" id="po-table">
+                <table class="table table-bordered tableFixed" id="qt-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
-                            <th width="10%">Type</th>
                             <th width="10%">Number</th>
-                            <th width="10%">PR Date</th>
+                            <th width="10%">QT Date</th>
                             <th width="25%">Description</th>
+                            <th width="25%">Customer</th>
                             <th width="13%">Status</th>
                             <th width="17%">Created By</th>
                             <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelPRs as $modelPR)
+                        @foreach($modelQTs as $modelQT)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                @if($modelPR->type == 1)
-                                    <td>Material</td>
-                                @elseif($modelPR->type == 2)
-                                    <td>Resource</td>
-                                @elseif($modelPR->type == 3)
-                                    <td>Subcon</td>
-                                @endif
-                                <td>{{ $modelPR->number }}</td>
-                                <td>{{ $modelPR->created_at->format('d-m-Y') }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPR->description}}">{{ isset($modelPR->description) ? $modelPR->description : '-'}}</td>
-                                @if($modelPR->status == 0)
-                                    <td>ORDERED</td>
-                                @elseif($modelPR->status == 1)
+                                <td>{{ $modelQT->number }}</td>
+                                <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelQT->description) ? $modelQT->description : '-'}}">{{ isset($modelQT->description) ? $modelQT->description : '-'}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ isset($modelQT->customer) ? $modelQT->customer->name : '-'}}">{{ isset($modelQT->customer) ? $modelQT->customer->name : '-'}}</td>
+                                @if($modelQT->status == 0)
+                                    <td>CONVERTED TO SO</td>
+                                @elseif($modelQT->status == 1)
                                     <td>OPEN</td>
-                                @elseif($modelPR->status == 2)
-                                    <td>APPROVED</td>
-                                @elseif($modelPR->status == 3)
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="NEEDS REVISION">NEEDS REVISION</td>
-                                @elseif($modelPR->status == 4)
-                                    <td>REVISED</td>
-                                @elseif($modelPR->status == 5)
-                                    <td>REJECTED</td>
-                                @elseif($modelPR->status == 6)
-                                    <td>CONSOLIDATED</td>
-                                @elseif($modelPR->status == 7)
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="ORDERED PARTIALLY">ORDERED PARTIALLY</td>
+                                @elseif($modelQT->status == 2)
+                                    <td>CANCELED</td>
                                 @endif
-                                <td>{{ $modelPR->user->name }}</td>
+                                <td>{{ $modelQT->user->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
-                                    @if($route == "/purchase_order")
-                                        <a onClick="loading()" href="{{ route('purchase_order.selectPRD', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
-                                    @elseif($route == "/purchase_order_repair")
-                                        <a onClick="loading()" href="{{ route('purchase_order_repair.selectPRD', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($route == "/sales_order")
+                                        <a onClick="loading()" href="{{ route('sales_order.create', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @elseif($route == "/sales_order_repair")
+                                        <a onClick="loading()" href="{{ route('sales_order_repair.create', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
@@ -91,7 +75,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        var po_table = $('#po-table').DataTable({
+        var po_table = $('#qt-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'ordering'    : true,
@@ -145,7 +129,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[3].split("-");    
+                    var temp = aData[4].split("-");                    
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 

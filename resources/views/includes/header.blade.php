@@ -42,11 +42,13 @@
           <ul class="dropdown-menu" style="width: 550px">
               @if(auth()->user()->role->notifications->where('status',1)->count())
                 <li class="header">You have {{ auth()->user()->role->notifications->where('status',1)->count() }} new notifications</li>
-                  @foreach(auth()->user()->role->notifications as $notification)
+                  @foreach(auth()->user()->role->notifications->where('status',1) as $notification)
                   @php
                     $data = json_decode($notification->data);
                     $now = new DateTime(date("Y-m-d"));
                     $notification_date = new DateTime($notification->notification_date);
+
+                    $formatted_date = date('d-m-Y', strtotime($notification->notification_date));   
                     $interval = $notification_date->diff($now);
                   @endphp
                   <li>
@@ -55,11 +57,13 @@
                           <div style="width: 20px;" class="col-sm-1">
                             @if($data->title == "Activity")
                               <i style="font-size: 25px" class="fa fa-suitcase text-aqua m-t-7"></i>
+                            @elseif($data->title == "Purchase Requisition")
+                              <i style="font-size: 25px" class="fa fa-file-text-o text-aqua m-t-7"></i>
                             @endif
                           </div>
                           <div class="col-sm-11">
-                            <div class="col-sm-12"><b>{{$data->title}}</b></div>
-                            <div class="col-sm-12">{{$interval->days}} Day(s) {{ $data->text }}</div>
+                            <div class="col-sm-12"><b>{{$data->title}}</b> [Created at : {{$formatted_date}}]</div>
+                            <div class="col-sm-12">{{ $data->text }}</div>
                           </div>
                         </div>
                       </a>

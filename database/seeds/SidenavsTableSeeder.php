@@ -197,7 +197,12 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // Sales Order
-        $createSO = Menu::where('route_name','sales_order.create')->select('id')->first()->id;
+        $createSO = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createSO,
+            'route_name' => 'sales_order.selectQT',
+        ]);
+
         DB::table('sidenav')->insert([
             'menu_id' => $createSO,
             'route_name' => 'sales_order.create',
@@ -221,6 +226,11 @@ class SidenavsTableSeeder extends Seeder
 
         // Sales Order Repair
         // $createSO = Menu::where('route_name','sales_order_repair.create')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createSO,
+        //     'route_name' => 'sales_order_repair.selectQT',
+        // ]);
+
         // DB::table('sidenav')->insert([
         //     'menu_id' => $createSO,
         //     'route_name' => 'sales_order_repair.create',
@@ -490,6 +500,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project_standard.manageMaterial',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $material_standard,
+            'route_name' => 'project_standard.showMaterialStandard',
+        ]);
+
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $projectConfig,
@@ -594,6 +609,12 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $inputActualOtherCost,
             'route_name' => 'rap.selectProjectActualOtherCost',
+        ]);
+
+        $projectPlanOtherCost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $projectPlanOtherCost,
+            'route_name' => 'rap.selectProjectPlanOtherCost',
         ]);
         
         DB::table('sidenav')->insert([
@@ -1861,6 +1882,12 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $dimension_type,
             'route_name' => 'dimension_type.index',
+        ]);
+
+        $approval_config = Menu::where('route_name','approval.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $approval_config,
+            'route_name' => 'approval.index',
         ]);
 
         $daily_weather = Menu::where('route_name','daily_weather.index')->select('id')->first()->id;

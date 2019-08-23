@@ -117,7 +117,7 @@ class QuotationController extends Controller
             $statusQT = 'OPEN';
         } elseif ($modelQT->status == 0) {
             $statusQT = 'CONVERTED TO SO';
-        } elseif ($modelPO->status == 2) {
+        } elseif ($modelQT->status == 2) {
             $statusQT = 'CANCELED';
         }
 
@@ -137,9 +137,14 @@ class QuotationController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $quotation = Quotation::where('id',$id)->with('quotationDetails','quotationDetails.estimatorCostStandard','quotationDetails.estimatorCostStandard.estimatorWbs','quotationDetails.estimatorCostStandard.uom')->first();
+        $customers = Customer::where('status',1)->get(); 
+        $profiles = EstimatorProfile::where('status',1)->with('ship','estimatorProfileDetails','estimatorProfileDetails.estimatorCostStandard','estimatorProfileDetails.estimatorCostStandard.estimatorWbs','estimatorProfileDetails.estimatorCostStandard.uom')->get();
+
+        return view('quotation.create', compact('quotation','route','profiles','customers'));
     }
 
     /**
@@ -151,7 +156,48 @@ class QuotationController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $data = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            $quotation = Quotation::findOrFail($data->pd->id);
+            $quotation->customer_id = ($data->customer_id != "") ? $data->customer_id : null;
+            $quotation->description = $data->description;
+            $quotation->price = $data->price;
+            $quotation->total_price = $data->total_price;
+            $quotation->margin = $data->margin;
+            $quotation->terms_of_payment = json_encode($data->top);
+            $quotation->user_id = Auth::user()->id;
+            $quotation->branch_id = Auth::user()->branch->id;
+
+            if(!$quotation->save()){
+                if($route == "/quotation"){
+                    return redirect()->route('quotation.create')->with('error', 'Failed Save Quotation !');
+                }elseif($route == "/quotation_repair"){
+                    return redirect()->route('quotation_repair.create')->with('error', 'Failed Save Quotation !');
+                }
+            }else{
+                foreach($data->pd->quotation_details as $qd){
+                    $quotation_detail = QuotationDetail::findOrFail($qd->id);
+                    $quotation_detail->value = $qd->value;
+                    $quotation_detail->save();
+                }
+                DB::commit();
+                if($route == "/quotation"){
+                    return redirect()->route('quotation.show', ['id' => $quotation->id])->with('success', 'Quotation Created');
+                }elseif($route == "/quotation_repair"){
+                    return redirect()->route('quotation_repair.show', ['id' => $quotation->id])->with('success', 'Quotation Created');
+                }
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/quotation"){
+                return redirect()->route('quotation.edit', ['id' => $quotation->id])->with('error', $e->getMessage());
+            }elseif($route == "/quotation_repair"){
+                return redirect()->route('quotation_repair.edit', ['id' => $quotation->id])->with('error', $e->getMessage());
+            }
+        }
     }
 
     /**
