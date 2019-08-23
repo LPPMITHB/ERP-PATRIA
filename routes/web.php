@@ -245,6 +245,8 @@ Route::name('customer.')->prefix('customer')->group(function() {
 
     Route::patch('/{id}', 'CustomerController@update')->name('update')->middleware('can:edit-customer');
 
+    Route::patch('/updateCreditLimit/{id}', 'CustomerController@updateCreditLimit')->name('updateCreditLimit')->middleware('can:edit-customer');
+
     Route::post('/', 'CustomerController@store')->name('store')->middleware('can:create-customer');
 });
 

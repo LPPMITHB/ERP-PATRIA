@@ -19,6 +19,9 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+    
+
     public function index()
     {
         $customers = Customer::all();
@@ -216,6 +219,25 @@ class CustomerController extends Controller
         }   
     }
 
+    public function updateCreditLimit(Request $request,$id){
+        $data = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            $customer = Customer::find($data->customer_id);
+            $customer->credit_limit = $data->datas->credit_limit;
+            $customer->used_limit = $data->datas->used_limit;
+            $customer->update();    
+
+            DB::commit();
+            return redirect()->route('customer.show',$customer->id)->with('success', 'Customer Credit Limit Updated Succesfully');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('customer.create')->with('error', $e->getMessage());
+        }
+    }
+
+    // function
     public function generateCustomerCode(){
         $code = 'C15';
         $modelCustomer = Customer::orderBy('code', 'desc')->first();

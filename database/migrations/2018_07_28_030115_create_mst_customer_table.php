@@ -29,6 +29,8 @@ class CreateMstCustomerTable extends Migration
             $table->string('zip_code')->nullable();
             $table->string('country')->nullable();
             $table->string('status')->default(1);
+            $table->bigInteger('credit_limit')->default(0);
+            $table->bigInteger('used_limit')->default(0);
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id')->nullable();
             $table->timestamps();
