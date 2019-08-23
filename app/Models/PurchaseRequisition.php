@@ -47,4 +47,14 @@ class PurchaseRequisition extends Model
     {
         return $this->belongsTo('App\Models\User','approved_by_2');
     }
+
+    public function roleApproved1()
+    {
+        return $this->belongsTo('App\Models\Role','role_approve_1');
+    }
+
+    public function roleApproved2()
+    {
+        return $this->belongsTo('App\Models\Role','role_approve_2');
+    }
 }
