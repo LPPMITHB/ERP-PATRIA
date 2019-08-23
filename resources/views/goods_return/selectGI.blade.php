@@ -9,7 +9,7 @@
             'Select Goods Issue' => "",
         ]
     ]
-) 
+)
 @endbreadcrumb
 @endsection
 
@@ -33,8 +33,8 @@
                         @foreach($modelGI as $GI)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $GI->number }}">{{ $GI->number }}</td>
-                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $GI->materialRequisition->number }}">{{ $GI->materialRequisition->number }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $GI->number }}"><a href= "{{ route('goods_issue.show', ['id'=>$GI->id]) }}" class="text-primary">{{ $GI->number }}</a></td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $GI->materialRequisition->number }}"><a href= "{{ route('material_requisition.show', ['id'=>$GI->materialRequisition->id]) }}" class="text-primary">{{ $GI->materialRequisition->number }}</a></td>
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $GI->description }}">{{ $GI->description }}</td>
                                 <td class ="tdEllipsis">{{ $GI->user->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
@@ -69,7 +69,7 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        });   
+        });
     });
 
     function loading(){
