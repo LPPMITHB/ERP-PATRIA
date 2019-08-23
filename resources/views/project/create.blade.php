@@ -166,7 +166,7 @@
                                 <label for="class_name_2" class="col-sm-2 control-label">Classification Name 2</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="class_name_2" name="class_name_2" required v-model="project.class_name_2">
+                                    <input type="text" class="form-control" id="class_name_2" name="class_name_2" v-model="project.class_name_2">
                                 </div>
                             </div>
 
@@ -282,6 +282,16 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="sales_order_id" class="col-sm-2 control-label">Sales Order</label>
+
+                                <div class="col-sm-10">
+                                    <selectize name="sales_order_id" id="sales_order_id" required>
+                                        <option v-for="(so, index) in salesOrders" :value="so.id">{{ so.number }}</option>
+                                    </selectize>
+                                </div>
+                            </div>
+
                             <div class="box-footer">
                                 <button v-if="projectUpdate!=''" type="submit" class="btn btn-primary pull-right">SAVE</button>
                                 <button v-else @click.prevent="submitForm()" type="button" class="btn btn-primary pull-right">CREATE</button>
@@ -323,6 +333,7 @@ $(document).ready(function(){
     });
 
     var data = {
+        salesOrders : @json($sales_orders),
         oldData : {
             number : @json(Request::old('number')),
             name : @json(Request::old('name')),
@@ -339,6 +350,7 @@ $(document).ready(function(){
             description : @json(Request::old('description')),
             person_in_charge : @json(Request::old('person_in_charge')),
             budget_value : @json(Request::old('budget_value')),
+            sales_order_id : @json(Request::old('sales_order_id')),
         },
         projectUpdate:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
@@ -361,6 +373,7 @@ $(document).ready(function(){
             description : @json($project->description == null ? "": $project->description),
             person_in_charge : @json($project->person_in_charge == null ? "": $project->person_in_charge),
             budget_value : @json($project->budget_value == null ? "": $project->budget_value),
+            sales_order_id : @json($project->sales_order_id == null ? "": $project->sales_order_id),
         },
         customer: "",
         menu : @json($menu),
@@ -492,12 +505,15 @@ $(document).ready(function(){
             }
             if(this.oldData.description !=null) {
                 this.project.description=this.oldData.description;
-        }
-    },
+            }
+            if(this.oldData.sales_order_id !=null) {
+                this.project.sales_order_id=this.oldData.sales_order_id;
+            }
+        },
 
     });
     $('div.overlay').hide();
-    $('#customer,#ship,#project_type').selectize();
+    $('#customer,#ship,#project_type,#sales_order_id').selectize();
     $('.datepicker').datepicker({
         autoclose : true,
     });
@@ -603,6 +619,10 @@ $(document).ready(function(){
         var $selectProjectType = $("#project_type").selectize();
         var selectizeProjectType = $selectProjectType[0].selectize;
         selectizeProjectType.setValue(@JSON($project->project_type));
+
+        var $selectSalesOrder = $("#sales_order_id").selectize();
+        var selectizeSalesOrder = $selectSalesOrder[0].selectize;
+        selectizeSalesOrder.setValue(@JSON($project->sales_order_id));
     }
 
     if(@JSON(Request::old('planned_start_date')) != null){

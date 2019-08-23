@@ -68,6 +68,19 @@
                                             <a onClick="loading()" href="{{ route('sales_order_repair.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
+                                @elseif($modelSO->status == 0)
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="CONNECTED TO PROJECT">CONNECTED TO PROJECT</td>
+                                    <td>{{ $modelSO->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $modelSO->user->name }}</td>
+                                    <td class="textCenter">
+                                        @if($route == "/sales_order")
+                                            <a onClick="loading()" href="{{ route('sales_order.edit', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('sales_order.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/sales_order_repair")
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.edit', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
                                 @endif
                             </tr>
                         @endforeach

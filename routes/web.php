@@ -1909,3 +1909,37 @@ Route::name('sales_order_repair.')->prefix('sales_order_repair')->group(function
 
     Route::post('/', 'SalesOrderController@store')->name('store');
 });
+
+// Invoice Routes
+Route::name('invoice.')->prefix('invoice')->group(function() {
+    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject');
+
+    Route::get('/create/{id}', 'InvoiceController@create')->name('create');
+
+    Route::get('/', 'InvoiceController@index')->name('index');
+
+    Route::get('/{id}', 'InvoiceController@show')->name('show');
+
+    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit');
+
+    Route::patch('/{id}', 'InvoiceController@update')->name('update');
+
+    Route::post('/', 'InvoiceController@store')->name('store');
+});
+
+// Invoice Repair Routes
+Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
+    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject');
+
+    Route::get('/create/{id}', 'InvoiceController@create')->name('create');
+
+    Route::get('/', 'InvoiceController@index')->name('index');
+
+    Route::get('/{id}', 'InvoiceController@show')->name('show');
+
+    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit');
+
+    Route::patch('/{id}', 'InvoiceController@update')->name('update');
+
+    Route::post('/', 'InvoiceController@store')->name('store');
+});

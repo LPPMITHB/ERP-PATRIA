@@ -129,7 +129,7 @@ class SalesOrderController extends Controller
         if ($modelSO->status == 1) {
             $statusSO = 'OPEN';
         } elseif ($modelSO->status == 0) {
-            $statusSO = 'CONVERTED TO SO';
+            $statusSO = 'CONNECTED TO PROJECT';
         } elseif ($modelSO->status == 2) {
             $statusSO = 'CANCELED';
         }
