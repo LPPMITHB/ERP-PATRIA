@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View All Quotations',
+        'title' => 'View All Sales Orders',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Quotations' => '',
+            'View All Sales Orders' => '',
         ]
     ]
 )
@@ -39,44 +39,46 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($modelQTs as $modelQT)
+                        @foreach($modelSOs as $modelSO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelQT->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelQT->description}}">{{ $modelQT->description }}</td>
-                                @if($modelQT->status == 1)
+                                <td>{{ $modelSO->number }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelSO->description}}">{{ $modelSO->description }}</td>
+                                @if($modelSO->status == 1)
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="OPEN">OPEN</td>
-                                    <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $modelQT->user->name }}</td>
+                                    <td>{{ $modelSO->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $modelSO->user->name }}</td>
                                     <td class="textCenter">
-                                        @if($route == "/quotation")
-                                            <a onClick="loading()" href="{{ route('quotation.edit', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a onClick="loading()" href="{{ route('quotation.show', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @elseif($route == "/quotation_repair")
-                                            <a onClick="loading()" href="{{ route('quotation_repair.edit', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                            <a onClick="loading()" href="{{ route('quotation_repair.show', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/sales_order")
+                                            <a onClick="loading()" href="{{ route('sales_order.edit', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('sales_order.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/sales_order_repair")
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.edit', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
-                                @elseif($modelQT->status == 0)
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="CONVERTED TO SO">CONVERTED TO SO</td>
-                                    <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $modelQT->user->name }}</td>
-                                    <td class="textCenter">
-                                        @if($route == "/quotation")
-                                            <a onClick="loading()" href="{{ route('quotation.show', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @elseif($route == "/quotation_repair")
-                                            <a onClick="loading()" href="{{ route('quotation_repair.show', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @endif
-                                    </td>
-                                @elseif($modelQT->status == 2)
+                                @elseif($modelSO->status == 2)
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="CANCELED">CANCELED</td>
-                                    <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
-                                    <td>{{ $modelQT->user->name }}</td>
+                                    <td>{{ $modelSO->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $modelSO->user->name }}</td>
                                     <td class="textCenter">
-                                        @if($route == "/quotation")
-                                            <a onClick="loading()" href="{{ route('quotation.show', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                        @elseif($route == "/quotation_repair")
-                                            <a onClick="loading()" href="{{ route('quotation_repair.show', ['id'=>$modelQT->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @if($route == "/sales_order")
+                                            <a onClick="loading()" href="{{ route('sales_order.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/sales_order_repair")
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                @elseif($modelSO->status == 0)
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="CONNECTED TO PROJECT">CONNECTED TO PROJECT</td>
+                                    <td>{{ $modelSO->created_at->format('d-m-Y') }}</td>
+                                    <td>{{ $modelSO->user->name }}</td>
+                                    <td class="textCenter">
+                                        @if($route == "/sales_order")
+                                            <a onClick="loading()" href="{{ route('sales_order.edit', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('sales_order.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/sales_order_repair")
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.edit', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                            <a onClick="loading()" href="{{ route('sales_order_repair.show', ['id'=>$modelSO->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
                                 @endif

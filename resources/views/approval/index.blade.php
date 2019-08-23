@@ -292,7 +292,13 @@
                 })
 
                 if(status){
-                    this.submittedForm.data = this.approvals;
+                    var approvals = JSON.stringify(this.approvals);
+                    approvals = JSON.parse(approvals);
+                    approvals[0].value.forEach(value =>{
+                        value.maximum = (value.maximum+"").replace(/,/g , '');
+                        value.minimum = (value.minimum+"").replace(/,/g , '');
+                    })
+                    this.submittedForm.data = approvals;
                     this.submittedForm.selectedTransaction = this.selectedTransaction;
 
                     var url = "{{ route('approval.save') }}";
@@ -371,9 +377,15 @@
                         this.submittedForm.selectedType = this.selectedType;
                         this.submittedForm.value = JSON.parse(data);
                     }
-                    this.submittedForm.data = this.approvals;
-                    this.submittedForm.selectedTransaction = this.selectedTransaction;
+                    var approvals = JSON.stringify(this.approvals);
+                    approvals = JSON.parse(approvals);
+                    approvals[0].value.forEach(value =>{
+                        value.maximum = (value.maximum+"").replace(/,/g , '');
+                        value.minimum = (value.minimum+"").replace(/,/g , '');
+                    })
 
+                    this.submittedForm.data = approvals;
+                    this.submittedForm.selectedTransaction = this.selectedTransaction;
                     var url = "{{ route('approval.save') }}";
                     window.axios.put(url,this.submittedForm).then((response) => {
                         iziToast.success({

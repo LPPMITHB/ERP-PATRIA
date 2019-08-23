@@ -82,4 +82,9 @@ class Project extends Model
     {
         return $this->hasMany('App\Models\Cost');
     }
+
+    public function salesOrder()
+    {
+        return $this->belongsTo('App\Models\SalesOrder');
+    }
 }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\SalesOrder;
+use App\Models\SalesOrderDetail;
 use App\Models\Project;
 use App\Models\Customer;
 use App\Models\Configuration;
@@ -362,11 +363,12 @@ class ProjectController extends Controller
         // $project_code = self::generateProjectCode();
         $project = new Project;
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $sales_orders = SalesOrder::where('status',1)->get();
 
         if($menu == "building"){
-            return view('project.create', compact('customers','ships','project','menu','projectType'));
+            return view('project.create', compact('customers','ships','project','menu','projectType','sales_orders'));
         }else{
-            return view('project.createRepair', compact('customers','ships','project','menu','projectType'));
+            return view('project.createRepair', compact('customers','ships','project','menu','projectType','sales_orders'));
         }
     }
 // public function create(Request $request)
@@ -616,6 +618,7 @@ class ProjectController extends Controller
             $project->class_contact_person_phone_2 = $request->class_contact_person_phone_2;
             $project->class_contact_person_email = $request->class_contact_person_email;
             $project->class_contact_person_email_2 = $request->class_contact_person_email_2;
+            $project->sales_order_id = $request->sales_order_id;
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
             $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
@@ -653,6 +656,12 @@ class ProjectController extends Controller
             $project->drawing = $fileNameToStore;
             $project->save();
 
+            // update status SO
+            if($request->sales_order_id != null && $request->sales_order_id != ""){
+                $so = SalesOrder::findOrFail($request->sales_order_id);
+                $so->status = 0;
+                $so->update();
+            }
             DB::commit();
             if($menu == "building"){
                 return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Created');
@@ -1337,11 +1346,14 @@ class ProjectController extends Controller
         $customers = Customer::all();
         $ships = Ship::all();
         $projectType = Configuration::get('project_type');
-
+        if($project->sales_order_id != null && $project->sales_order_id != ""){
+            $sales_orders = SalesOrder::where('status',1)->orWhere('id', $project->sales_order_id)->get();
+        }else{
+            $sales_orders = SalesOrder::where('status',1)->get();
+        }
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-
-        return view('project.create', compact('project','projectType','customers','ships','menu'));
+        return view('project.create', compact('project','projectType','customers','ships','menu','sales_orders'));
     }
 
     /**
@@ -1414,6 +1426,17 @@ class ProjectController extends Controller
             $project->class_contact_person_name = $request->class_contact_person_name;
             $project->class_contact_person_phone = $request->class_contact_person_phone;
             $project->class_contact_person_email = $request->class_contact_person_email;
+            if($project->sales_order_id != null){
+                if($project->sales_order_id != $request->sales_order_id){
+                    // update status SO lama
+                    $so = SalesOrder::findOrFail($project->sales_order_id);
+                    $so->status = 1;
+                    $so->update();
+                }
+                $project->sales_order_id = $request->sales_order_id;
+            }else{
+                $project->sales_order_id = $request->sales_order_id;
+            }
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
             $planEndDate = DateTime::createFromFormat('m/j/Y', $request->planned_end_date);
@@ -1438,7 +1461,12 @@ class ProjectController extends Controller
             $project->drawing = $fileNameToStore;
             $project->save();
 
-
+            // update status SO
+            if($request->sales_order_id != null && $request->sales_order_id != ""){
+                $so = SalesOrder::findOrFail($request->sales_order_id);
+                $so->status = 0;
+                $so->update();
+            }
             DB::commit();
             if($menu == "building"){
                 return redirect()->route('project.show', ['id' => $project->id])->with('success', 'Project Updated');

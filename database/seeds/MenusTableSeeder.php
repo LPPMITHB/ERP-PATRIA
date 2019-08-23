@@ -146,7 +146,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Sales Order',
             'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order.create',
+            'route_name'=> 'sales_order.selectQT',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $sales_order,

@@ -574,6 +574,8 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\ReverseTransaction' => __DIR__ . '/../..' . '/app/Models/ReverseTransaction.php',
         'App\\Models\\ReverseTransactionDetail' => __DIR__ . '/../..' . '/app/Models/ReverseTransactionDetail.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
+        'App\\Models\\SalesOrder' => __DIR__ . '/../..' . '/app/Models/SalesOrder.php',
+        'App\\Models\\SalesOrderDetail' => __DIR__ . '/../..' . '/app/Models/SalesOrderDetail.php',
         'App\\Models\\Service' => __DIR__ . '/../..' . '/app/Models/Service.php',
         'App\\Models\\ServiceDetail' => __DIR__ . '/../..' . '/app/Models/ServiceDetail.php',
         'App\\Models\\Ship' => __DIR__ . '/../..' . '/app/Models/Ship.php',

@@ -131,6 +131,8 @@ return array(
     'App\\Models\\ReverseTransaction' => $baseDir . '/app/Models/ReverseTransaction.php',
     'App\\Models\\ReverseTransactionDetail' => $baseDir . '/app/Models/ReverseTransactionDetail.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
+    'App\\Models\\SalesOrder' => $baseDir . '/app/Models/SalesOrder.php',
+    'App\\Models\\SalesOrderDetail' => $baseDir . '/app/Models/SalesOrderDetail.php',
     'App\\Models\\Service' => $baseDir . '/app/Models/Service.php',
     'App\\Models\\ServiceDetail' => $baseDir . '/app/Models/ServiceDetail.php',
     'App\\Models\\Ship' => $baseDir . '/app/Models/Ship.php',

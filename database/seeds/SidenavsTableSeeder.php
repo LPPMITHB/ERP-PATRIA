@@ -197,7 +197,12 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // Sales Order
-        $createSO = Menu::where('route_name','sales_order.create')->select('id')->first()->id;
+        $createSO = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createSO,
+            'route_name' => 'sales_order.selectQT',
+        ]);
+
         DB::table('sidenav')->insert([
             'menu_id' => $createSO,
             'route_name' => 'sales_order.create',
@@ -221,6 +226,11 @@ class SidenavsTableSeeder extends Seeder
 
         // Sales Order Repair
         // $createSO = Menu::where('route_name','sales_order_repair.create')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createSO,
+        //     'route_name' => 'sales_order_repair.selectQT',
+        // ]);
+
         // DB::table('sidenav')->insert([
         //     'menu_id' => $createSO,
         //     'route_name' => 'sales_order_repair.create',
