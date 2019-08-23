@@ -19,7 +19,7 @@ class CreateNotificationsTable extends Migration
             $table->integer('document_id');
             $table->unsignedInteger('role_id');
             $table->date('notification_date');
-            $table->longText('data');
+            $table->longText('data')->nullable();
             $table->longText('user_data');
             $table->timestamps();
 
