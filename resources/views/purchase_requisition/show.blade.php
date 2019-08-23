@@ -122,7 +122,7 @@
                                 : <b>{{ $approval_date_1 }}</b>
                             </div>
                         @endif
-                    @elseif($approval_type == "Two Step Approval")
+                    @elseif($approval_type == "Two Step Approval" || $approval_type = "Joint Approval")
                         @if($modelPR->status != 6 && $modelPR->status != 1 && $modelPR->status != 8 && $modelPR->status != 9)
                             @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7 )
                                 <div class="col-xs-5 col-md-5">
@@ -217,8 +217,6 @@
                                 </div>
                             @endif
                         @endif
-                    @elseif($approval_type == "Joint Approval")
-
                     @endif
                 </div>
                 

@@ -481,7 +481,7 @@ class ConfigurationsTableSeeder extends Seeder
 
         $approval_pr = array(
             0 => array(
-                'type' => "Two Step Approval",
+                'type' => "Joint Approval",
                 'value' => array(
                     0 => array(
                         'minimum' => 0,
