@@ -35,14 +35,29 @@
         <li class="dropdown notifications-menu">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown">
             <i class="fa fa-bell-o"></i>
-            @if(auth()->user()->role->notifications->where('status',1)->count())
-            <span class="label label-warning">{{ auth()->user()->role->notifications->where('status',1)->count() }}</span>
+            @php
+                $user_id = auth()->user()->id;
+                $notifications = auth()->user()->role->notifications;
+                foreach ($notifications as $key => $notification) {
+                  $user_data = json_decode($notification->user_data);
+
+                  foreach ($user_data as $data) {
+                    if($data->id == $user_id){
+                      if($data->status == 0){
+                        $notifications->forget($key);
+                      }
+                    }
+                  }
+                }
+            @endphp
+            @if($notifications->count())
+            <span class="label label-warning">{{ $notifications->count() }}</span>
             @endif
           </a>
           <ul class="dropdown-menu" style="width: 550px">
-              @if(auth()->user()->role->notifications->where('status',1)->count())
-                <li class="header">You have {{ auth()->user()->role->notifications->where('status',1)->count() }} new notifications</li>
-                  @foreach(auth()->user()->role->notifications->where('status',1) as $notification)
+              @if($notifications->count())
+                <li class="header">You have {{ $notifications->count() }} new notifications</li>
+                  @foreach($notifications as $notification)
                   @php
                     $data = json_decode($notification->data);
                     $now = new DateTime(date("Y-m-d"));
@@ -62,7 +77,7 @@
                             @endif
                           </div>
                           <div class="col-sm-11">
-                            <div class="col-sm-12"><b>{{$data->title}}</b> [Created at : {{$formatted_date}}]</div>
+                            <div class="col-sm-12"><b>{{$data->title}}</b> [{{$data->time_info}} : {{$formatted_date}}]</div>
                             <div class="col-sm-12">{{ $data->text }}</div>
                           </div>
                         </div>

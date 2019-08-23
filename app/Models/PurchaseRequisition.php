@@ -38,8 +38,13 @@ class PurchaseRequisition extends Model
         return $this->belongsTo('App\Models\Bom');
     }
 
-    public function approvedBy()
+    public function approvedBy1()
     {
-        return $this->belongsTo('App\Models\User','approved_by');
+        return $this->belongsTo('App\Models\User','approved_by_1');
+    }
+
+    public function approvedBy2()
+    {
+        return $this->belongsTo('App\Models\User','approved_by_2');
     }
 }
