@@ -123,7 +123,100 @@
                             </div>
                         @endif
                     @elseif($approval_type == "Two Step Approval")
-                        
+                        @if($modelPR->status != 6 && $modelPR->status != 1 && $modelPR->status != 8 && $modelPR->status != 9)
+                            @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7 )
+                                <div class="col-xs-5 col-md-5">
+                                    Approved By
+                                </div>
+                            @elseif($modelPR->status == 3 || $modelPR->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Checked By
+                                </div>
+                            @elseif($modelPR->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Rejected By
+                                </div>
+                            @endif
+                            <div class="col-xs-7 col-md-7 tdEllipsis">
+                                : <b> {{ $modelPR->approvedBy1 != null ? $modelPR->approvedBy1->name : "-"}} </b>
+                            </div>
+                        @endif
+
+                        <?php
+                            $approval_date_1 = "";
+                            if($modelPR->approval_date_1 != NULL){
+                                $approval_date_1 = DateTime::createFromFormat('Y-m-d', $modelPR->approval_date_1);
+                                $approval_date_1 = $approval_date_1->format('d-m-Y');
+                            }
+                        ?>
+
+                        @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7 )
+                            <div class="col-xs-5 col-md-5">
+                                Approved Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $approval_date_1 }}</b>
+                            </div>
+                        @elseif($modelPR->status == 3 || $modelPR->status == 5)
+                            <div class="col-xs-5 col-md-5">
+                                Checked Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $approval_date_1 }}</b>
+                            </div>
+                        @elseif($modelPR->status == 5)
+                            <div class="col-xs-5 col-md-5">
+                                Rejected Date
+                            </div>
+                            <div class="col-xs-7 col-md-7">
+                                : <b>{{ $approval_date_1 }}</b>
+                            </div>
+                        @endif
+
+                        @if($modelPR->approvedBy2 != null)
+                            @if($modelPR->status != 6 && $modelPR->status != 1 && $modelPR->status != 8)
+                                @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7 || $modelPR->status == 9)
+                                    <div class="col-xs-5 col-md-5">
+                                        Approved By
+                                    </div>
+                                @elseif($modelPR->status == 3 || $modelPR->status == 5)
+                                    <div class="col-xs-5 col-md-5">
+                                        Checked By
+                                    </div>
+                                @elseif($modelPR->status == 5)
+                                    <div class="col-xs-5 col-md-5">
+                                        Rejected By
+                                    </div>
+                                @endif
+                                <div class="col-xs-7 col-md-7 tdEllipsis">
+                                    : <b> {{ $modelPR->approvedBy2->name }} </b>
+                                </div>
+                            @endif
+
+                            <?php
+                                $approval_date_2 = "";
+                                if($modelPR->approval_date_2 != NULL){
+                                    $approval_date_2 = DateTime::createFromFormat('Y-m-d', $modelPR->approval_date_2);
+                                    $approval_date_2 = $approval_date_2->format('d-m-Y');
+                                }
+                            ?>
+
+                            @if($modelPR->status == 2 || $modelPR->status == 0 || $modelPR->status == 7 || $modelPR->status == 9)
+                                <div class="col-xs-5 col-md-5">
+                                    Approved Date
+                                </div>
+                                <div class="col-xs-7 col-md-7">
+                                    : <b>{{ $approval_date_2 }}</b>
+                                </div>
+                            @elseif($modelPR->status == 5)
+                                <div class="col-xs-5 col-md-5">
+                                    Rejected Date
+                                </div>
+                                <div class="col-xs-7 col-md-7">
+                                    : <b>{{ $approval_date_2 }}</b>
+                                </div>
+                            @endif
+                        @endif
                     @elseif($approval_type == "Joint Approval")
 
                     @endif

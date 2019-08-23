@@ -159,7 +159,7 @@
                     @endif
                 @verbatim
                 <div id="approval">
-                    <div class="col-md-12 m-b-10 p-r-0 p-t-10" v-if="modelPR.status == 1 || modelPR.status == 4">
+                    <div class="col-md-12 m-b-10 p-r-0 p-t-10" v-if="modelPR.status == 1 || modelPR.status == 4 || modelPR.status == 9">
                         <button type="button" class="col-xs-12 col-md-1 btn btn-primary pull-right m-l-10 m-t-5" @click.prevent="submitForm('approve')">APPROVE</button>
                         <button type="button" class="col-xs-12 col-md-1 btn btn-danger pull-right m-l-10 p-r-10 m-t-5" @click.prevent="submitForm('need-revision')">REVISE</button>
                         <button type="button" class="col-xs-12 col-md-1 btn btn-danger pull-right p-r-10 m-t-5" @click.prevent="submitForm('reject')">REJECT</button>

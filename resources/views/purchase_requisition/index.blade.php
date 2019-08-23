@@ -129,6 +129,16 @@
                                             <a onClick="loading()" href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         @endif
                                     </td>
+                                @elseif($modelPR->status == 9)
+                                    <td>APPROVED PARTIALLY</td>
+                                    <td class="textCenter">
+                                        @if($route == "/purchase_requisition")
+                                            <a onClick="loading()" href="{{ route('purchase_requisition.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @elseif($route == "/purchase_requisition_repair")
+                                            <a onClick="loading()" href="{{ route('purchase_requisition_repair.show', ['id'=>$modelPR->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        @endif
+                                    </td>
+                                
                                 @endif
                             </tr>
                         @endforeach

@@ -54,7 +54,7 @@
             <span class="label label-warning">{{ $notifications->count() }}</span>
             @endif
           </a>
-          <ul class="dropdown-menu" style="width: 550px">
+          <ul class="dropdown-menu" style="width: 750px">
               @if($notifications->count())
                 <li class="header">You have {{ $notifications->count() }} new notifications</li>
                   @foreach($notifications as $notification)

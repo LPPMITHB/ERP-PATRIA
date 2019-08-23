@@ -481,13 +481,13 @@ class ConfigurationsTableSeeder extends Seeder
 
         $approval_pr = array(
             0 => array(
-                'type' => "Single Approval",
+                'type' => "Two Step Approval",
                 'value' => array(
                     0 => array(
                         'minimum' => 0,
                         'maximum' => 5000000,
                         'role_id_1' => 1,
-                        'role_id_2' => null,
+                        'role_id_2' => 4,
                     ),
                 ),
             ),
