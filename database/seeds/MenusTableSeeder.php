@@ -227,6 +227,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View Payment Receipt',
+            'icon' => 'fa-wrench',
+            'route_name'=> 'payment.selectInvoiceView',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id'=> $payment,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
@@ -1265,6 +1277,54 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN, PMP, PAMI',
             'menu_id' => $PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Quality Control',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $building,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $qc = Menu::where('name', 'Quality Control')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Type',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qc,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $qcType =  Menu::where('name', 'QC Type')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create QC Type',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'qc_type.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qcType,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit QC Type',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'qc_type.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qcType,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
