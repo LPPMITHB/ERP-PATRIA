@@ -18,19 +18,28 @@ class PaymentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function selectInvoice(Request $request){
+        $menu = "manage_payment";
         $route = $request->route()->getPrefix();
         $modelInvoice = Invoice::whereIn('status', [1,3])->get();
         
-        return view('payment.select_invoice', compact('modelInvoice', 'route'));
+        return view('payment.select_invoice', compact('modelInvoice', 'route','menu'));
     }
 
-    public function manage(Request $request, $id)
+    public function selectInvoiceView(Request $request){
+        $menu = "view_payment";
+        $route = $request->route()->getPrefix();
+        $modelInvoice = Invoice::whereIn('status', [0])->get();
+        
+        return view('payment.select_invoice', compact('modelInvoice', 'route','menu'));
+    }
+
+    public function manage(Request $request, $id, $menu)
     {
         $route = $request->route()->getPrefix();
         $payment = Payment::where('invoice_id',$id)->with('user')->get();
         $invoice = Invoice::where('id', $id)->with('salesOrder','project','project.ship','project.customer')->first();
 
-        return view('payment.manage', compact('invoice','route','payment'));
+        return view('payment.manage', compact('invoice','route','payment','menu'));
     }
 
     public function index()
@@ -62,7 +71,7 @@ class PaymentController extends Controller
         try {
             $payment = new Payment;
             $payment->invoice_id = $data['invoice_id'];
-            $payment->paid_value = $data['amount'];
+            $payment->amount = $data['amount'];
             $payment->status = 1;
             $payment->user_id = Auth::user()->id;
             $payment->branch_id = Auth::user()->branch->id;
@@ -73,8 +82,9 @@ class PaymentController extends Controller
             
             $paid = 0;
             foreach($modelPayment as $payment){
-                $paid += $payment->paid_value;
+                $paid += $payment->amount;
             }
+            
             if($paid < $modelInvoice->payment_value){
                 $modelInvoice->status = 3;
             }else{
@@ -83,7 +93,7 @@ class PaymentController extends Controller
 
             $modelInvoice->update();
             DB::commit();
-            return response(json_encode($data),Response::HTTP_OK);
+            return response(json_encode($payment),Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('payment.selectInvoice')->with('error', $e->getMessage());

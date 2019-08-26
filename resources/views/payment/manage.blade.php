@@ -1,16 +1,16 @@
 @extends('layouts.main')
 @section('content-header')
-@if($route == "/payment")
+@if($menu == "view_payment")
     @breadcrumb(
         [
-            'title' => 'Manage Payment Receipt',
+            'title' => 'View Payment Receipt',
             'items' => [
                 'Dashboard' => route('index'),
                 'Manage Payment Receipt' => '',
             ]
         ]
     )@endbreadcrumb
-@elseif($route == "/payment_repair")
+@elseif($menu == "manage_payment")
     @breadcrumb(
         [
             'title' => 'Manage Payment Receipt',
@@ -90,36 +90,37 @@
                                     </div>
                                 </div>
                             </div>
-
-                            <div class="col-md-12 panel panel-default m-t-10 p-t-10 p-b-10 m-b-0">
-                                <div class="col-md-4 p-l-0">
-                                    <div class="col-sm-12">
-                                        <label for=""><b>Billed (Rp.)</b></label>
+                            <template v-if="menu == 'manage_payment'">
+                                <div class="col-md-12 panel panel-default m-t-10 p-t-10 p-b-10 m-b-0">
+                                    <div class="col-md-4 p-l-0">
+                                        <div class="col-sm-12">
+                                            <label for=""><b>Billed (Rp.)</b></label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" v-model="invoice.payment_value" disabled>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" v-model="invoice.payment_value" disabled>
+                                    <div class="col-md-4">
+                                        <div class="col-sm-12">
+                                            <label for=""><b>Paid (Rp.)</b></label>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            <input type="text" class="form-control" v-model="dataInput.paid" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="col-sm-12">
+                                            <label for=""><b>Amount Receive (Rp.)</b></label>
+                                        </div>
+                                        <div class="col-sm-12 p-r-0">
+                                            <input type="text" class="form-control" v-model="dataInput.amount" placeholder="Please Input Amount Receive">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-12 p-t-20">
+                                        <button @click.prevent="confirmation" :disabled="createOk" class="btn btn-primary btn-sm pull-right" id="btnSubmit">SAVE</button>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="col-sm-12">
-                                        <label for=""><b>Paid (Rp.)</b></label>
-                                    </div>
-                                    <div class="col-sm-12">
-                                        <input type="text" class="form-control" v-model="dataInput.paid" disabled>
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="col-sm-12">
-                                        <label for=""><b>Amount Receive (Rp.)</b></label>
-                                    </div>
-                                    <div class="col-sm-12 p-r-0">
-                                        <input type="text" class="form-control" v-model="dataInput.amount" placeholder="Please Input Amount Receive">
-                                    </div>
-                                </div>
-                                <div class="col-sm-12 p-t-20">
-                                    <button @click.prevent="confirmation" :disabled="createOk" class="btn btn-primary btn-sm pull-right" id="btnSubmit">SAVE</button>
-                                </div>
-                            </div>
+                            </template>
 
                             <div class="col-md-12 p-l-0">
                                 <h4><b>History</b></h4>
@@ -135,7 +136,7 @@
                                     <tbody v-for="(payment, index) in payments">
                                         <tr>
                                             <td>{{ index+1 }}</td>
-                                            <td>Rp.{{ payment.paid_value }}</td>
+                                            <td>Rp.{{ payment.amount }}</td>
                                             <td>{{ payment.created_at }}</td>
                                             <td>{{ payment.user.name }}</td>
                                         </tr>
@@ -161,6 +162,7 @@
     })
 
     var data = {
+        menu : @json($menu),
         invoice : [],
         payments : [],
         submittedForm : {},
@@ -185,13 +187,18 @@
             }
         },
         methods: {
+            checkStatus(){
+                if(this.invoice.status == 0){
+                    this.menu = "view_payment";
+                }
+            },
             getInvoice(){
                 $('div.overlay').show();
                 window.axios.get('/api/getInvoicesPReceipt/'+this.invoice.id).then(({ data }) => {
-                    console.log(data);
                     this.invoice = data;
                     this.invoice.payment_value = (this.invoice.payment_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     this.getPayment();
+                    this.checkStatus();
                 });
             },
             getPayment(){
@@ -202,8 +209,8 @@
                     var paid = 0;
 
                     this.payments.forEach(data =>{
-                        data.paid_value = (data.paid_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        paid += parseInt((data.paid_value+"").replace(/,/g , ''));
+                        data.amount = (data.amount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        paid += parseInt((data.amount+"").replace(/,/g , ''));
                     })
 
                     this.dataInput.paid = (paid+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -246,7 +253,6 @@
                 var data = JSON.stringify(this.submittedForm);
                 var url = "{{ route('payment.store') }}";
                 window.axios.post(url,data).then((response) => {
-                    console.log(response);
                     iziToast.success({
                         title: 'Success Add New Payment Receipt!',
                         position: 'topRight',
@@ -290,8 +296,8 @@
             var paid = 0;
 
             this.payments.forEach(data =>{
-                data.paid_value = (data.paid_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                paid += parseInt((data.paid_value+"").replace(/,/g , ''));
+                data.amount = (data.amount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                paid += parseInt((data.amount+"").replace(/,/g , ''));
             })
 
             this.dataInput.paid = (paid+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");

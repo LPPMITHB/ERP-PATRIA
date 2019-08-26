@@ -1948,11 +1948,11 @@ Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
 Route::name('payment.')->prefix('payment')->group(function() {
     Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
     
-    Route::get('/selectInvoiceView', 'PaymentController@selectInvoice')->name('selectInvoiceView');
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
 
     Route::get('/create/{id}', 'PaymentController@create')->name('create');
 
-    Route::get('/manage/{id}', 'PaymentController@manage')->name('manage');
+    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage');
 
     Route::get('/', 'PaymentController@index')->name('index');
 
@@ -1968,6 +1968,8 @@ Route::name('payment.')->prefix('payment')->group(function() {
 // Payment Repair Routes
 Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
     Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
 
     Route::get('/create/{id}', 'PaymentController@create')->name('create');
 

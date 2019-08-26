@@ -320,8 +320,9 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'payment.manage',
         ]);
 
+        $viewPayment = Menu::where('route_name','payment.selectInvoiceView')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $managePayment,
+            'menu_id' => $viewPayment,
             'route_name' => 'payment.selectInvoiceView',
         ]);
 

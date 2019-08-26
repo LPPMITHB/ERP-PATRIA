@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'Manage Payment Receipt » Select Invoice',
-        'subtitle' => '',
-        'items' => [
-            'Dashboard' => route('index'),
-            'Select Invoice' => '',
+@if($menu == "manage_payment")
+    @breadcrumb(
+        [
+            'title' => 'Manage Payment Receipt » Select Invoice',
+            'subtitle' => '',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Invoice' => '',
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
+@elseif($menu == "view_payment")
+    @breadcrumb(
+        [
+            'title' => 'View Payment Receipt » Select Invoice',
+            'subtitle' => '',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Invoice' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -59,9 +73,9 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$invoice->user->name }}">{{ $invoice->user->name }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
                                     @if($route == "/payment")
-                                        <a onClick="loading()" href="{{ route('payment.manage', ['id'=>$invoice->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('payment.manage', ['id'=>$invoice->id, 'menu'=>$menu]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @elseif($route == "/payment_repair")
-                                        <a onClick="loading()" href="{{ route('payment_repair.manage', ['id'=>$invoice->id]) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                        <a onClick="loading()" href="{{ route('payment_repair.manage', ['id'=>$invoice->id, 'menu'=>$menu]) }}" class="btn btn-primary btn-xs">SELECT</a>
                                     @endif
                                 </td>
                             </tr>
