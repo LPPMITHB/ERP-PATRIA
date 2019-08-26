@@ -1943,3 +1943,37 @@ Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
 
     Route::post('/', 'InvoiceController@store')->name('store');
 });
+
+// Payment Routes
+Route::name('payment.')->prefix('payment')->group(function() {
+    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+
+    Route::get('/create/{id}', 'PaymentController@create')->name('create');
+
+    Route::get('/', 'PaymentController@index')->name('index');
+
+    Route::get('/{id}', 'PaymentController@show')->name('show');
+
+    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit');
+
+    Route::patch('/{id}', 'PaymentController@update')->name('update');
+
+    Route::post('/', 'PaymentController@store')->name('store');
+});
+
+// Payment Repair Routes
+Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
+    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+
+    Route::get('/create/{id}', 'PaymentController@create')->name('create');
+
+    Route::get('/', 'PaymentController@index')->name('index');
+
+    Route::get('/{id}', 'PaymentController@show')->name('show');
+
+    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit');
+
+    Route::patch('/{id}', 'PaymentController@update')->name('update');
+
+    Route::post('/', 'PaymentController@store')->name('store');
+});

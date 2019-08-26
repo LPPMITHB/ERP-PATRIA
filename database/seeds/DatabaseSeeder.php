@@ -67,5 +67,9 @@ class DatabaseSeeder extends Seeder
         $this->call(MstEstimatorCostStandardTableSeeder::class);
         $this->call(MstEstimatorProfileTableSeeder::class);
         $this->call(MstEstimatorProfileDetailTableSeeder::class);
+        $this->call(TrxQuotationDetailTableSeeder::class);
+        $this->call(TrxQuotationTableSeeder::class);
+        $this->call(TrxSalesOrderTableSeeder::class);
+        $this->call(TrxSalesOrderDetailTableSeeder::class);
     }
 }
