@@ -92,6 +92,12 @@ class PaymentController extends Controller
             }
 
             $modelInvoice->update();
+
+            // update credit limit
+            $customer = $modelInvoice->salesOrder->customer;
+            $customer->used_limit -= $payment->amount;
+            $customer->update();
+            
             DB::commit();
             return response(json_encode($payment),Response::HTTP_OK);
         } catch (\Exception $e) {

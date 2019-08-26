@@ -211,6 +211,8 @@
                     this.payments.forEach(data =>{
                         data.amount = (data.amount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         paid += parseInt((data.amount+"").replace(/,/g , ''));
+                        var date = new Date(data.created_at); 
+                        data.created_at = date.toLocaleString("en-GB")
                     })
 
                     this.dataInput.paid = (paid+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -298,6 +300,8 @@
             this.payments.forEach(data =>{
                 data.amount = (data.amount+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 paid += parseInt((data.amount+"").replace(/,/g , ''));
+                var date = new Date(data.created_at); 
+                data.created_at = date.toLocaleString("en-GB")
             })
 
             this.dataInput.paid = (paid+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
