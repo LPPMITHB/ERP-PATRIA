@@ -44,8 +44,20 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelGI->number }}</td>
-                                <td>{{ $modelGI->goodsReceipt != null ? $modelGI->goodsReceipt->number : "-" }}</td>
-                                <td>{{ $modelGI->purchaseOrder != null ? $modelGI->purchaseOrder->number : "-" }}</td>
+                                <td>
+                                    @if( $modelGI->goodsReceipt != null )
+                                    <a href= "{{ route('goods_receipt.show', ['id'=>$modelGI->goodsReceipt]) }}" class="text-primary"><b>{{$modelGI->purchaseOrder->number}}</b></a>
+                                    @else
+                                    <b>-</b>
+                                    @endif
+                                </td>
+                                <td>
+                                    @if( $modelGI->purchaseOrder != null )
+                                    <a href= "{{ route('purchase_order.show', ['id'=>$modelGI->purchaseOrder]) }}"class="text-primary"><b>{{$modelGI->purchaseOrder->number}}</b></a>
+                                    @else
+                                    <b>-</b>
+                                    @endif
+                                </td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">{{ $modelGI->description }}</td>
                                 <td class="tdEllipsis">{{ $modelGI->created_at->format('d-m-Y') }}</td>
                                 @if($modelGI->status == 1)

@@ -1879,6 +1879,12 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'dimension_type.index',
         ]);
 
+        $approval_config = Menu::where('route_name','approval.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $approval_config,
+            'route_name' => 'approval.index',
+        ]);
+
         $daily_weather = Menu::where('route_name','daily_weather.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $daily_weather,

@@ -36,8 +36,7 @@ class GoodsReturnController extends Controller
             $business_unit = 1;
         }
 
-        $modelGIs = GoodsReturn::where('business_unit_id',$business_unit)->get();
-
+        $modelGIs = GoodsReturn::where('business_unit_id',$business_unit)->with('purchaseOrder')->with('goodsReceipt')->get();
         return view ('goods_return.index', compact('modelGIs','menu'));
     }
 
@@ -372,6 +371,7 @@ class GoodsReturnController extends Controller
         foreach($modelPOD as $POD){
             $POD['returned_temp'] = 0;
         }
+        
 
         return view('goods_return.createGoodsReturnPO', compact('modelPO','modelPOD','route','vendor'));
     }
