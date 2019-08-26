@@ -589,7 +589,7 @@
                                                             
                                                     <div class="col-sm-12">
                                                         <div class="row">
-                                                            <label for="area" class="col-sm-12 control-label">Area</label>
+                                                            <label for="area" class="col-sm-12 control-label">Quantity/Area</label>
                                             
                                                             <div class="col-sm-8">
                                                                 <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="editActivity.area" >
@@ -798,7 +798,7 @@
                                                       
                                                 <div class="col-sm-12">
                                                     <div class="row">
-                                                        <label for="area" class="col-sm-12 control-label">Area</label>
+                                                        <label for="area" class="col-sm-12 control-label">Quantity/Area</label>
                                         
                                                         <div class="col-sm-8">
                                                             <input autocomplete="off" type="text" name="area" class="form-control" id="area" v-model="newActivity.area" >
