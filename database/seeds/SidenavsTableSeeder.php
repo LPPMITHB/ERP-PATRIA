@@ -2298,5 +2298,12 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'reverse_transaction.index',
         ]);
 
+        // Yard Plan
+        $manageYardPlan = Menu::where('route_name','yard_plan.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageYardPlan,
+            'route_name' => 'yard_plan.create',
+        ]);
+
     }
 }
