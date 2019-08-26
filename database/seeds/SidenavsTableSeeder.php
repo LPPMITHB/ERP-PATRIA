@@ -309,59 +309,27 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // Payment
-        $createPayment = Menu::where('route_name','payment.selectInvoice')->select('id')->first()->id;
+        $managePayment = Menu::where('route_name','payment.selectInvoice')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $createPayment,
+            'menu_id' => $managePayment,
             'route_name' => 'payment.selectInvoice',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $createPayment,
-            'route_name' => 'payment.create',
-        ]);
-
-        $viewPayment = Menu::where('route_name','payment.index')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewPayment,
-            'route_name' => 'payment.index',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewPayment,
-            'route_name' => 'payment.show',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $viewPayment,
-            'route_name' => 'payment.edit',
+            'menu_id' => $managePayment,
+            'route_name' => 'payment.manage',
         ]);
 
         // Payment Repair
-        // $createPayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
+        // $managePayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
         // DB::table('sidenav')->insert([
-        //     'menu_id' => $createPayment,
+        //     'menu_id' => $managePayment,
         //     'route_name' => 'payment_repair.selectInvoice',
         // ]);
 
         // DB::table('sidenav')->insert([
-        //     'menu_id' => $createPayment,
-        //     'route_name' => 'payment_repair.create',
-        // ]);
-
-        // $viewPayment = Menu::where('route_name','payment_repair.index')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewPayment,
-        //     'route_name' => 'payment_repair.index',
-        // ]);
-
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewPayment,
-        //     'route_name' => 'payment_repair.show',
-        // ]);
-
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewPayment,
-        //     'route_name' => 'payment_repair.edit',
+        //     'menu_id' => $managePayment,
+        //     'route_name' => 'payment_repair.manage',
         // ]);
 
         // Project Management

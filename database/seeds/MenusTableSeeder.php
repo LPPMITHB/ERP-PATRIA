@@ -216,21 +216,9 @@ class MenusTableSeeder extends Seeder
         $payment = Menu::where('name','Payment Receipt')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
-            'name' => 'Create Payment Receipt',
+            'name' => 'Manage Payment Receipt',
             'icon' => 'fa-wrench',
             'route_name'=> 'payment.selectInvoice',
-            'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $payment,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 4,
-            'name' => 'View & Edit Payment Receipt',
-            'icon' => 'fa-wrench',
-            'route_name'=> 'payment.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id'=> $payment,
