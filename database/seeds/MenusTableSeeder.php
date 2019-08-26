@@ -1369,7 +1369,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Create QC Task',
             'icon' => 'fa-wrench',
-            'route_name' => 'qc_task.create',
+            'route_name' => 'qc_task.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $qcTask,

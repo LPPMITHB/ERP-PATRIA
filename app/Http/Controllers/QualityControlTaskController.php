@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Project;
 
 class QualityControlTaskController extends Controller
 {
@@ -12,6 +13,13 @@ class QualityControlTaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function selectProject()
+    {
+        $modelProject = Project::where('status',1)->get();
+
+        return view('qc_task.selectProject',compact('modelProject'));
+    }
+
     public function index()
     {
         //
