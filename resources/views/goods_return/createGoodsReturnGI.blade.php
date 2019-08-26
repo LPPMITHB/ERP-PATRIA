@@ -46,10 +46,10 @@
                                 <div class="col-xs-12 col-lg-6 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">GI Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGI.number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: @endverbatim<a href= "{{ route('goods_issue.show', ['id'=>$modelGI->id]) }}" class="text-primary">@verbatim{{ modelGI.number }}</a></b></div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">MR Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGI.material_requisition.number }}</b></div>
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: @endverbatim<a href= "{{ route('material_requisition.show', ['id'=>$modelGI->materialRequisition->id]) }}" class="text-primary">@verbatim{{ modelGI.material_requisition.number }}</a></b></div>
 
                                         <div class="col-md-4 col-xs-4 no-padding">Project</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelGI.material_requisition.project.number }}</b></div>

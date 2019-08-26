@@ -9,7 +9,7 @@
             'Select Material Requisition' => route('goods_issue.selectMR'),
         ]
     ]
-) 
+)
 @endbreadcrumb
 @endsection
 
@@ -32,7 +32,7 @@
                         @foreach($modelMRs as $modelMR)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelMR->number }}</td>
+                                <td><a href= "{{ route('material_requisition.show', ['id'=>$modelMR->id]) }}" class="text-primary">{{ $modelMR->number }}</a></td>
                                 <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelMR->description }}">{{ $modelMR->description }}</td>
                                 <td>{{ $modelMR->project != null ? $modelMR->project->name." - ".$modelMR->project->number : "-" }}</td>
                                 <td class="p-l-0 p-r-0 textCenter">
@@ -67,7 +67,7 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        });    
+        });
     });
 </script>
 @endpush

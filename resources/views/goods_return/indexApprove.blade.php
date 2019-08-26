@@ -32,7 +32,7 @@
                         @foreach($modelGoodsReturns as $modelGoodsReturn)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelGoodsReturn->number }}</td>
+                                <td><b><a href= "{{ route('goods_return.show', ['id'=>$modelGoodsReturn->id]) }}" class="text-primary">{{ $modelGoodsReturn->number }}</a></b></td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip"  title="{{$modelGoodsReturn->description}}">{{ $modelGoodsReturn->description }}</td>
                                 @if($modelGoodsReturn->status == 1)
                                 <td>OPEN</td>

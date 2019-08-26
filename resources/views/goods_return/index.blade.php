@@ -25,7 +25,7 @@
                         <span id="date-label-to" class="date-label">To: </span><input class="date_range_filter datepicker" type="text" id="datepicker_to" />
                         <button id="btn-reset" class="btn btn-primary btn-sm">RESET</button>
                     </div>
-                </div> 
+                </div>
                 <table class="table table-bordered tableFixed" id="goods-return-table">
                     <thead>
                         <tr>
@@ -46,14 +46,14 @@
                                 <td>{{ $modelGI->number }}</td>
                                 <td>
                                     @if( $modelGI->goodsReceipt != null )
-                                    <a href= "{{ route('goods_receipt.show', ['id'=>$modelGI->goodsReceipt]) }}" class="text-primary"><b>{{$modelGI->purchaseOrder->number}}</b></a>
+                                    <a href= "{{ route('goods_receipt.show', ['id'=>$modelGI->goodsReceipt]) }}" class="text-primary">{{$modelGI->goodsReceipt->number}}</a>
                                     @else
                                     <b>-</b>
                                     @endif
                                 </td>
                                 <td>
                                     @if( $modelGI->purchaseOrder != null )
-                                    <a href= "{{ route('purchase_order.show', ['id'=>$modelGI->purchaseOrder]) }}"class="text-primary"><b>{{$modelGI->purchaseOrder->number}}</b></a>
+                                    <a href= "{{ route('purchase_order.show', ['id'=>$modelGI->purchaseOrder]) }}"class="text-primary">{{$modelGI->purchaseOrder->number}}</a>
                                     @else
                                     <b>-</b>
                                     @endif
@@ -193,7 +193,7 @@
             minDateFilter = "";
             goods_return_table.draw();
         }
-        
+
         // Date range filter
         minDateFilter = "";
         maxDateFilter = "";
@@ -201,7 +201,7 @@
         $.fn.dataTableExt.afnFiltering.push(
             function(oSettings, aData, iDataIndex) {
                 if (typeof aData._date == 'undefined') {
-                    var temp = aData[4].split("-");                    
+                    var temp = aData[4].split("-");
                     aData._date = new Date(temp[1]+"-"+temp[0]+"-"+temp[2]).getTime();
                 }
 
