@@ -1734,7 +1734,28 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $viewQcType,
             'route_name' => 'qc_type.edit',
         ]);
+        
+        $createQcTask = Menu::where('route_name','qc_task.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTask,
+            'route_name' => 'qc_task.create',
+        ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTask,
+            'route_name' => 'qc_task.selectProject',
+        ]);
+
+        $viewQcTask = Menu::where('route_name','qc_task.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTask,
+            'route_name' => 'qc_task.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTask,
+            'route_name' => 'qc_task.edit',
+        ]);
 
         $ship = Menu::where('route_name','ship.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
