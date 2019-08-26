@@ -320,6 +320,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'payment.manage',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $managePayment,
+            'route_name' => 'payment.selectInvoiceView',
+        ]);
+
         // Payment Repair
         // $managePayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
         // DB::table('sidenav')->insert([
@@ -1707,7 +1712,25 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'yard_plan.index',
         ]);
 
-        
+        // QC
+        $createQcType = Menu::where('route_name','qc_type.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcType,
+            'route_name' => 'qc_type.create',
+        ]);
+
+        $viewQcType = Menu::where('route_name','qc_type.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcType,
+            'route_name' => 'qc_type.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcType,
+            'route_name' => 'qc_type.edit',
+        ]);
+
+
         $ship = Menu::where('route_name','ship.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $ship,
