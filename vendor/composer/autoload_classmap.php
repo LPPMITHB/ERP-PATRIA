@@ -161,6 +161,8 @@ return array(
     'App\\Models\\WorkRequestDetail' => $baseDir . '/app/Models/WorkRequestDetail.php',
     'App\\Models\\Yard' => $baseDir . '/app/Models/Yard.php',
     'App\\Models\\YardPlan' => $baseDir . '/app/Models/YardPlan.php',
+    'App\\MstQualityType' => $baseDir . '/app/MstQualityType.php',
+    'App\\MstQualityTypeDetail' => $baseDir . '/app/MstQualityTypeDetail.php',
     'App\\Notifications\\CustomDB' => $baseDir . '/app/Notifications/customDB.php',
     'App\\Notifications\\MailResetPasswordToken' => $baseDir . '/app/Notifications/MailResetPasswordToken.php',
     'App\\Notifications\\PRApproval' => $baseDir . '/app/Notifications/PRApproval.php',
