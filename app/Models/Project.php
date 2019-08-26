@@ -87,4 +87,9 @@ class Project extends Model
     {
         return $this->belongsTo('App\Models\SalesOrder');
     }
+
+    public function qualityControlTasks()
+    {
+        return $this->hasMany('App\Models\QualityControlTask');
+    }
 }

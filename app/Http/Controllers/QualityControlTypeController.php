@@ -2,24 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Project;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
+use Auth;
+use DB;
 
-class QualityControlTaskController extends Controller
+class QualityControlTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function selectProject()
-    {
-        $modelProject = Project::where('status',1)->get();
-
-        return view('qc_task.selectProject',compact('modelProject'));
-    }
-
     public function index()
     {
         //
@@ -30,9 +27,13 @@ class QualityControlTaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request)
     {
-        //
+        $route = $request->route()->getPrefix();
+        $project = 'null';
+        $materials = 'error';
+        $wbs = 'ersde';
+        return view('qulity_control_type.create', compact('project', 'materials', 'wbs'));
     }
 
     /**
