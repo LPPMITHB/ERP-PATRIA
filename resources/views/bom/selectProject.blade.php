@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tablePaging tableFixed">
+                <table class="table table-bordered tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -59,8 +59,16 @@
 
 @push('script')
 <script>
-    $(document).ready(function(){
-        $('div.overlay').hide();
+   $('#select-project').DataTable({
+        'paging'      : true,
+        'lengthChange': false,
+        'ordering'    : true,
+        'info'        : true,
+        'autoWidth'   : false,
+        'bFilter'     : true,
+        'initComplete': function(){
+            $('div.overlay').hide();
+        }
     });
 </script>
 @endpush

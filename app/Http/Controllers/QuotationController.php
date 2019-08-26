@@ -117,7 +117,7 @@ class QuotationController extends Controller
             $statusQT = 'OPEN';
         } elseif ($modelQT->status == 0) {
             $statusQT = 'CONVERTED TO SO';
-        } elseif ($modelPO->status == 2) {
+        } elseif ($modelQT->status == 2) {
             $statusQT = 'CANCELED';
         }
 

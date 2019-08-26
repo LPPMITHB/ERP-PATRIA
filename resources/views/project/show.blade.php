@@ -158,19 +158,26 @@
                         @if($menu == "repair")
                             <div class="col-md-4 col-lg-7 col-xs-6 no-padding">Arrival Date</div>
                             <div class="col-md-8 col-lg-5 col-xs-6 no-padding"><b>: @php
-                                    if($project->arrival_date){
-                                        $date = DateTime::createFromFormat('Y-m-d', $project->arrival_date);
-                                        $date = $date->format('d-m-Y');
-                                        echo $date;
-                                    } else{
-                                        echo "-";
-                                    }
-                                    @endphp</b></div>
+                                if($project->arrival_date){
+                                    $date = DateTime::createFromFormat('Y-m-d', $project->arrival_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                } else{
+                                    echo "-";
+                                }
+                                @endphp</b></div>
                         @endif
                     </div>
                 </div>
                 <div class="col-xs-12 col-lg-4 col-md-12">
                     <div class="box-body">
+                        <div class="col-md-4 col-xs-6 no-padding">Sales Order</div>
+                        @if($menu == "building")
+                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->salesOrder->number}}"><a href="{{ route('sales_order.show',['id'=>$project->salesOrder->id]) }}" target="_blank"><b>: {{$project->salesOrder->number}}</b></a></div>
+                        @elseif($menu == "repair")
+                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->salesOrder->number}}"><a href="{{ route('sales_order_repair.show',['id'=>$project->salesOrder->id]) }}" target="_blank"><b>: {{$project->salesOrder->number}}</b></a></div>
+                        @endif
+
                         <div class="col-md-4 col-xs-6 no-padding">Owner CP</div>
                         <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->contact_name}} | {{$project->customer->phone_number_1}}"><b>: {{$project->customer->contact_name}} | {{$project->customer->phone_number_1}}</b></div>
 

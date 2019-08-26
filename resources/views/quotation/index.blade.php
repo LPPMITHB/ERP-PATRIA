@@ -3,11 +3,11 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View All Quotation',
+        'title' => 'View All Quotations',
         'subtitle' => '',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Quotation' => '',
+            'View All Quotations' => '',
         ]
     ]
 )
@@ -45,7 +45,7 @@
                                 <td>{{ $modelQT->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelQT->description}}">{{ $modelQT->description }}</td>
                                 @if($modelQT->status == 1)
-                                    <td>OPEN</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="OPEN">OPEN</td>
                                     <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $modelQT->user->name }}</td>
                                     <td class="textCenter">
@@ -58,7 +58,7 @@
                                         @endif
                                     </td>
                                 @elseif($modelQT->status == 0)
-                                    <td>CONVERTED TO SO</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="CONVERTED TO SO">CONVERTED TO SO</td>
                                     <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $modelQT->user->name }}</td>
                                     <td class="textCenter">
@@ -69,7 +69,7 @@
                                         @endif
                                     </td>
                                 @elseif($modelQT->status == 2)
-                                    <td>CANCELED</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="CANCELED">CANCELED</td>
                                     <td>{{ $modelQT->created_at->format('d-m-Y') }}</td>
                                     <td>{{ $modelQT->user->name }}</td>
                                     <td class="textCenter">

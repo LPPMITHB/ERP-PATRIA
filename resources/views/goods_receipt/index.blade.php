@@ -59,7 +59,7 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->description}}">{{ $GR->description }}</td>
                                 @if($GR->purchaseOrder != null)
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $GR->purchaseOrder->vendor->name }}">{{ $GR->purchaseOrder->vendor->name }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $GR->purchaseOrder->number }}">{{ $GR->purchaseOrder->number }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $GR->purchaseOrder->number }}"><a href= "{{ route('purchase_order.show', ['id'=>$GR->purchaseOrder->id]) }}" class="text-primary">{{ $GR->purchaseOrder->number }}</a></td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$GR->purchaseOrder->description}}">{{ $GR->purchaseOrder->description }}</td>
                                 @else
                                     <td class="tdEllipsis">-</td>

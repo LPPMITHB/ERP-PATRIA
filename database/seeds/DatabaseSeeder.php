@@ -11,14 +11,14 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        $this->call(MenusTableSeeder::class);
+        $this->call(PermissionsTableSeeder::class);
         $this->call(CompaniesTableSeeder::class);
         $this->call(BranchesTableSeeder::class);
         $this->call(RolesTableSeeder::class);
         $this->call(MstCustomerTableSeeder::class);
         $this->call(UsersTableSeeder::class);
-        $this->call(MenusTableSeeder::class);
         $this->call(ConfigurationsTableSeeder::class);
-        $this->call(PermissionsTableSeeder::class);
         $this->call(SidenavsTableSeeder::class);
         $this->call(UOMTableSeeder::class);
         $this->call(MstMaterialTableSeeder::class);
@@ -35,6 +35,14 @@ class DatabaseSeeder extends Seeder
         $this->call(MstServiceTableSeeder::class);
         $this->call(MstServiceDetailTableSeeder::class);
         // $this->call(MstWbsConfigurationTableSeeder::class);
+        $this->call(MstEstimatorWbsTableSeeder::class);
+        $this->call(MstEstimatorCostStandardTableSeeder::class);
+        $this->call(MstEstimatorProfileTableSeeder::class);
+        $this->call(MstEstimatorProfileDetailTableSeeder::class);
+        $this->call(TrxQuotationTableSeeder::class);
+        $this->call(TrxQuotationDetailTableSeeder::class);
+        $this->call(TrxSalesOrderTableSeeder::class);
+        $this->call(TrxSalesOrderDetailTableSeeder::class);
         $this->call(ProProjectTableSeeder::class);
         // $this->call(MstActivityConfigurationTableSeeder::class);
         $this->call(TrxPurchaseRequisitionTableSeeder::class);
@@ -63,9 +71,5 @@ class DatabaseSeeder extends Seeder
         $this->call(MstProjectStandardTableSeeder::class);
         $this->call(MstWbsStandardTableSeeder::class);
         $this->call(MstActivityStandardTableSeeder::class);
-        $this->call(MstEstimatorWbsTableSeeder::class);
-        $this->call(MstEstimatorCostStandardTableSeeder::class);
-        $this->call(MstEstimatorProfileTableSeeder::class);
-        $this->call(MstEstimatorProfileDetailTableSeeder::class);
     }
 }

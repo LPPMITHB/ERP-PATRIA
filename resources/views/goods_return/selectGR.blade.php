@@ -9,7 +9,7 @@
             'Select Goods Receipt' => "",
         ]
     ]
-) 
+)
 @endbreadcrumb
 @endsection
 
@@ -34,14 +34,14 @@
                         @foreach($modelGRs as $modelGR)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->number }}">{{ $modelGR->number }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->number }}"><a href= "{{ route('goods_receipt.show', ['id'=>$modelGR->id]) }}" class="text-primary">{{ $modelGR->number }}</a></td>
                                 @if($modelGR->purchase_order_id != null)
-                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->number }}">{{ $modelGR->purchaseOrder->number }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->purchaseOrder->number }}"><a href= "{{ route('purchase_order.show', ['id'=>$modelGR->purchaseOrder->id]) }}" class="text-primary">{{ $modelGR->purchaseOrder->number }}</a></td>
                                 @else
                                 <td>-</td>
                                 @endif
                                 @if($modelGR->work_order_id != null)
-                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->workOrder->number }}">{{ $modelGR->workOrder->number }}</td>
+                                <td class ="tdEllipsis" data-container="body" data-toogle="tooltip" title="{{ $modelGR->workOrder->number }}"><a href= "{{ route('work_order.show', ['id'=>$modelGR->workOrder->id]) }}" class="text-primary">{{ $modelGR->workOrder->number }}</a></td>
                                 @else
                                 <td>-</td>
                                 @endif
@@ -83,7 +83,7 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        });   
+        });
     });
 
     function loading(){

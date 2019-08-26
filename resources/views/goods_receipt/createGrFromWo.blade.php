@@ -43,14 +43,14 @@
                     <div id="wod">
                         <div class="col-sm-12 no-padding">
                             <div class="box-header">
-                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-6 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-xs-4 no-padding">WO Number</div>
-                                        <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelWO.number }}</b></div>
-                                        
+                                        <div class="col-md-8 col-xs-8 no-padding"><b>: @endverbatim<a href= "{{ route('goods_issue.show', ['id'=>$modelWO->id]) }}" class="text-primary">@verbatim{{ modelWO.number }}</a></b></div>
+
                                         <div class="col-md-4 col-xs-4 no-padding">Vendor</div>
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelWO.vendor.name }}</b></div>
-                
+
                                         <div class="col-md-4 col-xs-4 no-padding">Address</div>
                                         <div class="col-md-8 col-xs-8 no-padding tdEllipsis"><b>: {{ modelWO.vendor.address }}</b></div>
 
@@ -58,7 +58,7 @@
                                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{ modelWO.vendor.phone_number }}</b></div>
                                     </div>
                                 </div>
-                                <div class="col-xs-12 col-lg-3 col-md-12 no-padding">    
+                                <div class="col-xs-12 col-lg-3 col-md-12 no-padding">
                                     <div class="box-body no-padding">
                                         <div class="col-md-4 col-lg-7 col-xs-12 no-padding"> GR Description : <textarea class="form-control" rows="3" v-model="description" style="width:310px"></textarea>
                                         </div>
@@ -98,7 +98,7 @@
                                                     <input class="form-control width100" v-model="WOD.received" placeholder="Please Input Received Quantity">
                                                 </td>
                                                 <td class="p-l-0 textLeft">
-                                                    <input v-model="WOD.received_date" required autocomplete="off" type="text" class="form-control datepicker width100 received_date" name="input_received_date" :id="makeId(WOD.id)" placeholder="Received Date">  
+                                                    <input v-model="WOD.received_date" required autocomplete="off" type="text" class="form-control datepicker width100 received_date" name="input_received_date" :id="makeId(WOD.id)" placeholder="Received Date">
                                                 </td>
                                                 <td class="p-l-5" align="center">
                                                     <a href="#" @click="removeRow(WOD.material_id)" class="btn btn-danger btn-xs">
@@ -111,7 +111,7 @@
                                                 <td colspan="2" class="no-padding">
                                                     <selectize id="material" v-model="input.material_id" :settings="materialSettings">
                                                         <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                                    </selectize>    
+                                                    </selectize>
                                                 </td>
                                                 <td class="no-padding">
                                                     <input class="form-control width100" v-model="input.unit" disabled>
@@ -123,7 +123,7 @@
                                                     <input class="form-control width100" v-model="input.received" placeholder="Please Input Received Quantity">
                                                 </td>
                                                 <td class="p-l-0 textLeft">
-                                                    <input v-model="input.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_received_date" id="input_received_date" placeholder="Received Date">  
+                                                    <input v-model="input.received_date" required autocomplete="off" type="text" class="form-control datepicker width100" name="input_received_date" id="input_received_date" placeholder="Received Date">
                                                 </td>
                                                 <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                                     <div class="btn-group">
@@ -165,8 +165,8 @@
         modelWODs : @json($modelWODs),
         modelWO :   @json($modelWO),
         modelSloc : @json($modelSloc),
-        modelWOD : [],  
-        newIndex : 0, 
+        modelWOD : [],
+        newIndex : 0,
         slocSettings: {
             placeholder: 'Please Select Storage Location'
         },
@@ -211,7 +211,7 @@
             $(".received_date").datepicker().on(
                 "changeDate", () => {
 
-                    this.modelWOD.forEach(WOD => { 
+                    this.modelWOD.forEach(WOD => {
                         WOD.received_date = $('#datepicker'+WOD.id).val();
                     });
                 }
@@ -220,7 +220,7 @@
         computed : {
             createOk: function(){
                 let isOk = false;
-                
+
                 return isOk;
             },
             inputOk: function(){
@@ -245,10 +245,10 @@
             changeText(){
                 if(document.getElementsByClassName('tooltip-inner')[0]!= undefined){
                     if(document.getElementsByClassName('tooltip-inner')[0].innerHTML != modelPO.vendor.address ){
-                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelPO.vendor.address;    
+                        document.getElementsByClassName('tooltip-inner')[0].innerHTML= modelPO.vendor.address;
                     }
                 }
-            }, 
+            },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
                     this.materials = data;
@@ -267,7 +267,7 @@
                 var index_materialId = "";
                 var index_materialTable = "";
 
-                for (var i in this.modelWOD) { 
+                for (var i in this.modelWOD) {
                     if(this.modelWOD[i].material_id == materialId){
                         index_materialTable = i;
                     }
@@ -303,9 +303,9 @@
                         this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
 
                         var jsonMaterialId = JSON.stringify(this.material_id);
-                        this.getNewMaterials(jsonMaterialId);             
+                        this.getNewMaterials(jsonMaterialId);
 
-                        this.newIndex = this.modelWOD.length + 1;  
+                        this.newIndex = this.modelWOD.length + 1;
 
                         this.input.material_id = "";
                         this.input.unit = "";
@@ -323,8 +323,8 @@
                 data = JSON.parse(data)
 
                 data.forEach(POD => {
-                    POD.quantity = POD.quantity.replace(/,/g , ''); 
-                    POD.received = parseInt((POD.received+"").replace(/,/g , ''));     
+                    POD.quantity = POD.quantity.replace(/,/g , '');
+                    POD.received = parseInt((POD.received+"").replace(/,/g , ''));
                 });
 
                 this.submittedForm.POD = data;
@@ -369,8 +369,8 @@
             data.forEach(POD => {
                 POD.received = parseInt(POD.quantity);
                 POD.quantity = POD.received;
-                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");            
-                POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");     
+                POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                POD.received = (POD.received+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 this.material_id.push(POD.material_id); //ini buat nambahin material_id terpilih
 
                 var x = {};

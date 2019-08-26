@@ -197,7 +197,12 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // Sales Order
-        $createSO = Menu::where('route_name','sales_order.create')->select('id')->first()->id;
+        $createSO = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createSO,
+            'route_name' => 'sales_order.selectQT',
+        ]);
+
         DB::table('sidenav')->insert([
             'menu_id' => $createSO,
             'route_name' => 'sales_order.create',
@@ -223,6 +228,11 @@ class SidenavsTableSeeder extends Seeder
         // $createSO = Menu::where('route_name','sales_order_repair.create')->select('id')->first()->id;
         // DB::table('sidenav')->insert([
         //     'menu_id' => $createSO,
+        //     'route_name' => 'sales_order_repair.selectQT',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createSO,
         //     'route_name' => 'sales_order_repair.create',
         // ]);
 
@@ -240,6 +250,86 @@ class SidenavsTableSeeder extends Seeder
         // DB::table('sidenav')->insert([
         //     'menu_id' => $viewSO,
         //     'route_name' => 'sales_order_repair.edit',
+        // ]);
+
+        // Invoice
+        $createInvoice = Menu::where('route_name','invoice.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createInvoice,
+            'route_name' => 'invoice.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createInvoice,
+            'route_name' => 'invoice.create',
+        ]);
+
+        $viewInvoice = Menu::where('route_name','invoice.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewInvoice,
+            'route_name' => 'invoice.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewInvoice,
+            'route_name' => 'invoice.show',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewInvoice,
+            'route_name' => 'invoice.edit',
+        ]);
+
+        // Invoice Repair
+        // $createInvoice = Menu::where('route_name','invoice_repair.selectProject')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createInvoice,
+        //     'route_name' => 'invoice_repair.selectProject',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $createInvoice,
+        //     'route_name' => 'invoice_repair.create',
+        // ]);
+
+        // $viewInvoice = Menu::where('route_name','invoice_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewInvoice,
+        //     'route_name' => 'invoice_repair.index',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewInvoice,
+        //     'route_name' => 'invoice_repair.show',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $viewInvoice,
+        //     'route_name' => 'invoice_repair.edit',
+        // ]);
+
+        // Payment
+        $managePayment = Menu::where('route_name','payment.selectInvoice')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $managePayment,
+            'route_name' => 'payment.selectInvoice',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $managePayment,
+            'route_name' => 'payment.manage',
+        ]);
+
+        // Payment Repair
+        // $managePayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $managePayment,
+        //     'route_name' => 'payment_repair.selectInvoice',
+        // ]);
+
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $managePayment,
+        //     'route_name' => 'payment_repair.manage',
         // ]);
 
         // Project Management

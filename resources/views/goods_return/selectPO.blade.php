@@ -10,7 +10,7 @@
             'Select PO' => '',
         ]
     ]
-) 
+)
 @endbreadcrumb
 @endsection
 
@@ -33,7 +33,7 @@
                         @foreach($modelPOs as $modelPO)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $modelPO->number }}</td>
+                                <td><b><a href= "{{ route('purchase_order.show', ['id'=>$modelPO->id]) }}" class="text-primary">{{ $modelPO->number }}</a></b></td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelPO->description}}">{{ $modelPO->description }}</td>
                                 <td>{{ isset($modelPO->project) ? $modelPO->project->name : '-'}}</td>
                                 <td class="p-l-0 p-r-0 textCenter">

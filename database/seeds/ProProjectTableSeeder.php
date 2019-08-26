@@ -158,6 +158,7 @@ class ProProjectTableSeeder extends Seeder
                 'class_contact_person_email' => 'Bambang@bki.com',
                 'project_type' => 1,
                 'status' => 1,
+                'sales_order_id' => 1,
                 'user_id' => 2,
                 'branch_id' => 1,
                 'created_at' => date("Y-m-d",$date),
