@@ -2002,3 +2002,24 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
     Route::delete('/{id}', 'QualityControlController@destroy')->name('destroy')->middleware('can:destroy-qc-type');
 
 });
+
+//  QC Task Routes
+Route::name('qc_task.')->prefix('qc_task')->group(function() {
+
+    Route::get('/', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
+
+    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+
+    Route::get('/create', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
+
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
+
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
+
+    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
+
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
+
+});

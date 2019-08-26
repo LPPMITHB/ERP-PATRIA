@@ -1273,10 +1273,34 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Yard Plan',
             'icon' => 'fa-wrench',
-            'route_name' => 'yard_plan.index',
             'is_active' => true,
             'roles' => 'ADMIN, PMP, PAMI',
             'menu_id' => $PPE,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $yardPlan = Menu::where('name', 'Yard Plan')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Manage Yard Plan',
+            'icon' => 'fa-wrench',
+            'route_name' => 'yard_plan.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $yardPlan,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Yard Plan',
+            'icon' => 'fa-wrench',
+            'route_name' => 'yard_plan.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $yardPlan,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1296,7 +1320,7 @@ class MenusTableSeeder extends Seeder
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'QC Type',
-            'icon' => 'fa-file-text-o',
+            'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $qc,
@@ -1308,7 +1332,7 @@ class MenusTableSeeder extends Seeder
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create QC Type',
-            'icon' => 'fa-file-text-o',
+            'icon' => 'fa-wrench',
             'route_name' => 'qc_type.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
@@ -1320,11 +1344,47 @@ class MenusTableSeeder extends Seeder
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'View & Edit QC Type',
-            'icon' => 'fa-file-text-o',
+            'icon' => 'fa-wrench',
             'route_name' => 'qc_type.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $qcType,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Task',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qc,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $qcTask =  Menu::where('name', 'QC Task')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create QC Task',
+            'icon' => 'fa-wrench',
+            'route_name' => 'qc_task.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qcTask,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit QC Task',
+            'icon' => 'fa-wrench',
+            'route_name' => 'qc_task.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qcTask,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
