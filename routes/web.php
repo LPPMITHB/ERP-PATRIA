@@ -1989,19 +1989,19 @@ Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
 //  QC Type Routes
 Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
-    Route::get('/', 'QualityControlController@index')->name('index')->middleware('can:list-qc-type');
+    Route::get('/', 'QualityControlTypeController@index')->name('index');
 
-    Route::get('/create', 'QualityControlController@create')->name('create')->middleware('can:create-qc-type');
+    Route::get('/create', 'QualityControlTypeController@create')->name('create');
 
-    Route::get('/{id}', 'QualityControlController@show')->name('show')->middleware('can:show-qc-type');
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
 
-    Route::get('/{id}/edit', 'QualityControlController@edit')->name('edit')->middleware('can:edit-qc-type');
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
 
-    Route::patch('/', 'QualityControlController@update')->name('update')->middleware('can:edit-qc-type');
+    Route::patch('/', 'QualityControlTypeController@update')->name('update');
 
-    Route::post('/', 'QualityControlController@store')->name('store')->middleware('can:create-qc-type');
+    Route::post('/store', 'QualityControlTypeController@store')->name('store');
 
-    Route::delete('/{id}', 'QualityControlController@destroy')->name('destroy')->middleware('can:destroy-qc-type');
+    Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
 });
 
