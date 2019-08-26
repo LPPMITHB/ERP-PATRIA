@@ -207,3 +207,6 @@ Route::get('/getProjectStandard', 'ProjectStandardController@getProjectStandardA
 Route::get('/getWbsStandard/{id}', 'ProjectStandardController@getWbsStandardAPI')->name('api.wbs.getWbsStandardAPI');
 Route::get('/getSubWbsStandard/{id}', 'ProjectStandardController@getSubWbsStandardAPI')->name('api.wbs.getSubWbsStandardAPI');
 Route::get('/getActivityStandard/{id}', 'ProjectStandardController@getActivityStandardAPI')->name('api.activity.getActivityStandardAPI');
+
+//Yard Plan
+Route::get('/getWbs/{id}', 'YardPlanController@getWbsAPI')->name('api.wbs.getWbsAPI');

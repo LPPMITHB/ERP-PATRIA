@@ -151,6 +151,7 @@ class RolesTableSeeder extends Seeder
                 'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
                 'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
                 'create-reverse-transaction' => true,'list-reverse-transaction' => true,'show-reverse-transaction' => true,'edit-reverse-transaction' => true,'approve-reverse-transaction' => true,
+                'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -220,6 +221,7 @@ class RolesTableSeeder extends Seeder
                 'manage-wbs-profile' => true,'manage-bom-profile' => true,'manage-activity-profile' => true,'manage-resource-profile' => true,'resource-schedule' => true,
                 'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
                 'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
+                'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

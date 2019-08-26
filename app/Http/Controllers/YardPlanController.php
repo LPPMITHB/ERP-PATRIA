@@ -23,11 +23,7 @@ class YardPlanController extends Controller
      */
     public function index()
     {
-        $yardPlan = YardPlan::with('yard')->with('project')->get();
-        $modelYard = Yard::all();
-        $modelProject = Project::all();
-
-        return view ('yard_plan.index', compact('yardPlan','modelYard','modelProject'));   
+        
     }
 
     /**
@@ -37,7 +33,11 @@ class YardPlanController extends Controller
      */
     public function create()
     {
-        //
+        $yardPlan = YardPlan::with('yard')->with('project')->get();
+        $modelYard = Yard::all();
+        $modelProject = Project::all();
+
+        return view ('yard_plan.create', compact('yardPlan','modelYard','modelProject'));   
     }
 
     /**
@@ -134,29 +134,11 @@ class YardPlanController extends Controller
         //
     }
 
-    //Function
-    // public function generateGINumber(){
-    //     $modelGI = GoodsIssue::orderBy('created_at','desc')->where('branch_id',Auth::user()->branch_id)->first();
-    //     $modelBranch = Branch::where('id', Auth::user()->branch_id)->first();
-
-    //     $branch_code = substr($modelBranch->code,4,2);
-    //     $number = 1;
-    //     if(isset($modelGI)){
-    //         $number += intval(substr($modelGI->number, -6));
-    //     }
-    //     $year = date('y'.$branch_code.'000000');
-    //     $year = intval($year);
-
-    //     $gi_number = $year+$number;
-    //     $gi_number = 'GI-'.$gi_number;
-    //     return $gi_number;
-    // }
-
     //API
-    public function getWorkAPI($id){
+    public function getWbsAPI($id){
         $modelProject = Project::findOrFail($id);
-        $works = $modelProject->works;
+        $wbss = $modelProject->wbss;
         
-        return response($works->jsonSerialize(), Response::HTTP_OK);
+        return response($wbss->jsonSerialize(), Response::HTTP_OK);
     }
 }
