@@ -320,6 +320,11 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'payment.manage',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $managePayment,
+            'route_name' => 'payment.selectInvoiceView',
+        ]);
+
         // Payment Repair
         // $managePayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
         // DB::table('sidenav')->insert([
@@ -691,15 +696,20 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'rap.selectProjectActualOtherCost',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $inputActualOtherCost,
+            'route_name' => 'rap.inputActualOtherCost',
+        ]);
+
         $projectPlanOtherCost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $projectPlanOtherCost,
             'route_name' => 'rap.selectProjectPlanOtherCost',
         ]);
-        
+
         DB::table('sidenav')->insert([
-            'menu_id' => $inputActualOtherCost,
-            'route_name' => 'rap.inputActualOtherCost',
+            'menu_id' => $projectPlanOtherCost,
+            'route_name' => 'rap.inputApprovalProjectPlanOtherCost',
         ]);
 
         $viewPlannedCost = Menu::where('route_name','rap.selectProjectViewCost')->select('id')->first()->id;
@@ -1707,7 +1717,46 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'yard_plan.index',
         ]);
 
+        // QC
+        $createQcType = Menu::where('route_name','qc_type.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcType,
+            'route_name' => 'qc_type.create',
+        ]);
+
+        $viewQcType = Menu::where('route_name','qc_type.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcType,
+            'route_name' => 'qc_type.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcType,
+            'route_name' => 'qc_type.edit',
+        ]);
         
+        $createQcTask = Menu::where('route_name','qc_task.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTask,
+            'route_name' => 'qc_task.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTask,
+            'route_name' => 'qc_task.create',
+        ]);
+
+        $viewQcTask = Menu::where('route_name','qc_task.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTask,
+            'route_name' => 'qc_task.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTask,
+            'route_name' => 'qc_task.edit',
+        ]);
+
         $ship = Menu::where('route_name','ship.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $ship,

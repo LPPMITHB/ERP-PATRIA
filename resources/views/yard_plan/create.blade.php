@@ -58,7 +58,7 @@
                                 </div>
                             </div>
                             @verbatim
-                            <div id="project_work">
+                            <div id="project_wbs">
                                 <div class="row form-group">
                                     <div class="col-sm-12">
                                         <label for="yard" class="control-label">Yard</label>
@@ -73,23 +73,23 @@
                                     <div class="col-sm-12">
                                         <label for="project" class="control-label">Project</label>
                                         <selectize id="project" v-model="submittedForm.project_id" :settings="projectSettings">
-                                            <option v-for="(project, index) in modelProject" :value="project.id">{{ project.code }}-{{ project.name }}</option>
+                                            <option v-for="(project, index) in modelProject" :value="project.id">{{ project.number }}-{{ project.name }}</option>
                                         </selectize>
                                     </div>
                                 </div>
 
                                 <div class="row form-group">
                                     <div class="col-sm-12">
-                                        <label for="work" class="control-label">Work</label>
-                                        <selectize id="work" v-model="submittedForm.wbs_id" :settings="workSettings">
-                                            <option v-for="(work, index) in modelWork" :value="work.id">{{ work.code }}-{{ work.name }}</option>
+                                        <label for="wbs" class="control-label">Wbs</label>
+                                        <selectize id="wbs" v-model="submittedForm.wbs_id" :settings="wbsSettings">
+                                            <option v-for="(wbs, index) in modelWbs" :value="wbs.id">{{ wbs.code }}-{{ wbs.name }}</option>
                                         </selectize>
                                     </div>
                                 </div>
 
                                 <div class="row form-group">
                                     <div class="col-sm-12">
-                                        <label for="work" class="control-label">Description</label>
+                                        <label for="wbs" class="control-label">Description</label>
                                         <textarea v-model="submittedForm.description" class="form-control" rows="3" name="description"></textarea>
                                     </div>
                                 </div>
@@ -173,7 +173,7 @@
         events.push( 
             {
                 id : yardPlan[i].id,
-                title: yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
+                title: yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.number+")", 
                 start: yardPlan[i].planned_start_date,
                 end: yardPlan[i].planned_end_date,
                 actual_start : yardPlan[i].actual_start_date,
@@ -186,7 +186,7 @@
             if(yardPlan[i].actual_start_date > yardPlan[i].planned_start_date){
                 events.push( 
                     {
-                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
+                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.number+")", 
                         start: yardPlan[i].actual_start_date,
                         end: yardPlan[i].actual_end_date,
                         clickable : false,
@@ -197,7 +197,7 @@
             } else if(yardPlan[i].actual_end_date > yardPlan[i].planned_end_date){
                 events.push( 
                     {
-                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
+                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.number+")", 
                         start: yardPlan[i].actual_start_date,
                         end: yardPlan[i].actual_end_date,
                         clickable : false,
@@ -208,7 +208,7 @@
             }else{
                 events.push( 
                     {
-                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
+                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.number+")", 
                         start: yardPlan[i].actual_start_date,
                         end: yardPlan[i].actual_end_date,
                         clickable : false,
@@ -271,7 +271,7 @@
     var data = {
         modelYard :   @json($modelYard),
         modelProject : @json($modelProject),
-        modelWork : [],
+        modelWbs : [],
         submittedForm :{
             planned_start_date : "",
             planned_end_date : "",
@@ -286,13 +286,13 @@
         yardSettings: {
             placeholder: 'Please select yard...',
         },
-        workSettings: {
-            placeholder: 'Please select work...',
+        wbsSettings: {
+            placeholder: 'Please select wbs...',
         },
     }
 
     var vm = new Vue({
-        el : '#project_work',
+        el : '#project_wbs',
         data : data,
         computed : {
            
@@ -316,8 +316,8 @@
         watch : {
             'submittedForm.project_id' : function(newValue){
                 this.submittedForm.wbs_id = "";
-                window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
-                    this.modelWork = data;
+                window.axios.get('/api/getWbs/'+newValue).then(({ data }) => {
+                    this.modelWbs = data;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {

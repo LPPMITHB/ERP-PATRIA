@@ -1947,6 +1947,8 @@ Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
 // Payment Routes
 Route::name('payment.')->prefix('payment')->group(function() {
     Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+    
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoice')->name('selectInvoiceView');
 
     Route::get('/create/{id}', 'PaymentController@create')->name('create');
 
@@ -1980,4 +1982,44 @@ Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
     Route::patch('/{id}', 'PaymentController@update')->name('update');
 
     Route::post('/', 'PaymentController@store')->name('store');
+});
+
+//  QC Type Routes
+Route::name('qc_type.')->prefix('qc_type')->group(function() {
+
+    Route::get('/', 'QualityControlController@index')->name('index')->middleware('can:list-qc-type');
+
+    Route::get('/create', 'QualityControlController@create')->name('create')->middleware('can:create-qc-type');
+
+    Route::get('/{id}', 'QualityControlController@show')->name('show')->middleware('can:show-qc-type');
+
+    Route::get('/{id}/edit', 'QualityControlController@edit')->name('edit')->middleware('can:edit-qc-type');
+
+    Route::patch('/', 'QualityControlController@update')->name('update')->middleware('can:edit-qc-type');
+
+    Route::post('/', 'QualityControlController@store')->name('store')->middleware('can:create-qc-type');
+
+    Route::delete('/{id}', 'QualityControlController@destroy')->name('destroy')->middleware('can:destroy-qc-type');
+
+});
+
+//  QC Task Routes
+Route::name('qc_task.')->prefix('qc_task')->group(function() {
+
+    Route::get('/', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
+
+    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+
+    Route::get('/create', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
+
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
+
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
+
+    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
+
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
+
 });
