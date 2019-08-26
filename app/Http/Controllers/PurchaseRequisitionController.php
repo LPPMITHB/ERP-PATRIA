@@ -324,7 +324,6 @@ class PurchaseRequisitionController extends Controller
             }
 
             $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails);
-            
             $approval_config = Configuration::get('approval-pr')[0];
             foreach($approval_config->value as $pr_config){
                 if($pr_config->minimum < $pr_value && $pr_config->maximum > $pr_value){
@@ -570,24 +569,6 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    // public function show(Request $request, $id){
-    //     $route = $request->route()->getPrefix();
-    //     $notification = Notification::find($id);
-    //     $user_id = Auth::user()->id;
-    //     $user_data = json_decode($notification->user_data);
-    //     foreach ($user_data as $data) {
-    //         if($data->id == $user_id){
-    //             $data->status = 0;
-    //         }
-    //     }
-    //     $notification->user_data = json_encode($user_data);
-    //     $notification->update();
-    //     if($route == "/purchase_requisition"){
-    //         return redirect()->route('purchase_requisition.show',$notification->document_id);
-    //     }elseif($route == "/purchase_requisition_repair"){
-    //         return redirect()->route('purchase_requisition_repair.show',$notification->document_id);
-    //     }
-    // }
 
     public function show(Request $request, $id)
     {
@@ -635,6 +616,9 @@ class PurchaseRequisitionController extends Controller
         elseif($modelPR->status == 8){
             $status = 'CANCELED';
         }
+        elseif($modelPR->status == 9){
+            $status = 'APPROVED PARTIALLY';
+        }
 
         $po = true;
         $modelPO = PurchaseOrder::where('purchase_requisition_id',$modelPR->id)->where('status','!=',8)->get();
@@ -668,6 +652,9 @@ class PurchaseRequisitionController extends Controller
         }
         elseif($modelPR->status == 6){
             $status = 'CONSOLIDATED';
+        }
+        elseif($modelPR->status == 9){
+            $status = 'APPROVED PARTIALLY';
         }
 
         return view('purchase_requisition.showApprove', compact('modelPR','route','status'));
@@ -754,6 +741,8 @@ class PurchaseRequisitionController extends Controller
                 $modelPRD->delete();
             }
             $PR = PurchaseRequisition::find($datas->pr_id);
+            $PR->role_decision_1 = null;
+            $PR->role_decision_2 = null;
             $PR->description = $datas->description;
             if($PR->status == 3){
                 $PR->status = 4;
@@ -1048,17 +1037,19 @@ class PurchaseRequisitionController extends Controller
         $datas = json_decode($request->datas);
         $route = $request->route()->getPrefix();
         $approval_config = Configuration::get('approval-pr')[0];
-        $user_role = Auth::user()->role_id;
         $url_notif = "showApprove";
-
+        $user_role = Auth::user()->role_id;
+        
         DB::beginTransaction();
         try{
             $modelPR = PurchaseRequisition::findOrFail($datas->pr_id);
+            $creator_role = $modelPR->user->role_id;
             if($datas->status == "approve"){
                 if($approval_config->type == "Single Approval"){
                     $modelPR->status = 2;
                     $modelPR->revision_description = $datas->desc;
                     $modelPR->approved_by_1 = Auth::user()->id;
+                    $modelPR->role_decision_1 = $datas->status;
                     $modelPR->approval_date_1 = Carbon::now();
                     $modelPR->update();
 
@@ -1073,32 +1064,23 @@ class PurchaseRequisitionController extends Controller
                     $notification->update();
 
                     //MAKE NOTIFICATION
-                    $users = User::where('role_id', $user_role)->select('id')->get();
+                    $users = User::where('role_id', $creator_role)->select('id')->get();
                     foreach ($users as $user) {
                         $user->status = 1;
                     }
                     $users = json_encode($users);  
                                       
-                    if($route == '/purchase_requisition'){
-                        $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved',
-                            'time_info' => 'Approved at',
-                            'title' => 'Purchase Requisition',
-                            'url' => '/purchase_requisition/'.$modelPR->id,
-                        ]);
-                    }else if($route == '/purchase_requisition_repair'){
-                        $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved',
-                            'time_info' => 'Approved at',
-                            'title' => 'Purchase Requisition',
-                            'url' => '/purchase_requisition_repair/'.$modelPR->id,
-                        ]);
-                    }
-
+                    $data = json_encode([
+                        'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                        'time_info' => 'Approved at',
+                        'title' => 'Purchase Requisition',
+                        'url' => $route.'/'.$modelPR->id,
+                    ]);
+                  
                     $new_notification = new Notification;
                     $new_notification->type = "Purchase Requisition";
                     $new_notification->document_id = $modelPR->id;
-                    $new_notification->role_id = $user_role;
+                    $new_notification->role_id = $creator_role;
                     $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
                     $new_notification->user_data = $users;
                     $new_notification->data = $data;
@@ -1109,38 +1091,142 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->status = 2;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
+                        $modelPR->role_decision_1 = $datas->status;
                         $modelPR->approval_date_1 = Carbon::now();
                         $modelPR->update();
 
-                        $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-
-                        $user_data = @json_decode($notification->user_data);
-                        foreach ($user_data as $data) {
-                            $data->status = 0;
+                        //Non Active previous Notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
                         }
-                        $notification->user_data = @json_encode($user_data);
-                        $notification->update();
+
+                        //MAKE NOTIFICATION
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                            'time_info' => 'Approved at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+                        
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                        
+                        $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                        foreach ($approver_2 as $user) {
+                            $user->status = 1;
+                        }
+
+                        if($creator_role != $modelPR->role_approve_2){
+                            $approver_2 = json_encode($approver_2);
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_2;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $approver_2;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+                        }
                     }elseif($modelPR->role_approve_2 == $user_role){
+                        $modelPR->status = 9;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
+                        $modelPR->role_decision_2 = $datas->status;
                         $modelPR->approval_date_2 = Carbon::now();
                         $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+
+                        //MAKE NOTIFICATION
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name,
+                            'time_info' => 'Approved at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+
+                        //MAKE NOTIFICATION
+                        $approver_1 = User::where('role_id', $modelPR->role_approve_1)->select('id')->get();
+                        foreach ($approver_1 as $user) {
+                            $user->status = 1;
+                        }
+                        $approver_1 = json_encode($approver_1);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name.', next action required',
+                            'time_info' => 'Approved at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/showApprove/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $modelPR->role_approve_1;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $approver_1;
+                        $new_notification->data = $data;
+                        $new_notification->save();
                     }
-                }elseif($approval_config->type == "Joint Approval"){
+                }
+                
+                elseif($approval_config->type == "Joint Approval"){
                     if($modelPR->role_approve_1 == $user_role){
+                        $modelPR->status = 9;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
+                        $modelPR->role_decision_1 = $datas->status;
                         $modelPR->approval_date_1 = Carbon::now();
                         $modelPR->update();
 
-                        if($modelPR->approval_date_1 != null && $modelPR->approval_date_2 != null){
-                            $modelPR->status = 2;
-                            $modelPR->update();
-
-                            $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                            where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
                                 $data->status = 0;
@@ -1148,25 +1234,204 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                    }elseif($modelPR->role_approve_2 == $user_role){
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_2 = Auth::user()->id;
-                        $modelPR->approval_date_2 = Carbon::now();
-                        $modelPR->update();
-
-                        if($modelPR->approval_date_1 != null && $modelPR->approval_date_2 != null){
+                        
+                        if($modelPR->role_decision_1 == "approve" && $modelPR->role_decision_2 == "approve"){
                             $modelPR->status = 2;
                             $modelPR->update();
 
-                            $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                            where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
+                            //MAKE NOTIFICATION
+                            $users = User::where('role_id', $creator_role)->select('id')->get();
+                            foreach ($users as $user) {
+                                $user->status = 1;
+                            }
+                            $users = json_encode($users);  
+                                            
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                                'time_info' => 'Approved at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/'.$modelPR->id,
+                            ]);
 
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $creator_role;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $users;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+
+                            //MAKE NOTIFICATION
+                            $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                            foreach ($approver_2 as $user) {
+                                $user->status = 1;
+                            }
+                            $approver_2 = json_encode($approver_2);  
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_2;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $approver_2;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+                        }elseif($modelPR->role_decision_2 != "approve" || $modelPR->role_decision_2 == null){
+                            //MAKE NOTIFICATION
+                            $users = User::where('role_id', $creator_role)->select('id')->get();
+                            foreach ($users as $user) {
+                                $user->status = 1;
+                            }
+                            $users = json_encode($users);  
+                                            
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                                'time_info' => 'Approved at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/'.$modelPR->id,
+                            ]);
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $creator_role;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $users;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+
+                            //MAKE NOTIFICATION
+                            $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                            foreach ($approver_2 as $user) {
+                                $user->status = 1;
+                            }
+                            $approver_2 = json_encode($approver_2);  
+                                            
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name.', next action required',
+                                'time_info' => 'Approved at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/showApprove/'.$modelPR->id,
+                            ]);
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_2;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $approver_2;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+                        }
+                    }elseif($modelPR->role_approve_2 == $user_role){
+                        $modelPR->status = 9;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_2 = Auth::user()->id;
+                        $modelPR->role_decision_2 = $datas->status;
+                        $modelPR->approval_date_2 = Carbon::now();
+                        $modelPR->update();
+                        
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
                                 $data->status = 0;
                             }
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
+                        }
+                        
+                        if($modelPR->role_decision_1 == "approve" && $modelPR->role_decision_2 == "approve"){
+                            $modelPR->status = 2;
+                            $modelPR->update();
+
+                            //MAKE NOTIFICATION
+                            $users = User::where('role_id', $creator_role)->select('id')->get();
+                            foreach ($users as $user) {
+                                $user->status = 1;
+                            }
+                            $users = json_encode($users);  
+                                            
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name,
+                                'time_info' => 'Approved at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/'.$modelPR->id,
+                            ]);
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $creator_role;
+                            $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                            $new_notification->user_data = $users;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+
+                            //MAKE NOTIFICATION
+                            $approver_1 = User::where('role_id', $modelPR->role_approve_1)->select('id')->get();
+                            foreach ($approver_1 as $user) {
+                                $user->status = 1;
+                            }
+                            $approver_1 = json_encode($approver_1);  
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_1;
+                            $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                            $new_notification->user_data = $approver_1;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+                        }elseif($modelPR->role_decision_1 != "approve" || $modelPR->role_decision_1 == null){
+                            //MAKE NOTIFICATION
+                            $users = User::where('role_id', $creator_role)->select('id')->get();
+                            foreach ($users as $user) {
+                                $user->status = 1;
+                            }
+                            $users = json_encode($users);  
+                                            
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name,
+                                'time_info' => 'Approved at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/'.$modelPR->id,
+                            ]);
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $creator_role;
+                            $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                            $new_notification->user_data = $users;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+
+                            //MAKE NOTIFICATION
+                            $approver_1 = User::where('role_id', $modelPR->role_approve_1)->select('id')->get();
+                            foreach ($approver_1 as $user) {
+                                $user->status = 1;
+                            }
+                            $approver_1 = json_encode($approver_1);  
+                                            
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name.', next action required',
+                                'time_info' => 'Approved at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/showApprove/'.$modelPR->id,
+                            ]);
+
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_1;
+                            $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                            $new_notification->user_data = $approver_1;
+                            $new_notification->data = $data;
+                            $new_notification->save();
                         }
                     }
                 }
@@ -1177,11 +1442,15 @@ class PurchaseRequisitionController extends Controller
                 }elseif($route == "/purchase_requisition_repair"){
                     return redirect()->route('purchase_requisition_repair.show',$datas->pr_id)->with('success', 'Purchase Requisition Approved');
                 }
-            }elseif($datas->status == "need-revision"){
+            }
+            
+            
+            elseif($datas->status == "need-revision"){
                 if($approval_config->type == "Single Approval"){
                     $modelPR->status = 3;
                     $modelPR->revision_description = $datas->desc;
                     $modelPR->approved_by_1 = Auth::user()->id;
+                    $modelPR->role_decision_1 = $datas->status;
                     $modelPR->approval_date_1 = Carbon::now();
                     $modelPR->update();
 
@@ -1196,90 +1465,40 @@ class PurchaseRequisitionController extends Controller
                     $notification->update();
 
                     //MAKE NOTIFICATION
-                    $users = User::where('role_id', $user_role)->select('id')->get();
+                    $users = User::where('role_id', $creator_role)->select('id')->get();
                     foreach ($users as $user) {
                         $user->status = 1;
                     }
                     $users = json_encode($users);                    
-                    if($route == '/purchase_requisition'){
-                        $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked, revision needed',
-                            'time_info' => 'Checked at',
-                            'title' => 'Purchase Requisition',
-                            'url' => '/purchase_requisition/edit/'.$modelPR->id,
-                        ]);
-                    }else if($route == '/purchase_requisition_repair'){
-                        $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked, revision needed',
-                            'time_info' => 'Checked at',
-                            'title' => 'Purchase Requisition',
-                            'url' => '/purchase_requisition_repair/edit/'.$modelPR->id,
-                        ]);
-                    }
+                    $data = json_encode([
+                        'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.', revision needed',
+                        'time_info' => 'Checked at',
+                        'title' => 'Purchase Requisition',
+                        'url' => $route.'/edit/'.$modelPR->id,
+                    ]);
                     $new_notification = new Notification;
                     $new_notification->type = "Purchase Requisition";
                     $new_notification->document_id = $modelPR->id;
-                    $new_notification->role_id = $user_role;
+                    $new_notification->role_id = $creator_role;
                     $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
                     $new_notification->user_data = $users;
                     $new_notification->data = $data;
                     $new_notification->save();
-                }elseif($approval_config->type == "Two Step Approval"){
+                }
+                
+                elseif($approval_config->type == "Two Step Approval"){
                     if($modelPR->role_approve_1 == $user_role){
                         $modelPR->status = 3;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
+                        $modelPR->role_decision_1 = $datas->status;
                         $modelPR->approval_date_1 = Carbon::now();
                         $modelPR->update();
 
-                        $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-
-                        $user_data = @json_decode($notification->user_data);
-                        foreach ($user_data as $data) {
-                            $data->status = 0;
-                        }
-                        $notification->user_data = @json_encode($user_data);
-                        $notification->update();
-                    }elseif($modelPR->role_approve_2 == $user_role){
-                        $modelPR->status = 3;
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_2 = Auth::user()->id;
-                        $modelPR->approval_date_2 = Carbon::now();
-                        $modelPR->update();
-                    }
-                }elseif($approval_config->type == "Joint Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
-                        $modelPR->status = 3;
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_1 = Auth::user()->id;
-                        $modelPR->approval_date_1 = Carbon::now();
-                        $modelPR->update();
-
-                       
-                        $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-
-                        $user_data = @json_decode($notification->user_data);
-                        foreach ($user_data as $data) {
-                            $data->status = 0;
-                        }
-                        $notification->user_data = @json_encode($user_data);
-                        $notification->update();
-                        
-                    }elseif($modelPR->role_approve_2 == $user_role){
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_2 = Auth::user()->id;
-                        $modelPR->approval_date_2 = Carbon::now();
-                        $modelPR->update();
-
-                        if($modelPR->approval_date_1 != null && $modelPR->approval_date_2 != null){
-                            $modelPR->status = 2;
-                            $modelPR->update();
-
-                            $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                            where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
                                 $data->status = 0;
@@ -1287,6 +1506,227 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
+                        
+                        //MAKE NOTIFICATION
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.', revision needed',
+                            'time_info' => 'Checked at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/edit/'.$modelPR->id,
+                        ]);
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                        
+                        if($creator_role != $modelPR->role_approve_2){
+                            //MAKE NOTIFICATION
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.'',
+                                'time_info' => 'Checked at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/'.$modelPR->id,
+                            ]);
+
+                            $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                            foreach ($approver_2 as $user) {
+                                $user->status = 1;
+                            }
+                            $approver_2 = json_encode($approver_2);
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_2;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $approver_2;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+                        }
+
+                    }elseif($modelPR->role_approve_2 == $user_role){
+                        $modelPR->status = 3;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_2 = Auth::user()->id;
+                        $modelPR->role_decision_2 = $datas->status;
+                        $modelPR->approval_date_2 = Carbon::now();
+                        $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+                        
+                        //MAKE NOTIFICATION
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy2->name.', revision needed',
+                            'time_info' => 'Checked at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/edit/'.$modelPR->id,
+                        ]);
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                    }
+                }
+                
+                elseif($approval_config->type == "Joint Approval"){
+                    if($modelPR->role_approve_1 == $user_role){
+                        $modelPR->status = 3;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_1 = Auth::user()->id;
+                        $modelPR->role_decision_1 = $datas->status;
+                        $modelPR->approval_date_1 = Carbon::now();
+                        $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+
+                        //MAKE NOTIFICATION
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.', revision needed',
+                            'time_info' => 'Checked at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/edit/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+
+                        //MAKE NOTIFICATION
+                        $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                        foreach ($approver_2 as $user) {
+                            $user->status = 1;
+                        }
+                        $approver_2 = json_encode($approver_2);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name,
+                            'time_info' => 'Checked at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $modelPR->role_approve_2;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $approver_2;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                        
+                    }elseif($modelPR->role_approve_2 == $user_role){
+                        $modelPR->status = 3;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_2 = Auth::user()->id;
+                        $modelPR->role_decision_2 = $datas->status;
+                        $modelPR->approval_date_2 = Carbon::now();
+                        $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+
+                        //MAKE NOTIFICATION
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy2->name.', revision needed',
+                            'time_info' => 'Checked at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/edit/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+
+                        //MAKE NOTIFICATION
+                        $approver_1 = User::where('role_id', $modelPR->role_approve_1)->select('id')->get();
+                        foreach ($approver_1 as $user) {
+                            $user->status = 1;
+                        }
+                        $approver_1 = json_encode($approver_1);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy2->name,
+                            'time_info' => 'Checked at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $modelPR->role_approve_1;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $approver_1;
+                        $new_notification->data = $data;
+                        $new_notification->save();
                     }
                 }
                 DB::commit();
@@ -1295,11 +1735,14 @@ class PurchaseRequisitionController extends Controller
                 }elseif($route == "/purchase_requisition_repair"){
                     return redirect()->route('purchase_requisition_repair.show',$datas->pr_id)->with('success', 'Purchase Requisition Need Revision');
                 }
-            }elseif($datas->status == "reject"){
+            }
+            
+            elseif($datas->status == "reject"){
                 if($approval_config->type == "Single Approval"){
                     $modelPR->status = 5;
                     $modelPR->revision_description = $datas->desc;
                     $modelPR->approved_by_1 = Auth::user()->id;
+                    $modelPR->role_decision_1 = $datas->status;
                     $modelPR->approval_date_1 = Carbon::now();
                     $modelPR->update();
                     if($modelPR->type == 3){
@@ -1320,87 +1763,40 @@ class PurchaseRequisitionController extends Controller
                     $notification->update();
 
                     //MAKE NOTIFICATION
-                    $users = User::where('role_id', $user_role)->select('id')->get();
+                    $users = User::where('role_id', $creator_role)->select('id')->get();
                     foreach ($users as $user) {
                         $user->status = 1;
                     }
                     $users = json_encode($users);                    
-                    if($route == '/purchase_requisition'){
-                        $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected',
-                            'time_info' => 'Rejected at',
-                            'title' => 'Purchase Requisition',
-                            'url' => '/purchase_requisition/'.$modelPR->id,
-                        ]);
-                    }else if($route == '/purchase_requisition_repair'){
-                        $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected',
-                            'time_info' => 'Rejected at',
-                            'title' => 'Purchase Requisition',
-                            'url' => '/purchase_requisition_repair/'.$modelPR->id,
-                        ]);
-                    }
+                    $data = json_encode([
+                        'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                        'time_info' => 'Rejected at',
+                        'title' => 'Purchase Requisition',
+                        'url' => $route.'/'.$modelPR->id,
+                    ]);
                     $new_notification = new Notification;
                     $new_notification->type = "Purchase Requisition";
                     $new_notification->document_id = $modelPR->id;
-                    $new_notification->role_id = $user_role;
+                    $new_notification->role_id = $creator_role;
                     $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
                     $new_notification->user_data = $users;
                     $new_notification->data = $data;
                     $new_notification->save();
-                }elseif($approval_config->type == "Two Step Approval"){
+                }
+                
+                elseif($approval_config->type == "Two Step Approval"){
                     if($modelPR->role_approve_1 == $user_role){
-                        $modelPR->status = 3;
+                        $modelPR->status = 5;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
+                        $modelPR->role_decision_1 = $datas->status;
                         $modelPR->approval_date_1 = Carbon::now();
                         $modelPR->update();
 
-                        $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-                        $user_data = @json_decode($notification->user_data);
-                        foreach ($user_data as $data) {
-                            $data->status = 0;
-                        }
-                        $notification->user_data = @json_encode($user_data);
-                        $notification->update();
-                    }elseif($modelPR->role_approve_2 == $user_role){
-                        $modelPR->status = 3;
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_2 = Auth::user()->id;
-                        $modelPR->approval_date_2 = Carbon::now();
-                        $modelPR->update();
-                    }
-                }elseif($approval_config->type == "Joint Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
-                        $modelPR->status = 3;
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_1 = Auth::user()->id;
-                        $modelPR->approval_date_1 = Carbon::now();
-                        $modelPR->update();
-
-                       
-                        $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
-                        $user_data = @json_decode($notification->user_data);
-                        foreach ($user_data as $data) {
-                            $data->status = 0;
-                        }
-                        $notification->user_data = @json_encode($user_data);
-                        $notification->update();
-                        
-                    }elseif($modelPR->role_approve_2 == $user_role){
-                        $modelPR->revision_description = $datas->desc;
-                        $modelPR->approved_by_2 = Auth::user()->id;
-                        $modelPR->approval_date_2 = Carbon::now();
-                        $modelPR->update();
-
-                        if($modelPR->approval_date_1 != null && $modelPR->approval_date_2 != null){
-                            $modelPR->status = 2;
-                            $modelPR->update();
-
-                            $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
                                 $data->status = 0;
@@ -1408,6 +1804,226 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
+                        
+                        //MAKE NOTIFICATION
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                            'time_info' => 'Rejected at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                        
+                        if($creator_role != $modelPR->role_approve_2){
+                            //MAKE NOTIFICATION
+                            $data = json_encode([
+                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name.'',
+                                'time_info' => 'Rejected at',
+                                'title' => 'Purchase Requisition',
+                                'url' => $route.'/'.$modelPR->id,
+                            ]);
+
+                            $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                            foreach ($approver_2 as $user) {
+                                $user->status = 1;
+                            }
+                            $approver_2 = json_encode($approver_2);
+                            $new_notification = new Notification;
+                            $new_notification->type = "Purchase Requisition";
+                            $new_notification->document_id = $modelPR->id;
+                            $new_notification->role_id = $modelPR->role_approve_2;
+                            $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                            $new_notification->user_data = $approver_2;
+                            $new_notification->data = $data;
+                            $new_notification->save();
+                        }
+                    }elseif($modelPR->role_approve_2 == $user_role){
+                        $modelPR->status = 5;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_2 = Auth::user()->id;
+                        $modelPR->role_decision_2 = $datas->status;
+                        $modelPR->approval_date_2 = Carbon::now();
+                        $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+                        
+                        //MAKE NOTIFICATION
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy2->name,
+                            'time_info' => 'Rejected at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                    }
+                }
+                
+                elseif($approval_config->type == "Joint Approval"){
+                    if($modelPR->role_approve_1 == $user_role){
+                        $modelPR->status = 5;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_1 = Auth::user()->id;
+                        $modelPR->role_decision_1 = $datas->status;
+                        $modelPR->approval_date_1 = Carbon::now();
+                        $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+
+                        //MAKE NOTIFICATION
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                            'time_info' => 'Rejected at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+
+                        //MAKE NOTIFICATION
+                        $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
+                        foreach ($approver_2 as $user) {
+                            $user->status = 1;
+                        }
+                        $approver_2 = json_encode($approver_2);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                            'time_info' => 'Rejected at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $modelPR->role_approve_2;
+                        $new_notification->notification_date = $modelPR->approval_date_1->toDateString();
+                        $new_notification->user_data = $approver_2;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+                        
+                    }elseif($modelPR->role_approve_2 == $user_role){
+                        $modelPR->status = 5;
+                        $modelPR->revision_description = $datas->desc;
+                        $modelPR->approved_by_2 = Auth::user()->id;
+                        $modelPR->role_decision_2 = $datas->status;
+                        $modelPR->approval_date_2 = Carbon::now();
+                        $modelPR->update();
+
+                        //Non Active previous notif
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
+                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        foreach ($notifications as $notification) {
+                            $user_data = @json_decode($notification->user_data);
+                            foreach ($user_data as $data) {
+                                $data->status = 0;
+                            }
+                            $notification->user_data = @json_encode($user_data);
+                            $notification->update();
+                        }
+
+                        //MAKE NOTIFICATION
+                        $users = User::where('role_id', $creator_role)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy2->name,
+                            'time_info' => 'Rejected at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $creator_role;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $users;
+                        $new_notification->data = $data;
+                        $new_notification->save();
+
+                        //MAKE NOTIFICATION
+                        $approver_1 = User::where('role_id', $modelPR->role_approve_1)->select('id')->get();
+                        foreach ($approver_1 as $user) {
+                            $user->status = 1;
+                        }
+                        $approver_1 = json_encode($approver_1);  
+                                        
+                        $data = json_encode([
+                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy2->name,
+                            'time_info' => 'Rejected at',
+                            'title' => 'Purchase Requisition',
+                            'url' => $route.'/'.$modelPR->id,
+                        ]);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $modelPR->id;
+                        $new_notification->role_id = $modelPR->role_approve_1;
+                        $new_notification->notification_date = $modelPR->approval_date_2->toDateString();
+                        $new_notification->user_data = $approver_1;
+                        $new_notification->data = $data;
+                        $new_notification->save();
                     }
                 }
                 

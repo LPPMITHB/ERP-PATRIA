@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'View Bill Of Materials » Select Project',
+        'title' => 'Create Invoice » Select Project',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => '',
@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tableFixed">
+                <table class="table table-bordered tableFixed" id="select-project">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -30,7 +30,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($projects as $project)
+                        @foreach($modelProjects as $project)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td class="tdEllipsis">{{ $project->number }}</td>
@@ -38,10 +38,10 @@
                                 <td class="tdEllipsis">{{ $project->name }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
-                                    @if($route == '/bom')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom.indexBom', ['id'=>$project->id]) }}">SELECT</a>
-                                    @elseif($route == '/bom_repair')
-                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.show', ['id'=>$project->id]) }}">SELECT</a>
+                                    @if($route == '/invoice')
+                                        <a class="btn btn-primary btn-xs" href="{{ route('invoice.create', ['id'=>$project->id]) }}">SELECT</a>
+                                    @elseif($route == '/invoice_repair')
+                                        <a class="btn btn-primary btn-xs" href="{{ route('invoice_repair.create', ['id'=>$project->id]) }}">SELECT</a>
                                     @endif
                                 </td>
                             </tr>

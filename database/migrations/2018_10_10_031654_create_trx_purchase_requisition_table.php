@@ -27,7 +27,9 @@ class CreateTrxPurchaseRequisitionTable extends Migration
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('role_approve_1')->nullable();
+            $table->string('role_decision_1')->nullable();
             $table->unsignedInteger('role_approve_2')->nullable();
+            $table->string('role_decision_2')->nullable();
             $table->unsignedInteger('approved_by_1')->nullable();
             $table->unsignedInteger('approved_by_2')->nullable();
             $table->date('approval_date_1')->nullable();

@@ -58,7 +58,7 @@ class CreateProProjectTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('ship_id')->references('id')->on('mst_ship');
             $table->foreign('customer_id')->references('id')->on('mst_customer');
-            // $table->foreign('sales_order_id')->references('id')->on('trx_sales_order');
+            $table->foreign('sales_order_id')->references('id')->on('trx_sales_order');
         });
     }
 
