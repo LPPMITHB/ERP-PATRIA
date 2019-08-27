@@ -13,7 +13,7 @@ class CreateMstQualityTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('mst_quality_types', function (Blueprint $table) {
+        Schema::create('mst_quality_control_type', function (Blueprint $table) {
             $table->increments('id');
             $table->string('code');
             $table->string('name');

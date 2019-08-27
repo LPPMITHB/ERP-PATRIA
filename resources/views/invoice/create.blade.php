@@ -100,11 +100,20 @@
                                             <td>{{ top.project_progress }} %</td>
                                             <td>{{ top.payment_percentage }} %</td>
                                             <td>Rp.{{ paymentValue(index) }}</td>
-                                            <td class="p-l-0" align="center"><a @click.prevent="confirmation(top,index)" class="btn btn-primary btn-xs" href="#" :disabled="checkProgress(index)">
-                                                <div class="btn-group">
-                                                    CREATE INVOICE
-                                                </div></a>
-                                            </td>
+                                            <template v-if="check(index) == true">
+                                                <td class="p-l-0" align="center"><a @click.prevent="confirmation(top,index)" class="btn btn-primary btn-xs" href="#" :disabled="checkProgress(index)">
+                                                    <div class="btn-group">
+                                                        CREATE INVOICE
+                                                    </div></a>
+                                                </td>
+                                            </template>
+                                            <template v-else>
+                                                <td class="p-l-0" align="center"><a @click.prevent="viewInvoice(index)" class="btn btn-primary btn-xs" target="_blank">
+                                                    <div class="btn-group">
+                                                        VIEW INVOICE
+                                                    </div></a>
+                                                </td>
+                                            </template>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -130,13 +139,37 @@
     var data = {
         project : [],
         submittedForm : {},
-        dataTop : []
+        dataTop : [],
+        invoices : @json($invoices),
+        route : @json($route)
     }
 
     var vm = new Vue({
         el : '#invoice',
         data : data,
         methods: {
+            viewInvoice(index){
+                var id = null;
+                this.invoices.forEach(invoice =>{
+                    if(invoice.top_index == index){
+                        id = invoice.id;
+                    }
+                })
+                if(this.route == "/invoice"){
+                    window.open("/invoice/"+id , '_blank');
+                }else if(this.route == "/invoice_repair"){
+                    window.open("/invoice_repair/"+id , '_blank');
+                }
+            },
+            check(index){
+                var result = true;
+                this.invoices.forEach(invoice =>{
+                    if(invoice.top_index == index){
+                        result = false;
+                    }
+                })
+                return result;
+            },
             confirmation(top,index){
                 var menuTemp = this.menu;
                 iziToast.question({

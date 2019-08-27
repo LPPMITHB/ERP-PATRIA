@@ -661,6 +661,10 @@ class ProjectController extends Controller
                 $so = SalesOrder::findOrFail($request->sales_order_id);
                 $so->status = 0;
                 $so->update();
+
+                $customer = Customer::findOrFail($so->customer_id);
+                $customer->used_limit += $so->total_price;
+                $customer->update();
             }
             DB::commit();
             if($menu == "building"){
@@ -1432,10 +1436,38 @@ class ProjectController extends Controller
                     $so = SalesOrder::findOrFail($project->sales_order_id);
                     $so->status = 1;
                     $so->update();
+
+                    if($request->sales_order_id == null){
+                        $customer = Customer::findOrFail($so->customer_id);
+                        $customer->used_limit -= $so->total_price;
+                        $customer->update();
+                    }else{
+                        $newSo = SalesOrder::findOrFail($request->sales_order_id);
+                        if($newSo){
+                            if($so->customer_id != $newSo->customer_id){
+                                $customer = Customer::findOrFail($so->customer_id);
+                                $customer->used_limit -= $so->total_price;
+                                $customer->update();
+    
+                                $newCustomer = Customer::findOrFail($newSo->customer_id);
+                                $newCustomer->used_limit += $newSo->total_price;
+                                $newCustomer->update();
+                            }
+                        }else{
+                            $customer = Customer::findOrFail($so->customer_id);
+                            $customer->used_limit -= $so->total_price;
+                            $customer->update();
+                        }
+                    }
                 }
                 $project->sales_order_id = $request->sales_order_id;
             }else{
                 $project->sales_order_id = $request->sales_order_id;
+
+                $so = SalesOrder::findOrFail($request->sales_order_id);
+                $customer = Customer::findOrFail($so->customer_id);
+                $customer->used_limit += $so->total_price;
+                $customer->update();
             }
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);

@@ -16,7 +16,7 @@ class CreateTrxPaymentReceipt extends Migration
         Schema::create('trx_payment_receipt', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('invoice_id');
-            $table->float('paid_value',15,2);
+            $table->float('amount',15,2);
             $table->string('status')->default(1);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  
