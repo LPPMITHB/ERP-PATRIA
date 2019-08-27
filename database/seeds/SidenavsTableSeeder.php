@@ -1743,6 +1743,11 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $createQcTask,
+            'route_name' => 'qc_task.selectWBS',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTask,
             'route_name' => 'qc_task.create',
         ]);
 
