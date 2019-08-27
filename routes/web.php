@@ -1947,10 +1947,12 @@ Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
 // Payment Routes
 Route::name('payment.')->prefix('payment')->group(function() {
     Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+    
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
 
     Route::get('/create/{id}', 'PaymentController@create')->name('create');
 
-    Route::get('/manage/{id}', 'PaymentController@manage')->name('manage');
+    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage');
 
     Route::get('/', 'PaymentController@index')->name('index');
 
@@ -1967,6 +1969,8 @@ Route::name('payment.')->prefix('payment')->group(function() {
 Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
     Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
 
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
+
     Route::get('/create/{id}', 'PaymentController@create')->name('create');
 
     Route::get('/manage/{id}', 'PaymentController@manage')->name('manage');
@@ -1980,4 +1984,44 @@ Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
     Route::patch('/{id}', 'PaymentController@update')->name('update');
 
     Route::post('/', 'PaymentController@store')->name('store');
+});
+
+//  QC Type Routes
+Route::name('qc_type.')->prefix('qc_type')->group(function() {
+
+    Route::get('/', 'QualityControlTypeController@index')->name('index');
+
+    Route::get('/create', 'QualityControlTypeController@create')->name('create');
+
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
+
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
+
+    Route::patch('/', 'QualityControlTypeController@update')->name('update');
+
+    Route::post('/store', 'QualityControlTypeController@store')->name('store');
+
+    Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+
+});
+
+//  QC Task Routes
+Route::name('qc_task.')->prefix('qc_task')->group(function() {
+
+    Route::get('/', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
+
+    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+
+    Route::get('/create', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
+
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
+
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
+
+    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
+
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
+
 });

@@ -286,7 +286,7 @@
                                 <label for="sales_order_id" class="col-sm-2 control-label">Sales Order</label>
 
                                 <div class="col-sm-10">
-                                    <selectize name="sales_order_id" id="sales_order_id" required>
+                                    <selectize name="sales_order_id" id="sales_order_id">
                                         <option v-for="(so, index) in salesOrders" :value="so.id">{{ so.number }}</option>
                                     </selectize>
                                 </div>

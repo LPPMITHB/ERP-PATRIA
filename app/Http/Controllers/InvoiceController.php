@@ -33,11 +33,11 @@ class InvoiceController extends Controller
      */
     public function create(Request $request, $id)
     {
-        $invoice = new Invoice;
         $route = $request->route()->getPrefix();
         $project = Project::where('id', $id)->with('salesOrder','ship','customer')->first();
+        $invoices = Invoice::where('sales_order_id',$project->sales_order_id)->get();
 
-        return view('invoice.create', compact('invoice','route','project'));
+        return view('invoice.create', compact('invoices','route','project'));
     }
 
     /**

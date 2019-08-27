@@ -3,10 +3,10 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'WBS & Estimator Configuration » Select Project',
+            'title' => 'Create QC Task » Select Project',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Project' => route('project.selectProjectConfig'),
+                'Select Project' => route('qc_task.selectProject'),
             ]
         ]
     )
@@ -21,7 +21,7 @@
                 <h3 class="box-title">List of Projects</h3>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered" id="boms-table">
+                <table class="table table-bordered" id="projects-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -39,7 +39,7 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('project.configWbsEstimator', ['id'=>$project->id]) }}">SELECT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('qc_task.create', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -57,7 +57,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#boms-table').DataTable({
+        $('#projects-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : false,

@@ -2466,5 +2466,15 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        // Quality Control Task
+        $qcTask = Menu::where('name','Create QC Task')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Task',
+            'menu_id' => $qcTask,
+            'middleware' => 'create-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
     }
 }
