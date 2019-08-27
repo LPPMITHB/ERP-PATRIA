@@ -41,21 +41,21 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // Marketing & Sales - WBS Cost Estimation - Repair
-        // $wbsCostEstimation = Menu::where('route_name','estimator_repair.indexEstimatorWbs')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $wbsCostEstimation,
-        //     'route_name' => 'estimator_repair.indexEstimatorWbs',
-        // ]);
+        $wbsCostEstimation = Menu::where('route_name','estimator_repair.indexEstimatorWbs')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator_repair.indexEstimatorWbs',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $wbsCostEstimation,
-        //     'route_name' => 'estimator_repair.createWbs',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator_repair.createWbs',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $wbsCostEstimation,
-        //     'route_name' => 'estimator_repair.editWbs',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $wbsCostEstimation,
+            'route_name' => 'estimator_repair.editWbs',
+        ]);
 
         // DB::table('sidenav')->insert([
         //     'menu_id' => $wbsCostEstimation,
@@ -85,26 +85,26 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Marketing & Sales - Cost Standard - Repair
-        // $CostStandard = Menu::where('route_name','estimator_repair.indexEstimatorCostStandard')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $CostStandard,
-        //     'route_name' => 'estimator_repair.indexEstimatorCostStandard',
-        // ]);
+        $CostStandard = Menu::where('route_name','estimator_repair.indexEstimatorCostStandard')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.indexEstimatorCostStandard',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $CostStandard,
-        //     'route_name' => 'estimator_repair.createCostStandard',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.createCostStandard',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $CostStandard,
-        //     'route_name' => 'estimator_repair.editCostStandard',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.editCostStandard',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $CostStandard,
-        //     'route_name' => 'estimator_repair.showCostStandard',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $CostStandard,
+            'route_name' => 'estimator_repair.showCostStandard',
+        ]);
 
         // Marketing & Sales - Estimator Profile
         $EstimatorProfile = Menu::where('route_name','estimator.indexEstimatorProfile')->select('id')->first()->id;
@@ -129,26 +129,26 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Marketing & Sales - Estimator Profile - Repair
-        // $EstimatorProfile = Menu::where('route_name','estimator_repair.indexEstimatorProfile')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $EstimatorProfile,
-        //     'route_name' => 'estimator_repair.indexEstimatorProfile',
-        // ]);
+        $EstimatorProfile = Menu::where('route_name','estimator_repair.indexEstimatorProfile')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.indexEstimatorProfile',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $EstimatorProfile,
-        //     'route_name' => 'estimator_repair.createEstimatorProfile',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.createEstimatorProfile',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $EstimatorProfile,
-        //     'route_name' => 'estimator_repair.editEstimatorProfile',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.editEstimatorProfile',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $EstimatorProfile,
-        //     'route_name' => 'estimator_repair.showEstimatorProfile',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $EstimatorProfile,
+            'route_name' => 'estimator_repair.showEstimatorProfile',
+        ]);
 
         // Quotation
         $createQuotation = Menu::where('route_name','quotation.create')->select('id')->first()->id;
@@ -174,27 +174,27 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Quotation Repair
-        // $createQuotation = Menu::where('route_name','quotation_repair.create')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createQuotation,
-        //     'route_name' => 'quotation_repair.create',
-        // ]);
+        $createQuotation = Menu::where('route_name','quotation_repair.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQuotation,
+            'route_name' => 'quotation_repair.create',
+        ]);
 
-        // $viewQuotation = Menu::where('route_name','quotation_repair.index')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewQuotation,
-        //     'route_name' => 'quotation_repair.index',
-        // ]);
+        $viewQuotation = Menu::where('route_name','quotation_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQuotation,
+            'route_name' => 'quotation_repair.index',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewQuotation,
-        //     'route_name' => 'quotation_repair.show',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQuotation,
+            'route_name' => 'quotation_repair.show',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewQuotation,
-        //     'route_name' => 'quotation_repair.edit',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQuotation,
+            'route_name' => 'quotation_repair.edit',
+        ]);
 
         // Sales Order
         $createSO = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
@@ -225,32 +225,32 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Sales Order Repair
-        // $createSO = Menu::where('route_name','sales_order_repair.create')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createSO,
-        //     'route_name' => 'sales_order_repair.selectQT',
-        // ]);
+        $createSO = Menu::where('route_name','sales_order_repair.selectQT')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createSO,
+            'route_name' => 'sales_order_repair.selectQT',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createSO,
-        //     'route_name' => 'sales_order_repair.create',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $createSO,
+            'route_name' => 'sales_order_repair.create',
+        ]);
 
-        // $viewSO = Menu::where('route_name','sales_order_repair.index')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewSO,
-        //     'route_name' => 'sales_order_repair.index',
-        // ]);
+        $viewSO = Menu::where('route_name','sales_order_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewSO,
+            'route_name' => 'sales_order_repair.index',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewSO,
-        //     'route_name' => 'sales_order_repair.show',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewSO,
+            'route_name' => 'sales_order_repair.show',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewSO,
-        //     'route_name' => 'sales_order_repair.edit',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewSO,
+            'route_name' => 'sales_order_repair.edit',
+        ]);
 
         // Invoice
         $createInvoice = Menu::where('route_name','invoice.selectProject')->select('id')->first()->id;
@@ -281,32 +281,32 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Invoice Repair
-        // $createInvoice = Menu::where('route_name','invoice_repair.selectProject')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createInvoice,
-        //     'route_name' => 'invoice_repair.selectProject',
-        // ]);
+        $createInvoice = Menu::where('route_name','invoice_repair.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createInvoice,
+            'route_name' => 'invoice_repair.selectProject',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $createInvoice,
-        //     'route_name' => 'invoice_repair.create',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $createInvoice,
+            'route_name' => 'invoice_repair.create',
+        ]);
 
-        // $viewInvoice = Menu::where('route_name','invoice_repair.index')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewInvoice,
-        //     'route_name' => 'invoice_repair.index',
-        // ]);
+        $viewInvoice = Menu::where('route_name','invoice_repair.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewInvoice,
+            'route_name' => 'invoice_repair.index',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewInvoice,
-        //     'route_name' => 'invoice_repair.show',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewInvoice,
+            'route_name' => 'invoice_repair.show',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $viewInvoice,
-        //     'route_name' => 'invoice_repair.edit',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewInvoice,
+            'route_name' => 'invoice_repair.edit',
+        ]);
 
         // Payment
         $managePayment = Menu::where('route_name','payment.selectInvoice')->select('id')->first()->id;
@@ -327,16 +327,16 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         // Payment Repair
-        // $managePayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $managePayment,
-        //     'route_name' => 'payment_repair.selectInvoice',
-        // ]);
+        $managePayment = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $managePayment,
+            'route_name' => 'payment_repair.selectInvoice',
+        ]);
 
-        // DB::table('sidenav')->insert([
-        //     'menu_id' => $managePayment,
-        //     'route_name' => 'payment_repair.manage',
-        // ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $managePayment,
+            'route_name' => 'payment_repair.manage',
+        ]);
 
         // Project Management
         $manageProject = Menu::where('route_name','project.index')->select('id')->first()->id;
