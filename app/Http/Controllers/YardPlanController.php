@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use App\Models\YardPlan;
 use App\Models\Yard;
 use App\Models\Project;
+use Illuminate\Support\Collection;
 use DB;
 use Auth;
 use DateTime;
@@ -24,7 +25,36 @@ class YardPlanController extends Controller
      */
     public function index()
     {
+        $today = date("Y-m-d");
+        $yard_plans = YardPlan::all();
+        $yards = Yard::all();
+        $data = Collection::make();
         
+        $id = 0;
+        foreach ($yards as $yard) {
+            $data->push([
+                "id" => "Y-".$yard->id,
+                "text" => $yard->name,
+                "duration" => 0,
+                // "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
+            ]);
+            foreach ($yard->yardPlans as $yard_plan) {
+                $start_date_yard_plan = date_create($yard_plan->actual_start_date != null ? $yard_plan->actual_start_date : $yard_plan->planned_start_date );
+                $data->push([
+                    "id" => "YP-".$yard_plan->id,
+                    "text" => $yard_plan->actual_duration != null ? "[Actual] - ".$yard_plan->description: $yard->name." - ".$yard_plan->description,
+                    "progress" => 0,
+                    "start_date" =>  date_format($start_date_yard_plan,"d-m-Y"),
+                    "parent" => "Y-".$yard->id,
+                    "duration" => $yard_plan->actual_duration != null ? $yard_plan->actual_duration : $yard_plan->planned_duration,
+                    // "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
+                    "progressColor" => "#3db9d3",
+                ]);
+            }
+        }
+
+        $data->jsonSerialize();
+        return view('yard_plan.index', compact('data','today'));
     }
 
     /**
@@ -191,4 +221,5 @@ class YardPlanController extends Controller
         
         return response($wbss->jsonSerialize(), Response::HTTP_OK);
     }
+    
 }
