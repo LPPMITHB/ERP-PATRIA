@@ -1705,6 +1705,8 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
 
     Route::patch('/{id}', 'YardPlanController@update')->name('update');
 
+    Route::put('confirmYardPlan/{id}', 'YardPlanController@confirmYardPlan')->name('confirmYardPlan');
+
     Route::patch('/confirmActual/{id}', 'YardPlanController@confirmActual')->name('confirmActual');
 
     Route::post('/', 'YardPlanController@store')->name('store');

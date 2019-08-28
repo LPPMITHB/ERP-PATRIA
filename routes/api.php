@@ -211,3 +211,6 @@ Route::get('/getActivityStandard/{id}', 'ProjectStandardController@getActivitySt
 // Payment Receipt
 Route::get('/getInvoicesPReceipt/{id}', 'PaymentController@getInvoiceAPI')->name('api.payment.getInvoiceAPI');
 Route::get('/getPaymentsPReceipt/{id}', 'PaymentController@getPaymentAPI')->name('api.payment.getPaymentAPI');
+
+// Yard Plan
+Route::get('/getDataYardPlan', 'YardPlanController@getDataYardPlanAPI')->name('api.project.getDataYardPlanAPI');

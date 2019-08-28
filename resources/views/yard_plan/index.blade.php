@@ -36,8 +36,8 @@
 </div>
 
 @verbatim
-<div id="confirm_activity">
-    <div class="modal fade" id="confirm_activity_modal">
+<div id="confirm_yard_plan">
+    <div class="modal fade" id="confirm_yard_plan_modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -203,17 +203,16 @@
         }      
 
         setScaleConfig("month");
+        gantt.config.show_errors = false;
+        gantt.templates.task_class = function(start,end, task){
+            if(task.id.indexOf("Y-") != -1) return 'hidden';
+        };
         gantt.init("ganttChart");
         gantt.parse(tasks);
 
         gantt.showDate(new Date());
         gantt.sort("start_date", false);
-        tasks.data.forEach(task => {
-            if(task.id.indexOf("Y-") != -1){
-                var yard = document.querySelectorAll("div.gantt_task_line[task_id="+task.id+"]")[0];
-                yard.style.display = "none";
-            }
-        }); 
+
         var els = document.querySelectorAll("input[name='scale']");
         for (var i = 0; i < els.length; i++) {
             els[i].onclick = function(e){
@@ -236,7 +235,7 @@
         })
 
         var data = {
-            yard_plan : @json($data),
+            yard_plans : @json($yard_plans),
             today : @json($today),
             confirmYardPlan : {
                 id : "",
@@ -247,21 +246,20 @@
         };
 
         var vm = new Vue({
-            el: '#confirm_activity',
+            el: '#confirm_yard_plan',
             data: data,
             mounted() {
                 $('.datepicker').datepicker({
                     autoclose : true,
                     format : "dd-mm-yyyy"
                 });
-
-                $("#actualtart_date").datepicker().on(
+                $("#actual_start_date").datepicker().on(
                     "changeDate", () => {
-                        this.confirmYardPlan.actual_start_date = $('#actualtart_date').val();
+                        this.confirmYardPlan.actual_start_date = $('#actual_start_date').val();
                         if(this.confirmYardPlan.actual_end_date != ""){
                             this.confirmYardPlan.actual_duration = datediff(parseDate(this.confirmYardPlan.actual_start_date), parseDate(this.confirmYardPlan.actual_end_date));
                         }
-                        this.setEndDateNew();
+                        this.setEndDate();
                     }
                 );
                 $("#actual_end_date").datepicker().on(
@@ -292,11 +290,11 @@
                 openConfirmModal(data){
                     
                 },
-                setEndDateEdit(){
+                setEndDate(){
                     if(this.confirmYardPlan.actual_duration != "" && this.confirmYardPlan.actual_start_date != ""){
                         var actual_duration = parseInt(this.confirmYardPlan.actual_duration);
                         var actual_start_date = this.confirmYardPlan.actual_start_date;
-                        var actual_end_date = new Date(actual_start_date);
+                        var actual_end_date = new Date(actual_start_date.split("-").reverse().join("-"));
                         
                         actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
                         $('#actual_end_date').datepicker('setDate', actual_end_date);
@@ -306,7 +304,7 @@
                 },
                 confirm(){            
                     var confirmYardPlan = this.confirmYardPlan;
-                    var url = "/activity/confirm/"+confirmYardPlan.id;
+                    var url = "/yard_plan/confirmYardPlan/"+confirmYardPlan.id;
                     confirmYardPlan = JSON.stringify(confirmYardPlan);
                     window.axios.put(url,confirmYardPlan)
                     .then((response) => {
@@ -324,30 +322,25 @@
                             });
                         }
 
-                        window.axios.get('/api/getDataGantt/'+this.yard_plan_id).then(({ data }) => {
+                        window.axios.get('/api/getDataYardPlan/').then(({ data }) => {
                             var tasks = {
                                 data:data.data,
                             };
+                            console.log(data);
                             gantt.render();
                             gantt.parse(tasks);
                             
                             gantt.eachTask(function(task){
-                                if(task.id.indexOf("WBS") !== -1){
+                                if(task.id.indexOf("Y-") !== -1){
                                     gantt.open(task.id);
                                 }
                             })
-                        });
-
-                        window.axios.get('/api/getProjectActivity/'+this.yard_plan_id).then(({ data }) => {
-                            this.yard_plan = data;
-                        });                        
+                        });                     
                         
                         this.confirmYardPlan.id = "";
                         this.confirmYardPlan.actual_start_date = "";
                         this.confirmYardPlan.actual_end_date = "";
                         this.confirmYardPlan.actual_duration = "";
-                        this.havePredecessor = false;
-                        this.predecessorActivities = [];
                     })
                     .catch((error) => {
                         console.log(error);
@@ -356,15 +349,31 @@
                 }
             },
             watch: {
-                     
+                confirmYardPlan:{
+                    handler: function(newValue) {
+                        this.confirmYardPlan.actual_duration = newValue.actual_duration+"".replace(/\D/g, "");
+                        if(parseInt(newValue.actual_duration) < 1 ){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: 'End Date cannot be ahead Start Date',
+                                position: 'topRight',
+                            });
+                            this.confirmYardPlan.actual_duration = "";
+                            this.confirmYardPlan.actual_end_date = "";
+                        }
+                    },
+                    deep: true
+                },
             },
         });
 
         function parseDate(str) {
-            var mdy = str.split('/');
-            return new Date(mdy[2], mdy[0]-1, mdy[1]);
+            var mdy = str.split('-');
+            var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+            return date;
         }
 
+        //Additional Function
         function datediff(first, second) {
             // Take the difference between the dates and divide by milliseconds per day.
             // Round to nearest whole number to deal with DST.
@@ -372,7 +381,30 @@
         }
 
         gantt.attachEvent("onTaskClick", function(id,e){
-            
+            if(e.target.classList[0] != "gantt_tree_icon"){
+                if(id.indexOf('YP-') !== -1){
+                    var yard_plan_id = id.split("-")[1];
+                    vm.confirmYardPlan.id = yard_plan_id;
+                    vm.yard_plans.forEach(yard_plan => {
+                        if(yard_plan_id == yard_plan.id){
+                            if(yard_plan.actual_start_date != null){
+                                var actual_start_date = new Date(yard_plan.actual_start_date);
+                                $('#actual_start_date').datepicker('setDate', actual_start_date);
+
+                                var actual_end_date = new Date(yard_plan.actual_end_date);
+                                $('#actual_end_date').datepicker('setDate', actual_end_date);
+                            }else{
+                                var planned_start_date = new Date(yard_plan.planned_start_date);
+                                $('#actual_start_date').datepicker('setDate', planned_start_date);
+                                var planned_end_date = new Date(yard_plan.planned_end_date);
+                                $('#actual_end_date').datepicker('setDate', planned_end_date);
+                            }
+                        }
+                    });
+                    $('#confirm_yard_plan_modal').modal();
+
+                }
+            }
             return true;
         });
         
