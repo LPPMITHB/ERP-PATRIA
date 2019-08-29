@@ -239,6 +239,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Sales Plan',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name'=> 'sales_plan.index',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
@@ -1600,6 +1612,18 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $payment,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Sales Plan',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name'=> 'sales_plan.index',
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $marketingSales,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

@@ -239,16 +239,29 @@ class YardPlanController extends Controller
             ]);
             foreach ($yard->yardPlans as $yard_plan) {
                 $start_date_yard_plan = date_create($yard_plan->actual_start_date != null ? $yard_plan->actual_start_date : $yard_plan->planned_start_date );
-                $data->push([
-                    "id" => "YP-".$yard_plan->id,
-                    "text" => $yard_plan->actual_duration != null ? "[Actual] - ".$yard->name." - ".$yard_plan->description: $yard->name." - ".$yard_plan->description,
-                    "progress" => 0,
-                    "start_date" =>  date_format($start_date_yard_plan,"d-m-Y"),
-                    "parent" => "Y-".$yard->id,
-                    "duration" => $yard_plan->actual_duration != null ? $yard_plan->actual_duration : $yard_plan->planned_duration,
-                    // "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
-                    "progressColor" => "#3db9d3",
-                ]);
+                if($yard_plan->actual_start_date != null){
+                    $data->push([
+                        "id" => "YP-".$yard_plan->id,
+                        "text" => $yard_plan->actual_duration != null ? "[Actual] - ".$yard->name." - ".$yard_plan->description: $yard->name." - ".$yard_plan->description,
+                        "progress" => 0,
+                        "start_date" =>  date_format($start_date_yard_plan,"d-m-Y"),
+                        "parent" => "Y-".$yard->id,
+                        "duration" => $yard_plan->actual_duration != null ? $yard_plan->actual_duration : $yard_plan->planned_duration,
+                        // "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
+                        "color" => "green",
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => "YP-".$yard_plan->id,
+                        "text" => $yard_plan->actual_duration != null ? "[Actual] - ".$yard->name." - ".$yard_plan->description: $yard->name." - ".$yard_plan->description,
+                        "progress" => 0,
+                        "start_date" =>  date_format($start_date_yard_plan,"d-m-Y"),
+                        "parent" => "Y-".$yard->id,
+                        "duration" => $yard_plan->actual_duration != null ? $yard_plan->actual_duration : $yard_plan->planned_duration,
+                        // "progressColor" => $wbs->progress == 0 ? "#3db9d3" : "green",
+                        "progressColor" => "#3db9d3",
+                    ]);
+                }
             }
         }
 
