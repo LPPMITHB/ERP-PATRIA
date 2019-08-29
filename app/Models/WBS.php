@@ -12,13 +12,13 @@ class WBS extends Model
     {
         return $this->belongsTo('App\Models\Project');
     }
-  
+
     public function activities()
     {
         return $this->hasMany('App\Models\Activity', 'wbs_id');
     }
 
-    public function wbss() 
+    public function wbss()
     {
         return $this->hasMany(self::class, 'wbs_id');
     }
@@ -66,5 +66,10 @@ class WBS extends Model
     public function goodsReceipt()
     {
         return $this->hasOne('App\Models\GoodsReceipt', 'wbs_id');
+    }
+
+    public function wbsi()
+    {
+        return $this->hasMany('App\Models\WBSImage', 'wbs_id');
     }
 }

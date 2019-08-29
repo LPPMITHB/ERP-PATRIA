@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -10,6 +10,6 @@ class WBSImage extends Model
 
     public function wbs()
     {
-        return $this->belongsTo(self::class, 'wbs_id');
+        return $this->belongsTo('App\Models\WBS','wbs_id');
     }
 }

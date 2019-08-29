@@ -282,6 +282,26 @@ class WBSController extends Controller
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
 
+            if($request->hasFile('drawing')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('drawing')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('drawing')->storeAs('documents/wbs',$fileNameToStore);
+
+                // Store image data into database
+                $wbsi = new WBSImage;
+                $wbsi->wbs_id = $wbs->id;
+                $wbsi->drawing = $fileNameToStore;
+                $wbsi->description = $data['description'];
+            }else{
+                $fileNameToStore =  null;
+            }
 
             if(!$wbs->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -685,11 +705,11 @@ class WBSController extends Controller
     public function show($id, Request $request)
     {
         $wbs = WBS::find($id);
-        $images = WBSImage::orderBy('id')->whereIn('wbs_id',$id)->get();
+        $images = WBSImage::where('wbs_id',$wbs->id)->get();
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-        return view('wbs.show', compact('wbs','menu', 'images'));
+        return view('wbs.show', compact('wbs','menu'));
     }
 
     public function destroyWbsProfile(Request $request, $id)

@@ -155,7 +155,7 @@
                                     </table>
                                 </div>
                                 <div class="tab-pane" id="wbs_images">
-                                    <a class="btn btn-primary btn-sm mobile_button_view">ADD IMAGE</a>
+                                    <a class="btn btn-primary btn-sm mobile_button_view" data-toggle="modal" href="#add_image">ADD IMAGE</a>
                                     <table class="table table-bordered width100 showTable tableFixed">
                                         <thead>
                                             <tr>
@@ -168,12 +168,46 @@
                                         <tbody>
                                             <tr>
                                                 <td>1</td>
-                                                <td><img src="{{ URL::to('/') }}/app/documents/project/{{images.image}}"></td>
+                                                <td><img src="{{ URL::to('/') }}/app/documents/wbs/{{images.image}}"></td>
                                                 <td>Description</td>
                                                 <td><a class="btn btn-primary btn-sm mobile_button_view col-sm-12">VIEW</a></td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="add_image">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Add WBS Drawing</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <label for="upload" class="col-sm-12 control-label">Upload Drawing</label>
+                                        <div class="form-group col-sm-12">
+                                            <div class="input-group">
+                                                <label class="input-group-btn">
+                                                    <span class="btn btn-primary">
+                                                        Browse&hellip; <input type="file" style="display: none;" multiple id="image" name="image">
+                                                    </span>
+                                                </label>
+                                                <input type="text" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <label for="description" class="col-sm-12 control-label">Description</label>
+                                        <div class="col-sm-12">
+                                            <textarea class="form-control" rows="3" name="description" ></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">UPLOAD</button>
                                 </div>
                             </div>
                         </div>
