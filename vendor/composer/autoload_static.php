@@ -487,12 +487,17 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\PurchaseOrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/PurchaseOrderController.php',
         'App\\Http\\Controllers\\PurchaseRequisitionController' => __DIR__ . '/../..' . '/app/Http/Controllers/PurchaseRequisitionController.php',
         'App\\Http\\Controllers\\QualityControlTaskController' => __DIR__ . '/../..' . '/app/Http/Controllers/QualityControlTaskController.php',
+<<<<<<< HEAD
+=======
+        'App\\Http\\Controllers\\QualityControlTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/QualityControlTypeController.php',
+>>>>>>> origin/BJ-BenedictJeremiah
         'App\\Http\\Controllers\\QuotationController' => __DIR__ . '/../..' . '/app/Http/Controllers/QuotationController.php',
         'App\\Http\\Controllers\\RAPController' => __DIR__ . '/../..' . '/app/Http/Controllers/RAPController.php',
         'App\\Http\\Controllers\\ResourceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ResourceController.php',
         'App\\Http\\Controllers\\ReverseTransactionController' => __DIR__ . '/../..' . '/app/Http/Controllers/ReverseTransactionController.php',
         'App\\Http\\Controllers\\RoleController' => __DIR__ . '/../..' . '/app/Http/Controllers/RoleController.php',
         'App\\Http\\Controllers\\SalesOrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/SalesOrderController.php',
+        'App\\Http\\Controllers\\SalesPlanController' => __DIR__ . '/../..' . '/app/Http/Controllers/SalesPlanController.php',
         'App\\Http\\Controllers\\ServiceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ServiceController.php',
         'App\\Http\\Controllers\\ShipController' => __DIR__ . '/../..' . '/app/Http/Controllers/ShipController.php',
         'App\\Http\\Controllers\\StockManagementController' => __DIR__ . '/../..' . '/app/Http/Controllers/StockManagementController.php',
@@ -554,6 +559,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\MaterialWriteOffDetail' => __DIR__ . '/../..' . '/app/Models/MaterialWriteOffDetail.php',
         'App\\Models\\Menu' => __DIR__ . '/../..' . '/app/Models/Menu.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
+        'App\\Models\\Payment' => __DIR__ . '/../..' . '/app/Models/Payment.php',
         'App\\Models\\Permission' => __DIR__ . '/../..' . '/app/Models/Permission.php',
         'App\\Models\\Pica' => __DIR__ . '/../..' . '/app/Models/Pica.php',
         'App\\Models\\ProductionOrder' => __DIR__ . '/../..' . '/app/Models/ProductionOrder.php',
@@ -568,8 +574,13 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\PurchaseRequisitionDetail' => __DIR__ . '/../..' . '/app/Models/PurchaseRequisitionDetail.php',
         'App\\Models\\PurchasingInfoRecord' => __DIR__ . '/../..' . '/app/Models/PurchasingInfoRecord.php',
         'App\\Models\\QualityControlTask' => __DIR__ . '/../..' . '/app/Models/QualityControlTask.php',
+<<<<<<< HEAD
         'App\\Models\\QualityType' => __DIR__ . '/../..' . '/app/Models/QualityType.php',
         'App\\Models\\QualityTypeDetail' => __DIR__ . '/../..' . '/app/Models/QualityTypeDetail.php',
+=======
+        'App\\Models\\QualityControlType' => __DIR__ . '/../..' . '/app/Models/QualityControlType.php',
+        'App\\Models\\QualityControlTypeDetail' => __DIR__ . '/../..' . '/app/Models/QualityControlTypeDetail.php',
+>>>>>>> origin/BJ-BenedictJeremiah
         'App\\Models\\Quotation' => __DIR__ . '/../..' . '/app/Models/Quotation.php',
         'App\\Models\\QuotationDetail' => __DIR__ . '/../..' . '/app/Models/QuotationDetail.php',
         'App\\Models\\Rap' => __DIR__ . '/../..' . '/app/Models/Rap.php',
@@ -621,6 +632,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Providers\\PHPExcelMacroServiceProvider' => __DIR__ . '/../..' . '/app/Providers/PHPExcelMacroServiceProvider.php',
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\Providers\\numberConverter' => __DIR__ . '/../..' . '/app/Providers/numberConverter.php',
+        'App\\WBSImage' => __DIR__ . '/../..' . '/app/Models/WBSImage.php',
         'Barryvdh\\DomPDF\\Facade' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/Facade.php',
         'Barryvdh\\DomPDF\\PDF' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/PDF.php',
         'Barryvdh\\DomPDF\\ServiceProvider' => __DIR__ . '/..' . '/barryvdh/laravel-dompdf/src/ServiceProvider.php',

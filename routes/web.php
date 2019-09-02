@@ -1705,6 +1705,8 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
 
     Route::patch('/{id}', 'YardPlanController@update')->name('update');
 
+    Route::put('confirmYardPlan/{id}', 'YardPlanController@confirmYardPlan')->name('confirmYardPlan');
+
     Route::patch('/confirmActual/{id}', 'YardPlanController@confirmActual')->name('confirmActual');
 
     Route::post('/', 'YardPlanController@store')->name('store');
@@ -2026,4 +2028,34 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
 
+});
+
+// Sales Plan Routes
+Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+
+    Route::get('/', 'SalesPlanController@index')->name('index');
+
+    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+
+    Route::post('/', 'SalesPlanController@store')->name('store');
+});
+
+// Sales Plan Repair Routes
+Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function() {
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+
+    Route::get('/', 'SalesPlanController@index')->name('index');
+
+    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+
+    Route::post('/', 'SalesPlanController@store')->name('store');
 });
