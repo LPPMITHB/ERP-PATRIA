@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Models\Bom;
 use App\Models\Project;
 use App\Models\WBS;
@@ -47,7 +46,7 @@ class QualityControlTaskController extends Controller
                     $qc_task_number = "";
                     $qc_task = QualityControlTask::where('wbs_id',$wbs->id)->first();
                     if($qc_task){
-                        $qc_task_number = " - ".$qc_task->number;
+                        $qc_task_number = " - This WBS has already assigned QC Tasks - ";
                         if($wbs->wbs){
                             $data->push([
                                 "id" => $wbs->code , 
@@ -70,15 +69,15 @@ class QualityControlTaskController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('qc_task.create',$qc_task->id)],
+                                "a_attr" =>  ["href" => route('qc_task.create',$wbs->id)],
                             ]);
                         }else{
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>',
                                 "icon" => "fa fa-suitcase",
                                 "a_attr" =>  ["href" => route('qc_task.create',$wbs->id)],
                             ]);
@@ -91,25 +90,25 @@ class QualityControlTaskController extends Controller
         }elseif($route == '/qc_task_repair'){
             if($project->business_unit_id == 2){
                 foreach($wbss as $wbs){
-                    $bom_code = "";
-                    $bom = Bom::where('wbs_id',$wbs->id)->first();
-                    if($bom){
-                        $bom_code = " - ".$bom->code;
+                    $qc_task_number = "";
+                    $qc_task = QualityControlTask::where('wbs_id',$wbs->id)->first();
+                    if($qc_task){
+                        $qc_task_number = " - This WBS has already assigned QC Tasks - ";
                         if($wbs->wbs){
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                                "a_attr" =>  ["href" => route('qc_task_repair.edit',$bom->id)],
                             ]);
                         }else{
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                                "a_attr" =>  ["href" => route('qc_task_repair.edit',$bom->id)],
                             ]);
                         } 
                     }else{
@@ -117,23 +116,23 @@ class QualityControlTaskController extends Controller
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                                "a_attr" =>  ["href" => route('qc_task_repair.create',$wbs->id)],
                             ]);
                         }else{
                             $data->push([
                                 "id" => $wbs->code , 
                                 "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                                "a_attr" =>  ["href" => route('qc_task_repair.create',$wbs->id)],
                             ]);
                         } 
                     } 
                 }
             }else{
-                return redirect()->route('qc_task.selectProject')->with('error', 'Project isn\'t exist, Please try again !');
+                return redirect()->route('qc_task_repair.selectProject')->with('error', 'Project isn\'t exist, Please try again !');
             }
         }
         return view('qc_task.selectWBS', compact('project','data','route'));
@@ -149,9 +148,12 @@ class QualityControlTaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Request $request, $id)
     {
-        //
+        // print_r($id);exit();
+        $route = $request->route()->getPrefix();
+        
+        return view('qc_task.create', compact('route'));
     }
 
     /**

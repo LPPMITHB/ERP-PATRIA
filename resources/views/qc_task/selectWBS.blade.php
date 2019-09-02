@@ -68,7 +68,6 @@
     $(document).ready(function(){
         var data = @json($data);
         var project = @json($project);
-        console.log(data);
         $('#treeview').jstree({
             "core": {
                 "data": data,
