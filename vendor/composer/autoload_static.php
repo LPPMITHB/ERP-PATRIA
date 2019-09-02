@@ -487,10 +487,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Http\\Controllers\\PurchaseOrderController' => __DIR__ . '/../..' . '/app/Http/Controllers/PurchaseOrderController.php',
         'App\\Http\\Controllers\\PurchaseRequisitionController' => __DIR__ . '/../..' . '/app/Http/Controllers/PurchaseRequisitionController.php',
         'App\\Http\\Controllers\\QualityControlTaskController' => __DIR__ . '/../..' . '/app/Http/Controllers/QualityControlTaskController.php',
-<<<<<<< HEAD
-=======
         'App\\Http\\Controllers\\QualityControlTypeController' => __DIR__ . '/../..' . '/app/Http/Controllers/QualityControlTypeController.php',
->>>>>>> origin/BJ-BenedictJeremiah
         'App\\Http\\Controllers\\QuotationController' => __DIR__ . '/../..' . '/app/Http/Controllers/QuotationController.php',
         'App\\Http\\Controllers\\RAPController' => __DIR__ . '/../..' . '/app/Http/Controllers/RAPController.php',
         'App\\Http\\Controllers\\ResourceController' => __DIR__ . '/../..' . '/app/Http/Controllers/ResourceController.php',
