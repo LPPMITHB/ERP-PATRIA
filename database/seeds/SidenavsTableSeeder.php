@@ -2311,5 +2311,32 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'yard_plan.create',
         ]);
 
+         // Sales Plan
+         $manageSalesPlan = Menu::where('route_name','sales_plan.index')->select('id')->first()->id;
+         DB::table('sidenav')->insert([
+             'menu_id' => $manageSalesPlan,
+             'route_name' => 'sales_plan.index',
+         ]);
+
+        //  // Sales Plan Repair
+        //  $manageSalesPlanRepair = Menu::where('route_name','sales_plan_repair.index')->select('id')->first()->id;
+        //  DB::table('sidenav')->insert([
+        //      'menu_id' => $manageSalesPlanRepair,
+        //      'route_name' => 'sales_plan_repair.index',
+        //  ]);
+
+        // Customer Visit
+        $manageCustomerVisit = Menu::where('route_name','customer_visit.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageCustomerVisit,
+            'route_name' => 'customer_visit.index',
+        ]);
+
+        // // Customer Visit Repair
+        // $manageCustomerVisitRepair = Menu::where('route_name','customer_visit_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $manageCustomerVisitRepair,
+        //     'route_name' => 'customer_visit_repair.index',
+        // ]);
     }
 }

@@ -251,6 +251,18 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Customer Visit',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name'=> 'customer_visit.index',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $marketingSales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Project Management',
             'icon' => 'fa-calendar',

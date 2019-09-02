@@ -2043,6 +2043,7 @@ Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
     Route::patch('/{id}', 'SalesPlanController@update')->name('update');
 
     Route::post('/', 'SalesPlanController@store')->name('store');
+    
 });
 
 // Sales Plan Repair Routes
@@ -2058,4 +2059,38 @@ Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function()
     Route::patch('/{id}', 'SalesPlanController@update')->name('update');
 
     Route::post('/', 'SalesPlanController@store')->name('store');
+});
+
+// Customer Visit Routes
+Route::name('customer_visit.')->prefix('customer_visit')->group(function() {
+    Route::get('/create/{id}', 'CustomerVisitController@create')->name('create');
+
+    Route::get('/', 'CustomerVisitController@index')->name('index');
+
+    Route::get('/{id}', 'CustomerVisitController@show')->name('show');
+
+    Route::get('/{id}/edit', 'CustomerVisitController@edit')->name('edit');
+
+    Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
+
+    Route::post('/', 'CustomerVisitController@store')->name('store');
+
+    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
+});
+
+// Customer Visit Repair Routes
+Route::name('customer_visit_repair.')->prefix('customer_visit_repair')->group(function() {
+    Route::get('/create/{id}', 'CustomerVisitController@create')->name('create');
+
+    Route::get('/', 'CustomerVisitController@index')->name('index');
+
+    Route::get('/{id}', 'CustomerVisitController@show')->name('show');
+
+    Route::get('/{id}/edit', 'CustomerVisitController@edit')->name('edit');
+
+    Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
+
+    Route::post('/', 'CustomerVisitController@store')->name('store');
+
+    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
 });
