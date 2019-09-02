@@ -18,9 +18,9 @@ class CreateTrxSalesPlanTable extends Migration
             $table->unsignedInteger('business_unit_id');
             $table->longText('ship_id');
             $table->longText('customer_id');
-            $table->smallInteger('month');
-            $table->smallInteger('year');
-            $table->float('value');
+            $table->string('month');
+            $table->year('year');
+            $table->bigInteger('value');
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');
             $table->timestamps();

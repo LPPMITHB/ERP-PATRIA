@@ -10,6 +10,7 @@ use App\Models\Ship;
 use App\Models\Customer;
 use Illuminate\Support\Collection;
 use Auth;
+use DB;
 
 class SalesPlanController extends Controller
 {
@@ -18,9 +19,14 @@ class SalesPlanController extends Controller
         $route = $request->route()->getPrefix();
         $user_id = Auth::user()->id;
         $years = array();
-        // $sales_plans = SalesPlan::where('user_id',$user_id)->get();
+        $ships = Ship::all();
+        $customers = Customer::all();
+
+        // $years_exist = SalesPlan::where('user_id',$user_id)->distinct()->pluck('year')->toArray();
+
         $data_init = Collection::make();
         $this_year = date("Y");
+        $this_month = date("m");
         for ($i=0; $i < 5; $i++) { 
             array_push($years,$this_year+$i);
         }
@@ -29,14 +35,59 @@ class SalesPlanController extends Controller
             $data_init->push([
                 "month" => $j+1,
                 "ship" => "",
-                "customer" => 1,
+                "customer" => "",
                 "value" => 0,
             ]);
         }
 
+        return view('sales_plan.index', compact('data_init','this_year','this_month','route','user_id','years','ships','customers'));
 
-        return view('sales_plan.index', compact('data_init','this_year','route','user_id','years'));
+    }
 
+    public function store(Request $request)
+    {
+        $route = $request->route()->getPrefix();    
+        $datas = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            if($datas->id != null){
+                $sales_plan = SalesPlan::find($datas->id);
+                $sales_plan->ship_id = json_encode($datas->ship_ids);
+                $sales_plan->customer_id = json_encode($datas->customer_ids);
+                $sales_plan->value = $datas->value;
+                $sales_plan->update();
+            }else{
+                $sales_plan = new SalesPlan;
+                if($route == "/sales_plan"){
+                    $sales_plan->business_unit_id = 1;
+                }elseif($route == "/sales_plan_repair"){
+                    $sales_plan->business_unit_id = 2;
+                }             
+                $sales_plan->ship_id = json_encode($datas->ship_ids);
+                $sales_plan->customer_id = json_encode($datas->customer_ids);   
+                $sales_plan->month = $datas->month;   
+                $sales_plan->year = $datas->year;   
+                $sales_plan->value = $datas->value;   
+                $sales_plan->user_id = Auth::user()->id;
+                $sales_plan->branch_id = Auth::user()->branch->id;
+                $sales_plan->save();
+            }
+            
+            DB::commit();
+            if($route == "/sales_plan"){
+                return redirect()->route('sales_plan.index')->with('success', 'Sales Plan Updated');
+            }elseif($route == "/sales_plan_repair"){
+                return redirect()->route('sales_plan_repair.index')->with('success', 'Sales Plan Updated');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if($route == "/sales_plan"){
+                return redirect()->route('sales_plan.index')->with('error', $e->getMessage());
+            }elseif($route == "/sales_plan_repair"){
+                return redirect()->route('sales_plan_repair.index')->with('error', $e->getMessage());
+            }
+        }
     }
 
     //API 
@@ -49,8 +100,8 @@ class SalesPlanController extends Controller
             $ship = "";
             $customer = "";
             
-            $ship_ids = json_decode($sales_plan->ship_id);
-            $customer_ids = json_decode($sales_plan->customer_id);
+            $ship_ids = $sales_plan->ship_id != null ? json_decode($sales_plan->ship_id) : [];
+            $customer_ids = $sales_plan->customer_id != null ? json_decode($sales_plan->customer_id) : [];
 
             $max_ship_ids = count($ship_ids);
             $max_customer_ids = count($customer_ids);
@@ -79,23 +130,29 @@ class SalesPlanController extends Controller
                 $count_customer_id++;
             }
             $sales_plans->put($sales_plan->month,[
+                "id" =>$sales_plan->id,
                 "month" => $sales_plan->month,
                 "ship" => $ship,
+                "ship_ids" => $ship_ids,
                 "customer" => $customer,
-                "value" => 0,
+                "customer_ids" => $customer_ids,
+                "value" => $sales_plan->value,
             ]);
 
         }
 
         $data_init = Collection::make();
         for ($i=0; $i < 12; $i++) {
-            if(isset($sales_plans[$i])){
-                $data_init->push($sales_plans[$i]);
+            if(isset($sales_plans[$i+1])){
+                $data_init->push($sales_plans[$i+1]);
             }else{
                 $data_init->push([
+                    "id" => null,
                     "month" => $i+1,
                     "ship" => "",
+                    "ship_ids" => [],
                     "customer" => "",
+                    "customer_ids" => [],
                     "value" => 0,
                 ]);
             }
