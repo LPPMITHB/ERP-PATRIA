@@ -66,7 +66,7 @@ class BOMController extends Controller
         $data = Collection::make();
 
         $data->push([
-            "id" => $project->number , 
+            "id" => $project->number, 
             "parent" => "#",
             "text" => $project->name,
             "icon" => "fa fa-ship"
