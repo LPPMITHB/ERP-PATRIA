@@ -24350,6 +24350,10 @@ textarea {
   width: 200% !important;
 }
 
+.gantt_task_line.hidden {
+  display: none;
+}
+
 /*!
  * animate.css -http://daneden.me/animate
  * Version - 3.5.1

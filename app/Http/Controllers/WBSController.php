@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Structure;
 use App\Models\Project;
 use App\Models\WBS;
+use App\Models\WBSImage;
 use App\Models\Activity;
 use App\Models\Category;
 use App\Models\WbsProfile;
@@ -46,7 +47,7 @@ class WBSController extends Controller
         $route = $request->route()->getPrefix();
 
         $materials = Material::orderBy('code')->get();
-        
+
         if($route == '/wbs'){
             if($wbs->business_unit_id == 1){
                 return view('wbs.createBomProfile', compact('wbs','route','materials','bom'));
@@ -272,15 +273,15 @@ class WBSController extends Controller
 
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs->planned_start_date =  $planned_start_date->format('Y-m-d');
-            
+
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
             $wbs->planned_end_date =  $planned_end_date->format('Y-m-d');
-            
+
             $wbs->planned_duration = $data['planned_duration'];
             $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
-            
+
 
             if(!$wbs->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -318,15 +319,15 @@ class WBSController extends Controller
 
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs->planned_start_date =  $planned_start_date->format('Y-m-d');
-            
+
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
             $wbs->planned_end_date =  $planned_end_date->format('Y-m-d');
-            
+
             $wbs->planned_duration = $data['planned_duration'];
             $wbs->weight =  $data['weight'];
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
-            
+
 
             if(!$wbs->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -381,7 +382,7 @@ class WBSController extends Controller
         }
     }
 
-    
+
     public function adoptWbs(Request $request)
     {
         $data = $request->json()->all();
@@ -403,7 +404,7 @@ class WBSController extends Controller
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
             $wbs->save();
-            
+
             if(count($wbsProfile->activities)>0){
                 foreach($wbsProfile->activities as $activity){
                     $activityInput = new Activity;
@@ -427,7 +428,7 @@ class WBSController extends Controller
                 $bom->branch_id = Auth::user()->branch->id;
                 $bom->user_id = Auth::user()->id;
                 $bom->save();
-    
+
                 foreach($bomProfile as $material){
                     $bom_detail = new BomDetail;
                     $bom_detail->bom_id = $bom->id;
@@ -519,7 +520,7 @@ class WBSController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        
+
         $array["WBS ".$wbs->number] = "";
         return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
@@ -552,7 +553,7 @@ class WBSController extends Controller
         foreach ($array_reverse as $key => $value) {
             $array[$key] = $value;
         }
-        
+
         $array["WBS ".$wbs->number] = "";
         return view('wbs.createSubWbsRepair', compact('project', 'wbs','array','menu','wbs_standard'));
     }
@@ -574,10 +575,10 @@ class WBSController extends Controller
             $wbs_ref->deliverables = $data['deliverables'];
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
-            
+
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
             $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
-            
+
             $wbs_ref->planned_duration = $data['planned_duration'];
             $wbs_ref->weight =  $data['weight'];
 
@@ -610,10 +611,10 @@ class WBSController extends Controller
             $wbs_ref->wbs_standard_id = $wbs_standard->id;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
-            
+
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data['planned_end_date']);
             $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
-            
+
             $wbs_ref->planned_duration = $data['planned_duration'];
             $wbs_ref->weight =  $data['weight'];
 
@@ -648,10 +649,10 @@ class WBSController extends Controller
             $wbs_ref->deliverables = $data->deliverables;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data->planned_start_date);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
-            
+
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data->planned_end_date);
             $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
-            
+
             $wbs_ref->planned_duration = $data->planned_duration;
             $wbs_ref->weight =  $data->weight;
 
@@ -679,15 +680,16 @@ class WBSController extends Controller
         }
     }
 
-    
+
 
     public function show($id, Request $request)
     {
         $wbs = WBS::find($id);
+        $images = WBSImage::orderBy('id')->whereIn('wbs_id',$id)->get();
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-        return view('wbs.show', compact('wbs','menu'));
+        return view('wbs.show', compact('wbs','menu', 'images'));
     }
 
     public function destroyWbsProfile(Request $request, $id)
@@ -736,7 +738,7 @@ class WBSController extends Controller
             $wbs = WBS::find($id);
             $error = [];
             if($wbs->productionOrder != null){
-                array_push($error, ["Failed to delete, this WBS already have Production Order"]);                
+                array_push($error, ["Failed to delete, this WBS already have Production Order"]);
                 return response(["error"=> $error],Response::HTTP_OK);
             }
 
@@ -755,7 +757,7 @@ class WBSController extends Controller
             if($wbs->bom != null){
                 array_push($error, ["Failed to delete, this WBS have BOM"]);
             }
-            
+
             if(count($error)>0){
                 return response(["error"=> $error],Response::HTTP_OK);
             }
@@ -781,7 +783,7 @@ class WBSController extends Controller
         $year = $project->created_at->year % 100;
 
         $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
-        
+
         $number = 1;
 		if(isset($modelWbs)){
             $number += intval(substr($modelWbs->code, -4));
@@ -799,7 +801,7 @@ class WBSController extends Controller
         $businessUnit = $project->business_unit_id;
 
         $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
-        
+
         $number = 1;
 		if(isset($modelActivity)){
             $number += intval(substr($modelActivity->code, -4));
@@ -816,7 +818,7 @@ class WBSController extends Controller
         $year = $project->created_at->year % 100;
 
         $modelBom = Bom::orderBy('code', 'desc')->where('project_id', $project_id)->first();
-        
+
         $number = 1;
 		if(isset($modelBom)){
             $number += intval(substr($modelBom->code, -4));
@@ -874,14 +876,14 @@ class WBSController extends Controller
             if($wbs->wbss){
                 if(count($wbs->activities)>0){
                     $dataWbsProfile->push([
-                        "id" => "WBS".$wbs->id, 
+                        "id" => "WBS".$wbs->id,
                         "parent" => $parent,
                         "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                     foreach($wbs->activities as $activity){
                         $dataWbsProfile->push([
-                            "id" => "ACT".$activity->id, 
+                            "id" => "ACT".$activity->id,
                             "parent" => "WBS".$activity->wbs_id,
                             "text" => $activity->name,
                             "icon" => "fa fa-clock-o",
@@ -889,7 +891,7 @@ class WBSController extends Controller
                     }
                 }else{
                     $dataWbsProfile->push([
-                        "id" => "WBS".$wbs->id, 
+                        "id" => "WBS".$wbs->id,
                         "parent" => $parent,
                         "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
@@ -899,14 +901,14 @@ class WBSController extends Controller
             }else{
                 if(count($wbs->activities)>0){
                     $dataWbsProfile->push([
-                        "id" => "WBS".$wbs->id, 
+                        "id" => "WBS".$wbs->id,
                         "parent" => $parent,
                         "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                     foreach($wbs->activities as $activity){
                         $dataWbsProfile->push([
-                            "id" => "ACT".$activity->id, 
+                            "id" => "ACT".$activity->id,
                             "parent" => "WBS".$activity->wbs_id,
                             "text" => $activity->name,
                             "icon" => "fa fa-clock-o",
@@ -914,13 +916,13 @@ class WBSController extends Controller
                     }
                 }else{
                     $dataWbsProfile->push([
-                        "id" => "WBS".$wbs->id, 
+                        "id" => "WBS".$wbs->id,
                         "parent" => $parent,
                         "text" => $wbs->number,
                         "icon" => "fa fa-suitcase",
                     ]);
                 }
-            } 
+            }
         }
     }
 
@@ -963,7 +965,7 @@ class WBSController extends Controller
                         $bomInput->branch_id = Auth::user()->branch->id;
                         $bomInput->user_id = Auth::user()->id;
                         $bomInput->save();
-    
+
                         foreach($bomProfile as $material){
                             $bom_detail = new BomDetail;
                             $bom_detail->bom_id = $bomInput->id;
@@ -1012,7 +1014,7 @@ class WBSController extends Controller
                         $bomInput->branch_id = Auth::user()->branch->id;
                         $bomInput->user_id = Auth::user()->id;
                         $bomInput->save();
-    
+
                         foreach($bomProfile as $material){
                             $bom_detail = new BomDetail;
                             $bom_detail->bom_id = $bomInput->id;
@@ -1075,7 +1077,7 @@ class WBSController extends Controller
                         $bomInput->branch_id = Auth::user()->branch->id;
                         $bomInput->user_id = Auth::user()->id;
                         $bomInput->save();
-    
+
                         foreach($bomProfile as $material){
                             $bom_detail = new BomDetail;
                             $bom_detail->bom_id = $bomInput->id;
@@ -1124,7 +1126,7 @@ class WBSController extends Controller
                         $bomInput->branch_id = Auth::user()->branch->id;
                         $bomInput->user_id = Auth::user()->id;
                         $bomInput->save();
-    
+
                         foreach($bomProfile as $material){
                             $bom_detail = new BomDetail;
                             $bom_detail->bom_id = $bomInput->id;
@@ -1151,7 +1153,7 @@ class WBSController extends Controller
                         }
                     }
                 }
-            } 
+            }
         }
     }
 
@@ -1173,7 +1175,7 @@ class WBSController extends Controller
         $wbss = WbsProfile::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
     }
-    
+
     public function getWbsAPI($project_id){
         $wbss = WBS::orderBy('planned_start_date', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
@@ -1209,7 +1211,7 @@ class WBSController extends Controller
         $dataWbsProfile = Collection::make();
 
         $dataWbsProfile->push([
-            "id" => "WBS".$wbs_profile_ref->id, 
+            "id" => "WBS".$wbs_profile_ref->id,
             "parent" => "#",
             "text" => $wbs_profile_ref->number,
             "icon" => "fa fa-suitcase"
@@ -1218,7 +1220,7 @@ class WBSController extends Controller
         if(count($wbs_profile_ref->activities)>0){
             foreach ($wbs_profile_ref->activities as $activity) {
                 $dataWbsProfile->push([
-                    "id" => "ACT".$activity->id, 
+                    "id" => "ACT".$activity->id,
                     "parent" => "WBS".$wbs_profile_ref->id,
                     "text" => $activity->name,
                     "icon" => "fa fa-clock-o"
@@ -1233,7 +1235,7 @@ class WBSController extends Controller
 
         return response($dataWbsProfile, Response::HTTP_OK);
     }
-    
+
     public function getBomProfileAPI($wbs_id){
         $bom = BomProfile::where('wbs_id',$wbs_id)->with('material.uom','service')->get()->jsonSerialize();
 
@@ -1247,7 +1249,7 @@ class WBSController extends Controller
     }
 
     public function getRdProfilesAPI($ids){
-        $ids = json_decode($ids);       
+        $ids = json_decode($ids);
         return response(ResourceDetail::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 }

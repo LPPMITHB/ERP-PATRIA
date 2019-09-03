@@ -1,345 +1,413 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-    [
-        'title' => 'View All Yard Plans',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Yards' => route('yard.index'),
+    @breadcrumb(
+        [
+            'title' => 'Yard Plan',
+            'items' => [
+                'Dashboard' => route('index'),
+                'View all Yard Plan' => route('yard_plan.index'),
+            ]
         ]
-    ]
-)
-@endbreadcrumb
+    )
+    @endbreadcrumb
 @endsection
 
 @section('content')
 <div class="row">
-    <div class="col-xs-12">
+    <div class="col-md-12">
         <div class="box">
-            {{-- <div class="box-header m-b-10">
-                    <div class="box-tools pull-right p-t-5">
-                        <a href="{{ route('yard.create') }}" class="btn btn-primary btn-sm">CREATE</a>
-                    </div>
-            </div> <!-- /.box-header --> --}}
-            <div class="box-body">
-                <div id="calendar">
-        
+            <div class="box-body gantt_chart_mobile">
+                <label>View by :</label>
+                <label><input type="radio" name="scale" value="day" checked/>Day scale</label>
+                <label><input type="radio" name="scale" value="month"/>Month scale</label>
+                <label><input type="radio" name="scale" value="year"/>Year scale</label>
+                <div class="col-sm-12 p-l-0">
+                    <div id="ganttChart" class="width100" style="height: 496px"></div>
                 </div>
-            </div> <!-- /.box-body -->
-            <div class="modal fade" id="add_yard_plan">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <h4 class="modal-title">Create Yard Plan</h4>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row form-group">
-                                <div class="col-sm-6">
-                                    <label for="planned_end_date" class="control-label">Start Date</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                        <input autocomplete="off" type="text"  class="form-control datepicker" id="planned_start_date" placeholder="Insert Start Date here...">                                                                                            
-                                    </div>
-                                </div>
-                                <div class="col-sm-6">
-                                    <label for="planned_end_date" class="control-label">End Date</label>
-                                    <div class="input-group date">
-                                        <div class="input-group-addon">
-                                            <i class="fa fa-calendar"></i>
-                                        </div>
-                                        <input autocomplete="off" type="text" class="form-control datepicker" id="planned_end_date" placeholder="Insert End Date here...">                                                                                            
-                                    </div>
-                                </div>
-                            </div>
-                            @verbatim
-                            <div id="project_work">
-                                <div class="row form-group">
-                                    <div class="col-sm-12">
-                                        <label for="yard" class="control-label">Yard</label>
-                                        <selectize id="yard" v-model="submittedForm.yard_id" :settings="yardSettings">
-                                            <option v-for="(yard, index) in modelYard" :value="yard.id">{{ yard.code }}-{{ yard.name }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-
-                            
-                                <div class="row form-group">
-                                    <div class="col-sm-12">
-                                        <label for="project" class="control-label">Project</label>
-                                        <selectize id="project" v-model="submittedForm.project_id" :settings="projectSettings">
-                                            <option v-for="(project, index) in modelProject" :value="project.id">{{ project.code }}-{{ project.name }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-sm-12">
-                                        <label for="work" class="control-label">Work</label>
-                                        <selectize id="work" v-model="submittedForm.wbs_id" :settings="workSettings">
-                                            <option v-for="(work, index) in modelWork" :value="work.id">{{ work.code }}-{{ work.name }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-
-                                <div class="row form-group">
-                                    <div class="col-sm-12">
-                                        <label for="work" class="control-label">Description</label>
-                                        <textarea v-model="submittedForm.description" class="form-control" rows="3" name="description"></textarea>
-                                    </div>
-                                </div>
-                            </div>
-                            @endverbatim
-                        </div>
-
-                        <div class="modal-footer">
-                            <button onclick="submit()" type="button" class="btn btn-primary" data-dismiss="modal">CREATE</button>
-                        </div>    
-                    </div>
-                    <!-- /.modal-content -->
-                </div>
-                <!-- /.modal-dialog -->
             </div>
-            <form id="create-yardPlan" class="form-horizontal" method="POST" action="{{ route('yard_plan.store') }}">
-                @csrf
-            </form>
-            
-            <form id="confirm-yardPlan" class="form-horizontal" method="POST" action="">
-                @csrf
-                <input type="hidden" name="_method" value="PATCH">
-                <div class="modal fade" id="confirm_actual">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title">Confirm Actual Yard Plan</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row form-group">
-                                    <div class="col-sm-6">
-                                        <label for="actual_end_date" class="control-label">Actual Start Date</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input autocomplete="off" type="text"  class="form-control datepicker" name="actual_start_date" id="actual_start_date" placeholder="Insert Start Date here...">                                                                                            
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label for="actual_end_date" class="control-label">Actual End Date</label>
-                                        <div class="input-group date">
-                                            <div class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </div>
-                                            <input autocomplete="off" type="text" class="form-control datepicker" name="actual_end_date" id="actual_end_date" placeholder="Insert End Date here...">                                                                                            
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="modal-footer">
-                                <button onclick="submitActual()" type="submit" class="btn btn-primary" data-dismiss="modal">SAVE</button>
-                            </div>    
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
+            <div class="box">
+                <div class="box-body gantt_chart_mobile_notification">
+                    <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
                 </div>
-            </form>
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
             </div>
-        </div> <!-- /.box -->
-    </div> <!-- /.col-xs-12 -->
-</div> <!-- /.row -->
+        </div>
+    </div>
+</div>
+
+@verbatim
+<div id="confirm_yard_plan">
+    <div class="modal fade" id="confirm_yard_plan_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <h4 class="modal-title">Confirm Yard Plan <b id="confirm_activity_code"></b></h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row form-group">
+                        <div class="col-sm-4">
+                            <label for="planned_end_date" class="control-label">Start Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input autocomplete="off" type="text" v-model="confirmYardPlan.actual_start_date"  class="form-control datepicker" id="actual_start_date" placeholder="Insert Actual Start Date here...">                                                                                            
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="planned_end_date" class="control-label">End Date</label>
+                            <div class="input-group date">
+                                <div class="input-group-addon">
+                                    <i class="fa fa-calendar"></i>
+                                </div>
+                                <input autocomplete="off" type="text" v-model="confirmYardPlan.actual_end_date" class="form-control datepicker" id="actual_end_date" placeholder="Insert Actual End Date here...">                                                                                            
+                            </div>
+                        </div>
+
+                        <div class="form-group col-sm-4">
+                            <label for="duration" class=" control-label">Duration</label>
+                            <input @keyup="setEndDate" @change="setEndDate" v-model="confirmYardPlan.actual_duration"  type="number" class="form-control" id="duration" placeholder="Duration" >                                        
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">CONFIRM</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+</div>
+@endverbatim
+<form id="form" class="form-horizontal" method="POST">
+    <input type="hidden" name="_method" value="PATCH">
+    @csrf
+</form>
 @endsection
 
 @push('script')
 <script>
-    const formCreate = document.querySelector('form#create-yardPlan');
-    const formConfirm = document.querySelector('form#confirm-yardPlan');
-    var yardPlan = {!!$yardPlan!!};
-
-    var events = [];
-    for(var i =0; i < yardPlan.length; i++) 
-    {
-        events.push( 
-            {
-                id : yardPlan[i].id,
-                title: yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
-                start: yardPlan[i].planned_start_date,
-                end: yardPlan[i].planned_end_date,
-                actual_start : yardPlan[i].actual_start_date,
-                actual_end : yardPlan[i].actual_end_date,
-                clickable : true,
-                textColor : 'black',
-            }
-        )
-        if(yardPlan[i].actual_start_date != null && yardPlan[i].actual_end_date != null){
-            if(yardPlan[i].actual_start_date > yardPlan[i].planned_start_date){
-                events.push( 
-                    {
-                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
-                        start: yardPlan[i].actual_start_date,
-                        end: yardPlan[i].actual_end_date,
-                        clickable : false,
-                        color : '#CCCC00',
-                        textColor : 'black',
-                    }
-                ) 
-            } else if(yardPlan[i].actual_end_date > yardPlan[i].planned_end_date){
-                events.push( 
-                    {
-                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
-                        start: yardPlan[i].actual_start_date,
-                        end: yardPlan[i].actual_end_date,
-                        clickable : false,
-                        color : '#CCCC00',
-                        textColor : 'black',
-                    }
-                ) 
-            }else{
-                events.push( 
-                    {
-                        title: "ACTUAL ALLOCATION for "+yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.code+")", 
-                        start: yardPlan[i].actual_start_date,
-                        end: yardPlan[i].actual_end_date,
-                        clickable : false,
-                        color : 'green',
-                        textColor : 'black',
-                    }
-                ) 
-            }
-        }
-    }
-
-    $(document).ready(function(){  
-        $('.datepicker').datepicker({
-            format: 'yyyy-mm-dd',
-            autoclose : true,
-        });
-        $('div.overlay').hide();    
-        $('#calendar').fullCalendar({
-            events : events,
-            eventRender: function(eventObj, $el) {
-                $($el).css("font-weight", "bold");
-                $el.tooltip({
-                    title: eventObj.title,
-                    trigger: 'hover',
-                    placement: 'top',
-                    container: 'body',
-                });
-            },
-            aspectRatio:  2,
-            header: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'month,agendaWeek,agendaDay,listWeek'
-            },
-            //Set day biar bisa diklik
-            dayClick: function(date, jsEvent, view, resourceObj) {
-                $('#add_yard_plan').modal('show'); 
-                document.getElementById('planned_start_date').value =  date.format('YYYY/MM/DD');         
-                document.getElementById('planned_start_date').disabled = true;
-
-                document.getElementById('planned_end_date').value = "";
-            },
-            eventClick: function (calEvent, jsEvent, view) {
-                if(calEvent.clickable == true){
-                    $('#confirm_actual').modal('show');
-                    document.getElementById('actual_start_date').value =  calEvent.actual_start;        
-                    document.getElementById('actual_end_date').value =  calEvent.actual_end;     
-                    document.getElementById("confirm-yardPlan").action = "/yard_plan/confirmActual/"+calEvent.id;
+    $(document).ready(function(){
+        $('div.overlay').hide();
+        var yard_plans = @json($data);
+        
+        gantt.config.columns = [ 
+            {name:"text", label:"Task name", width:"*", tree:true,
+                template:function(obj){
+                    var text = '<div class="tdEllipsis" data-placement="left" data-container="body" data-toggle="tooltip" title="'+obj.text+'"><b>'+obj.text+'</b></div>';
+                    // console.log(text);
+                    return text ;
                 }
             },
-        }); 
-        function eventRenderCallback(event, element, view){
-            var title = element.find(".fc-title").val();
-            element.find(".fc-title").html("<b>"+title+"</b>");
-        }   
-    });
+            
+        ]; 
 
-    
+        gantt.config.grid_width = 270;
 
-    var data = {
-        modelYard :   @json($modelYard),
-        modelProject : @json($modelProject),
-        modelWork : [],
-        submittedForm :{
-            planned_start_date : "",
-            planned_end_date : "",
-            yard_id : "", 
-            project_id : "",
-            wbs_id : "",
-            description : "",
-        },
-        projectSettings: {
-            placeholder: 'Please select project...',
-        },
-        yardSettings: {
-            placeholder: 'Please select yard...',
-        },
-        workSettings: {
-            placeholder: 'Please select work...',
-        },
-    }
+        // gantt.templates.rightside_text = function(start, end, task){
+        //     if(task.status != undefined){
+        //         if(task.status == 0){
+        //             var text = task.text.replace('[Actual]','');
+        //             return "<b>"+text+" Completed</b>"
+        //         }else{
+        //             return "<b>"+task.text+"</b>"
+        //         }
+        //     }else{
+        //         if(task.$level != 0){
+        //             return "<b>"+task.text+"</b> | Progress: <b>" + task.progress*100+ "%</b>"
+        //         }else{
+        //             return "Progress: <b>" + task.progress*100+ "%</b>";
+        //         }
+        //     }
+        // };
 
-    var vm = new Vue({
-        el : '#project_work',
-        data : data,
-        computed : {
-           
-        },
-        methods : {
-            submitForm(){
-                var planned_start_date = document.getElementById('planned_start_date').value;
-                var planned_end_date = document.getElementById('planned_end_date').value;
-
-                this.submittedForm.planned_start_date = planned_start_date;
-                this.submittedForm.planned_end_date = planned_end_date;
-
-                let struturesElem = document.createElement('input');
-                struturesElem.setAttribute('type', 'hidden');
-                struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
-                formCreate.appendChild(struturesElem);
-                formCreate.submit();
+        // gantt.templates.task_text=function(start,end,task){
+        //     if(task.$level == 0){
+        //         return "<b>"+task.text+"</b>";
+        //     }else{
+        //         if(task.is_cpm){
+        //             return "(!)";
+        //         }else{
+        //             return "";
+        //         }
+        //     }
+        // };
+        
+        var tasks = {
+            data:yard_plans,
+        };
+        
+        var markerId = gantt.addMarker({  
+            start_date: new Date(), 
+            css: "today", 
+            text: "Now", 
+            title: new Date().toString(), 
+        });
+        gantt.getMarker(markerId); //->{css:"today", text:"Now", id:...}
+        gantt.config.readonly = true;
+        gantt.config.open_tree_initially = true;
+        gantt.templates.grid_folder = function(item) { 
+            return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
+        };
+        gantt.templates.grid_file = function(item) { 
+            if(item.id.indexOf("Y-") != -1){
+                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>"; 
+            }else{
+                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>"; 
             }
-        },
-        watch : {
-            'submittedForm.project_id' : function(newValue){
-                this.submittedForm.wbs_id = "";
-                window.axios.get('/api/getWork/'+newValue).then(({ data }) => {
-                    this.modelWork = data;
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again.. ('+error+')',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
+        };
+        
+        /* global gantt */
+        function setScaleConfig(level) {
+            switch (level) {
+                case "day":
+                    gantt.config.scale_unit = "day";
+                    gantt.config.step = 1;
+                    gantt.config.date_scale = "%d %M";
+                    gantt.templates.date_scale = null;
+        
+                    gantt.config.scale_height = 27;
+        
+                    gantt.config.subscales = [];
+                    break;
+                case "month":
+                    gantt.config.scale_unit = "month";
+                    gantt.config.date_scale = "%F, %Y";
+                    gantt.templates.date_scale = null;
+        
+                    gantt.config.scale_height = 50;
+        
+                    gantt.config.subscales = [
+                        {unit: "week", step: 1, date: "%j"}
+                    ];
+        
+                    break;
+                case "year":
+                    gantt.config.scale_unit = "year";
+                    gantt.config.step = 1;
+                    gantt.config.date_scale = "%Y";
+                    gantt.templates.date_scale = null;
+        
+                    gantt.config.min_column_width = 50;
+                    gantt.config.scale_height = 90;
+        
+                    gantt.config.subscales = [
+                        {unit: "month", step: 1, date: "%M"}
+                    ];
+                    break;
             }
-        },
-        mounted: function(){
+        }      
+
+        setScaleConfig("month");
+        gantt.config.show_errors = false;
+        gantt.templates.task_class = function(start,end, task){
+            if(task.id.indexOf("Y-") != -1) return 'hidden';
+        };
+        gantt.init("ganttChart");
+        gantt.parse(tasks);
+
+        gantt.showDate(new Date());
+        gantt.sort("start_date", false);
+
+        var els = document.querySelectorAll("input[name='scale']");
+        for (var i = 0; i < els.length; i++) {
+            els[i].onclick = function(e){
+                e = e || window.event;
+                var el = e.target || e.srcElement;
+                var value = el.value;
+                setScaleConfig(value);
+                gantt.render();
+                $('[data-toggle="tooltip"]').tooltip();
+            };
         }
+        $('[data-toggle="tooltip"]').tooltip();
+
+        Vue.directive('tooltip', function(el, binding){
+            $(el).tooltip({
+                title: binding.value,
+                placement: binding.arg,
+                trigger: 'hover'             
+            })
+        })
+
+        var data = {
+            yard_plans : @json($yard_plans),
+            today : @json($today),
+            confirmYardPlan : {
+                id : "",
+                actual_start_date : "",
+                actual_end_date : "",
+                actual_duration : "",
+            },
+        };
+
+        var vm = new Vue({
+            el: '#confirm_yard_plan',
+            data: data,
+            mounted() {
+                $('.datepicker').datepicker({
+                    autoclose : true,
+                    format : "dd-mm-yyyy"
+                });
+                $("#actual_start_date").datepicker().on(
+                    "changeDate", () => {
+                        this.confirmYardPlan.actual_start_date = $('#actual_start_date').val();
+                        if(this.confirmYardPlan.actual_end_date != ""){
+                            this.confirmYardPlan.actual_duration = datediff(parseDate(this.confirmYardPlan.actual_start_date), parseDate(this.confirmYardPlan.actual_end_date));
+                        }
+                        this.setEndDate();
+                    }
+                );
+                $("#actual_end_date").datepicker().on(
+                    "changeDate", () => {
+                        this.confirmYardPlan.actual_end_date = $('#actual_end_date').val();
+                        if(this.confirmYardPlan.actual_start_date != ""){
+                            this.confirmYardPlan.actual_duration = datediff(parseDate(this.confirmYardPlan.actual_start_date), parseDate(this.confirmYardPlan.actual_end_date));
+                        }
+                    }
+                );
+            },
+            computed:{
+                confirmOk: function(){
+                let isOk = false;
+                    if(this.confirmYardPlan.actual_start_date == ""
+                    || this.confirmYardPlan.actual_end_date == ""
+                    || this.confirmYardPlan.actual_duration == "")
+                    {
+                        isOk = true;
+                    }
+                return isOk;
+            },  
+            }, 
+            methods:{
+                tooltipText: function(text) {
+                    return text
+                },
+                openConfirmModal(data){
+                    
+                },
+                setEndDate(){
+                    if(this.confirmYardPlan.actual_duration != "" && this.confirmYardPlan.actual_start_date != ""){
+                        var actual_duration = parseInt(this.confirmYardPlan.actual_duration);
+                        var actual_start_date = this.confirmYardPlan.actual_start_date;
+                        var actual_end_date = new Date(actual_start_date.split("-").reverse().join("-"));
+                        
+                        actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
+                        $('#actual_end_date').datepicker('setDate', actual_end_date);
+                    }else{
+                        this.confirmYardPlan.actual_end_date = "";
+                    }
+                },
+                confirm(){            
+                    var confirmYardPlan = this.confirmYardPlan;
+                    var url = "/yard_plan/confirmYardPlan/"+confirmYardPlan.id;
+                    confirmYardPlan = JSON.stringify(confirmYardPlan);
+                    window.axios.put(url,confirmYardPlan)
+                    .then((response) => {
+                        if(response.data.error != undefined){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: response.data.error,
+                                position: 'topRight',
+                            });
+                        }else{
+                            iziToast.success({
+                                displayMode: 'replace',
+                                title: response.data.response,
+                                position: 'topRight',
+                            });
+                        }
+
+                        window.axios.get('/api/getDataYardPlan/').then(({ data }) => {
+                            var tasks = {
+                                data:data.data,
+                            };
+                            console.log(data);
+                            gantt.render();
+                            gantt.parse(tasks);
+                            
+                            gantt.eachTask(function(task){
+                                if(task.id.indexOf("Y-") !== -1){
+                                    gantt.open(task.id);
+                                }
+                            })
+                        });                     
+                        
+                        this.confirmYardPlan.id = "";
+                        this.confirmYardPlan.actual_start_date = "";
+                        this.confirmYardPlan.actual_end_date = "";
+                        this.confirmYardPlan.actual_duration = "";
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    })
+
+                }
+            },
+            watch: {
+                confirmYardPlan:{
+                    handler: function(newValue) {
+                        this.confirmYardPlan.actual_duration = newValue.actual_duration+"".replace(/\D/g, "");
+                        if(parseInt(newValue.actual_duration) < 1 ){
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: 'End Date cannot be ahead Start Date',
+                                position: 'topRight',
+                            });
+                            this.confirmYardPlan.actual_duration = "";
+                            this.confirmYardPlan.actual_end_date = "";
+                        }
+                    },
+                    deep: true
+                },
+            },
+        });
+
+        function parseDate(str) {
+            var mdy = str.split('-');
+            var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+            return date;
+        }
+
+        //Additional Function
+        function datediff(first, second) {
+            // Take the difference between the dates and divide by milliseconds per day.
+            // Round to nearest whole number to deal with DST.
+            return Math.round(((second-first)/(1000*60*60*24))+1);
+        }
+
+        gantt.attachEvent("onTaskClick", function(id,e){
+            if(e.target.classList[0] != "gantt_tree_icon"){
+                if(id.indexOf('YP-') !== -1){
+                    var yard_plan_id = id.split("-")[1];
+                    vm.confirmYardPlan.id = yard_plan_id;
+                    vm.yard_plans.forEach(yard_plan => {
+                        if(yard_plan_id == yard_plan.id){
+                            if(yard_plan.actual_start_date != null){
+                                var actual_start_date = new Date(yard_plan.actual_start_date);
+                                $('#actual_start_date').datepicker('setDate', actual_start_date);
+
+                                var actual_end_date = new Date(yard_plan.actual_end_date);
+                                $('#actual_end_date').datepicker('setDate', actual_end_date);
+                            }else{
+                                var planned_start_date = new Date(yard_plan.planned_start_date);
+                                $('#actual_start_date').datepicker('setDate', planned_start_date);
+                                var planned_end_date = new Date(yard_plan.planned_end_date);
+                                $('#actual_end_date').datepicker('setDate', planned_end_date);
+                            }
+                        }
+                    });
+                    $('#confirm_yard_plan_modal').modal();
+
+                }
+            }
+            return true;
+        });
+        
     });
-
-    function submit() {
-        vm.submitForm();
-    }
-
-    function submitActual() {
-        formConfirm.submit();
-    }
 </script>
 @endpush

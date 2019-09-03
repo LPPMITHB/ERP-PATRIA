@@ -173,9 +173,9 @@
                     <div class="box-body">
                         <div class="col-md-4 col-xs-6 no-padding">Sales Order</div>
                         @if($menu == "building")
-                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->salesOrder->number}}"><a href="{{ route('sales_order.show',['id'=>$project->salesOrder->id]) }}" target="_blank"><b>: {{$project->salesOrder->number}}</b></a></div>
+                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{($project->salesOrder) ? $project->salesOrder->number : null}}"><a href="{{ route('sales_order.show',['id'=>$project->sales_order_id]) }}" target="_blank"><b>: {{($project->salesOrder) ? $project->salesOrder->number : null}}</b></a></div>
                         @elseif($menu == "repair")
-                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->salesOrder->number}}"><a href="{{ route('sales_order_repair.show',['id'=>$project->salesOrder->id]) }}" target="_blank"><b>: {{$project->salesOrder->number}}</b></a></div>
+                            <div class="col-md-8 col-xs-6 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{($project->salesOrder) ? $project->salesOrder->number : null}}"><a href="{{ route('sales_order_repair.show',['id'=>$project->sales_order_id]) }}" target="_blank"><b>: {{($project->salesOrder) ? $project->salesOrder->number : null}}</b></a></div>
                         @endif
 
                         <div class="col-md-4 col-xs-6 no-padding">Owner CP</div>

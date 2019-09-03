@@ -40,7 +40,6 @@
                         <a href="{{ route('project.indexCopyProject') }}" class="btn btn-primary btn-sm">COPY PROJECT</a>
                     @else
                         <a href="{{ route('project_repair.create') }}" class="btn btn-primary btn-sm">CREATE</a>
-                        <a href="{{ route('project_repair.indexCopyProject') }}" class="btn btn-primary btn-sm">COPY PROJECT</a>
                     @endif
                 </div>
             </div> <!-- /.box-header -->

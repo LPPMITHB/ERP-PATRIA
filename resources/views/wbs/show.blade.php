@@ -49,104 +49,134 @@
             </div>
             @verbatim
             <div id="edit">
-
                     <div class="box-body">
-                        <table class="table table-bordered width100 showTable tableFixed">
-                            <thead>
-                                <tr>
-                                    <th style="width: 10%">#</th>
-                                    <th style="width: 40%">Attribute</th>
-                                    <th style="width: 58%">Value</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td>Code</td>
-                                    <td>{{ wbsDisplay.code }}</td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td>Number</td>
-                                    <td>{{ wbsDisplay.number }}</td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td>Description</td>
-                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(wbsDisplay.description)">{{ wbsDisplay.description }}</td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td>Deliverables</td>
-                                    <td>{{ wbsDisplay.deliverables }}</td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td>Project</td>
-                                    <td class="tdEllipsis"  data-container="body" v-tooltip:top="tooltipText(wbsDisplay.projectText)">{{wbsDisplay.projectText}}</td>
-                                </tr>
-                                <tr>
-                                    <td>6</td>
-                                    <td>Parent WBS</td>
-                                    <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.number }}</td>
-                                    <td v-else>-</td>
-                                </tr>
-                                <tr>
-                                    <td>7</td>
-                                    <td>Planned Start Date</td>
-                                    <td>{{ wbsDisplay.planned_start_date }}</td>
-                                </tr>
-                                <tr>
-                                    <td>8</td>
-                                    <td>Planned End Date</td>
-                                    <td>{{ wbsDisplay.planned_end_date }}</td>
-                                </tr>
-                                <tr>
-                                    <td>9</td>
-                                    <td>Planned Duration</td>
-                                    <td>{{ wbsDisplay.planned_duration }} Day(s)</td>
-                                </tr>
-                                <tr>
-                                    <td>10</td>
-                                    <td>Actual Start Date</td>
-                                    <td v-if="wbsDisplay.actual_start_date != null">{{ wbsDisplay.actual_start_date }}</td>
-                                    <td v-else>-</td>
-                                </tr>
-                                <tr>
-                                    <td>11</td>
-                                    <td>Actual End Date</td>
-                                    <td v-if="wbsDisplay.actual_end_date != null">{{ wbsDisplay.actual_end_date }}</td>
-                                    <td v-else>-</td>
-                                </tr>
-                                <tr>
-                                    <td>12</td>
-                                    <td>Actual Duration</td>
-                                    <td v-if="wbsDisplay.actual_duration != null">{{ wbsDisplay.actual_duration }} Day(s)</td>
-                                    <td v-else>-</td>
-                                </tr>
-        
-                                <tr>
-                                    <td>13</td>
-                                    <td>Progress</td>
-                                    <td v-if="wbsDisplay.progress != null">{{ wbsDisplay.progress }} %</td>
-                                    <td v-else>0 %</td>
-                                </tr>
-        
-                                <tr>
-                                    <td>14</td>
-                                    <td>Weight</td>
-                                    <td>{{ wbsDisplay.weight }} %</td>
-                                </tr>
-                                <tr>
-                                    <td >15</td>
-                                    <td>Status</td>
-                                    <td class="iconTd">
-                                        <i v-if="wbsDisplay.status == 0" class="fa fa-check text-success"></i>
-                                        <i v-else class="fa fa-times text-danger"></i>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs">
+                                <li class="active"><a href="#wbs_info" data-toggle="tab" aria-expanded="true">WBS Info</a></li>
+                                <li class=""><a href="#wbs_images" data-toggle="tab" aria-expanded="false">Images</a></li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane active" id="wbs_info">
+                                    <table class="table table-bordered width100 showTable tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 10%">#</th>
+                                                <th style="width: 40%">Attribute</th>
+                                                <th style="width: 58%">Value</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td>Code</td>
+                                                <td>{{ wbsDisplay.code }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>2</td>
+                                                <td>Number</td>
+                                                <td>{{ wbsDisplay.number }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>3</td>
+                                                <td>Description</td>
+                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(wbsDisplay.description)">{{ wbsDisplay.description }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>4</td>
+                                                <td>Deliverables</td>
+                                                <td>{{ wbsDisplay.deliverables }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>5</td>
+                                                <td>Project</td>
+                                                <td class="tdEllipsis"  data-container="body" v-tooltip:top="tooltipText(wbsDisplay.projectText)">{{wbsDisplay.projectText}}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>6</td>
+                                                <td>Parent WBS</td>
+                                                <td v-if="wbsDisplay.parent_wbs != null">[{{ wbsDisplay.parent_wbs.code+"] - "+wbsDisplay.parent_wbs.number }}</td>
+                                                <td v-else>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>7</td>
+                                                <td>Planned Start Date</td>
+                                                <td>{{ wbsDisplay.planned_start_date }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>8</td>
+                                                <td>Planned End Date</td>
+                                                <td>{{ wbsDisplay.planned_end_date }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>9</td>
+                                                <td>Planned Duration</td>
+                                                <td>{{ wbsDisplay.planned_duration }} Day(s)</td>
+                                            </tr>
+                                            <tr>
+                                                <td>10</td>
+                                                <td>Actual Start Date</td>
+                                                <td v-if="wbsDisplay.actual_start_date != null">{{ wbsDisplay.actual_start_date }}</td>
+                                                <td v-else>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>11</td>
+                                                <td>Actual End Date</td>
+                                                <td v-if="wbsDisplay.actual_end_date != null">{{ wbsDisplay.actual_end_date }}</td>
+                                                <td v-else>-</td>
+                                            </tr>
+                                            <tr>
+                                                <td>12</td>
+                                                <td>Actual Duration</td>
+                                                <td v-if="wbsDisplay.actual_duration != null">{{ wbsDisplay.actual_duration }} Day(s)</td>
+                                                <td v-else>-</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>13</td>
+                                                <td>Progress</td>
+                                                <td v-if="wbsDisplay.progress != null">{{ wbsDisplay.progress }} %</td>
+                                                <td v-else>0 %</td>
+                                            </tr>
+
+                                            <tr>
+                                                <td>14</td>
+                                                <td>Weight</td>
+                                                <td>{{ wbsDisplay.weight }} %</td>
+                                            </tr>
+                                            <tr>
+                                                <td >15</td>
+                                                <td>Status</td>
+                                                <td class="iconTd">
+                                                    <i v-if="wbsDisplay.status == 0" class="fa fa-check text-success"></i>
+                                                    <i v-else class="fa fa-times text-danger"></i>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="tab-pane" id="wbs_images">
+                                    <a class="btn btn-primary btn-sm mobile_button_view">ADD IMAGE</a>
+                                    <table class="table table-bordered width100 showTable tableFixed">
+                                        <thead>
+                                            <tr>
+                                                <th style="width:5%">No</th>
+                                                <th>Image</th>
+                                                <th>Description</th>
+                                                <th style="width:10%"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>1</td>
+                                                <td><img src="{{ URL::to('/') }}/app/documents/project/{{images.image}}"></td>
+                                                <td>Description</td>
+                                                <td><a class="btn btn-primary btn-sm mobile_button_view col-sm-12">VIEW</a></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="modal fade" id="edit_wbs">
                         <div class="modal-dialog">
@@ -177,30 +207,30 @@
                                                         <div class="input-group-addon">
                                                             <i class="fa fa-calendar"></i>
                                                         </div>
-                                                        <input autocomplete="off" v-model="editWbs.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">                                             
+                                                        <input autocomplete="off" v-model="editWbs.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">
                                                     </div>
                                                 </div>
-                                                        
+
                                                 <div class="form-group col-sm-4">
                                                     <label for="edit_planned_end_date" class=" control-label">End Date</label>
                                                     <div class="input-group date">
                                                         <div class="input-group-addon">
                                                             <i class="fa fa-calendar"></i>
                                                         </div>
-                                                        <input autocomplete="off" v-model="editWbs.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">                                                                                            
+                                                        <input autocomplete="off" v-model="editWbs.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">
                                                     </div>
                                                 </div>
-                                                
+
                                                 <div class="form-group col-sm-4">
                                                     <label for="duration" class=" control-label">Duration</label>
-                                                    <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editWbs.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >                                        
+                                                    <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="editWbs.planned_duration"  type="number" class="form-control" id="edit_duration" placeholder="Duration" >
                                                 </div>
                                             <div class="form-group col-sm-12">
                                                 <label v-if="editWbs.parent_wbs != null" for="weight" class="control-label">Weight (Parent Weight : {{totalWeight}}%/{{editWbs.parent_wbs.weight}}%)</label>
                                                 <label v-else for="weight" class="control-label">Weight (Parent Weight : {{totalWeight}}%/100%)</label>
                                                 <input id="weight" type="text" class="form-control" v-model="editWbs.weight" placeholder="Insert Weight here..." >
                                             </div>
-                                        </div>  
+                                        </div>
                                     </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
@@ -216,9 +246,9 @@
             @if ($menu == "building")
                 <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}">
             @elseif ($menu == "repair")
-                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}"> 
+                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}">
             @else
-                           
+
             @endif
                 @csrf
                 <input type="hidden" name="_method" value="PATCH">
@@ -272,7 +302,7 @@ Vue.directive('tooltip', function(el, binding){
     $(el).tooltip({
         title: binding.value,
         placement: binding.arg,
-        trigger: 'hover'             
+        trigger: 'hover'
     })
 })
 
@@ -319,15 +349,15 @@ var vm = new Vue({
             return isOk;
         },
 
-    }, 
+    },
     methods:{
         tooltipText: function(text) {
             return text
         },
-        update(){            
+        update(){
             var editWbs = this.editWbs;
             editWbs = JSON.stringify(editWbs);
-            $('div.overlay').show();            
+            $('div.overlay').show();
             let struturesElem = document.createElement('input');
             struturesElem.setAttribute('type', 'hidden');
             struturesElem.setAttribute('name', 'datas');
@@ -340,7 +370,7 @@ var vm = new Vue({
                 var planned_duration = parseInt(this.editWbs.planned_duration);
                 var planned_start_date = this.editWbs.planned_start_date;
                 var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
-                
+
                 planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                 $('#edit_planned_end_date').datepicker('setDate', planned_end_date);
             }else{
@@ -486,7 +516,7 @@ var vm = new Vue({
                 window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
                     this.totalWeight = data;
                     var totalEdit = roundNumber(data - this.constWeightWbs,2);
-                    maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - totalEdit,2); 
+                    maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - totalEdit,2);
                     if(this.editWbs.weight>maxWeightEdit){
                         iziToast.warning({
                             displayMode: 'replace',
@@ -500,7 +530,7 @@ var vm = new Vue({
                 window.axios.get('/api/getWeightProject/'+this.editWbs.project_id).then(({ data }) => {
                     this.totalWeight = data;
                     var totalEdit = roundNumber(data - this.constWeightWbs,2);
-                    maxWeightEdit = roundNumber(100 - totalEdit,2); 
+                    maxWeightEdit = roundNumber(100 - totalEdit,2);
                     if(this.editWbs.weight>maxWeightEdit){
                         iziToast.warning({
                             displayMode: 'replace',
@@ -510,7 +540,7 @@ var vm = new Vue({
                         this.editWbs.weight = maxWeightEdit;
                     }
                 });
-            }          
+            }
         },
     },
     created: function(){
@@ -519,18 +549,18 @@ var vm = new Vue({
                 this.totalWeight = data;
                 $('#edit_planned_deadline').datepicker('setDate', new Date(this.rawPlannedDeadline));
             });
-            var maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - roundNumber(this.totalWeight,2),2);            
+            var maxWeightEdit = roundNumber(this.editWbs.parent_wbs.weight - roundNumber(this.totalWeight,2),2);
         }else{
             window.axios.get('/api/getWeightProject/'+this.editWbs.project_id).then(({ data }) => {
                 this.totalWeight = data;
                 $('#edit_planned_deadline').datepicker('setDate', new Date(this.rawPlannedDeadline));
             });
-            var maxWeightEdit = roundNumber(100 - roundNumber(this.totalWeight,2),2);            
+            var maxWeightEdit = roundNumber(100 - roundNumber(this.totalWeight,2),2);
 
         }
         $('div.overlay').hide();
     }
-    
+
 });
 
 function parseDate(str) {
