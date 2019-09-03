@@ -1,17 +1,17 @@
 @extends('layouts.main')
 @section('content-header')
-    @breadcrumb(
-        [
-            'title' => 'Manage Quality Control Task',
-            'subtitle' => '',
-            'items' => [
-                'Dashboard' => route('index'),
-                'Quality Control' => route('qc_type.index'),
-                'Create' => '',
-            ]
-        ]
-    )
-    @endbreadcrumb
+@breadcrumb(
+[
+'title' => 'Manage Quality Control Task',
+'subtitle' => '',
+'items' => [
+'Dashboard' => route('index'),
+'Quality Control' => route('qc_type.index'),
+'Edit' => '',
+]
+]
+)
+@endbreadcrumb
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
     <div class="col-xs-12 p-b-50">
         <div class="box">
             <div class="box-body no-padding p-b-10">
-                <form id="create-qc" class="form-horizontal" method="POST" action="{{ route('qc_type.store') }}">
+                <form id="edit-qc" class="form-horizontal" method="POST" action="{{ route('qc_type.store') }}">
                     @csrf
                     @verbatim
                     <div id="qualityControl">
@@ -85,37 +85,39 @@
                         </div>
                         <div class="col-md-12 p-t-5">
                             <button id="process" @click.prevent="submitForm" class="btn btn-primary pull-right"
-                                :disabled="createOk">CREATE</button>
+                                :disabled="createOk">SAVE</button>
                         </div>
-                        <div class="modal fade" id="edit_item">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">×</span>
-                                        </button>
-                                        <h4 class="modal-title">Edit Quality Task</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-sm-12">
-                                                <label for="type" class="control-label">Task Name</label>
-                                                <input class="form-control" type="text" v-model="forms.name">
-                                            </div>
-                                            <div class="col-sm-12">
-                                                <label for="quantity" class="control-label">Task Description</label>
-                                                <textarea class="form-control" rows="5"
-                                                    v-model="forms.description"></textarea>
+                        <form id="edit-qcd" class="form-horizontal" method="POST" action="{{ route('qc_type.store') }}">
+                            <div class="modal fade" id="edit_item">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">Edit Quality Task</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <label for="type" class="control-label">Task Name</label>
+                                                    <input class="form-control" type="text" v-model="forms.name">
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <label for="quantity" class="control-label">Task Description</label>
+                                                    <textarea class="form-control" rows="5"
+                                                        v-model="forms.description"></textarea>
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                            :disabled="updateOk" @click.prevent="submitToTable()">SAVE</button>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                                :disabled="updateOk" @click.prevent="submitToTable()">SAVE</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     </div>
                     @endverbatim
                 </form>
@@ -130,7 +132,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-qc');
+    const form = document.querySelector('form#edit-qc');
 
     $(document).ready(function() {
         $('div.overlay').hide();
@@ -145,14 +147,14 @@
             task: []
         },
         mstInput: {
-            name: '',
-            description: '',
+            name: @json($qcType->name),
+            description: @json($qcType->description),
         },
         input: {
             name: '',
             description: '',
         },
-        qtc_task: [],
+        qtc_task: @json($qcTypeDetail),
         forms: {
             index: '',
             name: '',
@@ -212,6 +214,9 @@
                 this.forms.description = '';
                 $('#edit_item').modal();
             },
+        },
+        mounted(){
+            this.newIndex = this.qtc_task.length+1;
         },
         computed: {
             updateOk: function() {

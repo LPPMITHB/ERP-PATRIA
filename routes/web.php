@@ -1997,6 +1997,8 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::patch('/', 'QualityControlTypeController@update')->name('update');
 
+    Route::patch('/', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+
     Route::post('/store', 'QualityControlTypeController@store')->name('store');
 
     Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
