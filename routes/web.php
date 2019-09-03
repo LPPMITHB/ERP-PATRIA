@@ -2063,13 +2063,7 @@ Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function()
 
 // Customer Visit Routes
 Route::name('customer_visit.')->prefix('customer_visit')->group(function() {
-    Route::get('/create/{id}', 'CustomerVisitController@create')->name('create');
-
     Route::get('/', 'CustomerVisitController@index')->name('index');
-
-    Route::get('/{id}', 'CustomerVisitController@show')->name('show');
-
-    Route::get('/{id}/edit', 'CustomerVisitController@edit')->name('edit');
 
     Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
 
@@ -2080,17 +2074,30 @@ Route::name('customer_visit.')->prefix('customer_visit')->group(function() {
 
 // Customer Visit Repair Routes
 Route::name('customer_visit_repair.')->prefix('customer_visit_repair')->group(function() {
-    Route::get('/create/{id}', 'CustomerVisitController@create')->name('create');
-
     Route::get('/', 'CustomerVisitController@index')->name('index');
-
-    Route::get('/{id}', 'CustomerVisitController@show')->name('show');
-
-    Route::get('/{id}/edit', 'CustomerVisitController@edit')->name('edit');
 
     Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
 
     Route::post('/', 'CustomerVisitController@store')->name('store');
 
     Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
+});
+
+// Delivery Document Routes
+Route::name('delivery_document.')->prefix('delivery_document')->group(function() {
+    Route::get('/selectProject', 'DeliveryDocumentController@selectProject')->name('selectProject');
+    
+    Route::get('/selectProjectIndex', 'DeliveryDocumentController@selectProjectIndex')->name('selectProjectIndex');
+    
+    Route::get('/manage/{id}', 'DeliveryDocumentController@manage')->name('manage');
+
+    Route::get('/{id}', 'DeliveryDocumentController@show')->name('show');
+
+    Route::get('/{id}/edit', 'DeliveryDocumentController@edit')->name('edit');
+
+    Route::patch('/{id}', 'DeliveryDocumentController@update')->name('update');
+
+    Route::post('/', 'DeliveryDocumentController@store')->name('store');
+
+    Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy');
 });

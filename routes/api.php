@@ -220,3 +220,6 @@ Route::get('/getSalesPlan/{year}', 'SalesPlanController@getSalesPlanAPI')->name(
 
 // QC Task
 Route::get('/getQcType/{id}', 'QualityControlTaskController@getQcTypeApi')->name('api.qc_task.getQcTypeApi');
+
+// Delivery Document
+Route::get('/getDeliveryDocuments/{project_id}', 'DeliveryDocumentController@getDeliveryDocumentsAPI')->name('api.project.getDeliveryDocumentsAPI');

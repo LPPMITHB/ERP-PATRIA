@@ -1414,6 +1414,54 @@ class MenusTableSeeder extends Seeder
         ]);
 
         DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Project Delivery',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $building,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $delivery = Menu::where('name', 'Project Delivery')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage Delivery Document',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'delivery_document.selectProject',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $delivery,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Delivery Document',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'delivery_document.selectProjectIndex',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $delivery,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Close Project',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'close_project.selectProject',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $delivery,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
             'level' => 1,
             'name' => 'Ship Repair',
             'icon' => 'fa-wrench',
