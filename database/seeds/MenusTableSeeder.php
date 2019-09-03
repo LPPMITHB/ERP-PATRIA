@@ -252,7 +252,7 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Customer Visit',
+            'name' => 'Customer Call / Visit',
             'icon' => 'fa-wrench',
             'is_active' => true,
             'route_name'=> 'customer_visit.index',

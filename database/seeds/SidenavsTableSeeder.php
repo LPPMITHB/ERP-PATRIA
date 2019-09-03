@@ -578,7 +578,7 @@ class SidenavsTableSeeder extends Seeder
         
         DB::table('sidenav')->insert([
             'menu_id' => $material_standard,
-            'route_name' => 'project_standard.selectWbs',
+            'route_name' => 'project_standard.selectWBS',
         ]);
 
         DB::table('sidenav')->insert([

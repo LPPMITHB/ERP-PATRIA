@@ -56,12 +56,12 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Create Customer Visit (<b>{{customer_visit.planned_date}}</b>)</h4>
+                                <h4 class="modal-title">Create Customer Call / Visit (<b>{{customer_visit.planned_date}}</b>)</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row form-group">
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label">Project</label>
+                                        <label for="type" class="control-label">Type</label>
                                         <selectize id="type" v-model="customer_visit.type" :settings="typeSettings">
                                             <option value="Visit">Visit</option>
                                             <option value="Call">Call</option>
@@ -102,12 +102,12 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Customer Visit (<b>{{edit_customer_visit.planned_date}}</b>)</h4>
+                                <h4 class="modal-title">Edit Customer Call / Visit (<b>{{edit_customer_visit.planned_date}}</b>)</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row form-group">
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label">Project</label>
+                                        <label for="type" class="control-label">Type</label>
                                         <selectize id="type" v-model="edit_customer_visit.type" :settings="typeSettings">
                                             <option value="Visit">Visit</option>
                                             <option value="Call">Call</option>

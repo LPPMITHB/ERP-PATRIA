@@ -107,10 +107,6 @@
         form.submit();
     }
 
-    function getParents(){
-
-    }
-
     $(document).ready(function(){     
         $('#treeview').jstree({
             "core": {
