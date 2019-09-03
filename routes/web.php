@@ -2016,7 +2016,7 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS')->middleware('can:list-bom');
 
-    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create');
+    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
 
     Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
 

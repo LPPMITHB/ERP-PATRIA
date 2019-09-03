@@ -1633,17 +1633,6 @@ class MenusTableSeeder extends Seeder
             'name' => 'Project Management',
             'icon' => 'fa-calendar',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $building,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
-        DB::table('menus')->insert([
-            'level' => 2,
-            'name' => 'Project Management',
-            'icon' => 'fa-calendar',
-            'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id' => $repair,
             'created_at' => date('Y-m-d'),
