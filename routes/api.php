@@ -217,3 +217,6 @@ Route::get('/getDataYardPlan', 'YardPlanController@getDataYardPlanAPI')->name('a
 
 // Sales Plan
 Route::get('/getSalesPlan/{year}', 'SalesPlanController@getSalesPlanAPI')->name('api.project.getSalesPlanAPI');
+
+// QC Task
+Route::get('/getQcType/{id}', 'QualityControlTaskController@getQcTypeApi')->name('api.qc_task.getQcTypeApi');

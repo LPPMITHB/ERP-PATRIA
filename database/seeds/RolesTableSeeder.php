@@ -224,6 +224,7 @@ class RolesTableSeeder extends Seeder
                 'create-goods-return' => true,'list-goods-return' => true,'show-goods-return' => true,'edit-goods-return' => true, 'approve-goods-return' => true,
                 'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
                 'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
+                'create-qc-task' => true,'list-qc-task' => true,'show-qc-task' => true,'edit-qc-task' => true,  'approve-qc-task' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

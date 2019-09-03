@@ -7,6 +7,7 @@ use App\Models\Bom;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\QualityControlTask;
+use App\Models\QualityControlType;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
@@ -152,8 +153,12 @@ class QualityControlTaskController extends Controller
     {
         // print_r($id);exit();
         $route = $request->route()->getPrefix();
+        $modelQcType = QualityControlType::all();
+        $modelWbs = WBS::findOrFail($id);
+
+        // dd($modelWbs);
         
-        return view('qc_task.create', compact('route'));
+        return view('qc_task.create', compact('route','modelQcType','modelWbs'));
     }
 
     /**
@@ -210,5 +215,10 @@ class QualityControlTaskController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getQcTypeApi($id){
+        $qc_type = QualityControlType::where('id',$id)->with('code','name')->first()->jsonSerialize();
+        return response($qc_type, Response::HTTP_OK);
     }
 }
