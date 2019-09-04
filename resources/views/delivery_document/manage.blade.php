@@ -66,18 +66,18 @@
                             <tr v-for="(data,index) in delivery_documents">
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ data.document_name }}</td>
-                                <td v-if="data.file_name != ''">
-                                    <div class="parent-container">
-                                        <a class="text-primary" :href="view(data)">{{ data.file_name }}</a>
+                                <td v-if="data.file_name != null">
+                                    <div class="iframe-popup">
+                                        <a target="_blank" class="text-primary" :href="view(data.file_name)">{{ data.file_name }}</a>
                                     </div>
                                 </td>
-                                <td v-else></td>
+                                <td v-else>-</td>
                                 <td>{{ data.status == 1 ? "NOT UPLOADED" : "UPLOADED" }}</td>
                                 <td align="center">
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_delivery_document">
                                         EDIT
                                     </a>    
-                                    <a class="btn btn-primary btn-xs" @click="openEditModal(data)" data-toggle="modal" href="#edit_wbs">
+                                    <a class="btn btn-danger btn-xs" @click="deleteDeliveryDocument(data)">
                                         DELETE
                                     </a>    
                                 </td>
@@ -96,7 +96,7 @@
                                                 Upload File&hellip; <input type="file" style="display: none;" id="add_document">
                                             </span>
                                         </label>
-                                        <input type="text" class="form-control" readonly>
+                                        <input id="file_name_readonly" type="text" class="form-control" readonly>
                                     </div>
                                 </td>
                                 <td>NOT UPLOADED</td>
@@ -113,28 +113,35 @@
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                         <span aria-hidden="true">×</span>
                                     </button>
-                                    <h4 class="modal-title">Edit Delivery Documents <b id="delivery_documents_code"></b></h4>
+                                    <h4 class="modal-title">Edit Delivery Documents</h4>
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
                                         <div class="form-group col-sm-12">
-                                            <label for="number" class="control-label">Number</label>
-                                            <input id="number" type="text" class="form-control" v-model="editDeliveryDocument.number" placeholder="Insert Number here..." >
+                                            <label for="description" class="control-label">Document Name</label>
+                                            <textarea id="description" v-model="editDeliveryDocument.document_name" class="form-control" rows="2" placeholder="Insert Document Name here..."></textarea>
                                         </div>
                                         <div class="form-group col-sm-12">
-                                            <label for="upload" class="col-sm-2 control-label">Upload Drawing</label>
-                                            <div class="col-sm-5">
-                                                {{-- <form method="POST" enctype="multipart/form-data"> --}}
-                                                    <div class="input-group">
-                                                        <label class="input-group-btn">
-                                                            <span class="btn btn-primary">
-                                                                Browse&hellip; <input type="file" style="display: none;" multiple id="edit_document" name="document">
-                                                            </span>
-                                                        </label>
-                                                        <input type="text" class="form-control" readonly>
-                                                    </div>
-                                                {{-- </form> --}}
-                                            </div>    
+                                            <label for="upload" class="control-label">File</label>
+                                            <div class="input-group">
+                                                <label class="input-group-btn">
+                                                    <span class="btn btn-primary">
+                                                        Upload File&hellip; <input type="file" style="display: none;" id="edit_document">
+                                                    </span>
+                                                </label>
+                                                <input id="edit_file_name_read_only" type="text" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-group col-sm-12">
+                                            <label for="upload" class="control-label">Preview Last Uploaded File</label>
+                                            <div class="input-group">
+                                                <div v-if="editDeliveryDocument.file_name != null" class="iframe-popup">
+                                                    <a target="_blank" class="text-primary" :href="view(editDeliveryDocument.file_name)">{{ editDeliveryDocument.file_name }}</a>
+                                                </div>
+                                                <div v-else>
+                                                    No file uploaded
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -165,7 +172,11 @@ $(document).on('change', ':file', function() {
     input.trigger('fileselect', [numFiles, label]);
     // document.getElementById('document').files.push(input.get(0).files[0]);
     // console.log(document.getElementById('document').files);
-    vm.newDeliveryDocument.file = input.get(0).files[0];
+    if(input.get(0).id == "add_document"){
+        vm.newDeliveryDocument.file = input.get(0).files[0];
+    }else{
+        vm.editDeliveryDocument.file = input.get(0).files[0];
+    }
 });
 
 // We can watch for our custom `fileselect` event like this
@@ -197,6 +208,7 @@ var data = {
         file : null,
     },
     editDeliveryDocument : {
+        id : "",
         document_name : "",
         project_id : @json($project->id),
         file : null,
@@ -240,8 +252,8 @@ var vm = new Vue({
         },
     }, 
     methods:{
-        view(data){
-            let path = '../../app/documents/delivery_documents/'+data.file_name;
+        view(file_name){
+            let path = '../../app/documents/delivery_documents/'+file_name;
             
             return path;
         },
@@ -249,6 +261,12 @@ var vm = new Vue({
             return text
         },
         openEditModal(data){
+            this.editDeliveryDocument.id = data.id;
+            this.editDeliveryDocument.document_name = data.document_name;
+            this.editDeliveryDocument.file_name = data.file_name;
+            
+            var file_name_readonly = document.getElementById("edit_file_name_read_only");
+            file_name_readonly.value = data.file_name;
         },
         getDeliveryDocuments(){
             window.axios.get('/api/getDeliveryDocuments/'+this.newDeliveryDocument.project_id).then(({ data }) => {
@@ -267,7 +285,7 @@ var vm = new Vue({
                     });
                     $('.parent-container').magnificPopup({
                         delegate: 'a', // child items selector, by clicking on it popup will open
-                        type: 'image'
+                        type: 'iframe'
                         // other options
                     });
                     $('div.overlay').hide();
@@ -305,6 +323,8 @@ var vm = new Vue({
                 
                 this.getDeliveryDocuments();
                 this.newDeliveryDocument.document_name = "";
+                var file_name_readonly = document.getElementById("file_name_readonly");
+                file_name_readonly.value = "";
             })
             .catch((error) => {
                 console.log(error);
@@ -312,10 +332,43 @@ var vm = new Vue({
             })
         },
         update(){            
-
+            var editDeliveryDocument = this.editDeliveryDocument;
+            var url = "";
+            if(this.route == "/delivery_document"){
+                url = this.route+"/"+this.editDeliveryDocument.id;
+            }else{
+            }
+            let data = new FormData();
+            data.append('file', document.getElementById('edit_document').files[0]);
+            data.append('document_name', this.editDeliveryDocument.document_name );
+            $('div.overlay').show();            
+            window.axios.post(url,data)
+            .then((response) => {
+                if(response.data.error != undefined){
+                    iziToast.warning({
+                        displayMode: 'replace',
+                        title: response.data.error,
+                        position: 'topRight',
+                    });
+                    $('div.overlay').hide();            
+                }else{
+                    iziToast.success({
+                        displayMode: 'replace',
+                        title: response.data.response,
+                        position: 'topRight',
+                    });
+                }
+                
+                this.getDeliveryDocuments();
+                this.editDeliveryDocument.document_name = "";
+            })
+            .catch((error) => {
+                console.log(error);
+                $('div.overlay').hide();            
+            })
         },
         deleteDeliveryDocument(data){
-            var menuTemp = this.menu;
+            var route = this.route;
             iziToast.question({
                 close: false,
                 overlay: true,
@@ -324,11 +377,45 @@ var vm = new Vue({
                 id: 'question',
                 zindex: 9999,
                 title: 'Confirm',
-                message: 'Are you sure you want to delete this WBS?',
+                message: 'Are you sure you want to delete this Delivery Document?',
                 position: 'center',
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
-
+                        var url = "";
+                        if(route == "/delivery_document"){
+                            url = route+"/"+data.id;
+                        }else{
+                        }
+                        $('div.overlay').show();            
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                vm.getDeliveryDocuments();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();            
+                        })
                         instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
             
                     }, true],

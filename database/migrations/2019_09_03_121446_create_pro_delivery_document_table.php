@@ -18,6 +18,7 @@ class CreateProDeliveryDocumentTable extends Migration
             $table->unsignedInteger('project_id')->nullable();
             $table->string('document_name')->nullable();
             $table->string('file_name')->nullable();
+            $table->string('extension')->nullable();
             $table->integer('status')->default(1);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  

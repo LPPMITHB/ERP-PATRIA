@@ -2095,7 +2095,7 @@ Route::name('delivery_document.')->prefix('delivery_document')->group(function()
 
     Route::get('/{id}/edit', 'DeliveryDocumentController@edit')->name('edit');
 
-    Route::patch('/{id}', 'DeliveryDocumentController@update')->name('update');
+    Route::post('/{id}', 'DeliveryDocumentController@update')->name('update');
 
     Route::post('/', 'DeliveryDocumentController@store')->name('store');
 
