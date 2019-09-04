@@ -2338,5 +2338,29 @@ class SidenavsTableSeeder extends Seeder
         //     'menu_id' => $manageCustomerVisitRepair,
         //     'route_name' => 'customer_visit_repair.index',
         // ]);
+
+        // Delivery Documents
+        $manageDeliveryDocuments = Menu::where('route_name','delivery_document.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageDeliveryDocuments,
+            'route_name' => 'delivery_document.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageDeliveryDocuments,
+            'route_name' => 'delivery_document.manage',
+        ]);
+
+        // Delivery Documents
+        $showDeliveryDocuments = Menu::where('route_name','delivery_document.selectProjectIndex')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $showDeliveryDocuments,
+            'route_name' => 'delivery_document.selectProjectIndex',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $showDeliveryDocuments,
+            'route_name' => 'delivery_document.index',
+        ]);
     }
 }

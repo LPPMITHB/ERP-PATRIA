@@ -3,11 +3,11 @@
     @if ($route == "/delivery_document")
         @breadcrumb(
             [
-                'title' => 'Manage List  Document',
+                'title' => 'Manage List Document',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('project.index'),
-                    'Manage List     Document' => ""
+                    'Select Project' => route('delivery_document.selectProject'),
+                    'Manage List Document' => ""
                 ]
             ]
         )
@@ -15,11 +15,11 @@
     @elseif ($route == "/delivery_document_repair")
         @breadcrumb(
             [
-                'title' => 'Manage List  Document',
+                'title' => 'Manage List Document',
                 'items' => [
                     'Dashboard' => route('index'),
-                    'Select Project' => route('project_repair.index'),
-                    'Manage List     Document' => ""
+                    // 'Select Project' => route('delivery_document_repair.selectProject'),
+                    'Manage List Document' => ""
                 ]
             ]
         )
@@ -45,7 +45,7 @@
                         <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$project->customer->name}}"><b>: {{$project->customer->name}}</b></div>
 
                         <div class="col-md-3 col-xs-4 no-padding">Progress</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->progress}}</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$project->progress}} %</b></div>
                     </div>
                 </div>
             </div>
@@ -213,8 +213,6 @@ var data = {
         project_id : @json($project->id),
         file : null,
     },
-    maxWeight : 0,
-    totalWeight : 0,
     active_id : "",
 };
 

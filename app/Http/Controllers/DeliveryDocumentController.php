@@ -19,12 +19,26 @@ class DeliveryDocumentController extends Controller
         return view('delivery_document.selectProject', compact('modelProject'));
     }
 
+    public function selectProjectIndex(){
+        $modelProject = Project::where('status',1)->get();
+
+        return view('delivery_document.selectProjectIndex', compact('modelProject'));
+    }
+
     public function manage(Request $request,$id){
         $route = $request->route()->getPrefix();
         $project = Project::find($id);
         $deliveryDocuments = $project->deliveryDocuments;
 
         return view('delivery_document.manage', compact('deliveryDocuments','route','project'));
+    }
+
+    public function show(Request $request,$id){
+        $route = $request->route()->getPrefix();
+        $project = Project::find($id);
+        $deliveryDocuments = $project->deliveryDocuments;
+
+        return view('delivery_document.show', compact('deliveryDocuments','route','project'));
     }
 
     public function store(Request $request){
