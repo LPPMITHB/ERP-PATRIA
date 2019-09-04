@@ -12,6 +12,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
 use Auth;
 use DB;
+use Illuminate\Http\JsonResponse;
 
 class QualityControlTypeController extends Controller
 {
@@ -45,7 +46,7 @@ class QualityControlTypeController extends Controller
      */
     public function store(Request $request)
     {
-       
+
         $data = json_decode($request->datas);
         DB::beginTransaction();
 
@@ -83,7 +84,7 @@ class QualityControlTypeController extends Controller
     public function show($id)
     {
         $qcType = QualityControlType::findOrFail($id);
-        $qcTypeDetail = QualityControlTypeDetail::where(['qctype_id'=>$id])->get()->jsonSerialize();
+        $qcTypeDetail = QualityControlTypeDetail::where(['qctype_id' => $id])->get()->jsonSerialize();
         return view('qulity_control_type.show', compact('qcType', 'qcTypeDetail'));
     }
 
@@ -95,7 +96,6 @@ class QualityControlTypeController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $route = $request->route()->getPrefix();
         $qcType = QualityControlType::findOrFail($id);
         $qcTypeDetail = QualityControlTypeDetail::where(['qctype_id' => $id])->get()->jsonSerialize();
         return view('qulity_control_type.edit', compact('qcType', 'qcTypeDetail'));
@@ -112,9 +112,69 @@ class QualityControlTypeController extends Controller
     {
         //
     }
-    public function updateDetail(Request $request, $id)
+    public function updateDetail(Request $request)
     {
-       $data = $request->datas;
+        $data = $request->json()->all();
+        $modelQcTypeDetail = null;
+        DB::beginTransaction();
+        try {
+            if ($data['detailID'] == null) {
+                $modelQcTypeDetail = new QualityControlTypeDetail;
+                $modelQcTypeDetail->qctype_id = $data['qc_typeID'];
+                $modelQcTypeDetail->name = $data['name'];
+                $modelQcTypeDetail->description = $data['description'];
+                $modelQcTypeDetail->save();
+            } else {
+                $modelQcTypeDetail =  QualityControlTypeDetail::findOrFail($data['detailID']);
+                $modelQcTypeDetail->qctype_id = $data['qc_typeID'];
+                $modelQcTypeDetail->name = $data['name'];
+                $modelQcTypeDetail->description =  $data['description'];
+                $modelQcTypeDetail->update();
+            }
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            echo ($e);
+            return response(json_encode($data), Response::HTTP_FORBIDDEN);
+        }
+        return response($modelQcTypeDetail->id, Response::HTTP_OK);
+    }
+
+    public function updateMaster(Request $request)
+    {
+        $data = $request->json()->all();
+        $modelQcType = null;
+        DB::beginTransaction();
+        try {
+            $modelQcType = QualityControlType::findOrFail($data['id']);
+            $modelQcType->name = $data['name'];
+            $modelQcType->description = $data['description'];
+            $modelQcType->update();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            echo ($e);
+            return response(json_encode($data), Response::HTTP_FORBIDDEN);
+        }
+        return response($modelQcType->id, Response::HTTP_OK);
+    }
+
+    public function deleteDetail(Request $request, $id)
+    {
+        $modelQcTypeDetail =  QualityControlTypeDetail::findOrFail($id);
+        $modelQcTypeDetail->delete();
+        DB::beginTransaction();
+        try {
+            $modelQcTypeDetail =  QualityControlTypeDetail::findOrFail($id);
+            $modelQcTypeDetail->delete();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            echo ($e);
+            return response(json_encode($e), Response::HTTP_FORBIDDEN);
+        }
+        echo ($id);
+        return response($id, Response::HTTP_OK);
     }
 
     /**

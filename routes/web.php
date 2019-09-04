@@ -1999,11 +1999,15 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
 
-    Route::patch('/', 'QualityControlTypeController@update')->name('update');
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
 
-    Route::patch('/', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
 
-    Route::post('/store', 'QualityControlTypeController@store')->name('store');
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+    
+    Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
+
+    Route::patch('/store', 'QualityControlTypeController@store')->name('store');
 
     Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
