@@ -2103,3 +2103,16 @@ Route::name('delivery_document.')->prefix('delivery_document')->group(function()
 
     Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy');
 });
+
+// Project Close Routes
+Route::name('close_project.')->prefix('close_project')->group(function() {
+    Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject');
+    
+    Route::get('/', 'CloseProjectController@index')->name('index');
+
+    Route::get('/{id}', 'CloseProjectController@show')->name('show');
+
+    Route::patch('/{id}', 'CloseProjectController@close')->name('close');
+
+    Route::delete('/{id}', 'CloseProjectController@destroy')->name('destroy');
+});

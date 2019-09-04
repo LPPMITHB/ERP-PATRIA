@@ -2362,5 +2362,17 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $showDeliveryDocuments,
             'route_name' => 'delivery_document.index',
         ]);
+
+        // Close Project
+        $closeProject = Menu::where('route_name','close_project.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $closeProject,
+            'route_name' => 'close_project.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $closeProject,
+            'route_name' => 'close_project.index',
+        ]);
     }
 }
