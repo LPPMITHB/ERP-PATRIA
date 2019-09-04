@@ -12,4 +12,14 @@ class WBSImage extends Model
     {
         return $this->belongsTo('App\Models\WBS','wbs_id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('App\Models\User','user_id');
+    }
+
+    public function branch()
+    {
+        return $this->belongsTo('App\Models\Branch','branch_id');
+    }
 }

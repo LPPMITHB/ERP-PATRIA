@@ -282,17 +282,17 @@ class WBSController extends Controller
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
 
-            if($request->hasFile('drawing')){
+            if($request->hasFile('image')){
                 // Get filename with the extension
-                $fileNameWithExt = $request->file('drawing')->getClientOriginalName();
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
                 // Get just file name
                 $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
                 // Get just ext
-                $extension = $request->file('drawing')->getClientOriginalExtension();
+                $extension = $request->file('image')->getClientOriginalExtension();
                 // File name to store
                 $fileNameToStore = $fileName.'_'.time().'.'.$extension;
                 // Upload image
-                $path = $request->file('drawing')->storeAs('documents/wbs',$fileNameToStore);
+                $path = $request->file('image')->storeAs('documents/wbs',$fileNameToStore);
 
                 // Store image data into database
                 $wbsi = new WBSImage;
@@ -654,6 +654,7 @@ class WBSController extends Controller
     {
         $data = json_decode($request->datas);
         $wbs_ref = WBS::find($id);
+        $images = new WBSImage;
         $project = $wbs_ref->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = WBS::where('project_id',$data->project_id)->get();
@@ -669,33 +670,51 @@ class WBSController extends Controller
             $wbs_ref->deliverables = $data->deliverables;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data->planned_start_date);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
-
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data->planned_end_date);
             $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
-
             $wbs_ref->planned_duration = $data->planned_duration;
             $wbs_ref->weight =  $data->weight;
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/wbs_images',$fileNameToStore);
 
-            if(!$wbs_ref->save()){
-                if($menu == "building"){
-                    return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
-                }elseif($menu == "repair"){
-                    return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', "Failed to save, please try again!");
-                }
-            }else{
+                $images->wbs_id = $wbs_ref->id;
+                $images->user_id = Auth::user()->id;
+                $images->branch_id = Auth::user()->branch->id;
+                $images->drawing = $fileNameToStore;
+                $images->description = $data->img_desc;
+
+                $images->save();
+            }
+
+            if($wbs_ref->save()){
                 DB::commit();
                 if($menu == "building"){
                     return redirect()->route('wbs.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
                 }elseif($menu == "repair"){
                     return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
                 }
+            }else{
+                if($menu == "building"){
+                    return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                }elseif($menu == "repair"){
+                    return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
-                return redirect()->route('wbs.show')->with( 'error',$e->getMessage())->withInput();
+                return redirect()->route('wbs.show', ['id' => $id])->with( 'error',$e->getMessage())->withInput();
             }elseif($menu == "repair"){
-                return redirect()->route('wbs_repair.show')->with( 'error',$e->getMessage())->withInput();
+                return redirect()->route('wbs_repair.show', ['id' => $id])->with( 'error',$e->getMessage())->withInput();
             }
         }
     }
@@ -709,7 +728,7 @@ class WBSController extends Controller
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
-        return view('wbs.show', compact('wbs','menu'));
+        return view('wbs.show', compact('wbs','menu', 'images'));
     }
 
     public function destroyWbsProfile(Request $request, $id)
