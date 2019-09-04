@@ -25,8 +25,8 @@ $qcType->name => route('qc_type.show',$qcType->id),
                     <h4><b>Name</b> : {{ strtoupper($qcType->name)}}<h4>
                 </b>
                 <p><b>Description :</b>
-                    {{$qcType->description}}
-                </p>
+                 
+                </p><span><textarea rows="3" cols="115"> {{$qcType->description}}</textarea></span>
             </div>
             <div class="box-body">
                 <div class="box-tools pull-right p-t-5">

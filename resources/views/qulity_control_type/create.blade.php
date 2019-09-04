@@ -84,7 +84,7 @@
                             </table>
                         </div>
                         <div class="col-md-12 p-t-5">
-                            <button id="process" @click.prevent="submitForm" class="btn btn-primary pull-right"
+                            <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right"
                                 :disabled="createOk">CREATE</button>
                         </div>
                         <div class="modal fade" id="edit_item">
