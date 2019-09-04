@@ -2374,5 +2374,17 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $closeProject,
             'route_name' => 'close_project.index',
         ]);
+
+        // Customer Portal
+        $customerPortal = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $customerPortal,
+            'route_name' => 'customer_portal.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $customerPortal,
+            'route_name' => 'customer_portal.showProject',
+        ]);
     }
 }
