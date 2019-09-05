@@ -2397,5 +2397,10 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $postComplaints,
             'route_name' => 'customer_portal.createPost',
         ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $postComplaints,
+            'route_name' => 'customer_portal.showPost',
+        ]);
     }
 }

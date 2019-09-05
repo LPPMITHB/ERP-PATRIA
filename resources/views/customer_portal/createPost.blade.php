@@ -18,7 +18,7 @@
 <div class="row">
   @verbatim
   <div id="posts-vue">
-    <div class="col-md-2 m-b-10">
+    <div class="col-md-2 m-b-10 pull-right">
       <a v-show="index_post" @click="create_post_event()" class="btn btn-primary btn-block">CREATE NEW POST</a>
       <a v-show="create_post" @click="index_post_event()" class="btn btn-primary btn-block">BACK TO POSTS</a>
     </div>
@@ -48,7 +48,7 @@
                   <td style="width: 10%" class="mailbox-attachment" v-else></td>
                   <td style="width: 20%"class="mailbox-date text-center">{{data.time_since}}</td>
                   <td style="width: 10%" class="mailbox-action text-center">
-                    <button class="btn btn-primary btn-xs">VIEW</button>
+                    <a class="btn btn-primary btn-xs" :href="showPost(data.id)">VIEW</a>
                   </td>
                 </tr>
               </tbody>
@@ -157,6 +157,9 @@ var vm = new Vue({
     },
   }, 
   methods:{
+    showPost(id){
+      return "/customer_portal/showPost/"+id;
+    },
     getPosts(){
       window.axios.get('/api/getPosts/'+this.project.id).then(({ data }) => {
         $('div.overlay').show();

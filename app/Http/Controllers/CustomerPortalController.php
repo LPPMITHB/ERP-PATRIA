@@ -38,6 +38,12 @@ class CustomerPortalController extends Controller
         return view('customer_portal.createPost',compact('posts','project'));
     }
 
+    public function showPost($id){
+        $post = Post::find($id);
+
+        return view('customer_portal.showPost',compact('post'));
+    }
+
     public function showProject(Request $request, $id)
     {
         $project = Project::find($id);

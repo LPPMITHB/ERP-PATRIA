@@ -2133,6 +2133,8 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
 
     Route::get('/showProject/{id}', 'CustomerPortalController@showProject')->name('showProject');
 
+    Route::get('/showPost/{id}', 'CustomerPortalController@showPost')->name('showPost');
+
     Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost');
 
     Route::post('/storePost', 'CustomerPortalController@storePost')->name('storePost');
