@@ -201,7 +201,7 @@ class ProjectStandardController extends Controller
         $wbs = WbsStandard::find($wbs_id);
         $project = ProjectStandard::where('id',$wbs->project_standard_id)->with('ship')->first();
         $materials = Material::orderBy('code')->get()->jsonSerialize();
-        $existing_data = null;
+        $existing_data = [];
 
         $material_ids = [];
         $edit = false;
@@ -235,7 +235,7 @@ class ProjectStandardController extends Controller
                 $materialStandard->save();
             }
             DB::commit();
-            return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Bill Of Material Created');
+            return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Material Standard Created');
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('project_standard.selectProject')->with('error', $e->getMessage());
@@ -271,9 +271,9 @@ class ProjectStandardController extends Controller
             }
             DB::commit();
             if($datas->edit){
-                return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Bill Of Material Updated');
+                return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Material Standard Updated');
             }else{
-                return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Bill Of Material Created');
+                return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Material Standard Created');
             }
         } catch (\Exception $e) {
             DB::rollback();

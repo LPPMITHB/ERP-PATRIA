@@ -578,7 +578,7 @@ class SidenavsTableSeeder extends Seeder
         
         DB::table('sidenav')->insert([
             'menu_id' => $material_standard,
-            'route_name' => 'project_standard.selectWbs',
+            'route_name' => 'project_standard.selectWBS',
         ]);
 
         DB::table('sidenav')->insert([
@@ -1744,6 +1744,11 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $createQcTask,
+            'route_name' => 'qc_task.selectWBS',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTask,
             'route_name' => 'qc_task.create',
         ]);
 
@@ -2306,5 +2311,80 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'yard_plan.create',
         ]);
 
+         // Sales Plan
+         $manageSalesPlan = Menu::where('route_name','sales_plan.index')->select('id')->first()->id;
+         DB::table('sidenav')->insert([
+             'menu_id' => $manageSalesPlan,
+             'route_name' => 'sales_plan.index',
+         ]);
+
+        //  // Sales Plan Repair
+        //  $manageSalesPlanRepair = Menu::where('route_name','sales_plan_repair.index')->select('id')->first()->id;
+        //  DB::table('sidenav')->insert([
+        //      'menu_id' => $manageSalesPlanRepair,
+        //      'route_name' => 'sales_plan_repair.index',
+        //  ]);
+
+        // Customer Visit
+        $manageCustomerVisit = Menu::where('route_name','customer_visit.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageCustomerVisit,
+            'route_name' => 'customer_visit.index',
+        ]);
+
+        // // Customer Visit Repair
+        // $manageCustomerVisitRepair = Menu::where('route_name','customer_visit_repair.index')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $manageCustomerVisitRepair,
+        //     'route_name' => 'customer_visit_repair.index',
+        // ]);
+
+        // Delivery Documents
+        $manageDeliveryDocuments = Menu::where('route_name','delivery_document.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageDeliveryDocuments,
+            'route_name' => 'delivery_document.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageDeliveryDocuments,
+            'route_name' => 'delivery_document.manage',
+        ]);
+
+        // Delivery Documents
+        $showDeliveryDocuments = Menu::where('route_name','delivery_document.selectProjectIndex')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $showDeliveryDocuments,
+            'route_name' => 'delivery_document.selectProjectIndex',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $showDeliveryDocuments,
+            'route_name' => 'delivery_document.index',
+        ]);
+
+        // Close Project
+        $closeProject = Menu::where('route_name','close_project.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $closeProject,
+            'route_name' => 'close_project.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $closeProject,
+            'route_name' => 'close_project.index',
+        ]);
+
+        // Customer Portal
+        $customerPortal = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $customerPortal,
+            'route_name' => 'customer_portal.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $customerPortal,
+            'route_name' => 'customer_portal.showProject',
+        ]);
     }
 }

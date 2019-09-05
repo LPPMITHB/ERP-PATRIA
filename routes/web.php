@@ -1705,6 +1705,8 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
 
     Route::patch('/{id}', 'YardPlanController@update')->name('update');
 
+    Route::put('confirmYardPlan/{id}', 'YardPlanController@confirmYardPlan')->name('confirmYardPlan');
+
     Route::patch('/confirmActual/{id}', 'YardPlanController@confirmActual')->name('confirmActual');
 
     Route::post('/', 'YardPlanController@store')->name('store');
@@ -1997,9 +1999,15 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
 
-    Route::patch('/', 'QualityControlTypeController@update')->name('update');
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
 
-    Route::post('/store', 'QualityControlTypeController@store')->name('store');
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
+
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+    
+    Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
+
+    Route::patch('/store', 'QualityControlTypeController@store')->name('store');
 
     Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
@@ -2012,7 +2020,9 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
 
-    Route::get('/create', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
+    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS')->middleware('can:list-bom');
+
+    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
 
     Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
 
@@ -2024,4 +2034,108 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
 
+});
+
+// Sales Plan Routes
+Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+
+    Route::get('/', 'SalesPlanController@index')->name('index');
+
+    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+
+    Route::post('/', 'SalesPlanController@store')->name('store');
+    
+});
+
+// Sales Plan Repair Routes
+Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function() {
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+
+    Route::get('/', 'SalesPlanController@index')->name('index');
+
+    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+
+    Route::post('/', 'SalesPlanController@store')->name('store');
+});
+
+// Customer Visit Routes
+Route::name('customer_visit.')->prefix('customer_visit')->group(function() {
+    Route::get('/', 'CustomerVisitController@index')->name('index');
+
+    Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
+
+    Route::post('/', 'CustomerVisitController@store')->name('store');
+
+    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
+});
+
+// Customer Visit Repair Routes
+Route::name('customer_visit_repair.')->prefix('customer_visit_repair')->group(function() {
+    Route::get('/', 'CustomerVisitController@index')->name('index');
+
+    Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
+
+    Route::post('/', 'CustomerVisitController@store')->name('store');
+
+    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
+});
+
+// Delivery Document Routes
+Route::name('delivery_document.')->prefix('delivery_document')->group(function() {
+    Route::get('/selectProject', 'DeliveryDocumentController@selectProject')->name('selectProject');
+    
+    Route::get('/selectProjectIndex', 'DeliveryDocumentController@selectProjectIndex')->name('selectProjectIndex');
+    
+    Route::get('/manage/{id}', 'DeliveryDocumentController@manage')->name('manage');
+
+    Route::get('/{id}', 'DeliveryDocumentController@show')->name('show');
+
+    Route::get('/{id}/edit', 'DeliveryDocumentController@edit')->name('edit');
+
+    Route::post('/{id}', 'DeliveryDocumentController@update')->name('update');
+
+    Route::post('/', 'DeliveryDocumentController@store')->name('store');
+
+    Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy');
+});
+
+// Project Close Routes
+Route::name('close_project.')->prefix('close_project')->group(function() {
+    Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject');
+    
+    Route::get('/', 'CloseProjectController@index')->name('index');
+
+    Route::get('/{id}', 'CloseProjectController@show')->name('show');
+
+    Route::patch('/{id}', 'CloseProjectController@close')->name('close');
+
+    Route::delete('/{id}', 'CloseProjectController@destroy')->name('destroy');
+});
+
+// Customer Portal Routes
+Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
+    Route::get('/selectProject', 'CustomerPortalController@selectProject')->name('selectProject');
+
+    Route::get('/selectProjectPost', 'CustomerPortalController@selectProjectPost')->name('selectProjectPost');
+    
+    Route::get('/', 'CustomerPortalController@index')->name('index');
+
+    Route::get('/{id}', 'CustomerPortalController@show')->name('show');
+
+    Route::get('/showProject/{id}', 'CustomerPortalController@showProject')->name('showProject');
+
+    Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost');
+
+    Route::patch('/{id}', 'CustomerPortalController@close')->name('close');
+
+    Route::delete('/{id}', 'CustomerPortalController@destroy')->name('destroy');
 });

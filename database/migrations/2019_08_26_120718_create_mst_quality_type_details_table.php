@@ -16,7 +16,6 @@ class CreateMstQualityTypeDetailsTable extends Migration
         Schema::create('mst_quality_control_type_detail', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('qctype_id');
-            $table->integer('position');
             $table->string('name');
             $table->text('description')->nullable();
             
