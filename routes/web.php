@@ -2135,6 +2135,8 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
 
     Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost');
 
+    Route::post('/storePost', 'CustomerPortalController@storePost')->name('storePost');
+
     Route::patch('/{id}', 'CustomerPortalController@close')->name('close');
 
     Route::delete('/{id}', 'CustomerPortalController@destroy')->name('destroy');

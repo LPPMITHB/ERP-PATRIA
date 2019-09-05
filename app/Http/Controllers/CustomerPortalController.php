@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\Activity;
@@ -12,6 +13,7 @@ use App\Models\PostComment;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Collection;
 use Auth;
+use DB;
 
 class CustomerPortalController extends Controller
 {
@@ -31,8 +33,9 @@ class CustomerPortalController extends Controller
 
     public function createPost($id){
         $posts = Post::where('project_id',$id)->get();
+        $project = Project::find($id);
 
-        return view('customer_portal.createPost',compact('posts'));
+        return view('customer_portal.createPost',compact('posts','project'));
     }
 
     public function showProject(Request $request, $id)
@@ -245,6 +248,47 @@ class CustomerPortalController extends Controller
         return view('customer_portal.showProject', compact('activities','wbss','project','today','ganttData','links','is_pami',
         'outstanding_item','menu','project_done',
         'dataActualProgress','dataPlannedProgress', 'progressStatus','str_expected_date','expectedStatus'));
+    }
+
+    public function storePost(Request $request){
+        DB::beginTransaction();
+        try {
+            $post = new Post;
+            $post->project_id = $request->project_id;
+            $post->subject = $request->subject;
+            $post->body = $request->body;
+            $post->user_id = Auth::user()->id;
+            $post->save();
+
+            $fileNameToStoreArr = [];
+            if($request->file('files') != null){
+                foreach ($request->file('files') as $file) {
+                    // Get filename with the extension
+                    $fileNameWithExt = $file->getClientOriginalName();
+                    // Get just file name
+                    $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                    // Get just ext
+                    $extension = $file->getClientOriginalExtension();
+                    // File name to store
+                    $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                    // Upload document
+                    $path = $file->storeAs('documents/posts/'.$post->id,$fileNameToStore);
+                    array_push($fileNameToStoreArr, $fileNameToStore);
+                }
+                $post->file_name = json_encode($fileNameToStoreArr);
+                $post->save();
+            }
+
+            if(!$post->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to add new Post"],Response::HTTP_OK);
+            }
+        }catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
     }
 
     //Method
@@ -695,5 +739,11 @@ class CustomerPortalController extends Controller
         $progressStatus->put("this_week_planned", $tempNowPlanned);
         $progressStatus->put("last_week_actual", $tempNowActual);
         $progressStatus->put("this_week_actual", $tempNowActual);
+    }
+
+    //API
+    public function getPostsAPI($project_id){
+        $posts = Post::where('project_id', $project_id)->get()->jsonSerialize();
+        return response($posts, Response::HTTP_OK);
     }
 }

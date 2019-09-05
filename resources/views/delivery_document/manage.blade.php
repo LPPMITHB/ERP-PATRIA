@@ -276,7 +276,7 @@ var vm = new Vue({
                     $('#delivery-documents-table').DataTable({
                         'paging'      : true,
                         'lengthChange': false,
-                        'searching'   : false,
+                        'searching'   : true,
                         'ordering'    : false,
                         'info'        : true,
                         'autoWidth'   : false,
