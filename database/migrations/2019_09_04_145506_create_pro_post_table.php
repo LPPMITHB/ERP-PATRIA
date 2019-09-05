@@ -16,9 +16,9 @@ class CreateProPostTable extends Migration
         Schema::create('pro_post', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('project_id')->nullable();
-            $table->string('heaeder')->nullable();
+            $table->string('subject')->nullable();
             $table->text('body')->nullable();
-            $table->string('file_name')->nullable();
+            $table->longText('file_name')->nullable();
             $table->unsignedInteger('user_id');
             $table->timestamps();
 
