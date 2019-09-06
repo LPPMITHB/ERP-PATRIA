@@ -28,6 +28,7 @@ use App\Models\ResourceTrx;
 use DB;
 use DateTime;
 use Auth;
+use File;
 
 class WBSController extends Controller
 {
@@ -729,6 +730,18 @@ class WBSController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.show', compact('wbs','menu', 'images'));
+    }
+
+    public function destroyWbsImage(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        dd("Success");
+        DB::beginTransaction();
+        try {
+                
+        } catch (\Exception $e) {
+
+        }
     }
 
     public function destroyWbsProfile(Request $request, $id)

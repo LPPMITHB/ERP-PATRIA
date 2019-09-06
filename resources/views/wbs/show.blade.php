@@ -39,13 +39,6 @@
         <div class="box">
             <div class="box-header">
                 <div class="box-title"></div>
-                <div class="box-tools pull-right p-t-5">
-                    @can('edit-material')
-                        <a class="btn btn-primary btn-sm mobile_button_view" data-toggle="modal" href="#edit_wbs">
-                            EDIT
-                        </a>
-                    @endcan
-                </div>
             </div>
             @verbatim
             <div id="edit">
@@ -57,6 +50,15 @@
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="wbs_info">
+                                    <div class="box-tools pull-right p-t-5" style="padding-bottom:16px">
+                                        @endverbatim
+                                        @can('edit-material')
+                                            <a class="btn btn-primary btn-sm mobile_button_view" data-toggle="modal" href="#edit_wbs">
+                                                EDIT
+                                            </a>
+                                        @endcan
+                                        @verbatim
+                                    </div>
                                     <table class="table table-bordered width100 showTable tableFixed">
                                         <thead>
                                             <tr>
@@ -155,13 +157,14 @@
                                     </table>
                                 </div>
                                 <div class="tab-pane" id="wbs_images">
-                                    <a class="btn btn-primary btn-sm mobile_button_view" data-toggle="modal" href="#add_image">ADD IMAGE</a>
+                                    <a class="btn btn-primary btn-sm mobile_button_view pull-right" style="margin-bottom:16px" data-toggle="modal" href="#add_image">ADD IMAGE</a>
                                     <table class="table table-bordered width100 showTable tableFixed">
                                         <thead>
                                             <tr>
                                                 <th style="width:5%">No</th>
-                                                <th style="width:30%">Image</th>
-                                                <th style="width:50%">Description</th>
+                                                <th style="width:20%">Image</th>
+                                                <th style="width:40%">Description</th>
+                                                <th style="width:20%">Added By</th>
                                                 <th style="width:15%"></th>
                                             </tr>
                                         </thead>
@@ -170,7 +173,9 @@
                                                 <td>{{index+1}}</td>
                                                 <td><img style="display:block;" width="100%" :src="getSrc(image)"></td>
                                                 <td>{{image.description}}</td>
-                                                <td class="parent-container"><a class="btn btn-primary btn-sm mobile_button_view col-sm-6" :href="getSrc(image)">VIEW</a><a class="btn btn-danger btn-sm mobile_button_view col-sm-6">DELETE</a></td>
+                                                <td>{{image.user_id}}</td>
+                                                <td>
+                                                    <div class="parent-container"><a class="btn btn-primary btn-sm mobile_button_view col-sm-6" :href="getSrc(image)">VIEW</a></div><div><a class="btn btn-danger btn-sm mobile_button_view col-sm-6" @click="deleteWbsImage(image)">DELETE</a></div></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -444,6 +449,60 @@ var vm = new Vue({
                 this.editWbs.planned_end_date = "";
             }
         },
+        deleteWbsImage(image){
+            var route = this.route;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 9999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this image?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "";
+                        if(route == "/"){
+                            url = "/deleteWbsImage/"+image.id;
+                        }
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();
+                        })
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ],
+            });
+        }
     },
     watch : {
         editWbs:{
