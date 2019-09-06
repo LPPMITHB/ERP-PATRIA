@@ -67,9 +67,7 @@
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ data.document_name }}</td>
                                 <td v-if="data.file_name != null">
-                                    <div class="iframe-popup">
-                                        <a target="_blank" class="text-primary" :href="view(data.file_name)">{{ data.file_name }}</a>
-                                    </div>
+                                    <a target="_blank" class="text-primary" :href="view(data.file_name)">{{ data.file_name }}</a>
                                 </td>
                                 <td v-else>-</td>
                                 <td>{{ data.status == 1 ? "NOT UPLOADED" : "UPLOADED" }}</td>

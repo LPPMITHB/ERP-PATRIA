@@ -2126,6 +2126,8 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
     Route::get('/selectProject', 'CustomerPortalController@selectProject')->name('selectProject');
 
     Route::get('/selectProjectPost', 'CustomerPortalController@selectProjectPost')->name('selectProjectPost');
+
+    Route::get('/selectProjectReply', 'CustomerPortalController@selectProjectReply')->name('selectProjectReply');
     
     Route::get('/', 'CustomerPortalController@index')->name('index');
 
@@ -2137,7 +2139,11 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
 
     Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost');
 
+    Route::get('/selectPost/{id}', 'CustomerPortalController@selectPost')->name('selectPost');
+
     Route::post('/storePost', 'CustomerPortalController@storePost')->name('storePost');
+
+    Route::post('/storeComment', 'CustomerPortalController@storeComment')->name('storeComment');
 
     Route::patch('/{id}', 'CustomerPortalController@close')->name('close');
 

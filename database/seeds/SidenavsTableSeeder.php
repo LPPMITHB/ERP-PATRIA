@@ -2392,10 +2392,19 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $postComplaints,
             'route_name' => 'customer_portal.selectProjectPost',
         ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $postComplaints,
+            'route_name' => 'customer_portal.selectProjectReply',
+        ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $postComplaints,
             'route_name' => 'customer_portal.createPost',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $postComplaints,
+            'route_name' => 'customer_portal.selectPost',
         ]);
 
         DB::table('sidenav')->insert([

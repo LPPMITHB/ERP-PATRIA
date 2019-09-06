@@ -18,8 +18,12 @@ use DB;
 class CustomerPortalController extends Controller
 {
     public function selectProject(){
-        $customer_id = Customer::where('user_id', Auth::user()->id)->first()->id;
-        $modelProject = Project::where('status',1)->where('customer_id',$customer_id)->get();
+        if(Auth::user()->role_id != 3){
+            $modelProject = Project::whereIn('business_unit_id', json_decode(Auth::user()->business_unit_id))->get();
+        }else{
+            $customer_id = Customer::where('user_id', Auth::user()->id)->first()->id;
+            $modelProject = Project::where('status',1)->where('customer_id',$customer_id)->get();
+        }
 
         return view('customer_portal.selectProject', compact('modelProject'));
     }
@@ -28,11 +32,56 @@ class CustomerPortalController extends Controller
         $customer_id = Customer::where('user_id', Auth::user()->id)->first()->id;
         $modelProject = Project::where('status',1)->where('customer_id',$customer_id)->get();
 
+        foreach ($modelProject as $project) {
+            $posts = $project->posts;
+            foreach ($posts as $post) {
+                $comments = $post->comments->where('status',1)->where('user_id','!=',Auth::user()->id);
+                $project->new_comment = count($comments) > 0 ? true : false;
+                $project->new_comment_qty = count($comments);
+            }
+        }
+
         return view('customer_portal.selectProjectPost', compact('modelProject'));
+    }
+
+    public function selectProjectReply(){
+        $modelProject = Project::whereIn('business_unit_id', json_decode(Auth::user()->business_unit_id))->get();
+
+        foreach ($modelProject as $project) {
+            $posts = $project->posts->where('status',1);
+            $project->new_post = count($posts) > 0 ? true : false;
+            $project->new_post_qty = count($posts);
+            $posts_all = $project->posts;
+
+            foreach ($posts_all as $post) {
+                $comments = $post->comments->where('status',1)->where('user_id','!=',Auth::user()->id);
+                $project->new_comment = count($comments) > 0 ? true : false;
+                $project->new_comment_qty = count($comments);
+            }
+        }
+
+        return view('customer_portal.selectProjectReply', compact('modelProject'));
+    }
+
+    public function selectPost($id){
+        $posts = Post::where('project_id',$id)->get();
+        foreach ($posts as $post) {
+            $comments = $post->comments->where('status',1)->where('user_id','!=',Auth::user()->id);
+            $post->new_comment = count($comments) > 0 ? true : false;
+            $post->new_comment_qty = count($comments);
+        }
+        $project = Project::find($id);
+
+        return view('customer_portal.selectPost',compact('posts','project'));
     }
 
     public function createPost($id){
         $posts = Post::where('project_id',$id)->get();
+        foreach ($posts as $post) {
+            $comments = $post->comments->where('status',1)->where('user_id','!=',Auth::user()->id);
+            $post->new_comment = count($comments) > 0 ? true : false;
+            $post->new_comment_qty = count($comments);
+        }
         $project = Project::find($id);
 
         return view('customer_portal.createPost',compact('posts','project'));
@@ -40,8 +89,16 @@ class CustomerPortalController extends Controller
 
     public function showPost($id){
         $post = Post::find($id);
+        $post->status = 0;
+        $post->update();
+        $user_id = Auth::user()->id;
+        $comments = $post->comments->where('status',1)->where('user_id','!=',Auth::user()->id);
+        foreach ($comments as $comment) {
+            $comment->status = 0;
+            $comment->update();
+        }
 
-        return view('customer_portal.showPost',compact('post'));
+        return view('customer_portal.showPost',compact('post','user_id'));
     }
 
     public function showProject(Request $request, $id)
@@ -264,6 +321,7 @@ class CustomerPortalController extends Controller
             $post->subject = $request->subject;
             $post->body = $request->body;
             $post->user_id = Auth::user()->id;
+            $post->status = 1;
             $post->save();
 
             $fileNameToStoreArr = [];
@@ -290,6 +348,47 @@ class CustomerPortalController extends Controller
             }else{
                 DB::commit();
                 return response(["response"=>"Success to add new Post"],Response::HTTP_OK);
+            }
+        }catch (\Exception $e) {
+            DB::rollback();
+                return response(["error"=> $e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
+    public function storeComment(Request $request){
+        DB::beginTransaction();
+        try {
+            $comment = new PostComment;
+            $comment->post_id = $request->post_id;
+            $comment->text = $request->text;
+            $comment->user_id = Auth::user()->id;
+            $comment->status = 1;
+            $comment->save();
+
+            $fileNameToStoreArr = [];
+            if($request->file('files') != null){
+                foreach ($request->file('files') as $file) {
+                    // Get filename with the extension
+                    $fileNameWithExt = $file->getClientOriginalName();
+                    // Get just file name
+                    $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                    // Get just ext
+                    $extension = $file->getClientOriginalExtension();
+                    // File name to store
+                    $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                    // Upload document
+                    $path = $file->storeAs('documents/comments/'.$comment->id,$fileNameToStore);
+                    array_push($fileNameToStoreArr, $fileNameToStore);
+                }
+                $comment->file_name = json_encode($fileNameToStoreArr);
+                $comment->save();
+            }
+
+            if(!$comment->save()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Comment Added"],Response::HTTP_OK);
             }
         }catch (\Exception $e) {
             DB::rollback();
@@ -749,7 +848,18 @@ class CustomerPortalController extends Controller
 
     //API
     public function getPostsAPI($project_id){
-        $posts = Post::where('project_id', $project_id)->get()->jsonSerialize();
+        $posts = Post::where('project_id', $project_id)->get();
+        foreach ($posts as $post) {
+            $comments = $post->comments->where('status',1)->where('user_id','!=',Auth::user()->id);
+            $post->new_comment = count($comments) > 0 ? true : false;
+            $post->new_comment_qty = count($comments);
+        }
+        $posts = $posts->jsonSerialize();
         return response($posts, Response::HTTP_OK);
+    }
+
+    public function getCommentsAPI($post_id){
+        $comments = PostComment::where('post_id', $post_id)->with('user')->get()->jsonSerialize();
+        return response($comments, Response::HTTP_OK);
     }
 }

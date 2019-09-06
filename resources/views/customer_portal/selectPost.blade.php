@@ -2,11 +2,11 @@
 
 @section('content-header')
 @breadcrumb([
-  'title' => 'Post Complaints » '.$project->name,
+  'title' => 'Reply Complaints » '.$project->name,
   'items' => [
     'Dashboard' => route('index'),
-    'Select Project' => route('customer_portal.selectProjectPost'),
-    'Post Complaints' => "",
+    'Select Project' => route('customer_portal.selectProjectReply'),
+    'Reply Complaints' => "",
   ]
 ])
 @endbreadcrumb
@@ -16,12 +16,7 @@
 <div class="row">
     @verbatim
     <div id="posts-vue">
-        <div class="col-md-2 m-b-10 pull-right">
-            <a v-show="index_post" @click="create_post_event()" class="btn btn-primary btn-block">CREATE NEW POST</a>
-            <a v-show="create_post" @click="index_post_event()" class="btn btn-primary btn-block">BACK TO POSTS</a>
-        </div>
-
-        <div v-show="index_post" class="col-md-12">
+        <div class="col-md-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Posts</h3>
@@ -42,15 +37,15 @@
                             <tbody>
                                 <tr v-for="(data, index) in posts">
                                     <td style="width: 55%" class="tdEllipsis" class="mailbox-subject">
-                                        <b>{{data.subject}}</b> - {{data.body}}
+                                        <small v-if="data.status == 1" class="label bg-green">new</small> <b>{{data.subject}}</b> - {{data.body}}
                                     </td>
                                     <td style="width: 10%" class="mailbox-attachment text-center"
                                         v-if="data.file_name != null"><i class="fa fa-paperclip"></i></td>
                                     <td style="width: 10%" class="mailbox-attachment" v-else></td>
                                     <td>
-                                      <span v-if="data.new_comment" class="pull-right-container">
-                                        <small class="label bg-green">{{data.new_comment_qty}} new comment(s)</small>
-                                      </span>
+                                        <span v-if="data.new_comment" class="pull-right-container">
+                                            <small class="label bg-green">{{data.new_comment_qty}} new comment(s)</small>
+                                        </span>
                                     </td>
                                     <td style="width: 20%" class="mailbox-date text-center">{{data.time_since}}</td>
                                     <td style="width: 10%" class="mailbox-action text-center">
@@ -72,56 +67,6 @@
         </div>
         <!-- /.col -->
 
-        <div v-show="create_post" class="col-md-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <h3 class="box-title">Compose New Post</h3>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body">
-                    <div class="form-group">
-                        <input v-model="new_post.subject" class="form-control" placeholder="Subject:">
-                    </div>
-                    <div class="form-group">
-                        <textarea id="compose-textarea" v-model="new_post.body" class="form-control"
-                            style="height: 300px;" placeholder="Body:"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <div class="btn btn-default btn-file">
-                            <i class="fa fa-paperclip"></i> Attachments
-                            <input v-on:change="saveAttachment()" type="file" name="attachments" id="attachments"
-                                multiple>
-                        </div>
-                        <div class="form-group m-t-10">
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <div class="row">
-                                        <div v-for="(file,index) in new_post.temp_uploaded" class="col-sm-6">
-                                            <div style="padding: 5px; background-color: #f5f5f5;" class="alert">
-                                                {{file.name}}
-                                                <button @click.prevent="deleteAttachment(index)" type="button"
-                                                    class="close">×</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-                <!-- /.box-body -->
-                <div class="box-footer">
-                    <div class="pull-right">
-                        <button :disabled="createOk" @click.prevent="submitPost()" class="btn btn-primary"><i
-                                class="fa fa-envelope-o"></i> CREATE</button>
-                    </div>
-                </div>
-                <!-- /.box-footer -->
-            </div>
-            <!-- /. box -->
-        </div>
-    </div>
     @endverbatim
 </div>
 @endsection
@@ -138,8 +83,6 @@
             body: "",
         },
         project: @json($project),
-        index_post: true,
-        create_post: false,
     };
 
     Vue.directive('tooltip', function (el, binding) {

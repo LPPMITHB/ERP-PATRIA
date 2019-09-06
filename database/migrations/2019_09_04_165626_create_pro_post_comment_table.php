@@ -17,8 +17,9 @@ class CreateProPostCommentTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('post_id')->nullable();
             $table->text('text')->nullable();
-            $table->string('file_name')->nullable();
+            $table->longText('file_name')->nullable();
             $table->unsignedInteger('user_id');
+            $table->integer('status');
             $table->timestamps();
 
             $table->foreign('post_id')->references('id')->on('pro_post');

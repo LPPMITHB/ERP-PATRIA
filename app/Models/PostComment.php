@@ -13,7 +13,7 @@ class PostComment extends Model
         return $this->belongsTo('App\Models\Post');
     }
 
-    public function createdBy()
+    public function user()
     {
         return $this->belongsTo('App\Models\User');
     }

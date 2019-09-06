@@ -13,8 +13,13 @@ class Post extends Model
         return $this->belongsTo('App\Models\Project');
     }
 
-    public function createdBy()
+    public function user()
     {
         return $this->belongsTo('App\Models\User');
+    }
+
+    public function comments()
+    {
+        return $this->hasMany('App\Models\PostComment');
     }
 }

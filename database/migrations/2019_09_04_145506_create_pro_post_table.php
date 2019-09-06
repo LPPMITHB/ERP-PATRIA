@@ -20,6 +20,7 @@ class CreateProPostTable extends Migration
             $table->text('body')->nullable();
             $table->longText('file_name')->nullable();
             $table->unsignedInteger('user_id');
+            $table->integer('status');
             $table->timestamps();
 
             $table->foreign('project_id')->references('id')->on('pro_project');

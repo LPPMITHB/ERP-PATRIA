@@ -97,4 +97,9 @@ class Project extends Model
     {
         return $this->hasMany('App\Models\DeliveryDocument');
     }
+
+    public function posts()
+    {
+        return $this->hasMany('App\Models\Post');
+    }
 }
