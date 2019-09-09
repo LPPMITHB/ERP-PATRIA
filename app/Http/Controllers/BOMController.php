@@ -14,6 +14,8 @@ use App\Models\User;
 use App\Models\Rap;
 use App\Models\RapDetail;
 use App\Models\Stock;
+use App\Models\Notification;
+use App\Models\Configuration;
 use App\Models\BomPrep;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
@@ -913,6 +915,7 @@ class BOMController extends Controller
                 }
             }
         }
+        //$status = 1 => buat pr artinya
         if($status == 1){
             $pr_number = $this->pr->generatePRNumber();
             $modelProject = Project::findOrFail($project_id);
@@ -974,6 +977,72 @@ class BOMController extends Controller
                     }
                 }
             }
+        }
+
+        if($status == 1){
+            //MAKE NOTIFICATION
+            if($route == '/purchase_requisition'){
+                $data = json_encode([
+                    'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
+                    'time_info' => 'Created at',
+                    'title' => 'Purchase Requisition',
+                    'url' => '/purchase_requisition/showApprove/'.$PR->id,
+                ]);
+            }else if($route == '/purchase_requisition_repair'){
+                $data = json_encode([
+                    'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
+                    'time_info' => 'Created at',
+                    'title' => 'Purchase Requisition',
+                    'url' => '/purchase_requisition_repair/showApprove/'.$PR->id,
+                ]);
+            }
+    
+            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails);
+            $approval_config = Configuration::get('approval-pr')[0];
+            foreach($approval_config->value as $pr_config){
+                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
+                    if($pr_config->role_id_1 != null){
+                        $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+    
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $PR->id;
+                        $new_notification->role_id = $pr_config->role_id_1;
+                        $new_notification->notification_date = $PR->created_at->toDateString();
+                        $new_notification->data = $data;
+                        $new_notification->user_data = $users;
+                        $new_notification->save();
+    
+                        $PR->role_approve_1 = $pr_config->role_id_1;
+                        $PR->save();
+                    }
+                    
+                    if($pr_config->role_id_2 != null){
+                        $users = User::where('role_id', $pr_config->role_id_2)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+                        
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $PR->id;
+                        $new_notification->role_id = $pr_config->role_id_2;
+                        $new_notification->notification_date = $PR->created_at->toDateString();
+                        $new_notification->data = $data;
+                        $new_notification->user_data = $users;
+                        $new_notification->save();
+                        
+                        $PR->role_approve_2 = $pr_config->role_id_2;
+                        $PR->save();
+                    }
+                }
+            }
+            // END MAKE NOTIF
         }
     }
 
