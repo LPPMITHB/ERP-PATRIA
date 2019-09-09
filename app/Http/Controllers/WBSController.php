@@ -691,7 +691,11 @@ class WBSController extends Controller
                 $images->user_id = Auth::user()->id;
                 $images->branch_id = Auth::user()->branch->id;
                 $images->drawing = $fileNameToStore;
-                $images->description = $data->img_desc;
+                if(isset($data->img_desc)){
+                    $images->description = $data->img_desc;
+                }else{
+                    $images->description = "";
+                }
 
                 $images->save();
             }
@@ -735,12 +739,18 @@ class WBSController extends Controller
     public function destroyWbsImage(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        dd("Success");
         DB::beginTransaction();
         try {
-                
+            $image = WBSImage::find($id);
+            $imageRoute = public_path("app/documents/wbs_images/".$image->drawing);
+            if($image->delete() && File::exists($imageRoute)){
+                File::delete($imageRoute);
+                DB::commit();
+                return response(["response"=>"Successfully deleted image."],Response::HTTP_OK);
+            }
         } catch (\Exception $e) {
-
+            DB::rollback();
+            return response(["error"=>$e->getMessage()], Response::HTTP_OK);
         }
     }
 
