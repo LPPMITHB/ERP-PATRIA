@@ -311,7 +311,7 @@
 @push('script')
 <script>
     const form = document.querySelector('form#create-project');
-$(document).ready(function(){
+    $(document).ready(function(){
     $(document).on('change', ':file', function() {
         var input = $(this),
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
@@ -320,7 +320,7 @@ $(document).ready(function(){
     });
 
     // We can watch for our custom `fileselect` event like this
-    $(document).ready( function() {
+    $(document).ready(function(){
         $(':file').on('fileselect', function(event, numFiles, label) {
             var input = $(this).parents('.input-group').find(':text'),
                 log = numFiles > 1 ? numFiles + ' files selected' : label;
