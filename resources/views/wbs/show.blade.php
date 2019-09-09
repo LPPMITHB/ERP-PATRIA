@@ -163,8 +163,7 @@
                                             <tr>
                                                 <th style="width:5%">No</th>
                                                 <th style="width:20%">Image</th>
-                                                <th style="width:40%">Description</th>
-                                                <th style="width:20%">Added By</th>
+                                                <th style="width:60%">Description</th>
                                                 <th style="width:15%"></th>
                                             </tr>
                                         </thead>
@@ -173,7 +172,6 @@
                                                 <td>{{index+1}}</td>
                                                 <td><img style="display:block;" width="100%" :src="getSrc(image)"></td>
                                                 <td>{{image.description}}</td>
-                                                <td>{{image.user_id}}</td>
                                                 <td>
                                                     <div class="parent-container"><a class="btn btn-primary btn-sm mobile_button_view col-sm-6" :href="getSrc(image)">VIEW</a></div><div><a class="btn btn-danger btn-sm mobile_button_view col-sm-6" @click="deleteWbsImage(image)">DELETE</a></div></td>
                                             </tr>
@@ -463,10 +461,7 @@ var vm = new Vue({
                 position: 'center',
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
-                        var url = "";
-                        if(route == "/"){
-                            url = "/deleteWbsImage/"+image.id;
-                        }
+                        var url = "/wbs/deleteWbsImage/"+image.id;
                         window.axios.delete(url)
                         .then((response) => {
                             if(response.data.error != undefined){
