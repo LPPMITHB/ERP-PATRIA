@@ -870,3 +870,11 @@ $color-loader: #3c8dbc;
 .gantt_task_line.hidden{
     display:none;
 }
+
+.send_button{
+    -webkit-transition: all  0.5s;
+    -moz-transition: all  0.5s;
+    -o-transition: all  0.5s;
+    transition: all  0.5s;
+    right : 40px;
+}

@@ -18,13 +18,13 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered" id="project-table">
+                <table class="table table-hover table-striped" id="project-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
                             <th width="25%">Project Name</th>
-                            <th width="40%">Customer</th>
                             <th width="25%">Ship</th>
+                            <th width="15%"></th>
                             <th width="5%"></th>
                         </tr>
                     </thead>
@@ -33,8 +33,14 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $project->name }}</td>
-                                <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
+                                <td>
+                                    <span class="pull-right-container">
+                                        @if ($project->new_comment)
+                                            <small class="label bg-green">{{$project->new_comment_qty}} new comment(s)</small>
+                                        @endif
+                                    </span>
+                                </td>
                                 <td class="p-l-5 p-r-5" align="center">
                                     <a class="btn btn-primary btn-xs" href="{{ route('customer_portal.createPost', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>

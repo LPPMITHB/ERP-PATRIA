@@ -226,3 +226,4 @@ Route::get('/getDeliveryDocuments/{project_id}', 'DeliveryDocumentController@get
 
 // Post
 Route::get('/getPosts/{project_id}', 'CustomerPortalController@getPostsAPI')->name('api.project.getPostsAPI');
+Route::get('/getComments/{project_id}', 'CustomerPortalController@getCommentsAPI')->name('api.project.getCommentsAPI');

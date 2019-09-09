@@ -3106,7 +3106,19 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-file-text-o',
             'route_name' => 'customer_portal.selectProjectPost',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP,PAMI,CUSTOMER',
+            'roles' => 'CUSTOMER',
+            'menu_id' => $customer_portal,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Reply Complaints',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'customer_portal.selectProjectReply',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $customer_portal,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
