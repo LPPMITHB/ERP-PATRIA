@@ -392,6 +392,7 @@ a {
 .tdBreakWord {
     overflow: hidden !important;
     overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
 }
 
 .table>thead>tr>th {
@@ -605,7 +606,7 @@ textarea {
         margin-left: 15px;
         margin-top: 5px;
     }
-    
+
     .mobile_view{
         display: block;
     }

@@ -678,6 +678,8 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:manage-wbs-profile');
 
+    Route::get('/manageWbsImages', 'WBSController@manageWbsImages')->name('manageWbsImages');
+
     Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:manage-wbs-profile');
 
     Route::put('updateWbsProfile/{id}', 'WBSController@updateWbsProfile')->name('updateWbsProfile')->middleware('can:manage-wbs-profile');
@@ -2132,7 +2134,7 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
     Route::get('/selectProjectPost', 'CustomerPortalController@selectProjectPost')->name('selectProjectPost');
 
     Route::get('/selectProjectReply', 'CustomerPortalController@selectProjectReply')->name('selectProjectReply');
-    
+
     Route::get('/', 'CustomerPortalController@index')->name('index');
 
     Route::get('/{id}', 'CustomerPortalController@show')->name('show');
