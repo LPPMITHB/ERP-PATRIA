@@ -2476,5 +2476,25 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+         // Customer Portal View Project Progress
+        $projectProgress = Menu::where('name','View Project Progress')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View Project Progress',
+            'menu_id' => $projectProgress,
+            'middleware' => 'show-project-progress',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Customer Portal Create Post
+        $postComplaints = Menu::where('name','Post Complaints')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Post Complaints',
+            'menu_id' => $postComplaints,
+            'middleware' => 'create-post',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
     }
 }

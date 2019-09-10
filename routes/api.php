@@ -220,3 +220,10 @@ Route::get('/getSalesPlan/{year}', 'SalesPlanController@getSalesPlanAPI')->name(
 
 // QC Task
 Route::get('/getQcType/{id}', 'QualityControlTaskController@getQcTypeApi')->name('api.qc_task.getQcTypeApi');
+
+// Delivery Document
+Route::get('/getDeliveryDocuments/{project_id}', 'DeliveryDocumentController@getDeliveryDocumentsAPI')->name('api.project.getDeliveryDocumentsAPI');
+
+// Post
+Route::get('/getPosts/{project_id}', 'CustomerPortalController@getPostsAPI')->name('api.project.getPostsAPI');
+Route::get('/getComments/{project_id}', 'CustomerPortalController@getCommentsAPI')->name('api.project.getCommentsAPI');

@@ -2090,18 +2090,6 @@ class ProjectController extends Controller
         }
 
         foreach ($wbss as $wbs) {
-            // $earliest_date_ref = null;
-            // if(count($wbs->activities)>0){
-            //     $activityRef = Activity::where('wbs_id',$wbs->id)->orderBy('planned_start_date','asc')->first();
-            //     $earliest_date_ref = $activityRef->planned_start_date;
-            // }
-
-            // $earliest_date = self::getEarliestActivity($wbs,$earliest_date_ref);
-
-            // $start_date_wbs = $earliest_date != null ? date_create($earliest_date) : date_create($project->planned_start_date);
-            // $earlier = new DateTime($earliest_date);
-            // $later = new DateTime($wbs->planned_end_date);
-            // $duration = $later->diff($earlier)->format("%a");
             $start_date_wbs = date_create($wbs->actual_start_date != null ? $wbs->actual_start_date : $wbs->planned_start_date );
             if($wbs->wbs){
                 if($today>$wbs->planned_end_date){
