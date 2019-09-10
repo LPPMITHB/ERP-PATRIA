@@ -46,7 +46,7 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#wbs_info" data-toggle="tab" aria-expanded="true">WBS Info</a></li>
-                                <li class=""><a href="#wbs_images" data-toggle="tab" aria-expanded="false">Images</a></li>
+                                <li class=""><a href="#wbs-images" data-toggle="tab" aria-expanded="false">Images</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="wbs_info">
@@ -156,14 +156,15 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="tab-pane" id="wbs_images">
-                                    <a class="btn btn-primary btn-sm mobile_button_view pull-right" style="margin-bottom:16px" data-toggle="modal" href="#add_image">ADD IMAGE</a>
-                                    <table class="table table-bordered width100 showTable tableFixed">
+                                <div class="tab-pane" id="wbs-images">
+                                    <a class="btn btn-primary btn-sm mobile_button_view pull-right" style="margin-bottom:16px" data-toggle="modal" href="#add-image">ADD IMAGE</a>
+                                    <table class="table table-bordered tableFixed">
                                         <thead>
                                             <tr>
                                                 <th style="width:5%">No</th>
                                                 <th style="width:20%">Image</th>
-                                                <th style="width:60%">Description</th>
+                                                <th style="width:40%">Description</th>
+                                                <th style="width:20%">Created By</th>
                                                 <th style="width:15%"></th>
                                             </tr>
                                         </thead>
@@ -172,6 +173,7 @@
                                                 <td>{{index+1}}</td>
                                                 <td><img style="display:block;" width="100%" :src="getSrc(image)"></td>
                                                 <td>{{image.description}}</td>
+                                                <td>{{image.user.name}}</td>
                                                 <td>
                                                     <div class="parent-container"><a class="btn btn-primary btn-sm mobile_button_view col-sm-6" :href="getSrc(image)">VIEW</a></div><div><a class="btn btn-danger btn-sm mobile_button_view col-sm-6" @click="deleteWbsImage(image)">DELETE</a></div></td>
                                             </tr>
@@ -181,7 +183,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal fade" id="add_image">
+                    <div class="modal fade" id="add-image">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -447,6 +449,24 @@ var vm = new Vue({
                 this.editWbs.planned_end_date = "";
             }
         },
+        getWbsImages(){
+            window.axios.get('/api/getWbsImages/'+this.wbsDisplay.wbs_id).then(({ data }) => {
+                $('div.overlay').show();
+                this.images = data;
+                $('#wbs-images-table').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#wbs-images-table').DataTable({
+                        'paging'      : true,
+                        'lengthChange': false,
+                        'searching'   : false,
+                        'ordering'    : false,
+                        'info'        : true,
+                        'autoWidth'   : false,
+                    });
+                    $('div.overlay').hide();
+                })
+            });
+        },
         deleteWbsImage(image){
             var route = this.route;
             iziToast.question({
@@ -474,11 +494,13 @@ var vm = new Vue({
                                 });
                                 $('div.overlay').hide();
                             }else{
+                                $('div.overlay').show();
                                 iziToast.success({
                                     displayMode: 'replace',
                                     title: response.data.response,
                                     position: 'topRight',
                                 });
+                                vm.getWbsImages();
                             }
                         })
                         .catch((error) => {
@@ -665,6 +687,7 @@ var vm = new Vue({
         },
     },
     created: function(){
+        this.getWbsImages();
         if(this.editWbs.parent_wbs != null){
             window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
                 this.totalWeight = data;
