@@ -143,62 +143,7 @@
                                 </div>
                             </template>
 
-                            <div class="form-group">
-                                <label for="weight" class="col-sm-2 control-label">Weight</label>
-
-                                <div class="col-sm-8">
-                                    <input type="text" :disabled="weightOk" class="form-control" id="weight" v-model="submittedForm.weight">
-                                </div>
-
-                                <div class="col-sm-2">
-                                    <selectize id="uom" v-model="submittedForm.weight_uom_id" :settings="weight_uom_settings">
-                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                    </selectize>
-                                </div>
-                            </div>
-
-                                <div class="form-group">
-                                    <label for="height" class="col-sm-2 control-label">Height</label>
-
-                                    <div class="col-sm-8">
-                                        <input type="text" :disabled="heightOk" class="form-control" id="height" v-model="submittedForm.height" >
-                                    </div>
-
-                                    <div class="col-sm-2">
-                                        <selectize id="uom" v-model="submittedForm.height_uom_id" :settings="height_uom_settings">
-                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="length" class="col-sm-2 control-label">Length</label>
-
-                                    <div class="col-sm-8">
-                                        <input type="text" :disabled="lengthOk" class="form-control" id="lengths" v-model="submittedForm.lengths" >
-                                    </div>
-
-                                    <div class="col-sm-2">
-                                        <selectize id="uom" v-model="submittedForm.length_uom_id" :settings="length_uom_settings">
-                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="width" class="col-sm-2 control-label">Width</label>
-
-                                    <div class="col-sm-8">
-                                        <input type="text" :disabled="widthOk" class="form-control" id="width" v-model="submittedForm.width"  >
-                                    </div>
-
-                                    <div class="col-sm-2">
-                                        <selectize id="uom" v-model="submittedForm.width_uom_id" :settings="width_uom_settings">
-                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-
+                            
                                 <div class="form-group">
                                     <label for="type" class="col-sm-2 control-label">Material Type *</label>
                                     <div class="col-sm-10">

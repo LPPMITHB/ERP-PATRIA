@@ -229,6 +229,36 @@
                             'ordering': false,
                             'info': true,
                             'autoWidth': false,
+                            'initComplete': function(){
+                            },
+                        });
+                        $('div.overlay').hide();
+                        var objDiv = document.getElementById("chat-box");
+                        objDiv.scrollTop = objDiv.scrollHeight;
+                    })
+                });
+            },
+            getCommentsEmit() {
+                window.axios.get('/api/getComments/'+ this.post.id).then(({data
+                }) => {
+                    $('div.overlay').show();
+                    this.comments = data;
+                    this.comments.forEach(comment => {
+                        comment.time = moment(comment.created_at).format("DD-MM-YYYY HH:mm:ss");
+                        // comment.files = JSON.parse(comment.file_name);
+                    });
+                    this.newIndex = Object.keys(this.comments).length + 1;
+                    $('#comments-table').DataTable().destroy();
+                    this.$nextTick(function () {
+                        $('#comments-table').DataTable({
+                            'paging': true,
+                            'lengthChange': false,
+                            'searching': true,
+                            'ordering': false,
+                            'info': true,
+                            'autoWidth': false,
+                            'initComplete': function(){
+                            },
                         });
                         $('div.overlay').hide();
                         var objDiv = document.getElementById("chat-box");

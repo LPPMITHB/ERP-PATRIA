@@ -540,7 +540,7 @@ class BOMController extends Controller
 
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('bom.show',$id)->with('error', $e->getMessage());
+            return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
 
@@ -981,14 +981,14 @@ class BOMController extends Controller
 
         if($status == 1){
             //MAKE NOTIFICATION
-            if($route == '/purchase_requisition'){
+            if($route == '/bom'){
                 $data = json_encode([
                     'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
                     'time_info' => 'Created at',
                     'title' => 'Purchase Requisition',
                     'url' => '/purchase_requisition/showApprove/'.$PR->id,
                 ]);
-            }else if($route == '/purchase_requisition_repair'){
+            }else if($route == '/bom_repair'){
                 $data = json_encode([
                     'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
                     'time_info' => 'Created at',
@@ -1194,6 +1194,15 @@ class BOMController extends Controller
         }
 
         return view('bom.materialSummary', compact('project','bomPreps','stocks','existing_bom'));
+    }
+
+    public function checkValueMaterial($prds){
+        $pr_value = 0;
+        foreach ($prds as $prd) {
+            $pr_value += $prd->material->cost_standard_price * $prd->quantity;
+        }
+
+        return $pr_value;
     }
 
     public function getMaterialAPI($id){

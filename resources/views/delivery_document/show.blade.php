@@ -3,11 +3,11 @@
     @if ($route == "/delivery_document")
         @breadcrumb(
             [
-                'title' => 'Show Delivery Document',
+                'title' => 'View Delivery Document',
                 'items' => [
                     'Dashboard' => route('index'),
                     'Select Project' => route('delivery_document.selectProjectIndex'),
-                    'Show Delivery Document' => ""
+                    'View Delivery Document' => ""
                 ]
             ]
         )
@@ -15,11 +15,11 @@
     @elseif ($route == "/delivery_document_repair")
         @breadcrumb(
             [
-                'title' => 'Show Delivery Document',
+                'title' => 'View Delivery Document',
                 'items' => [
                     'Dashboard' => route('index'),
                     // 'Select Project' => route('delivery_document_repair.index'),
-                    'Show Delivery Document' => ""
+                    'View Delivery Document' => ""
                 ]
             ]
         )

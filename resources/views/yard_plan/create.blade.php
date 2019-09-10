@@ -378,7 +378,7 @@
                     var planned_duration = parseInt(this.yardPlan.planned_duration);
                     var planned_start_date = this.yardPlan.planned_start_date;
                     var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
-                    
+
                     planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                     $('#planned_end_date').datepicker('setDate', planned_end_date);
                 }else{
@@ -390,6 +390,7 @@
                     var planned_duration = parseInt(this.editYardPlan.planned_duration);
                     var planned_start_date = this.editYardPlan.planned_start_date;
                     var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
+                    console.log(planned_end_date);
                     
                     planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
                     $('#edit_planned_end_date').datepicker('setDate', planned_end_date);
@@ -508,6 +509,7 @@
                 title: yardPlan[i].yard.name+" - "+yardPlan[i].project.name+" ("+yardPlan[i].project.number+") - "+yardPlan[i].description, 
                 start: yardPlan[i].planned_start_date,
                 end: yardPlan[i].planned_end_date,
+                end_substitute: yardPlan[i].planned_end_date,
                 planned_duration : yardPlan[i].planned_duration,
                 project_id : yardPlan[i].project_id,
                 wbs_id : yardPlan[i].wbs_id,
@@ -541,7 +543,6 @@
             //Set day biar bisa diklik
             dayClick: function(date, jsEvent, view, resourceObj) {
                 $('#add_yard_plan').modal('show');
-                console.log(date);
                 $('#planned_start_date').datepicker('setDate', new Date(date.format('DD-MM-YYYY').split("-").reverse().join("-")));
                 document.getElementById('planned_start_date').disabled = true;
 
@@ -552,7 +553,11 @@
                     $('#edit_yard_plan').modal('show');
                     vm.editYardPlan.id = calEvent.id;
                     $('#edit_planned_start_date').datepicker('setDate', new Date(calEvent.start.format('DD-MM-YYYY').split("-").reverse().join("-")));
-                    $('#edit_planned_end_date').datepicker('setDate', new Date(calEvent.end.format('DD-MM-YYYY').split("-").reverse().join("-")));
+                    if(calEvent.end != null){
+                        $('#edit_planned_end_date').datepicker('setDate', new Date(calEvent.end.format('DD-MM-YYYY').split("-").reverse().join("-")));
+                    }else{
+                        $('#edit_planned_end_date').datepicker('setDate', new Date(calEvent.end_substitute));
+                    }
                     
                     vm.editYardPlan.yard_id = calEvent.yard_id;
                     vm.editYardPlan.project_id = calEvent.project_id;

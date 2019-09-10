@@ -624,6 +624,8 @@
             'dataInput.quantityFloat' : function(newValue){
                 var qty = "";
                 var temp = newValue;
+                console.log(newValue);
+                console.log(this.dataInput.available);
                 if(temp > this.dataInput.available){
                     iziToast.warning({
                         title: 'There is no available stock for this material',
@@ -804,7 +806,16 @@
 
                             this.stocks.forEach(stock => {
                                 if(stock.material_id == newValue){
-                                    this.dataInput.available = stock.available;
+                                    if(stock.available < 0){
+                                        this.dataInput.material_id = "";
+                                        iziToast.warning({
+                                            title: 'There are no available stock for this material..',
+                                            position: 'topRight',
+                                            displayMode: 'replace'
+                                        });
+                                    }else{
+                                        this.dataInput.available = stock.available+data['planned_quantity'];
+                                    }
                                 }
                             });
                             $('div.overlay').hide();
@@ -869,12 +880,21 @@
                             if(newValue != this.editInput.old_material_id){
                                 this.stocks.forEach(stock => {
                                     if(stock.material_id == newValue){
-                                        this.editInput.available = stock.available;
+                                        if(stock.available < 0){
+                                            this.editInput.material_id = "";
+                                            iziToast.warning({
+                                                title: 'There are no available stock for this material..',
+                                                position: 'topRight',
+                                                displayMode: 'replace'
+                                            });
+                                        }else{
+                                            this.editInput.available = stock.available+data['planned_quantity'];
+                                        }
                                     }
                                 });
                                 this.editInput.quantity = "";
                             }else{
-                                this.editInput.available = this.dataMaterial[this.editInput.index].available;
+                                this.editInput.available = this.dataMaterial[this.editInput.index].available + data['planned_quantity'];
                                 this.editInput.quantity = this.dataMaterial[this.editInput.index].quantity;
                             }
 
