@@ -218,7 +218,7 @@ class QualityControlTaskController extends Controller
     }
 
     public function getQcTypeApi($id){
-        $qc_type = QualityControlType::where('id',$id)->with('code','name')->first()->jsonSerialize();
+        $qc_type = QualityControlType::where('id',$id)->first()->jsonSerialize();
         return response($qc_type, Response::HTTP_OK);
     }
 }
