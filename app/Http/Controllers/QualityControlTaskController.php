@@ -2,16 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Bom;
 use App\Models\Project;
 use App\Models\WBS;
 use App\Models\QualityControlTask;
+use App\Models\QualityControlTaskDetail;
 use App\Models\QualityControlType;
+use App\Models\QualityControlTypeDetail;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
-
+use Auth;
+use DB;
 
 class QualityControlTaskController extends Controller
 {
@@ -170,28 +174,27 @@ class QualityControlTaskController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
-        dd($data);
-        
         try {
             $qcTask = new QualityControlTask;
-            $qcTask->name = $data->name;
+            $qcTask->wbs_id = $data->wbs_id;
             $qcTask->description = $data->description;
             $qcTask->user_id = Auth::user()->id;
             $qcTask->branch_id = Auth::user()->branch->id;
-
+            
             if ($qcTask->save()) {
-                foreach ($data->task as $qctask) {
+                foreach ($data->dataQcTask as $data) {
                     $qcTaskDetail = new QualityControlTaskDetail;
-                    $qcTaskDetail->name = $qctask->name;
-                    $qcTaskDetail->description = $qctask->description;
+                    $qcTaskDetail->quality_control_task_id = $qcTask->id;
+                    $qcTaskDetail->name = $data->name;
+                    $qcTaskDetail->description = $data->description;
                     $qcTaskDetail->save();
                 }
             }
             DB::commit();
-            return redirect()->route('qc_type.show', $qcTask->id)->with('success', 'Success Created New Quality Control Type!');
+            return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Created New Quality Control Task!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('qc_type.create')->with('error', $e->getMessage())->withInput();
+            return redirect()->route('qc_task.create', $qcTask->wbs_id)->with('error', $e->getMessage())->withInput();
         }
     }
 

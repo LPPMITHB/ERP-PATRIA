@@ -26,7 +26,7 @@ class QualityControlTask extends Model
 
     public function qualityControlTaskDetails()
     {
-        return $this->hasMany('App\Models\QualityControlTask');
+        return $this->hasMany('App\Models\QualityControlTaskDetail');
     }
 
 }
