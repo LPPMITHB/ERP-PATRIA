@@ -1,12 +1,12 @@
 @extends('layouts.main')
 @section('content-header')
 @breadcrumb([
-    'title' => 'Manage Quality Control Task',
+    'title' => 'Edit Quality Control Type',
     'subtitle' => '',
     'items' => [
         'Dashboard' => route('index'),
         'Quality Control' => route('qc_type.index'),
-        'Edit' => '',
+        'Edit Quality Control Type' => '',
     ]
 ])
 @endbreadcrumb
@@ -39,8 +39,8 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="25%">Name</th>
-                                    <th width="60%">Description</th>
+                                    <th width="35%">Name</th>
+                                    <th width="50%">Description</th>
                                     <th width="10%"></th>
                                 </tr>
                             </thead>
@@ -64,10 +64,10 @@
                             <tfoot>
                                 <tr>
                                     <td>{{newIndex}}</td>
-                                    <td class="no-padding"><input class="form-control" placeholder="Please Input Task Name" type="text" v-model="input.name">
+                                    <td class="no-padding"><input class="form-control" placeholder="QC Type Detail Name" type="text" v-model="input.name">
                                     </td>
                                     <td class="no-padding">
-                                        <textarea class="form-control" rows="1" placeholder="Please Input Task Description" v-model="input.description"></textarea>
+                                        <textarea class="form-control" rows="1" placeholder="QC Type Detail Description" v-model="input.description"></textarea>
                                     </td>
                                     <td class="p-l-0" align="center"><a @click.prevent="addTypeDetail()"
                                             class="btn btn-primary btn-xs" href="#">
@@ -123,9 +123,6 @@
             <input type="hidden" name="_method" value="PUT">
         </form>
     </div>
-</div>
-<div class="overlay">
-    <i class="fa fa-refresh fa-spin"></i>
 </div>
 
 @endsection
@@ -290,34 +287,12 @@
             },
             submitDetails(){
                 $('div.overlay').show();
-                var url = "{{ route('qc_type.updatedetail') }}";
-                var detailData = JSON.stringify(this.forms);
-                window.axios.put(url,detailData).then((response) => {
-                    iziToast.success({
-                        title: 'QC task updated !',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    this.addRow(response);
-                    $('div.overlay').hide();
-                    this.forms.detailID='';
-                    this.forms.index = '';
-                    this.forms.name = '';
-                    this.forms.description = '';
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    console.log(error);
-                    $('div.overlay').hide();
-                })
+                this.addRow();
             },
             addRow:function(response){
                 this.qtc_task[this.forms.index].name = this.forms.name;
                 this.qtc_task[this.forms.index].description = this.forms.description;
+                $('div.overlay').hide();
             },
             removeRow: function(positions) {
                 this.newIndex = this.qtc_task.length;

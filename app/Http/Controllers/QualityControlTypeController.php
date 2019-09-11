@@ -157,6 +157,11 @@ class QualityControlTypeController extends Controller
                     $qcTypeDetail->name = $task->name;
                     $qcTypeDetail->description = $task->description;
                     $qcTypeDetail->save();
+                }else{
+                    $qcTypeDetail = QualityControlTypeDetail::find($task->id);
+                    $qcTypeDetail->name = $task->name;
+                    $qcTypeDetail->description = $task->description;
+                    $qcTypeDetail->update();
                 }
             }
             DB::commit();
