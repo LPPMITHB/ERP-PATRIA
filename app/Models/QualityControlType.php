@@ -8,6 +8,11 @@ class QualityControlType extends Model
 {
     protected $table = 'mst_quality_control_type';
 
+    public function qualityControlTypeDetails()
+    {
+        return $this->hasMany('App\Models\qualityControlTypeDetail');
+    }
+
     public function qualityControlTasks()
     {
         return $this->hasMany('App\Models\qualityControlType');

@@ -31,22 +31,22 @@
                                     <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                                     
                                     <div class="col-md-4 no-padding">Number</div>
-                                    <div class="col-md-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
+                                    <div class="col-md-8 no-padding"><b>: {{wbs.number}}</b></div>
             
                                     <div class="col-md-4 no-padding">Description</div>
-                                    <div v-if="wbs.description != ''" class="col-md-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: {{wbs.description}}</b></div>
-                                    <div v-else class="col-md-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: -</b></div>
+                                    <div v-if="wbs.description != ''" class="col-md-8 no-padding"><b>: {{wbs.description}}</b></div>
+                                    <div v-else class="col-md-8 no-padding"><b>: -</b></div>
             
                                     <div class="col-md-4 no-padding">Deliverable</div>
-                                    <div class="col-md-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
+                                    <div class="col-md-8 no-padding "><b>: {{wbs.deliverables}}</b></div>
                                     
                                     <div class="col-sm-12 no-padding"><b>QC Type Information</b></div>
 
                                     <div class="col-md-4 no-padding">QC Type Code</div>
-                                    <div class="col-md-8 no-padding tdEllipsis" v-tooltip:top="(selectedQcType.code)"><b>: {{selectedQcType.code}}</b></div>
+                                    <div class="col-md-8 no-padding"><b>: {{selectedQcType.code}}</b></div>
                                     
                                     <div class="col-md-4 no-padding">QC Type Name</div>
-                                    <div class="col-md-8 no-padding tdEllipsis" v-tooltip:top="(selectedQcType.name)"><b>: {{selectedQcType.name}}</b></div>
+                                    <div class="col-md-8 no-padding"><b>: {{selectedQcType.name}}</b></div>
 
                                 </div>
                                 <div class="col-xs-12 col-md-4">
@@ -62,17 +62,17 @@
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
-                                                <th style="width: 23%">QC Task Number</th>
-                                                <th style="width: 38%">QC Task Name</th>
-                                                <th style="width: 45%">Description</th>
+                                                <th style="width: 33%">QC Task Name</th>
+                                                <th style="width: 20%">Position</th>
+                                                <th style="width: 30%">Description</th>
                                                 <th style="width: 13%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(qc_task,index) in dataQcTask">
                                                 <td>{{ index + 1 }}</td>
-                                                <td class="tdEllipsis">{{ qc_task.number }}</td>
                                                 <td class="tdEllipsis">{{ qc_task.name }}</td>
+                                                <td class="tdEllipsis">{{ qc_task.position }}</td>
                                                 <td class="tdEllipsis">{{ qc_task.description }}</td>
                                                 <td class="p-l-0 textCenter">
                                                     <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(qc_task,index)">
@@ -87,12 +87,12 @@
                                         <tfoot>
                                             <tr>
                                                 <td class="p-l-10">{{newIndex}}</td>
-                                                
+
                                                 <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.number" placeholder="">
+                                                    <input class="form-control" v-model="dataInput.name" placeholder="Please Input Name">
                                                 </td>
                                                 <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.description" placeholder="">
+                                                    <input class="form-control" v-model="dataInput.description" placeholder="Please Input Name">
                                                 </td>
                                                 <td class="p-l-0">
                                                     <input class="form-control" v-model="dataInput.position" placeholder="Please Input Position">
@@ -160,26 +160,18 @@
             },
         },
         methods : {
-            tooltip(text){
-                Vue.directive('tooltip', function(el, binding){
-                    $(el).tooltip('destroy');
-                    $(el).tooltip({
-                        title: text,
-                        placement: binding.arg,
-                        trigger: 'hover'
-                    })
-                })
-                return text
-            }
+            
         },
         watch : {
             'qc_type_id' : function(newValue){
                 // this.dataInput.wbs_id = "";
+                this.selectedQcType = [];
                 if(newValue != ""){
                     $('div.overlay').show();
                     window.axios.get('/api/getQcType/'+newValue).then(({ data }) => {
                         console.log(data);
                         this.selectedQcType = data;
+                        this.dataQcTask = data.quality_control_type_details;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {

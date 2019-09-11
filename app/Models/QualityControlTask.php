@@ -21,12 +21,12 @@ class QualityControlTask extends Model
 
     public function qualityControlType()
     {
-        return $this->belongsTo('App\Models\qualityControlType');
+        return $this->belongsTo('App\Models\QualityControlType');
     }
 
     public function qualityControlTaskDetails()
     {
-        return $this->hasMany('App\Models\qualityControlTask');
+        return $this->hasMany('App\Models\QualityControlTask');
     }
 
 }
