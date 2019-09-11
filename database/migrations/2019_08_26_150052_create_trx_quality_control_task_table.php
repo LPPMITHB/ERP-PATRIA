@@ -15,7 +15,6 @@ class CreateTrxQualityControlTaskTable extends Migration
     {
         Schema::create('trx_quality_control_task', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('number');
             $table->unsignedInteger('wbs_id');
             $table->text('description')->nullable();
             $table->unsignedInteger('user_id');

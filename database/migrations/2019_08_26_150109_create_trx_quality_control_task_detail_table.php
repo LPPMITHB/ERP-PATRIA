@@ -15,13 +15,13 @@ class CreateTrxQualityControlTaskDetailTable extends Migration
     {
         Schema::create('trx_quality_control_task_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('qctask_id');
-            $table->integer('position');
+            $table->unsignedInteger('quality_control_task_id');
+            $table->string('name')->nullable();
             $table->text('description')->nullable();
             
             $table->timestamps();
 
-            $table->foreign('qctask_id')->references('id')->on('trx_quality_control_task');
+            $table->foreign('quality_control_task_id')->references('id')->on('trx_quality_control_task');
         });
     }
 
