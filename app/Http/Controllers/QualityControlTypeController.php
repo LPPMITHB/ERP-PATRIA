@@ -142,19 +142,29 @@ class QualityControlTypeController extends Controller
 
     public function updateMaster(Request $request)
     {
-        $data = $request->json()->all();
-        $modelQcType = null;
+        $data = json_decode($request->datas);
+        $modelQcType = QualityControlType::findOrFail($data->id);
         DB::beginTransaction();
         try {
-            $modelQcType = QualityControlType::findOrFail($data['id']);
-            $modelQcType->name = $data['name'];
-            $modelQcType->description = $data['description'];
+            $modelQcType->name = $data->name;
+            $modelQcType->description = $data->description;
             $modelQcType->update();
+
+            foreach ($data->task as $task) {
+                if(!isset($task->id)){
+                    $qcTypeDetail = new QualityControlTypeDetail;
+                    $qcTypeDetail->quality_control_type_id = $modelQcType->id;
+                    $qcTypeDetail->name = $task->name;
+                    $qcTypeDetail->description = $task->description;
+                    $qcTypeDetail->save();
+                }
+            }
             DB::commit();
+            return redirect()->route('qc_type.show', $modelQcType->id)->with('success', "Success Updated Quality Control Type!");
         } catch (\Exception $e) {
             DB::rollback();
             echo ($e);
-            return response(json_encode($data), Response::HTTP_FORBIDDEN);
+            return redirect()->route('qc_type.show', $modelQcType->id)->with('error', $e);
         }
         return response($modelQcType->id, Response::HTTP_OK);
     }
