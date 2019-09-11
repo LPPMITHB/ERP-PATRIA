@@ -485,7 +485,7 @@ class ConfigurationsTableSeeder extends Seeder
                 'value' => array(
                     0 => array(
                         'minimum' => 0,
-                        'maximum' => 5000000,
+                        'maximum' => 500000000,
                         'role_id_1' => 1,
                         'role_id_2' => 4,
                     ),

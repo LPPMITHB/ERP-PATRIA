@@ -2013,7 +2013,7 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
 
-    Route::patch('/store', 'QualityControlTypeController@store')->name('store');
+    Route::post('/', 'QualityControlTypeController@store')->name('store');
 
     Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
