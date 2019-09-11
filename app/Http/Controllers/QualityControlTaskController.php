@@ -169,7 +169,30 @@ class QualityControlTaskController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = json_decode($request->datas);
+        dd($data);
+        
+        try {
+            $qcTask = new QualityControlTask;
+            $qcTask->name = $data->name;
+            $qcTask->description = $data->description;
+            $qcTask->user_id = Auth::user()->id;
+            $qcTask->branch_id = Auth::user()->branch->id;
+
+            if ($qcTask->save()) {
+                foreach ($data->task as $qctask) {
+                    $qcTaskDetail = new QualityControlTaskDetail;
+                    $qcTaskDetail->name = $qctask->name;
+                    $qcTaskDetail->description = $qctask->description;
+                    $qcTaskDetail->save();
+                }
+            }
+            DB::commit();
+            return redirect()->route('qc_type.show', $qcTask->id)->with('success', 'Success Created New Quality Control Type!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('qc_type.create')->with('error', $e->getMessage())->withInput();
+        }
     }
 
     /**
