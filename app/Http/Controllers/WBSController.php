@@ -65,6 +65,12 @@ class WBSController extends Controller
         }
     }
 
+    public function manageWbsImages(Request $request){
+        $images = WBSImage::with('wbs')->with('user')->get();
+        $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
+        return view('wbs.manageWbsImages', compact('menu','images'));
+    }
+
     public function storeBomProfile(Request $request){
         $route = $request->route()->getPrefix();
         $data = $request->json()->all();
@@ -729,7 +735,7 @@ class WBSController extends Controller
     public function show($id, Request $request)
     {
         $wbs = WBS::find($id);
-        $images = WBSImage::where('wbs_id',$wbs->id)->get();
+        $images = WBSImage::where('wbs_id',$wbs->id)->with('user')->get();
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
@@ -1241,6 +1247,11 @@ class WBSController extends Controller
     public function getWbsAPI($project_id){
         $wbss = WBS::orderBy('planned_start_date', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
+    }
+
+    public function getWbsImagesAPI($wbs_id){
+        $images = WBSImage::where('wbs_id',$wbs_id)->with('user')->get()->jsonSerialize();
+        return response($images, Response::HTTP_OK);
     }
 
     public function getAllWbsAPI($project_id){

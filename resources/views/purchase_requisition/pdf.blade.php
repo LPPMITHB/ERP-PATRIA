@@ -108,7 +108,7 @@
                                 @elseif($modelPR->status == 6)
                                     @php($status = "CONSOLIDATED")
                                 @endif
-                                : {{$status}}
+                                {{-- : {{$status}} --}}
                             </div>
                             {{-- @if($modelPR->status == 2)
                                 <div style="margin-left: 450px; ">
@@ -165,7 +165,7 @@
                                                     <td style="font-size: 11px" width="7%" class="tdBreakWord text-center">-</td>
                                                 @endif
                                                 <td style="font-size: 11px" width="10%" class="tdBreakWord text-center">{{($PRD->required_date != null) ? date("d-m-Y", strtotime($PRD->required_date)) : "-"}} </td>
-                                                <td style="font-size: 11px" width="10%" class="tdBreakWord">{{$PRD->user->role->name}}</td>
+                                                <td style="font-size: 11px" width="10%" class="tdBreakWord">{{$modelPR->user->role->name}}</td>
                                                 <td style="font-size: 11px" width="10%" class="tdBreakWord">{{($PRD->project_id != null) ? $PRD->project->number : ""}}</td>
                                             </tr>
                                         @endif
@@ -206,17 +206,19 @@
                             <div>
                                 <div style="margin-left: 350px; margin-top: 3px; font-size: 11px">Prepared By</div>
                                 <hr style="margin-left: 350px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-left: 350px;margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-left: 350px; margin-top: -20px; font-size: 12px">{{$modelPR->user->name}}</div>
+                                <div style="margin-left: 350px;margin-top: 0px;font-size: 11px">Date</div>
                             </div>
                             <div style="margin-left: 500px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Aproved By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelPR->approvedBy1->name}}</div>
+                                <div style="margin-top: 0px;font-size: 11px">Date</div>
                             </div>
                             <div style="margin-left: 650px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Received By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-top: 0px;font-size: 11px">Date</div>
                             </div>
                         </div>
                     </div>

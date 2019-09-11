@@ -13,10 +13,10 @@
 @endsection
 
 @section('content')
-<div class="row">
+<div>
     @verbatim
-    <div id="posts-vue">
-        <div class="col-md-2 m-b-10 pull-right">
+    <div id="posts-vue" class="row">
+        <div class="col-md-2 col-sm-12">
             <a v-show="index_post" @click="create_post_event()" class="btn btn-primary btn-block">CREATE NEW POST</a>
             <a v-show="create_post" @click="index_post_event()" class="btn btn-primary btn-block">BACK TO POSTS</a>
         </div>

@@ -209,10 +209,12 @@
                             <div>
                                 <div style="margin-top: 10px; font-size: 12px">Prepared by</div>
                                 <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelPO->user->name}}</div>
                             </div>
                             <div style="margin-left: 250px; margin-top:-150px">
                                 <div style="margin-top: 10px; font-size: 12px">Aproved by</div>
                                 <hr style="margin-left: 0px; margin-top: 60px; width:200px;height:0.5px;border:none;color:#333;background-color:#333;" />
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelPO->approvedBy->name}}</div>
                             </div>
                             <div style="margin-left: 500px; margin-top:-150px">
                                 <div style="margin-top: 10px; font-size: 12px">Supplier Confirmation</div>

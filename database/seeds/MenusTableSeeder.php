@@ -288,6 +288,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Manage Drawings',
+            'icon' => 'fa-calendar',
+            'route_name' => 'wbs.manageWbsImages',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $projectManagementBuilding,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Manage WBS Profile',
             'icon' => 'fa-briefcase',
             'route_name' => 'wbs.createWbsProfile',

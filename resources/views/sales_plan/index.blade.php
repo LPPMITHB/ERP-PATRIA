@@ -183,17 +183,17 @@
             updateOk: function(){
                 let isOk = false;
                 
-                var string_newValue = this.sales_plan.value+"";
-                string_newValue = parseFloat(string_newValue.replace(/,/g , ''));
+                // var string_newValue = this.sales_plan.value+"";
+                // string_newValue = parseFloat(string_newValue.replace(/,/g , ''));
 
-                if(this.sales_plan.ship_ids.length == 0 ||
-                this.sales_plan.customer_ids.length == 0 ||
-                string_newValue < 0 || 
-                string_newValue == 0 || 
-                string_newValue == "" || 
-                isNaN(string_newValue)){
-                    isOk = true;
-                }
+                // if(this.sales_plan.ship_ids.length == 0 ||
+                // this.sales_plan.customer_ids.length == 0 ||
+                // string_newValue < 0 || 
+                // string_newValue == 0 || 
+                // string_newValue == "" || 
+                // isNaN(string_newValue)){
+                //     isOk = true;
+                // }
 
                 return isOk;
             },
