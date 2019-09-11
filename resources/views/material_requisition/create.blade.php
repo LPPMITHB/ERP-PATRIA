@@ -51,7 +51,7 @@
                                     <option v-for="(project, index) in projects" :value="project.id">{{ project.name }}</option>
                                 </selectize>
                             </div>
-                            <div class="col-xs-12 col-md-4" v-show="project_id != ''">
+                            <div class="col-xs-12 col-md-4">
                                 <label for="" >Delivery Date</label>
                                 <div class="form-group">
                                         <div class="input-group date">
@@ -62,7 +62,7 @@
                                         </div>
                                     </div>
                             </div>
-                            <div class="col-xs-12 col-md-4 p-r-0" v-show="project_id != ''">
+                            <div class="col-xs-12 col-md-4 p-r-0">
                                 <div class="col-sm-12 p-l-0">
                                     <label for="">MR Description</label>
                                 </div>
@@ -71,7 +71,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="row" v-show="project_id != ''">
+                        <div class="row">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                 <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
                                     <thead>
@@ -624,8 +624,6 @@
             'dataInput.quantityFloat' : function(newValue){
                 var qty = "";
                 var temp = newValue;
-                console.log(newValue);
-                console.log(this.dataInput.available);
                 if(temp > this.dataInput.available){
                     iziToast.warning({
                         title: 'There is no available stock for this material',
@@ -804,6 +802,7 @@
                                 this.dataInput.planned_quantity = ((data['planned_quantity']+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ","));
                             }
 
+                            var material_found = false;
                             this.stocks.forEach(stock => {
                                 if(stock.material_id == newValue){
                                     if(stock.available < 0){
@@ -816,8 +815,18 @@
                                     }else{
                                         this.dataInput.available = stock.available+data['planned_quantity'];
                                     }
+                                    material_found = true;
                                 }
                             });
+
+                            if(!material_found){
+                                this.dataInput.material_id = "";
+                                iziToast.warning({
+                                    title: 'There are no available stock for this material..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                            }
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -835,11 +844,31 @@
                             this.dataInput.is_decimal = data['is_decimal'];
                             this.dataInput.unit = data['unit'];
 
+                            var material_found = false;
                             this.stocks.forEach(stock => {
                                 if(stock.material_id == newValue){
-                                    this.dataInput.available = stock.available;
+                                    if(stock.available < 0){
+                                        this.dataInput.material_id = "";
+                                        iziToast.warning({
+                                            title: 'There are no available stock for this material..',
+                                            position: 'topRight',
+                                            displayMode: 'replace'
+                                        });
+                                    }else{
+                                        this.dataInput.available = stock.available;
+                                    }
+                                    material_found = true;
                                 }
                             });
+
+                            if(!material_found){
+                                this.dataInput.material_id = "";
+                                iziToast.warning({
+                                    title: 'There are no available stock for this material..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                            }
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -878,6 +907,7 @@
                             }
 
                             if(newValue != this.editInput.old_material_id){
+                                var material_found = false;
                                 this.stocks.forEach(stock => {
                                     if(stock.material_id == newValue){
                                         if(stock.available < 0){
@@ -890,8 +920,19 @@
                                         }else{
                                             this.editInput.available = stock.available+data['planned_quantity'];
                                         }
+                                        material_found = true;
                                     }
                                 });
+
+                                if(!material_found){
+                                    this.editInput.material_id = "";
+                                    iziToast.warning({
+                                        title: 'There are no available stock for this material..',
+                                        position: 'topRight',
+                                        displayMode: 'replace'
+                                    });
+                                }
+
                                 this.editInput.quantity = "";
                             }else{
                                 this.editInput.available = this.dataMaterial[this.editInput.index].available + data['planned_quantity'];
@@ -915,11 +956,32 @@
                             this.editInput.unit = data['unit'];
 
                             if(newValue != this.editInput.old_material_id){
+                            
+                                var material_found = false;
                                 this.stocks.forEach(stock => {
                                     if(stock.material_id == newValue){
-                                        this.editInput.available = stock.available;
+                                        if(stock.available < 0){
+                                            this.editInput.material_id = "";
+                                            iziToast.warning({
+                                                title: 'There are no available stock for this material..',
+                                                position: 'topRight',
+                                                displayMode: 'replace'
+                                            });
+                                        }else{
+                                            this.editInput.available = stock.available;
+                                        }
+                                        material_found = true;
                                     }
                                 });
+
+                                if(!material_found){
+                                    this.editInput.material_id = "";
+                                    iziToast.warning({
+                                        title: 'There are no available stock for this material..',
+                                        position: 'topRight',
+                                        displayMode: 'replace'
+                                    });
+                                }
                                 this.editInput.quantity = "";
                             }else{
                                 this.editInput.available = this.dataMaterial[this.editInput.index].available;
