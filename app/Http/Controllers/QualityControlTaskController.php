@@ -26,6 +26,20 @@ class QualityControlTaskController extends Controller
 
         return view('qc_task.selectProject',compact('modelProject'));
     }
+    
+    public function selectProjectConfirm()
+    {
+        $modelProject = Project::where('status',1)->get();
+
+        return view('qc_task.selectProject',compact('modelProject'));
+    }
+    
+    public function selectProjectSummary()
+    {
+        $modelProject = Project::where('status',1)->get();
+
+        return view('qc_task.selectProject',compact('modelProject'));
+    }
 
     public function selectWBS(Request $request, $id)
     {

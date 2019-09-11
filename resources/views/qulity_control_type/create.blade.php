@@ -2,12 +2,12 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Manage Quality Control Type',
+            'title' => 'Create Quality Control Type',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
                 'Quality Control' => route('qc_type.index'),
-                'Create' => '',
+                'Create Quality Control Type' => '',
             ]
         ]
     )
@@ -42,8 +42,8 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="25%">Name</th>
-                                        <th width="60%">Description</th>
+                                        <th width="35%">Name</th>
+                                        <th width="50%">Description</th>
                                         <th width="10%"></th>
                                     </tr>
                                 </thead>
@@ -66,10 +66,10 @@
                                 <tfoot>
                                     <tr>
                                         <td>{{newIndex}}</td>
-                                        <td class="no-padding"><input class="form-control" placeholder="Please Input Task Name" type="text"
+                                        <td class="no-padding"><input class="form-control" placeholder="QC Type Detail Name" type="text"
                                                 v-model="input.name"></td>
                                         <td class="no-padding">
-                                            <textarea class="form-control" placeholder="Please Input Task Description" rows="1"
+                                            <textarea class="form-control" placeholder="QC Type Detail Description" rows="1"
                                                 v-model="input.description"></textarea>
                                         </td>
                                         <td class="p-l-0" align="center"><a @click.prevent="addTypeDetail()"
