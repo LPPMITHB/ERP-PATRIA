@@ -99,7 +99,7 @@
                                                 </td>
     
                                                 <td class="p-l-0 textCenter">
-                                                    <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                                    <button @click.prevent="add" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                                 </td>
                                             </tr>
                                         </tfoot>
@@ -107,7 +107,7 @@
                                 </div>
                             </div>
                             <div class="col-md-12 p-r-0 p-t-10">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
+                                <button @click.prevent="submitForm" class="btn btn-primary pull-right">CREATE</button>
                             </div>
                         </div>
                         @endverbatim
