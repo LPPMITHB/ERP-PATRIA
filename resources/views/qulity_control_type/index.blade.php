@@ -1,16 +1,14 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-[
-'title' => 'View All Quotations',
-'subtitle' => '',
-'items' => [
-'Dashboard' => route('index'),
-'View All Quotations' => '',
-]
-]
-)
+@breadcrumb([
+    'title' => 'View All Quality Control Type',
+    'subtitle' => '',
+    'items' => [
+        'Dashboard' => route('index'),
+        'View All Quality Control Type' => '',
+    ]
+])
 @endbreadcrumb
 @endsection
 
@@ -21,7 +19,7 @@
             <div class="box-body">
                 <div class="col-sm-6 p-l-0">
                     <div class="box-tools pull-left">
-                        <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                        <a href="{{ route('qc_type.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                     </div>
                 </div>
                 @verbatim
