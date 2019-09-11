@@ -18,6 +18,8 @@ class CreateTrxQualityControlTaskDetailTable extends Migration
             $table->unsignedInteger('quality_control_task_id');
             $table->string('name')->nullable();
             $table->text('description')->nullable();
+            $table->text('notes')->nullable();
+            $table->string('status')->nullable();
             
             $table->timestamps();
 

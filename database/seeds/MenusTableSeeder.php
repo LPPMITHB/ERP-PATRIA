@@ -1417,7 +1417,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View & Edit QC Task',
             'icon' => 'fa-wrench',
-            'route_name' => 'qc_task.index',
+            'route_name' => 'qc_task.selectProjectIndex',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $qcTask,

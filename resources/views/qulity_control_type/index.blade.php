@@ -28,7 +28,7 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Number</th>
+                                <th width="30%">Name</th>
                                 <th width="45%">Description</th>
                                 <th width="10%"></th>
                             </tr>

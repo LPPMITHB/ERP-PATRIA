@@ -93,16 +93,16 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Quality Task</h4>
+                                <h4 class="modal-title">Edit Quality Control Type Detail</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label">Task Name</label>
+                                        <label for="type" class="control-label">Type Detail Name</label>
                                         <input class="form-control" type="text" v-model="forms.name">
                                     </div>
                                     <div class="col-sm-12">
-                                        <label for="quantity" class="control-label">Task
+                                        <label for="quantity" class="control-label">Type Detail
                                             Description</label>
                                         <textarea class="form-control" rows="5" v-model="forms.description"></textarea>
                                     </div>

@@ -2022,27 +2022,46 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 //  QC Task Routes
 Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
-    Route::get('/', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
+    // ->middleware('can:list-qc-task');
+
+    Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
+
+    Route::get('/confirm/{id}', 'QualityControlTaskController@confirm')->name('confirm');
+
+    Route::get('/summaryReport/{id}', 'QualityControlTaskController@summaryReport')->name('summaryReport');
 
     Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+
+    Route::get('/selectProjectIndex', 'QualityControlTaskController@selectProjectIndex')->name('selectProjectIndex');
 
     Route::get('/selectProjectConfirm', 'QualityControlTaskController@selectProjectConfirm')->name('selectProjectConfirm');
 
     Route::get('/selectProjectSummary', 'QualityControlTaskController@selectProjectSummary')->name('selectProjectSummary');
 
-    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS')->middleware('can:list-bom');
+    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');
 
     Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
 
-    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
+    // ->middleware('can:show-qc-task');
 
-    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    // ->middleware('can:edit-qc-task');
 
-    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
+    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    // ->middleware('can:edit-qc-task');
+    
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
+
+    Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');
+
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm');
 
     Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
 
-    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy');
+    // ->middleware('can:destroy-qc-task');
 
 });
 

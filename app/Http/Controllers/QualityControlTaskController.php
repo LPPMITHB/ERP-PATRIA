@@ -30,19 +30,26 @@ class QualityControlTaskController extends Controller
 
         return view('qc_task.selectProject',compact('modelProject'));
     }
+
+    public function selectProjectIndex()
+    {
+        $modelProject = Project::where('status',1)->get();
+
+        return view('qc_task.selectProjectIndex',compact('modelProject'));
+    }
     
     public function selectProjectConfirm()
     {
         $modelProject = Project::where('status',1)->get();
 
-        return view('qc_task.selectProject',compact('modelProject'));
+        return view('qc_task.selectProjectConfirm',compact('modelProject'));
     }
     
     public function selectProjectSummary()
     {
         $modelProject = Project::where('status',1)->get();
 
-        return view('qc_task.selectProject',compact('modelProject'));
+        return view('qc_task.selectProjectSummary',compact('modelProject'));
     }
 
     public function selectWBS(Request $request, $id)
@@ -157,9 +164,38 @@ class QualityControlTaskController extends Controller
         return view('qc_task.selectWBS', compact('project','data','route'));
     }
 
-    public function index()
+    public function index(Request $request, $id)
     {
-        //
+        $project = Project::find($id);
+        $wbss = $project->wbss->pluck('id')->toArray();
+        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->get();
+
+        return view('qc_task.index', compact('project','modelQcTasks'));
+    }
+
+    public function selectQcTask(Request $request, $id)
+    {
+        $project = Project::find($id);
+        $wbss = $project->wbss->pluck('id')->toArray();
+        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->get();
+
+        return view('qc_task.selectQcTask', compact('project','modelQcTasks'));
+    }
+
+    public function summaryReport(Request $request, $id)
+    {
+        $project = Project::find($id);
+        $wbss = $project->wbss->pluck('id')->toArray();
+        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->with('wbs','qualityControlTaskDetails')->get();
+
+        return view('qc_task.summaryReport', compact('project','modelQcTasks'));
+    }
+
+    public function confirm(Request $request, $id)
+    {
+        $qcTask = QualityControlTask::findOrFail($id);
+        $route = $request->route()->getPrefix();
+        return view('qc_task.confirm', compact('qcTask', 'route'));
     }
 
     /**
@@ -191,6 +227,7 @@ class QualityControlTaskController extends Controller
         try {
             $qcTask = new QualityControlTask;
             $qcTask->wbs_id = $data->wbs_id;
+            $qcTask->quality_control_type_id = $data->qc_type_id;
             $qcTask->description = $data->description;
             $qcTask->user_id = Auth::user()->id;
             $qcTask->branch_id = Auth::user()->branch->id;
@@ -212,6 +249,26 @@ class QualityControlTaskController extends Controller
         }
     }
 
+    public function storeConfirm(Request $request){
+        $data = $request->json()->all();
+        DB::beginTransaction();
+        try{
+            $qc_task_detail = QualityControlTaskDetail::find($data['id']);
+            $qc_task_detail->status = $data['status'];
+            $qc_task_detail->notes = $data['notes'];
+
+            if(!$qc_task_detail->update()){
+                return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
+            }else{
+                DB::commit();
+                return response(["response"=>"Success to confirm QC Task Detail"],Response::HTTP_OK);
+            }
+        }catch(\Exception $e){
+            DB::rollback();
+            return response(["error"=>$e->getMessage()],Response::HTTP_OK);
+        }
+    }
+
     /**
      * Display the specified resource.
      *
@@ -220,7 +277,10 @@ class QualityControlTaskController extends Controller
      */
     public function show($id)
     {
-        //
+        $qcTask = QualityControlTask::findOrFail($id);
+        $wbs = $qcTask->wbs;
+        return view('qc_task.show', compact('qcTask','wbs'));
+        
     }
 
     /**
@@ -229,9 +289,20 @@ class QualityControlTaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request,$id)
     {
-        //
+        $qcTask = QualityControlTask::findOrFail($id);
+
+        $route = $request->route()->getPrefix();
+        $modelQcType = QualityControlType::all();
+        
+        $editable = true;
+        foreach ($qcTask->qualityControlTaskDetails as $qcTaskDetail) {
+            if($qcTaskDetail->status != null){
+                $editable = false;
+            }
+        }
+        return view('qc_task.edit', compact('qcTask', 'editable', 'route', 'modelQcType'));
     }
 
     /**
@@ -241,11 +312,83 @@ class QualityControlTaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $data = json_decode($request->datas);
+        try {
+            
+            $qcTask = QualityControlTask::find($data->id);
+            if($qcTask->quality_control_type_id != $data->qc_type_id){
+                $qcTask->qualityControlTaskDetails()->delete();
+            }
+            $qcTask->quality_control_type_id = $data->qc_type_id;
+            $qcTask->description = $data->description;
+            $qcTask->user_id = Auth::user()->id;
+            $qcTask->branch_id = Auth::user()->branch->id;
+            $qcTask->update();
+
+
+            foreach ($data->deletedQcTaskDetail as $id) {
+                $qcTaskDetail = QualityControlTaskDetail::find($id);
+                $qcTaskDetail->delete();
+            }
+            foreach ($data->dataQcTask as $data) {
+                if(isset($data->id)){
+                    $qcTaskDetail = QualityControlTaskDetail::find($data->id);
+                    $qcTaskDetail->name = $data->name;
+                    $qcTaskDetail->description = $data->description;
+                    $qcTaskDetail->update();
+                }else{
+                    $qcTaskDetail = new QualityControlTaskDetail;
+                    $qcTaskDetail->quality_control_task_id = $qcTask->id;
+                    $qcTaskDetail->name = $data->name;
+                    $qcTaskDetail->description = $data->description;
+                    $qcTaskDetail->save();
+                }
+            }
+            DB::commit();
+            return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Updated Quality Control Task!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('qc_task.edit', $qcTask->id)->with('error', $e->getMessage())->withInput();
+        }
     }
 
+    public function confirmFinish(Request $request,$id){
+        DB::beginTransaction();
+        try{
+            $qc_task = QualityControlTask::find($id);
+            $qc_task->status = 0;
+
+            if(!$qc_task->update()){
+                return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+            }else{
+                DB::commit();
+                return redirect()->route('qc_task.selectQcTask', $qc_task->wbs->project_id)->with('success', 'Success to confirm Finish QC Task!');
+            }
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', $e->getMessage());
+        }
+    }
+
+    public function cancelFinish(Request $request,$id){
+        DB::beginTransaction();
+        try{
+            $qc_task = QualityControlTask::find($id);
+            $qc_task->status = 1;
+
+            if(!$qc_task->update()){
+                return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+            }else{
+                DB::commit();
+                return redirect()->route('qc_task.confirm', $qc_task->id)->with('success', 'Success to cancel Finish QC Task!');
+            }
+        }catch(\Exception $e){
+            DB::rollback();
+            return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', $e->getMessage());
+        }
+    }
     /**
      * Remove the specified resource from storage.
      *
@@ -260,5 +403,11 @@ class QualityControlTaskController extends Controller
     public function getQcTypeApi($id){
         $qc_type = QualityControlType::where('id',$id)->with('qualityControlTypeDetails')->first()->jsonSerialize();
         return response($qc_type, Response::HTTP_OK);
+    }
+
+    public function getQcTaskDetailsAPI($id){
+        $qcTask = QualityControlTask::findOrFail($id);
+        $qcTaskDetails = $qcTask->qualityControlTaskDetails;
+        return response($qcTaskDetails->jsonSerialize(), Response::HTTP_OK);
     }
 }
