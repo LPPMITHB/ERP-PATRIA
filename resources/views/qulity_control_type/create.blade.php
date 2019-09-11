@@ -69,7 +69,7 @@
                                         <td class="no-padding"><input class="form-control" placeholder="Please Input Task Name" type="text"
                                                 v-model="input.name"></td>
                                         <td class="no-padding">
-                                            <textarea class="form-control" placeholder="Please Input Task Name" rows="1"
+                                            <textarea class="form-control" placeholder="Please Input Task Description" rows="1"
                                                 v-model="input.description"></textarea>
                                         </td>
                                         <td class="p-l-0" align="center"><a @click.prevent="addTypeDetail()"
@@ -155,7 +155,6 @@
         forms: {
             index: '',
             name: '',
-            position: '',
             description: '',
         }
     }
@@ -169,7 +168,6 @@
                 this.input.description = "";
                 this.forms.index = "";
                 this.forms.name = "";
-                this.forms.position = "";
                 this.forms.description = "";
             },
             submitForm() {

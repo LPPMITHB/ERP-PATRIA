@@ -50,7 +50,7 @@
                     <table id="qctd-table" class="table table-bordered showTable">
                         <thead>
                             <tr>
-                                <th style="width: 5%">#</th>
+                                <th style="width: 5%">No</th>
                                 <th style="width: 40%">Name</th>
                                 <th style="width: 55%">Description</th>
                             </tr>
@@ -90,17 +90,17 @@
         }
     });
     $(document).ready(function() {
-    $('#qctd-table').DataTable({
-        'paging': true,
-        'lengthChange': false,
-        'ordering': true,
-        'info': true,
-        'autoWidth': false,
-        'bFilter': true,
-        'initComplete': function() {
-            $('div.overlay').hide();
-        }
-    });
+        $('#qctd-table').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'bFilter': true,
+            'initComplete': function() {
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

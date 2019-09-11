@@ -28,9 +28,9 @@
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="15%">Number</th>
-                                <th width="38%">Description</th>
-                                <th width="38%"></th>
+                                <th width="30%">Number</th>
+                                <th width="45%">Description</th>
+                                <th width="10%"></th>
                             </tr>
                         </thead>
                         <tbody>
