@@ -3,7 +3,7 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'QC Task Confirmation » Select Project',
+            'title' => 'Create QC Task » Select Project',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('qc_task.selectProject'),
@@ -39,7 +39,7 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('qc_task.confirm', ['id'=>$project->id]) }}">SELECT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('qc_task.selectQcTask', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach

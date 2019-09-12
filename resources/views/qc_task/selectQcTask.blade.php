@@ -85,8 +85,7 @@
                                     <td>DONE</td>
                                 @endif
                                 <td class="text-center">
-                                    <a href="{{ route('qc_task.show',$data->id) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    <a href="{{ route('qc_task.edit',$data->id) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    <a href="{{ route('qc_task.confirm',$data->id) }}" class="btn btn-primary btn-xs">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
