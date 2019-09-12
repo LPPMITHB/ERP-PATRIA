@@ -730,7 +730,27 @@ class WBSController extends Controller
         }
     }
 
+    public function uploadImage(Request $request){
+        $data = json_decode($request->datas);
+        $image = new WBSImage;
+        DB::beginTransaction();
+        try{
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/wbs_images',$fileNameToStore);
+            }
+        }catch(\Exception $e){
 
+        }
+    }
 
     public function show($id, Request $request)
     {
@@ -1251,6 +1271,11 @@ class WBSController extends Controller
 
     public function getWbsImagesAPI($wbs_id){
         $images = WBSImage::where('wbs_id',$wbs_id)->with('user')->get()->jsonSerialize();
+        return response($images, Response::HTTP_OK);
+    }
+
+    public function getAllImagesAPI(){
+        $images = WBSImage::with('wbs.project')->get()->jsonSerialize();
         return response($images, Response::HTTP_OK);
     }
 

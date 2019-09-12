@@ -162,6 +162,7 @@ Route::get('/getProjectStandard/{id}', 'ProjectController@getProjectStandardAPI'
 // wbs
 Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');
 Route::get('/getWbsImages/{id}', 'WBSController@getWbsImagesAPI')->name('api.wbs.getWbsImagesAPI');
+Route::get('/getAllImages','WBSController@getAllImagesAPI')->name('api.wbs.getAllImagesAPI');
 Route::get('/getWbsProfile/{menu}/{project_type}', 'WBSController@getWbsProfileAPI')->name('api.wbs.getWbsProfileAPI');
 Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('api.wbs.getAllWbsAPI');
 Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSubWbsAPI');
