@@ -746,9 +746,9 @@ class WBSController extends Controller
                 $fileNameToStore = $fileName.'_'.time().'.'.$extension;
                 // Upload image
                 $path = $request->file('image')->storeAs('documents/wbs_images',$fileNameToStore);
-
-
             }
+        }catch(\Exception $e){
+
         }
     }
 
