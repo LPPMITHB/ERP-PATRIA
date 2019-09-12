@@ -73,16 +73,16 @@
 
                         <div class="col-md-3 col-xs-4 no-padding">End Date</div>
                         <div class="col-md-7 col-xs-8 no-padding"><b>: @php
-                            if($wbs->planned_end_date != null){
-                                $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
-                                $date = $date->format('d-m-Y');
-                                echo $date;
-                            }else{
-                                echo "-";
-                            }
-                        @endphp
-                        </b>
-                    </div>
+                                if($wbs->planned_end_date != null){
+                                    $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
+                                    $date = $date->format('d-m-Y');
+                                    echo $date;
+                                }else{
+                                    echo "-";
+                                }
+                            @endphp
+                            </b>
+                        </div>
                     </div>
                 </div>
             </div>

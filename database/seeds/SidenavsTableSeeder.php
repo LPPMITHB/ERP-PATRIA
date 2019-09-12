@@ -1752,7 +1752,7 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'qc_task.create',
         ]);
 
-        $viewQcTask = Menu::where('route_name','qc_task.index')->select('id')->first()->id;
+        $viewQcTask = Menu::where('route_name','qc_task.selectProjectIndex')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $viewQcTask,
             'route_name' => 'qc_task.index',
@@ -1760,7 +1760,39 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $viewQcTask,
+            'route_name' => 'qc_task.selectProjectIndex',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTask,
             'route_name' => 'qc_task.edit',
+        ]);
+
+        $confirmQcTask = Menu::where('route_name','qc_task.selectProjectConfirm')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $confirmQcTask,
+            'route_name' => 'qc_task.selectProjectConfirm',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $confirmQcTask,
+            'route_name' => 'qc_task.confirm',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $confirmQcTask,
+            'route_name' => 'qc_task.selectQcTask',
+        ]);
+
+        $confirmQcTask = Menu::where('route_name','qc_task.selectProjectSummary')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $confirmQcTask,
+            'route_name' => 'qc_task.selectProjectSummary',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $confirmQcTask,
+            'route_name' => 'qc_task.summaryReport',
         ]);
 
         $ship = Menu::where('route_name','ship.index')->select('id')->first()->id;

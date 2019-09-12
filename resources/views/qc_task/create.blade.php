@@ -42,11 +42,11 @@
                                     
                                     <div class="col-sm-12 no-padding"><b>QC Type Information</b></div>
 
-                                    <div class="col-md-4 no-padding">QC Type Code</div>
-                                    <div class="col-md-8 no-padding"><b>: {{selectedQcType.code}}</b></div>
-                                    
                                     <div class="col-md-4 no-padding">QC Type Name</div>
                                     <div class="col-md-8 no-padding"><b>: {{selectedQcType.name}}</b></div>
+                                    
+                                    <div class="col-md-4 no-padding">QC Type Description</div>
+                                    <div class="col-md-8 no-padding"><b>: {{selectedQcType.description}}</b></div>
 
                                 </div>
                                 <div class="col-xs-12 col-md-4">
@@ -55,7 +55,7 @@
                                         <option v-for="(qc_type, index) in qc_types" :value="qc_type.id">{{ qc_type.name }}</option>
                                     </selectize>
                                 </div>
-                                <div class="col-xs-12 col-md-4" v-show="qc_type_id != ''">
+                                <div class="col-xs-12 col-md-4 " v-show="qc_type_id != ''">
                                     <div class="col-xs-12 no-padding"><b>Quality Control Task Description</b></div>
                                     <div class="col-xs-12 no-padding">
                                         <textarea class="form-control" placeholder="Please Input Quality Control Task Description" rows="3"
@@ -80,7 +80,7 @@
                                                 <td class="tdEllipsis">{{ qc_task.name }}</td>
                                                 <td class="tdEllipsis">{{ qc_task.description }}</td>
                                                 <td class="p-l-0 textCenter">
-                                                    <a class="btn btn-primary btn-xs" data-toggle="modal" href="#edit_item" @click="openEditModal(qc_task,index)">
+                                                    <a class="btn btn-primary btn-xs" @click="openEditModal(index)">
                                                         EDIT
                                                     </a>
                                                     <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
@@ -108,11 +108,41 @@
                                 </div>
                             </div>
                             <div class="col-md-12 p-r-0 p-t-10">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right">CREATE</button>
+                                <button @click.prevent="submitForm" v-show="qc_type_id != ''" class="btn btn-primary pull-right">CREATE</button>
+                            </div>
+
+                            <div class="modal fade" id="edit_item">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">Edit Quality Control Task Detail</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <label for="type" class="control-label">Task Name</label>
+                                                    <input class="form-control" type="text" v-model="editQcTask.name">
+                                                </div>
+                                                <div class="col-sm-12">
+                                                    <label for="quantity" class="control-label">Task
+                                                        Description</label>
+                                                    <textarea class="form-control" rows="5" v-model="editQcTask.description"></textarea>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button class="btn btn-primary" data-dismiss="modal" :disabled="updateOk"
+                                                @click.prevent="updateQcTaskDetail">SAVE</button>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         @endverbatim
-                        </form>
+                    </form>
                 </div>
             </div>
         </div>   
@@ -147,6 +177,11 @@
             name :"",
             description : "",
         },
+        editQcTask : {
+            index :"",
+            name :"",
+            description : "",
+        },
     }
 
     var vm = new Vue({
@@ -162,15 +197,28 @@
 
                 return isOk;
             },
+
+            updateOk: function(){
+                let isOk = false;
+
+                if(this.editQcTask.name == ""){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
         },
         methods : {
+            clearData(){
+                this.editQcTask.index = "";
+                this.editQcTask.name = "";
+                this.editQcTask.description = "";
+                this.dataInput.name = "";
+                this.dataInput.description = "";
+            },
             removeRow: function(positions) {
                 this.newIndex = this.submittedForm.dataQcTask.length;
                 this.$delete(this.submittedForm.dataQcTask, positions);
-            },
-            clearData(){
-                this.dataInput.name = "";
-                this.dataInput.description = "";
             },
             add: function() {
                 data = {
@@ -183,12 +231,27 @@
             },
             submitForm() {
                 $('div.overlay').show();
+                this.submittedForm.qc_type_id = this.qc_type_id;
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
                 form.submit();
+            },
+            openEditModal(index){
+                this.editQcTask.index = index;
+                this.editQcTask.name = this.submittedForm.dataQcTask[index].name;
+                this.editQcTask.description = this.submittedForm.dataQcTask[index].description;
+                $('#edit_item').modal();
+            },
+            updateQcTaskDetail(){
+                $('div.overlay').show();
+                index_edit = this.editQcTask.index;
+                this.submittedForm.dataQcTask[index_edit].name = this.editQcTask.name;
+                this.submittedForm.dataQcTask[index_edit].description = this.editQcTask.description;
+                this.clearData();
+                $('div.overlay').hide();
             },
         },
 

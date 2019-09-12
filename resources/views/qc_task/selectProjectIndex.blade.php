@@ -39,7 +39,7 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('qc_task.summaryReport', ['id'=>$project->id]) }}">SELECT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('qc_task.index', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
