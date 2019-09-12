@@ -132,8 +132,9 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button class="btn btn-primary" data-dismiss="modal" :disabled="confirmOk"
+                                            <button v-if="qc_task_ref.status == 1" class="btn btn-primary" data-dismiss="modal" :disabled="confirmOk"
                                                 @click.prevent="updateQcTaskDetail">SAVE</button>
+                                            <button v-else-if="qc_task_ref.status == 0" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
                                         </div>
                                     </div>
                                 </div>
