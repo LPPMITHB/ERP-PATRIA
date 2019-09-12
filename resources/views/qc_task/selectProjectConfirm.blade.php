@@ -3,7 +3,7 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Create QC Task » Select Project',
+            'title' => 'QC Task Confirmation » Select Project',
             'items' => [
                 'Dashboard' => route('index'),
                 'Select Project' => route('qc_task.selectProject'),
