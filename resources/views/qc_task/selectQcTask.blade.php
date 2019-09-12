@@ -2,11 +2,11 @@
 
 @section('content-header')
 @breadcrumb([
-    'title' => 'View All Quality Control Task',
+    'title' => 'Quality Control Task Confirmation » Select Quality Control Task',
     'subtitle' => '',
     'items' => [
         'Dashboard' => route('index'),
-        'View All Quality Control Task' => '',
+        'Quality Control Task Confirmation » Select Quality Control Task' => '',
     ]
 ])
 @endbreadcrumb

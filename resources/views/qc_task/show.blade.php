@@ -2,10 +2,10 @@
 
 @section('content-header')
 @breadcrumb([
-    'title' => 'View Quality Control Task',
+    'title' => 'Show Quality Control Task',
     'items' => [
         'Dashboard' => route('index'),
-        'View All Materials' => route('qc_type.index'),
+        'Show All Quality Control Task' => route('qc_task.index',$wbs->project_id),
         $qcTask->name => route('qc_type.show',$qcTask->id),
     ]
 ])
