@@ -46,8 +46,18 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $modelGI->number }}</td>
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $modelGI->description}}">{{ $modelGI->description }}</td>
-                                <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->name : '-'}}</td>
-                                <td>{{ isset ($modelGI->materialRequisition) ? $modelGI->materialRequisition->project->number : '-'}}</td>
+                                @if (isset ($modelGI->materialRequisition))
+                                    @if(isset ($modelGI->materialRequisition->project))
+                                        <td>{{ $modelGI->materialRequisition->project->name}}</td>
+                                        <td>{{ $modelGI->materialRequisition->project->number}}</td>
+                                    @else
+                                        <td>-</td>
+                                        <td>-</td>
+                                    @endif
+                                @else
+                                    <td>-</td>
+                                    <td>-</td>
+                                    @endif
                                 <td class="tdEllipsis">{{ $modelGI->created_at->format('d-m-Y') }}</td>
                                 <td>
                                     @if( $modelGI->type == 1 )
