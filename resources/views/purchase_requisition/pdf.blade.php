@@ -212,7 +212,7 @@
                             <div style="margin-left: 500px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Aproved By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px; font-size: 12px">{{$modelPR->approvedBy1->name}}</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelPR->approvedBy1 != null ? $modelPR->approvedBy1->name : ''}}</div>
                                 <div style="margin-top: 0px;font-size: 11px">Date</div>
                             </div>
                             <div style="margin-left: 650px; margin-top:-150px">

@@ -938,22 +938,13 @@ class BOMController extends Controller
                     $modelStock = Stock::where('material_id',$bomDetail->material_id)->first();
                     if(isset($modelStock)){
                         $remaining = $modelStock->quantity - $modelStock->reserved;
-                        if($remaining > 0 && $remaining < $bomDetail->quantity){
+                        if($remaining < $bomDetail->quantity){
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->material_id = $bomDetail->material_id;
                             $PRD->quantity = $bomDetail->quantity - $remaining;
                             $PRD->project_id = $project_id;
                             $PRD->save();
-                        }else{
-                            if($status == 1){
-                                $PRD = new PurchaseRequisitionDetail;
-                                $PRD->purchase_requisition_id = $PR->id;
-                                $PRD->material_id = $bomDetail->material_id;
-                                $PRD->quantity = $bomDetail->quantity;
-                                $PRD->project_id = $project_id;
-                                $PRD->save();
-                            }
                         }
                         $modelStock->reserved += $bomDetail->quantity;
                         $modelStock->updated_at = Carbon::now();

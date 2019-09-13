@@ -1423,7 +1423,7 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
-            $project->budget_value = $request->budget_value;
+            $project->budget_value = str_replace(",", "", $request->budget_value);
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->person_in_charge = $request->person_in_charge;
@@ -1462,12 +1462,14 @@ class ProjectController extends Controller
                 }
                 $project->sales_order_id = $request->sales_order_id;
             }else{
-                $project->sales_order_id = $request->sales_order_id;
-
-                $so = SalesOrder::findOrFail($request->sales_order_id);
-                $customer = Customer::findOrFail($so->customer_id);
-                $customer->used_limit += $so->total_price;
-                $customer->update();
+                if($request->sales_order_id != null && $request->sales_order_id != ""){
+                    $project->sales_order_id = $request->sales_order_id;
+    
+                    $so = SalesOrder::findOrFail($request->sales_order_id);
+                    $customer = Customer::findOrFail($so->customer_id);
+                    $customer->used_limit += $so->total_price;
+                    $customer->update();
+                }
             }
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
@@ -1548,7 +1550,7 @@ class ProjectController extends Controller
             $plannedCostPerWbs = $wbs->bom != null ? $wbs->bom->rap != null ? $wbs->bom->rap->total_price : 0 : 0;
 
             foreach($wbs->materialRequisitionDetails as $mrd){
-                $actualCostPerWbs = $mrd->material->cost_standard_price * $mrd->issued;
+                $actualCostPerWbs += $mrd->material->cost_standard_price * $mrd->issued;
             }
 
             $planned->put($wbs->id,[

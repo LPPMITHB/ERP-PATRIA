@@ -2015,7 +2015,7 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::post('/', 'QualityControlTypeController@store')->name('store');
 
-    Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
 });
 

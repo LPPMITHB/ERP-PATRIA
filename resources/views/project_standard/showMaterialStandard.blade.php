@@ -1,34 +1,19 @@
 @extends('layouts.main')
 
 @section('content-header')
-@if($route == "/bom")
     @breadcrumb(
         [
-            'title' => 'View Bill Of Material',
+            'title' => 'View Material Standard',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Project' => route('bom.indexProject'),
-                'Select Bill Of Material' => route('bom.indexBom', ['id' => $modelBOM->project_id]),
-                'View Bill Of Material' => '',
+                'Select Project' => route('project_standard.selectProject'),
+                'Select WBS' => route('project_standard.selectWBS', ['id' => $project->id]),
+                'View Material Standard' => '',
             ]
         ]
     )
     @endbreadcrumb
-@elseif($route == "/bom_repair")
-    @breadcrumb(
-        [
-            'title' => 'View BOM / BOS',
-            'items' => [
-                'Dashboard' => route('index'),
-                'Select Project' => route('bom_repair.indexProject'),
-                'Select BOM / BOS' => route('bom_repair.indexBom', ['id' => $modelBOM->project_id]),
-                'View BOM / BOS' => '',
-            ]
-        ]
-        )
-    @endbreadcrumb
-    @endif
-    @endsection
+@endsection
     
     @section('content')
     
