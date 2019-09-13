@@ -1462,12 +1462,14 @@ class ProjectController extends Controller
                 }
                 $project->sales_order_id = $request->sales_order_id;
             }else{
-                $project->sales_order_id = $request->sales_order_id;
-
-                $so = SalesOrder::findOrFail($request->sales_order_id);
-                $customer = Customer::findOrFail($so->customer_id);
-                $customer->used_limit += $so->total_price;
-                $customer->update();
+                if($request->sales_order_id != null && $request->sales_order_id != ""){
+                    $project->sales_order_id = $request->sales_order_id;
+    
+                    $so = SalesOrder::findOrFail($request->sales_order_id);
+                    $customer = Customer::findOrFail($so->customer_id);
+                    $customer->used_limit += $so->total_price;
+                    $customer->update();
+                }
             }
 
             $planStartDate = DateTime::createFromFormat('m/j/Y', $request->planned_start_date);
