@@ -21,7 +21,7 @@
             <div class="box-body">
                 <div class="col-sm-6 p-l-0">
                     <div class="box-tools pull-left">
-                        <a href="{{ route('material.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                        <a href="{{ route('qc_type.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                     </div>
                 </div>
                 @verbatim

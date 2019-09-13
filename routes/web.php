@@ -2004,12 +2004,12 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
     Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
 
     Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
-    
+
+    Route::post('/store', 'QualityControlTypeController@store')->name('store');
+
     Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
 
-    Route::patch('/store', 'QualityControlTypeController@store')->name('store');
-
-    Route::delete('/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
 });
 

@@ -21,7 +21,7 @@ class CreateMstQualityTypeDetailsTable extends Migration
             
             $table->timestamps();
 
-            $table->foreign('qctype_id')->references('id')->on('mst_quality_control_type');
+            $table->foreign('qctype_id')->references('id')->on('mst_quality_control_type')->onDelete('cascade');
         });
     }
 
