@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\Project;
 use App\Models\DeliveryDocument;
+use App\Models\QualityControlTask;
 use App\Http\Controllers\Controller;
 use Auth;
 use DB;
@@ -24,7 +25,10 @@ class CloseProjectController extends Controller
         $project = Project::find($id);
         $deliveryDocuments = $project->deliveryDocuments;
 
-        return view('close_project.show', compact('deliveryDocuments','route','project'));
+        $wbss = $project->wbss->pluck('id')->toArray();
+        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->with('wbs','qualityControlTaskDetails')->get();
+
+        return view('close_project.show', compact('deliveryDocuments','route','project','modelQcTasks'));
     }
 
     public function close(Request $request, $id)

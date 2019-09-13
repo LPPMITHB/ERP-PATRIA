@@ -125,9 +125,9 @@
                 @else
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                         @if($route == "/goods_issue")
-                            <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue.print', ['id'=>$modelGI->id]) }}">DOWNLOAD</a>
+                            <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('goods_issue.print', ['id'=>$modelGI->id]) }}">DOWNLOAD</a>
                         @elseif($route == "/goods_issue_repair")
-                            <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue_repair.print', ['id'=>$modelGI->id]) }}">DOWNLOAD</a>
+                            <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank" href="{{ route('goods_issue_repair.print', ['id'=>$modelGI->id]) }}">DOWNLOAD</a>
                         @endif
                     </div>
                 @endif

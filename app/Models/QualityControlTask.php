@@ -19,9 +19,14 @@ class QualityControlTask extends Model
         return $this->belongsTo('App\Models\WBS', 'wbs_id');
     }
 
+    public function qualityControlType()
+    {
+        return $this->belongsTo('App\Models\QualityControlType');
+    }
+
     public function qualityControlTaskDetails()
     {
-        return $this->hasMany('App\Models\qualityControlTask');
+        return $this->hasMany('App\Models\QualityControlTaskDetail');
     }
 
 }

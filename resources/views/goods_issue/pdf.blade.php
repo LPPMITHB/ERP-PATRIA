@@ -155,22 +155,25 @@
                             <div>
                                 <div style="margin-left: 0px; margin-top: 3px; font-size: 11px">Requested By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-left: 0px;margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->materialRequisition->user->name}}</div>
+                                <div style="margin-left: 0px;margin-top: 0px;font-size: 11px">Date {{date("d-m-Y", strtotime($modelGI->materialRequisition->created_at))}}</div>
                             </div>
                             <div style="margin-left: 230px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Approved By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->materialRequisition->approvedBy->name}}</div>
+                                <div style="margin-top: 0px;font-size: 11px">Date {{date("d-m-Y", strtotime($modelGI->materialRequisition->approval_date))}}</div>
                             </div>
                             <div style="margin-left: 440px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Issued By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->user->name}}</div>
+                                <div style="margin-top: 0px;font-size: 11px">Date {{date("d-m-Y", strtotime($modelGI->issue_date))}}</div>
                             </div>
                             <div style="margin-left: 640px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Received By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px;font-size: 11px">Date</div>
+                                <div style="margin-top: 0px;font-size: 11px">Date</div>
                             </div>
                         </div>
                     </div>

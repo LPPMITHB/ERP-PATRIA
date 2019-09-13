@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Manage Material Standard» Select Project',
+        'title' => 'Manage Material Standard » Select Project',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => '',

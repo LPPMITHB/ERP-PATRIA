@@ -201,7 +201,7 @@
                                         </table>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="saveDimension">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="saveDimension">SAVE CHANGES</button>
                                     </div>
                                 </div>
                                 <!-- /.modal-content -->
@@ -372,7 +372,7 @@
 
                 this.dimension_types[this.activeIndex].dimensions = input;
                 iziToast.success({
-                    title: 'Success Save Dimension',
+                    title: 'Success to change Dimension Type, please click SAVE button to UPDATE the data',
                     position: 'topRight',
                     displayMode: 'replace'
                 });

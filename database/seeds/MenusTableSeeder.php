@@ -1417,10 +1417,34 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View & Edit QC Task',
             'icon' => 'fa-wrench',
-            'route_name' => 'qc_task.index',
+            'route_name' => 'qc_task.selectProjectIndex',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $qcTask,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Task Confirmation',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qc,
+            'route_name' => 'qc_task.selectProjectConfirm',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Summary Report',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qc,
+            'route_name' => 'qc_task.selectProjectSummary',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

@@ -1,16 +1,14 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb(
-[
-'title' => 'View Quality Controll Type',
-'items' => [
-'Dashboard' => route('index'),
-'View All Materials' => route('qc_type.index'),
-$qcType->name => route('qc_type.show',$qcType->id),
-]
-]
-)
+@breadcrumb([
+    'title' => 'View Quality Control Type',
+    'items' => [
+        'Dashboard' => route('index'),
+        'View All Materials' => route('qc_type.index'),
+        $qcType->name => route('qc_type.show',$qcType->id),
+    ]
+])
 @endbreadcrumb
 @endsection
 
@@ -20,28 +18,41 @@ $qcType->name => route('qc_type.show',$qcType->id),
     <div class="col-sm-12">
 
         <div class="box">
-            <div class="box-header">
-                <b>
-                    <h4><b>Name</b> : {{ strtoupper($qcType->name)}}<h4>
-                </b>
-                <p><b>Description :</b>
-                 
-                </p><span><textarea rows="3" cols="115"> {{$qcType->description}}</textarea></span>
-            </div>
             <div class="box-body">
-                <div class="box-tools pull-right p-t-5">
-                    {{-- @can('edit-material') --}}
+                <div class="box-tools pull-right">
                     <a href="{{ route('qc_type.edit',['id'=>$qcType->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
-                    {{-- @endcan --}}
                 </div>
+                <div class="row">
+                    <div class="col-sm-4 col-md-4 m-l-10">
+                        <div class="row">
+                            <div class="col-xs-4 col-md-4">
+                                Name
+                            </div>
+                            <div class="col-xs-8 col-md-8">
+                                : <b>{{$qcType->name}}</b>
+                            </div>
+                
+                            <div class="col-xs-4 col-md-4">
+                                Description
+                            </div>
+                            <div class="col-xs-8 col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip"
+                                title="{{$qcType->description}}">
+                                : <b> {{ ($qcType->description != "") ? $qcType->description : '-' }} </b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="box-body">
                 @verbatim
                 <div id="index_qcTypeDetail" class="tab-pane active" id="general_info">
-                    <table id="qctd-table" class="table table-bordered width100 showTable">
+                    <table id="qctd-table" class="table table-bordered showTable">
                         <thead>
                             <tr>
-                                <th style="width: 5%">#</th>
-                                <th style="width: 40%">Attribute</th>
-                                <th style="width: 55%">Value</th>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 40%">Name</th>
+                                <th style="width: 55%">Description</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -79,17 +90,17 @@ $qcType->name => route('qc_type.show',$qcType->id),
         }
     });
     $(document).ready(function() {
-    $('#qctd-table').DataTable({
-        'paging': true,
-        'lengthChange': false,
-        'ordering': true,
-        'info': true,
-        'autoWidth': false,
-        'bFilter': true,
-        'initComplete': function() {
-        $('div.overlay').hide();
-        }
-    });
+        $('#qctd-table').DataTable({
+            'paging': true,
+            'lengthChange': false,
+            'ordering': true,
+            'info': true,
+            'autoWidth': false,
+            'bFilter': true,
+            'initComplete': function() {
+                $('div.overlay').hide();
+            }
+        });
     });
 </script>
 @endpush

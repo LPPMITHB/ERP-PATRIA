@@ -329,29 +329,53 @@
                 }
             },
             remove(index){
-                $('div.overlay').show();
-                this.approvals[0].value.splice(index, 1);
-                this.submittedForm.data = this.approvals;
-                this.submittedForm.selectedTransaction = this.selectedTransaction;
+                iziToast.question({
+                    close: false,
+                    overlay: true,
+                    timeout : 0,
+                    displayMode: 'once',
+                    id: 'question',
+                    zindex: 9999,
+                    title: 'Confirm',
+                    message: 'Are you sure you want to delete this Approval Config?',
+                    position: 'center',
+                    buttons: [
+                        ['<button><b>YES</b></button>', function (instance, toast) {
+                            vm.approvals[0].value.splice(index, 1);
+                            vm.submittedForm.data = vm.approvals;
+                            vm.submittedForm.selectedTransaction = vm.selectedTransaction;
+                            $('div.overlay').show();
+                            var url = "{{ route('approval.save') }}";
+                            window.axios.put(url,vm.submittedForm).then((response) => {
+                                iziToast.success({
+                                    title: 'Success Delete Approval Configuration',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                $('div.overlay').hide();
+                                vm.getApproval();
+                            })
+                            .catch((error) => {
+                                iziToast.warning({
+                                    title: 'Please Try Again..',
+                                    position: 'topRight',
+                                    displayMode: 'replace'
+                                });
+                                console.log(error);
+                                $('div.overlay').hide();
+                            })
 
-                var url = "{{ route('approval.save') }}";
-                window.axios.put(url,this.submittedForm).then((response) => {
-                    iziToast.success({
-                        title: 'Success Delete Approval Configuration',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Again..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    console.log(error);
-                    $('div.overlay').hide();
-                })
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }, true],
+                        ['<button>NO</button>', function (instance, toast) {
+                
+                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                
+                        }],
+                    ],
+                });
+
             },
             save(){
                 $('div.overlay').show();
