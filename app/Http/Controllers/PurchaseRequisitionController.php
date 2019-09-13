@@ -64,8 +64,10 @@ class PurchaseRequisitionController extends Controller
         try {
             $modelPR = PurchaseRequisition::find($id);
             $modelPR->status = 1;
-            $modelPR->approved_by = null;
-            $modelPR->approval_date = null;
+            $modelPR->approved_by_1 = null;
+            $modelPR->approval_date_1 = null;
+            $modelPR->approved_by_2 = null;
+            $modelPR->approval_date_2 = null;
             $modelPR->update();
             
             DB::commit();
