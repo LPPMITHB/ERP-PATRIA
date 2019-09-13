@@ -400,14 +400,22 @@
                     }else{
                         this.submittedForm.selectedType = this.selectedType;
                         this.submittedForm.value = JSON.parse(data);
+
+                        this.approvals.push({
+                            type : "",
+                            value : [],
+                        });
+                        this.approvals[0].type = this.submittedForm.selectedType;
+                        this.approvals[0].value.push(JSON.parse(data));
                     }
+                    
                     var approvals = JSON.stringify(this.approvals);
                     approvals = JSON.parse(approvals);
                     approvals[0].value.forEach(value =>{
                         value.maximum = (value.maximum+"").replace(/,/g , '');
                         value.minimum = (value.minimum+"").replace(/,/g , '');
                     })
-
+                    
                     this.submittedForm.data = approvals;
                     this.submittedForm.selectedTransaction = this.selectedTransaction;
                     var url = "{{ route('approval.save') }}";
