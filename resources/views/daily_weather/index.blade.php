@@ -405,6 +405,8 @@
             clearData(){
                 this.input.input_date = "";
                 this.input.description = "";
+                this.input.weather_configuration_id = "";
+                this.input.weather_configuration_name = "";
             },
             add(){
                 var input = JSON.stringify(this.input);

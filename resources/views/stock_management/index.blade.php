@@ -120,7 +120,31 @@
                                     </table>
                                 </div>
                             </div>
-                            <div v-show="warehouse_id > 0">
+                            <div v-show="warehouse_id > 0 && sloc_id = ''">
+                                <div class="col sm-12 p-l-10 p-r-10 p-t-10">
+                                    <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
+                                        <thead>
+                                            <th style="width: 5%">No</th>
+                                            <th style="width: 15%">Material Number</th>
+                                            <th style="width: 25%">Material Description</th>
+                                            <th style="width: 5%">Unit</th>
+                                            <th style="width: 10%">Material Quantity</th>
+                                            <th style="width: 15%">Total Value</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(selectedDetail,index) in selectedSlocDetail">
+                                                <td>{{ index + 1 }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.code }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.description }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.material.uom.unit }}</td>
+                                                <td class="tdEllipsis">{{ selectedDetail.quantity }}</td>
+                                                <td class="tdEllipsis">Rp {{ selectedDetail.totalValue }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div v-show="warehouse_id > 0 && sloc_id >0">
                                 <div class="col sm-12 p-l-10 p-r-10 p-t-10">
                                     <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>

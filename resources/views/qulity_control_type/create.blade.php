@@ -2,12 +2,12 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Manage Quality Control Task',
+            'title' => 'Create Quality Control Type',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
                 'Quality Control' => route('qc_type.index'),
-                'Create' => '',
+                'Create Quality Control Type' => '',
             ]
         ]
     )
@@ -27,13 +27,13 @@
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-xs-12 no-padding"><b>Quality Control Type Name</b></div>
                                 <div class="col-xs-12 no-padding">
-                                    <input class="form-control" type="text" v-model="mstInput.name">
+                                    <input class="form-control" placeholder="Please Input Quality Control Type Name" type="text" v-model="mstInput.name">
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-xs-12 no-padding"><b>Quality Control Description</b></div>
                                 <div class="col-xs-12 no-padding">
-                                    <textarea class="form-control" rows="3" v-model="mstInput.description"></textarea>
+                                    <textarea class="form-control" placeholder="Please Input Quality Control Type Description" rows="3" v-model="mstInput.description"></textarea>
                                 </div>
                             </div>
                         </div> <!-- /.box-header -->
@@ -42,9 +42,9 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="25%">Name</th>
-                                        <th width="60%">Description</th>
-                                        <th width="10%">action</th>
+                                        <th width="35%">Name</th>
+                                        <th width="50%">Description</th>
+                                        <th width="10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -66,13 +66,13 @@
                                 <tfoot>
                                     <tr>
                                         <td>{{newIndex}}</td>
-                                        <td class="no-padding"><input class="form-control" type="text"
+                                        <td class="no-padding"><input class="form-control" placeholder="QC Type Detail Name" type="text"
                                                 v-model="input.name"></td>
                                         <td class="no-padding">
-                                            <textarea class="form-control" rows="1"
+                                            <textarea class="form-control" placeholder="QC Type Detail Description" rows="1"
                                                 v-model="input.description"></textarea>
                                         </td>
-                                        <td class="p-l-0" align="center"><a @click.prevent="openAddModal()"
+                                        <td class="p-l-0" align="center"><a @click.prevent="addTypeDetail()"
                                                 class="btn btn-primary btn-xs" href="#">
                                                 <div class="btn-group">
                                                     ADD
@@ -137,8 +137,7 @@
     });
 
     var data = {
-        newIndex: 0,
-        modalWork: '',
+        newIndex: 1,
         sumbitedForm: {
             name: '',
             description: '',
@@ -156,7 +155,6 @@
         forms: {
             index: '',
             name: '',
-            position: '',
             description: '',
         }
     }
@@ -165,6 +163,13 @@
         el: '#qualityControl',
         data: data,
         methods: {
+            clearData(){
+                this.input.name = "";
+                this.input.description = "";
+                this.forms.index = "";
+                this.forms.name = "";
+                this.forms.description = "";
+            },
             submitForm() {
                 $('div.overlay').show();
                 this.sumbitedForm.task = this.qtc_task;
@@ -178,39 +183,28 @@
                 form.submit();
             },
             submitToTable() {
-                if (this.modalWork == 'add') {
-                    data = {
-                        name: this.forms.name,
-                        description: this.forms.description
-                    };
-                    this.qtc_task.push(data);
-                    this.newIndex = this.qtc_task.length + 1;
-                } else if (this.modalWork == 'edit') {
-                    this.qtc_task[this.forms.index].name = this.forms.name;
-                    this.qtc_task[this.forms.index].description = this.forms.description;
-                }
-                this.modalWork = '';
-                this.forms.index = '';
-                this.forms.name = '';
-                this.forms.description = '';
+                this.qtc_task[this.forms.index].name = this.forms.name;
+                this.qtc_task[this.forms.index].description = this.forms.description;
+                this.clearData();                
             },
             removeRow: function(positions) {
                 this.newIndex = this.qtc_task.length;
                 this.$delete(this.qtc_task, positions);
             },
             openEditModal: function(positions) {
-                this.modalWork = 'edit';
                 this.forms.index = positions;
                 this.forms.name = this.qtc_task[positions].name;
                 this.forms.description = this.qtc_task[positions].description;
                 $('#edit_item').modal();
             },
-            openAddModal: function() {
-                this.modalWork = 'add';
-                this.forms.index = '';
-                this.forms.name = '';
-                this.forms.description = '';
-                $('#edit_item').modal();
+            addTypeDetail: function() {
+                data = {
+                    name: this.input.name,
+                    description: this.input.description
+                };
+                this.qtc_task.push(data);
+                this.newIndex = this.qtc_task.length + 1;
+                this.clearData();
             },
         },
         computed: {
@@ -223,7 +217,7 @@
             },
             createOk: function() {
                 let isOk = false;
-                if (this.mstInput.name == "" || this.mstInput.description == "" || this.qtc_task.length == 0) {
+                if (this.mstInput.name == "" || this.qtc_task.length == 0) {
                     isOk = true;
                 }
                 return isOk;

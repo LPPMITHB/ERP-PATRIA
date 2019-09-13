@@ -28,6 +28,7 @@ use App\Models\ResourceTrx;
 use DB;
 use DateTime;
 use Auth;
+use File;
 
 class WBSController extends Controller
 {
@@ -62,6 +63,12 @@ class WBSController extends Controller
                 return redirect()->route('wbs_repair.createWbsProfile')->with('error', 'WBS isn\'t exist, Please try again !');
             }
         }
+    }
+
+    public function manageWbsImages(Request $request){
+        $images = WBSImage::with('wbs')->with('user')->get();
+        $menu = $request->route()->getPrefix() == "/wbs" ? "building" : "repair";
+        return view('wbs.manageWbsImages', compact('menu','images'));
     }
 
     public function storeBomProfile(Request $request){
@@ -282,6 +289,26 @@ class WBSController extends Controller
             $wbs->user_id = Auth::user()->id;
             $wbs->branch_id = Auth::user()->branch->id;
 
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/wbs',$fileNameToStore);
+
+                // Store image data into database
+                $wbsi = new WBSImage;
+                $wbsi->wbs_id = $wbs->id;
+                $wbsi->drawing = $fileNameToStore;
+                $wbsi->description = $data['description'];
+            }else{
+                $fileNameToStore =  null;
+            }
 
             if(!$wbs->save()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
@@ -634,6 +661,7 @@ class WBSController extends Controller
     {
         $data = json_decode($request->datas);
         $wbs_ref = WBS::find($id);
+        $images = new WBSImage;
         $project = $wbs_ref->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $wbss = WBS::where('project_id',$data->project_id)->get();
@@ -649,47 +677,107 @@ class WBSController extends Controller
             $wbs_ref->deliverables = $data->deliverables;
             $planned_start_date = DateTime::createFromFormat('d-m-Y', $data->planned_start_date);
             $wbs_ref->planned_start_date =  $planned_start_date->format('Y-m-d');
-
             $planned_end_date = DateTime::createFromFormat('d-m-Y', $data->planned_end_date);
             $wbs_ref->planned_end_date =  $planned_end_date->format('Y-m-d');
-
             $wbs_ref->planned_duration = $data->planned_duration;
             $wbs_ref->weight =  $data->weight;
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/wbs_images',$fileNameToStore);
 
-            if(!$wbs_ref->save()){
-                if($menu == "building"){
-                    return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
-                }elseif($menu == "repair"){
-                    return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                $images->wbs_id = $wbs_ref->id;
+                $images->user_id = Auth::user()->id;
+                $images->branch_id = Auth::user()->branch->id;
+                $images->drawing = $fileNameToStore;
+                if(isset($data->img_desc)){
+                    $images->description = $data->img_desc;
+                }else{
+                    $images->description = "";
                 }
-            }else{
+
+                $images->save();
+            }
+
+            if($wbs_ref->save()){
                 DB::commit();
                 if($menu == "building"){
                     return redirect()->route('wbs.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
                 }elseif($menu == "repair"){
                     return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', 'WBS Successfully Updated');
                 }
+            }else{
+                if($menu == "building"){
+                    return redirect()->route('wbs.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                }elseif($menu == "repair"){
+                    return redirect()->route('wbs_repair.show', ['id' => $id])->with('success', "Failed to save, please try again!");
+                }
             }
         } catch (\Exception $e) {
             DB::rollback();
             if($menu == "building"){
-                return redirect()->route('wbs.show')->with( 'error',$e->getMessage())->withInput();
+                return redirect()->route('wbs.show', ['id' => $id])->with( 'error',$e->getMessage())->withInput();
             }elseif($menu == "repair"){
-                return redirect()->route('wbs_repair.show')->with( 'error',$e->getMessage())->withInput();
+                return redirect()->route('wbs_repair.show', ['id' => $id])->with( 'error',$e->getMessage())->withInput();
             }
         }
     }
 
+    public function uploadImage(Request $request){
+        $data = json_decode($request->datas);
+        $image = new WBSImage;
+        DB::beginTransaction();
+        try{
+            if($request->hasFile('image')){
+                // Get filename with the extension
+                $fileNameWithExt = $request->file('image')->getClientOriginalName();
+                // Get just file name
+                $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                // Get just ext
+                $extension = $request->file('image')->getClientOriginalExtension();
+                // File name to store
+                $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                // Upload image
+                $path = $request->file('image')->storeAs('documents/wbs_images',$fileNameToStore);
+            }
+        }catch(\Exception $e){
 
+        }
+    }
 
     public function show($id, Request $request)
     {
         $wbs = WBS::find($id);
-        $images = WBSImage::orderBy('id')->whereIn('wbs_id',$id)->get();
+        $images = WBSImage::where('wbs_id',$wbs->id)->with('user')->get();
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
 
         return view('wbs.show', compact('wbs','menu', 'images'));
+    }
+
+    public function destroyWbsImage(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        DB::beginTransaction();
+        try {
+            $image = WBSImage::find($id);
+            $imageRoute = public_path("app/documents/wbs_images/".$image->drawing);
+            if($image->delete() && File::exists($imageRoute)){
+                File::delete($imageRoute);
+                DB::commit();
+                return response(["response"=>"Successfully deleted image."],Response::HTTP_OK);
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response(["error"=>$e->getMessage()], Response::HTTP_OK);
+        }
     }
 
     public function destroyWbsProfile(Request $request, $id)
@@ -1179,6 +1267,16 @@ class WBSController extends Controller
     public function getWbsAPI($project_id){
         $wbss = WBS::orderBy('planned_start_date', 'asc')->where('project_id', $project_id)->where('wbs_id', null)->get()->jsonSerialize();
         return response($wbss, Response::HTTP_OK);
+    }
+
+    public function getWbsImagesAPI($wbs_id){
+        $images = WBSImage::where('wbs_id',$wbs_id)->with('user')->get()->jsonSerialize();
+        return response($images, Response::HTTP_OK);
+    }
+
+    public function getAllImagesAPI(){
+        $images = WBSImage::with('wbs.project')->get()->jsonSerialize();
+        return response($images, Response::HTTP_OK);
     }
 
     public function getAllWbsAPI($project_id){

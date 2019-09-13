@@ -64,8 +64,10 @@ class PurchaseRequisitionController extends Controller
         try {
             $modelPR = PurchaseRequisition::find($id);
             $modelPR->status = 1;
-            $modelPR->approved_by = null;
-            $modelPR->approval_date = null;
+            $modelPR->approved_by_1 = null;
+            $modelPR->approval_date_1 = null;
+            $modelPR->approved_by_2 = null;
+            $modelPR->approval_date_2 = null;
             $modelPR->update();
             
             DB::commit();
@@ -326,7 +328,7 @@ class PurchaseRequisitionController extends Controller
             $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails);
             $approval_config = Configuration::get('approval-pr')[0];
             foreach($approval_config->value as $pr_config){
-                if($pr_config->minimum < $pr_value && $pr_config->maximum > $pr_value){
+                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
                     if($pr_config->role_id_1 != null){
                         $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
                         foreach ($users as $user) {
@@ -368,6 +370,7 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
             }
+            // END MAKE NOTIF
             
             DB::commit();
             if($route == "/purchase_requisition"){
@@ -504,7 +507,7 @@ class PurchaseRequisitionController extends Controller
             }
             $approval_config = Configuration::get('approval-pr')[0];
             foreach($approval_config->value as $pr_config){
-                if($pr_config->minimum < $pr_value && $pr_config->maximum > $pr_value){
+                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
                     if($pr_config->role_id_1 != null){
                         $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
                         foreach ($users as $user) {
@@ -936,7 +939,7 @@ class PurchaseRequisitionController extends Controller
             
             $approval_config = Configuration::get('approval-pr')[0];
             foreach($approval_config->value as $pr_config){
-                if($pr_config->minimum < $pr_value && $pr_config->maximum > $pr_value){
+                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
                     if($pr_config->role_id_1 != null){
                         $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
                         foreach ($users as $user) {

@@ -18,7 +18,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <table class="table table-bordered tableFixed">
+                <table id="select-project" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
                             <th width="5%">No</th>

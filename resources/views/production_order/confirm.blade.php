@@ -642,9 +642,6 @@
     }
 
     $(document).ready(function(){
-        $('.datepicker').datepicker({
-            autoclose : true,
-        });
         $('div.overlay').hide();
 
         $(document).on('change', ':file', function() {

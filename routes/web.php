@@ -627,7 +627,7 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
     Route::get('/selectStructure/{project_standard_id}/{project_id}', 'ProjectController@selectStructure')->name('selectStructure')->middleware('can:create-project-repair');
 
     Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
-    
+
     Route::post('/storeSelectedStructure', 'ProjectController@storeSelectedStructure')->name('storeSelectedStructure')->middleware('can:create-project-repair');
 
     Route::get('/', 'ProjectController@index')->name('index')->middleware('can:list-project-repair');
@@ -671,10 +671,14 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
 
+    Route::delete('/deleteWbsImage/{id}','WBSController@destroyWbsImage')->name('destroyWbsImage');
+
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile');
 
     Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:manage-wbs-profile');
+
+    Route::get('/manageWbsImages', 'WBSController@manageWbsImages')->name('manageWbsImages');
 
     Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:manage-wbs-profile');
 
@@ -726,6 +730,8 @@ Route::name('wbs_repair.')->prefix('wbs_repair')->group(function() {
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project-repair');
 
     Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
+
+    Route::delete('/deleteWbsImage/{id}','WBSController@destroyWbsImage')->name('destroyWbsImage');
 
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile-repair');
@@ -1718,13 +1724,13 @@ Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
 Route::name('project_standard.')->prefix('project_standard')->group(function() {
     //Project Standard
     Route::get('/createProjectStandard', 'ProjectStandardController@createProjectStandard')->name('createProjectStandard')->middleware('can:manage-project-standard');
-    
+
     Route::post('/storeProjectStandard', 'ProjectStandardController@storeProjectStandard')->name('storeProjectStandard')->middleware('can:manage-project-standard');
-    
+
     Route::put('updateProjectStandard/{id}', 'ProjectStandardController@updateProjectStandard')->name('updateProjectStandard')->middleware('can:manage-project-standard');
 
     Route::delete('/deleteProjectStandard/{id}', 'ProjectStandardController@destroyProjectStandard')->name('destroyProjectStandard')->middleware('can:manage-project-standard');
-    
+
     // WBS Standard
     Route::get('/createWbsStandard/{id}', 'ProjectStandardController@createWbsStandard')->name('createWbsStandard')->middleware('can:manage-project-standard');
 
@@ -1765,7 +1771,7 @@ Route::name('estimator.')->prefix('estimator')->group(function() {
     Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
 
     Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
-    
+
     Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
 
     Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
@@ -1810,7 +1816,7 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
     Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
 
     Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
-    
+
     Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
 
     Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
@@ -1949,7 +1955,7 @@ Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
 // Payment Routes
 Route::name('payment.')->prefix('payment')->group(function() {
     Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
-    
+
     Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
 
     Route::get('/create/{id}', 'PaymentController@create')->name('create');
@@ -2005,9 +2011,9 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
 
-    Route::post('/store', 'QualityControlTypeController@store')->name('store');
-
     Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
+
+    Route::post('/', 'QualityControlTypeController@store')->name('store');
 
     Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
 
@@ -2016,23 +2022,46 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 //  QC Task Routes
 Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
-    Route::get('/', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
+    // ->middleware('can:list-qc-task');
+
+    Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
+
+    Route::get('/confirm/{id}', 'QualityControlTaskController@confirm')->name('confirm');
+
+    Route::get('/summaryReport/{id}', 'QualityControlTaskController@summaryReport')->name('summaryReport');
 
     Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
 
-    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS')->middleware('can:list-bom');
+    Route::get('/selectProjectIndex', 'QualityControlTaskController@selectProjectIndex')->name('selectProjectIndex');
+
+    Route::get('/selectProjectConfirm', 'QualityControlTaskController@selectProjectConfirm')->name('selectProjectConfirm');
+
+    Route::get('/selectProjectSummary', 'QualityControlTaskController@selectProjectSummary')->name('selectProjectSummary');
+
+    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');
 
     Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
 
-    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
+    // ->middleware('can:show-qc-task');
 
-    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    // ->middleware('can:edit-qc-task');
 
-    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
+    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    // ->middleware('can:edit-qc-task');
+    
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
+
+    Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');
+
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm');
 
     Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
 
-    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:destroy-qc-task');
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy');
+    // ->middleware('can:destroy-qc-task');
 
 });
 
@@ -2049,7 +2078,7 @@ Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
     Route::patch('/{id}', 'SalesPlanController@update')->name('update');
 
     Route::post('/', 'SalesPlanController@store')->name('store');
-    
+
 });
 
 // Sales Plan Repair Routes
@@ -2092,9 +2121,9 @@ Route::name('customer_visit_repair.')->prefix('customer_visit_repair')->group(fu
 // Delivery Document Routes
 Route::name('delivery_document.')->prefix('delivery_document')->group(function() {
     Route::get('/selectProject', 'DeliveryDocumentController@selectProject')->name('selectProject');
-    
+
     Route::get('/selectProjectIndex', 'DeliveryDocumentController@selectProjectIndex')->name('selectProjectIndex');
-    
+
     Route::get('/manage/{id}', 'DeliveryDocumentController@manage')->name('manage');
 
     Route::get('/{id}', 'DeliveryDocumentController@show')->name('show');
@@ -2111,7 +2140,7 @@ Route::name('delivery_document.')->prefix('delivery_document')->group(function()
 // Project Close Routes
 Route::name('close_project.')->prefix('close_project')->group(function() {
     Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject');
-    
+
     Route::get('/', 'CloseProjectController@index')->name('index');
 
     Route::get('/{id}', 'CloseProjectController@show')->name('show');
@@ -2119,4 +2148,33 @@ Route::name('close_project.')->prefix('close_project')->group(function() {
     Route::patch('/{id}', 'CloseProjectController@close')->name('close');
 
     Route::delete('/{id}', 'CloseProjectController@destroy')->name('destroy');
+});
+
+// Customer Portal Routes
+Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
+    Route::get('/selectProject', 'CustomerPortalController@selectProject')->name('selectProject');
+
+    Route::get('/selectProjectPost', 'CustomerPortalController@selectProjectPost')->name('selectProjectPost');
+
+    Route::get('/selectProjectReply', 'CustomerPortalController@selectProjectReply')->name('selectProjectReply');
+
+    Route::get('/', 'CustomerPortalController@index')->name('index');
+
+    Route::get('/{id}', 'CustomerPortalController@show')->name('show');
+
+    Route::get('/showProject/{id}', 'CustomerPortalController@showProject')->name('showProject');
+
+    Route::get('/showPost/{id}', 'CustomerPortalController@showPost')->name('showPost');
+
+    Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost');
+
+    Route::get('/selectPost/{id}', 'CustomerPortalController@selectPost')->name('selectPost');
+
+    Route::post('/storePost', 'CustomerPortalController@storePost')->name('storePost');
+
+    Route::post('/storeComment', 'CustomerPortalController@storeComment')->name('storeComment');
+
+    Route::patch('/{id}', 'CustomerPortalController@close')->name('close');
+
+    Route::delete('/{id}', 'CustomerPortalController@destroy')->name('destroy');
 });

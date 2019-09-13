@@ -392,6 +392,7 @@ a {
 .tdBreakWord {
     overflow: hidden !important;
     overflow-wrap: break-word !important;
+    word-wrap: break-word !important;
 }
 
 .table>thead>tr>th {
@@ -605,7 +606,7 @@ textarea {
         margin-left: 15px;
         margin-top: 5px;
     }
-    
+
     .mobile_view{
         display: block;
     }
@@ -869,4 +870,12 @@ $color-loader: #3c8dbc;
 
 .gantt_task_line.hidden{
     display:none;
+}
+
+.send_button{
+    -webkit-transition: all  0.5s;
+    -moz-transition: all  0.5s;
+    -o-transition: all  0.5s;
+    transition: all  0.5s;
+    right : 40px;
 }

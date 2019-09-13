@@ -288,6 +288,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 3,
+            'name' => 'Manage Drawings',
+            'icon' => 'fa-calendar',
+            'route_name' => 'wbs.manageWbsImages',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $projectManagementBuilding,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
             'name' => 'Manage WBS Profile',
             'icon' => 'fa-briefcase',
             'route_name' => 'wbs.createWbsProfile',
@@ -1405,10 +1417,34 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'View & Edit QC Task',
             'icon' => 'fa-wrench',
-            'route_name' => 'qc_task.index',
+            'route_name' => 'qc_task.selectProjectIndex',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $qcTask,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Task Confirmation',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qc,
+            'route_name' => 'qc_task.selectProjectConfirm',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Summary Report',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $qc,
+            'route_name' => 'qc_task.selectProjectSummary',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -3047,7 +3083,6 @@ class MenusTableSeeder extends Seeder
             'name' => 'PICA',
             'icon' => 'fa-calendar',
             'is_active' => true,
-            'route_name' => 'pica.index',
             'roles' => 'ADMIN,PMP,PAMI',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -3074,6 +3109,53 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $pica,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 1,
+            'name' => 'Customer Portal',
+            'icon' => 'fa-file-text-o',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI,CUSTOMER',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $customer_portal =  Menu::where('name', 'Customer Portal')->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View Project Progress',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'customer_portal.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI,CUSTOMER',
+            'menu_id' => $customer_portal,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Post Complaints',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'customer_portal.selectProjectPost',
+            'is_active' => true,
+            'roles' => 'CUSTOMER',
+            'menu_id' => $customer_portal,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Reply Complaints',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'customer_portal.selectProjectReply',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $customer_portal,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

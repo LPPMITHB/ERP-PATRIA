@@ -24,6 +24,7 @@
         "admin-lte": "^2.4.8",
         "ajv": "^6.6.1",
         "bootstrap-multiselect": "^0.9.13",
+        "bootstrap3-wysihtml5-npm": "^0.3.3-npm.12",
         "chart.js": "^2.7.3",
         "daterangepicker": "^3.0.3",
         "dhtmlx-gantt": "^5.2.0",

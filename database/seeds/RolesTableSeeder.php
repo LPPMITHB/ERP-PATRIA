@@ -102,7 +102,9 @@ class RolesTableSeeder extends Seeder
             'description' => 'Customer Access',
             'permissions' => json_encode([
                 'show-dashboard' => true,
-                'show-user' => true,'edit-user' => true,        
+                'show-user' => true,'edit-user' => true,    
+                'show-project-progress' => true,
+                'create-post' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

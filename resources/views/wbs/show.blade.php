@@ -39,13 +39,6 @@
         <div class="box">
             <div class="box-header">
                 <div class="box-title"></div>
-                <div class="box-tools pull-right p-t-5">
-                    @can('edit-material')
-                        <a class="btn btn-primary btn-sm mobile_button_view" data-toggle="modal" href="#edit_wbs">
-                            EDIT
-                        </a>
-                    @endcan
-                </div>
             </div>
             @verbatim
             <div id="edit">
@@ -53,10 +46,19 @@
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
                                 <li class="active"><a href="#wbs_info" data-toggle="tab" aria-expanded="true">WBS Info</a></li>
-                                <li class=""><a href="#wbs_images" data-toggle="tab" aria-expanded="false">Images</a></li>
+                                <li class=""><a href="#wbs-images" data-toggle="tab" aria-expanded="false">Images</a></li>
                             </ul>
                             <div class="tab-content">
                                 <div class="tab-pane active" id="wbs_info">
+                                    <div class="box-tools pull-right p-t-5" style="padding-bottom:16px">
+                                        @endverbatim
+                                        @can('edit-material')
+                                            <a class="btn btn-primary btn-sm mobile_button_view" data-toggle="modal" href="#edit_wbs">
+                                                EDIT
+                                            </a>
+                                        @endcan
+                                        @verbatim
+                                    </div>
                                     <table class="table table-bordered width100 showTable tableFixed">
                                         <thead>
                                             <tr>
@@ -154,26 +156,63 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <div class="tab-pane" id="wbs_images">
-                                    <a class="btn btn-primary btn-sm mobile_button_view">ADD IMAGE</a>
-                                    <table class="table table-bordered width100 showTable tableFixed">
+                                <div class="tab-pane" id="wbs-images">
+                                    <a class="btn btn-primary btn-sm mobile_button_view pull-right" style="margin-bottom:16px" data-toggle="modal" href="#add-image">ADD IMAGE</a>
+                                    <table class="table table-bordered tableFixed">
                                         <thead>
                                             <tr>
                                                 <th style="width:5%">No</th>
-                                                <th>Image</th>
-                                                <th>Description</th>
-                                                <th style="width:10%"></th>
+                                                <th style="width:20%">Image</th>
+                                                <th style="width:40%">Description</th>
+                                                <th style="width:20%">Created By</th>
+                                                <th style="width:15%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td><img src="{{ URL::to('/') }}/app/documents/project/{{images.image}}"></td>
-                                                <td>Description</td>
-                                                <td><a class="btn btn-primary btn-sm mobile_button_view col-sm-12">VIEW</a></td>
+                                            <tr v-for="(image, index) in images">
+                                                <td>{{index+1}}</td>
+                                                <td><img style="display:block;" width="100%" :src="getSrc(image)"></td>
+                                                <td>{{image.description}}</td>
+                                                <td>{{image.user.name}}</td>
+                                                <td>
+                                                    <div class="parent-container"><a class="btn btn-primary btn-sm mobile_button_view col-sm-6" :href="getSrc(image)">VIEW</a></div><div><a class="btn btn-danger btn-sm mobile_button_view col-sm-6" @click="deleteWbsImage(image)">DELETE</a></div></td>
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal fade" id="add-image">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Add WBS Drawing</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <label for="upload" class="col-sm-12 control-label">Upload Drawing</label>
+                                        <div class="form-group col-sm-12">
+                                            <div class="input-group">
+                                                <label class="input-group-btn">
+                                                    <span class="btn btn-primary">
+                                                        Browse&hellip; <input type="file" style="display: none;" multiple id="image" name="image">
+                                                    </span>
+                                                </label>
+                                                <input type="text" class="form-control" readonly>
+                                            </div>
+                                        </div>
+                                        <label for="description" class="col-sm-12 control-label">Description</label>
+                                        <div class="col-sm-12">
+                                            <textarea class="form-control" rows="3" name="img_desc" v-model="editWbs.img_desc"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">UPLOAD</button>
                                 </div>
                             </div>
                         </div>
@@ -244,9 +283,9 @@
             </div>
             @endverbatim
             @if ($menu == "building")
-                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}">
+                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}" enctype="multipart/form-data">
             @elseif ($menu == "repair")
-                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}">
+                <form id="updateWbs" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}" enctype="multipart/form-data">
             @else
 
             @endif
@@ -260,8 +299,28 @@
 @push('script')
 <script>
 const form = document.querySelector('form#updateWbs');
+$(document).on('change', ':file', function() {
+    var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+    input.trigger('fileselect', [numFiles, label]);
+});
+
+// We can watch for our custom `fileselect` event like this
+$(document).ready(function(){
+    $(':file').on('fileselect', function(event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles + ' files selected' : label;
+        if( input.length ) {
+            input.val(log);
+        } else {
+            if( log ) alert(log);
+        }
+    });
+});
 
 var data = {
+    images : @json($images),
     project_start_date : @json($wbs->project->planned_start_date),
     project_end_date : @json($wbs->project->planned_end_date),
     rawPlannedDeadline : @json($wbs->planned_end_date),
@@ -293,6 +352,7 @@ var data = {
         planned_end_date : @json($wbs->planned_end_date).split("-").reverse().join("-"),
         planned_duration : @json($wbs->planned_duration),
     },
+    img_desc : "",
     maxWeight : 0,
     totalWeight : 0,
     constWeightWbs : @json($wbs->weight),
@@ -310,6 +370,12 @@ var vm = new Vue({
     el: '#edit',
     data: data,
     mounted() {
+        $('.parent-container').magnificPopup({
+            delegate: 'a', // child items selector, by clicking on it popup will open
+            type: 'image'
+            // other options
+        });
+
         $('.datepicker').datepicker({
             autoclose : true,
             format : "dd-mm-yyyy"
@@ -354,6 +420,10 @@ var vm = new Vue({
         tooltipText: function(text) {
             return text
         },
+        getSrc(image){
+            let path = '../../app/documents/wbs_images/'+image.drawing;
+            return path;
+        },
         update(){
             var editWbs = this.editWbs;
             editWbs = JSON.stringify(editWbs);
@@ -363,6 +433,8 @@ var vm = new Vue({
             struturesElem.setAttribute('name', 'datas');
             struturesElem.setAttribute('value', editWbs);
             form.appendChild(struturesElem);
+            let imageElem = document.getElementById('image');
+            form.appendChild(imageElem);
             form.submit();
         },
         setEndDateEdit(){
@@ -377,6 +449,77 @@ var vm = new Vue({
                 this.editWbs.planned_end_date = "";
             }
         },
+        getWbsImages(){
+            window.axios.get('/api/getWbsImages/'+this.wbsDisplay.wbs_id).then(({ data }) => {
+                $('div.overlay').show();
+                this.images = data;
+                $('#wbs-images-table').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#wbs-images-table').DataTable({
+                        'paging'      : true,
+                        'lengthChange': false,
+                        'searching'   : false,
+                        'ordering'    : false,
+                        'info'        : true,
+                        'autoWidth'   : false,
+                    });
+                    $('div.overlay').hide();
+                })
+            });
+        },
+        deleteWbsImage(image){
+            var route = this.route;
+            iziToast.question({
+                close: false,
+                overlay: true,
+                timeout : 0,
+                displayMode: 'once',
+                id: 'question',
+                zindex: 9999,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this image?',
+                position: 'center',
+                buttons: [
+                    ['<button><b>YES</b></button>', function (instance, toast) {
+                        var url = "/wbs/deleteWbsImage/"+image.id;
+                        window.axios.delete(url)
+                        .then((response) => {
+                            if(response.data.error != undefined){
+                                response.data.error.forEach(error => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: error,
+                                        position: 'topRight',
+                                    });
+                                });
+                                $('div.overlay').hide();
+                            }else{
+                                $('div.overlay').show();
+                                iziToast.success({
+                                    displayMode: 'replace',
+                                    title: response.data.response,
+                                    position: 'topRight',
+                                });
+                                vm.getWbsImages();
+                            }
+                        })
+                        .catch((error) => {
+                            iziToast.warning({
+                                displayMode: 'replace',
+                                title: "Please try again.. ",
+                                position: 'topRight',
+                            });
+                            console.log(error);
+                            $('div.overlay').hide();
+                        })
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }, true],
+                    ['<button>NO</button>', function (instance, toast) {
+                        instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    }],
+                ],
+            });
+        }
     },
     watch : {
         editWbs:{
@@ -544,6 +687,7 @@ var vm = new Vue({
         },
     },
     created: function(){
+        this.getWbsImages();
         if(this.editWbs.parent_wbs != null){
             window.axios.get('/api/getWeightWbs/'+this.editWbs.parent_wbs.id).then(({ data }) => {
                 this.totalWeight = data;

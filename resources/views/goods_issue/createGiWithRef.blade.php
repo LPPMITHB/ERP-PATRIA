@@ -51,7 +51,7 @@
                             </div>
                             <div class="col-sm-4 col-md-4 no-padding">
                                 <div class="col-md-3 no-padding">
-                                    <label for="" >Issue Date :</label>
+                                    <label for="" >Issue Date* :</label>
                                 </div>
                                 <div class="col-md-5 no-padding">
                                     <input v-model="issue_date" autocomplete="off" type="text" class="form-control datepicker" name="issue_date" id="issue_date" placeholder="Issue Date" >
@@ -258,6 +258,9 @@
                         isOk = true;
                     }
                 });
+                if(this.issue_date == ""){
+                    isOk = true;
+                }
                 return isOk;
             },
         },

@@ -3,11 +3,11 @@
     @if ($route == "/delivery_document")
         @breadcrumb(
             [
-                'title' => 'Manage List Document',
+                'title' => 'Manage Delivery Document',
                 'items' => [
                     'Dashboard' => route('index'),
                     'Select Project' => route('delivery_document.selectProject'),
-                    'Manage List Document' => ""
+                    'Manage Delivery Document' => ""
                 ]
             ]
         )
@@ -15,11 +15,11 @@
     @elseif ($route == "/delivery_document_repair")
         @breadcrumb(
             [
-                'title' => 'Manage List Document',
+                'title' => 'Manage Delivery Document',
                 'items' => [
                     'Dashboard' => route('index'),
                     // 'Select Project' => route('delivery_document_repair.selectProject'),
-                    'Manage List Document' => ""
+                    'Manage Delivery Document' => ""
                 ]
             ]
         )
@@ -67,9 +67,7 @@
                                 <td>{{ index + 1 }}</td>
                                 <td>{{ data.document_name }}</td>
                                 <td v-if="data.file_name != null">
-                                    <div class="iframe-popup">
-                                        <a target="_blank" class="text-primary" :href="view(data.file_name)">{{ data.file_name }}</a>
-                                    </div>
+                                    <a target="_blank" class="text-primary" :href="view(data.file_name)">{{ data.file_name }}</a>
                                 </td>
                                 <td v-else>-</td>
                                 <td>{{ data.status == 1 ? "NOT UPLOADED" : "UPLOADED" }}</td>
@@ -276,7 +274,7 @@ var vm = new Vue({
                     $('#delivery-documents-table').DataTable({
                         'paging'      : true,
                         'lengthChange': false,
-                        'searching'   : false,
+                        'searching'   : true,
                         'ordering'    : false,
                         'info'        : true,
                         'autoWidth'   : false,

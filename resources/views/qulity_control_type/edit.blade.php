@@ -1,16 +1,14 @@
 @extends('layouts.main')
 @section('content-header')
-@breadcrumb(
-[
-'title' => 'Manage Quality Control Task',
-'subtitle' => '',
-'items' => [
-'Dashboard' => route('index'),
-'Quality Control' => route('qc_type.index'),
-'Edit' => '',
-]
-]
-)
+@breadcrumb([
+    'title' => 'Edit Quality Control Type',
+    'subtitle' => '',
+    'items' => [
+        'Dashboard' => route('index'),
+        'Quality Control' => route('qc_type.index'),
+        'Edit Quality Control Type' => '',
+    ]
+])
 @endbreadcrumb
 @endsection
 
@@ -26,13 +24,13 @@
                         <div class="col-xs-12 col-md-4">
                             <div class="col-xs-12 no-padding"><b>Quality Control Type Name</b></div>
                             <div class="col-xs-12 no-padding">
-                                <input class="form-control" type="text" v-model="mstInput.name">
+                                <input class="form-control" type="text" placeholder="Please Input Quality Control Type Name" v-model="mstInput.name">
                             </div>
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="col-xs-12 no-padding"><b>Quality Control Description</b></div>
                             <div class="col-xs-12 no-padding">
-                                <textarea class="form-control" rows="3" v-model="mstInput.description"></textarea>
+                                <textarea class="form-control" rows="3" placeholder="Please Input Quality Control Type Description" v-model="mstInput.description"></textarea>
                             </div>
                         </div>
                     </div> <!-- /.box-header -->
@@ -41,9 +39,9 @@
                             <thead>
                                 <tr>
                                     <th width="5%">No</th>
-                                    <th width="25%">Name</th>
-                                    <th width="60%">Description</th>
-                                    <th width="10%">action</th>
+                                    <th width="35%">Name</th>
+                                    <th width="50%">Description</th>
+                                    <th width="10%"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -66,12 +64,12 @@
                             <tfoot>
                                 <tr>
                                     <td>{{newIndex}}</td>
-                                    <td class="no-padding"><input class="form-control" type="text" v-model="input.name">
+                                    <td class="no-padding"><input class="form-control" placeholder="QC Type Detail Name" type="text" v-model="input.name">
                                     </td>
                                     <td class="no-padding">
-                                        <textarea class="form-control" rows="1" v-model="input.description"></textarea>
+                                        <textarea class="form-control" rows="1" placeholder="QC Type Detail Description" v-model="input.description"></textarea>
                                     </td>
-                                    <td class="p-l-0" align="center"><a @click.prevent="openAddModal()"
+                                    <td class="p-l-0" align="center"><a @click.prevent="addTypeDetail()"
                                             class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -83,7 +81,7 @@
                         </table>
                     </div>
                     <div class="col-md-12 p-t-5">
-                        <button id="process" @click.prevent="mstUpdate()" class="btn btn-primary pull-right"
+                        <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right"
                             :disabled="createOk">SAVE</button>
                         <button class="btn btn-danger" @click.prevent="deleteData(mstInput.id)">DELETE</button>
                     </div>
@@ -96,16 +94,16 @@
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">×</span>
                                 </button>
-                                <h4 class="modal-title">Edit Quality Task</h4>
+                                <h4 class="modal-title">Edit Quality Control Type Detail</h4>
                             </div>
                             <div class="modal-body">
                                 <div class="row">
                                     <div class="col-sm-12">
-                                        <label for="type" class="control-label">Task Name</label>
+                                        <label for="type" class="control-label">Type Detail Name</label>
                                         <input class="form-control" type="text" v-model="forms.name">
                                     </div>
                                     <div class="col-sm-12">
-                                        <label for="quantity" class="control-label">Task
+                                        <label for="quantity" class="control-label">Type Detail
                                             Description</label>
                                         <textarea class="form-control" rows="5" v-model="forms.description"></textarea>
                                     </div>
@@ -113,8 +111,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button class="btn btn-primary" data-dismiss="modal" :disabled="updateOk"
-                                    @click.prevent="submitToTable">SAVE</button>
-
+                                    @click.prevent="submitDetails">SAVE</button>
                             </div>
                         </div>
                     </div>
@@ -122,21 +119,18 @@
             </div>
         </div>
         @endverbatim
-        <form id="delete-qc" class="form-horizontal" method="POST" action="{{ route('qc_type.destroy',['id'=>$qcType->id]) }}">
+        <form id="edit-qc" class="form-horizontal" method="POST" action="{{ route('qc_type.updatemaster') }}">
             @csrf
-            @verbatim
-            @endverbatim
+            <input type="hidden" name="_method" value="PUT">
         </form>
     </div>
-</div>
-<div class="overlay">
-    <i class="fa fa-refresh fa-spin"></i>
 </div>
 
 @endsection
 
 @push('script')
 <script>
+    const form = document.querySelector('form#edit-qc');
     $(document).ready(function() {
         $('div.overlay').hide();
     });
@@ -144,7 +138,7 @@
     var data = {
         newIndex: 0,
         modalWork: '',
-        sumbitedForm: {
+        submittedForm: {
             name: '',
             description: '',
             task: []
@@ -172,9 +166,14 @@
         el: '#qualityControl',
         data: data,
         methods: {
+            clearData(){
+                this.input.name = "";
+                this.input.description = "";
+                this.forms.index = "";
+                this.forms.name = "";
+                this.forms.description = "";
+            },
             mstUpdate(){
-                console.log(this.mstInput.description);
-                console.log(this.mstInput.name);
                 var url = "{{ route('qc_type.updatemaster') }}";
                 var data = JSON.stringify(this.mstInput);
                 window.axios.put(url,data).then((response) => {
@@ -236,111 +235,100 @@
                 // });
             },
             deleteDetails(id, position){
-                iziToast.question({
-                    close: false,
-                    overlay: true,
-                    timeout : 0,
-                    displayMode: 'once',
-                    id: 'question',
-                    zindex: 9999,
-                    title: 'Confirm',
-                    message: 'Are you sure you want to delete this task?',
-                    position: 'center',
-                    buttons: [
-                        ['<button><b>YES</b></button>', function (instance, toast){
-                            var url = "/qc_type/deletedetail/"+id;
-                            $('div.overlay').show();
-                            window.axios.delete(url).then((response) => {
-                                iziToast.error({
-                                    displayMode: 'replace',
-                                    title: "qc type detail deleted ",
-                                    position: 'topRight',
-                                });
-                               vm.removeRow(position);
-                               
-                                $('div.overlay').hide();
-                            })
-                            .catch((error) => {
-                                iziToast.warning({
-                                    displayMode: 'replace',
-                                    title: "Please try again.. ",
-                                    position: 'topRight',
-                                });
-                                console.log(error);
-                                $('div.overlay').hide();
-                            })
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                
-                        }, true],
-                        ['<button>NO</button>', function (instance, toast) {
-                            instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
-                        }],
-                    ],
-                });
-                if(this.detailDeleteStatus==true){
-                    this.newIndex = this.qtc_task.length;
-                    this.$delete(this.qtc_task, position);
-                    this.detailDeleteStatus=false;
+                if(id != undefined){
+                    iziToast.question({
+                        close: false,
+                        overlay: true,
+                        timeout : 0,
+                        displayMode: 'once',
+                        id: 'question',
+                        zindex: 9999,
+                        title: 'Confirm',
+                        message: 'Are you sure you want to delete this task?',
+                        position: 'center',
+                        buttons: [
+                            ['<button><b>YES</b></button>', function (instance, toast){
+                                var url = "/qc_type/deletedetail/"+id;
+                                $('div.overlay').show();
+                                window.axios.delete(url).then((response) => {
+                                    iziToast.error({
+                                        displayMode: 'replace',
+                                        title: "QC Type Detail Deleted",
+                                        position: 'topRight',
+                                    });
+                                   vm.removeRow(position);
+                                   
+                                    $('div.overlay').hide();
+                                })
+                                .catch((error) => {
+                                    iziToast.warning({
+                                        displayMode: 'replace',
+                                        title: "Please try again.. ",
+                                        position: 'topRight',
+                                    });
+                                    console.log(error);
+                                    $('div.overlay').hide();
+                                })
+                                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    
+                            }, true],
+                            ['<button>NO</button>', function (instance, toast) {
+                                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                            }],
+                        ],
+                    });
+                    if(this.detailDeleteStatus==true){
+                        this.newIndex = this.qtc_task.length;
+                        this.$delete(this.qtc_task, position);
+                        this.detailDeleteStatus=false;
+                    }
+                }else{
+                    iziToast.question({
+                        close: false,
+                        overlay: true,
+                        timeout : 0,
+                        displayMode: 'once',
+                        id: 'question',
+                        zindex: 9999,
+                        title: 'Confirm',
+                        message: 'Are you sure you want to delete this task?',
+                        position: 'center',
+                        buttons: [
+                            ['<button><b>YES</b></button>', function (instance, toast){
+                                vm.newIndex = vm.qtc_task.length;
+                                vm.$delete(vm.qtc_task, position);
+                                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                    
+                            }, true],
+                            ['<button>NO</button>', function (instance, toast) {
+                                instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                            }],
+                        ],
+                    });
                 }
                 
             },
             submitForm() {
                 $('div.overlay').show();
-                this.sumbitedForm.task = this.qtc_task;
-                this.sumbitedForm.name = this.mstInput.name;
-                this.sumbitedForm.description = this.mstInput.description;
+                this.submittedForm.task = this.qtc_task;
+                this.submittedForm.name = this.mstInput.name;
+                this.submittedForm.description = this.mstInput.description;
+                this.submittedForm.id = this.mstInput.id;
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
-                struturesElem.setAttribute('value', JSON.stringify(this.sumbitedForm));
+                struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
                 form.submit();
             },
             submitDetails(){
                 $('div.overlay').show();
-                var url = "{{ route('qc_type.updatedetail') }}";
-                var detailData = JSON.stringify(this.forms);
-                window.axios.put(url,detailData).then((response) => {
-                    iziToast.success({
-                        title: 'QC task updated !',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    this.addRow(response);
-                    $('div.overlay').hide();
-                    this.forms.detailID='';
-                    this.forms.index = '';
-                    this.forms.name = '';
-                    this.forms.description = '';
-                })
-                .catch((error) => {
-                    iziToast.warning({
-                        title: 'Please Try Agains..',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    console.log(error);
-                    $('div.overlay').hide();
-                })
-            },
-            submitToTable() {
-                $('div.overlay').show();
-                this.submitDetails();
+                this.addRow();
             },
             addRow:function(response){
-                console.log(JSON.stringify(response.data));
-                if (this.modalWork == 'add') {
-                    data = {
-                        id:JSON.stringify(response.data),
-                        name: this.forms.name,
-                        description: this.forms.description
-                    };
-                    this.qtc_task.push(data);
-                    this.newIndex = this.qtc_task.length + 1;
-                } else if (this.modalWork == 'edit') {
-                    this.qtc_task[this.forms.index].name = this.forms.name;
-                    this.qtc_task[this.forms.index].description = this.forms.description;
-                }
+                this.qtc_task[this.forms.index].name = this.forms.name;
+                this.qtc_task[this.forms.index].description = this.forms.description;
+                $('div.overlay').hide();
             },
             removeRow: function(positions) {
                 this.newIndex = this.qtc_task.length;
@@ -348,20 +336,20 @@
                 this.$delete(this.qtc_task, positions);
             },
             openEditModal: function(positions) {
-                this.modalWork = 'edit';
                 this.forms.detailID = this.qtc_task[positions].id;
                 this.forms.index = positions;;
                 this.forms.name = this.qtc_task[positions].name;
                 this.forms.description = this.qtc_task[positions].description;
                 $('#edit_item').modal();
             },
-            openAddModal: function() {
-                this.modalWork = 'add';
-                this.forms.detailID = '';
-                this.forms.index = '';
-                this.forms.name = '';
-                this.forms.description = '';
-                $('#edit_item').modal();
+            addTypeDetail: function() {
+                data = {
+                    name: this.input.name,
+                    description: this.input.description
+                };
+                this.qtc_task.push(data);
+                this.newIndex = this.qtc_task.length + 1;
+                this.clearData();
             },
         },
         mounted(){
