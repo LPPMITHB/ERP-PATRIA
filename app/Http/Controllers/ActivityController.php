@@ -42,7 +42,7 @@ class ActivityController extends Controller
         }
 
     }
-    
+
     public function createActivityRepair($id, Request $request)
     {
         $wbs = WBS::find($id);
@@ -55,7 +55,7 @@ class ActivityController extends Controller
         $uoms = Uom::all();
         $project = $wbs->project;
         $menu = "repair";
-    
+
         return view('activity.createActivityRepair', compact('vendors','uoms','materials','services','project', 'wbs','menu'));
     }
 
@@ -76,7 +76,7 @@ class ActivityController extends Controller
             array_push($temp, $predecessor[0]);
             array_push($temp, $predecessor[1]);
             array_push($predecessorArray, $temp);
-            
+
         }
         DB::beginTransaction();
         try {
@@ -84,7 +84,7 @@ class ActivityController extends Controller
             $activity->code = self::generateActivityCode($data['wbs_id']);
             $activity->name = $data['name'];
             $activity->description = $data['description'];
-            $activity->wbs_id = $data['wbs_id'];            
+            $activity->wbs_id = $data['wbs_id'];
             $activity->planned_duration = $data['planned_duration'];
 
             if($data['planned_start_date'] != ""){
@@ -106,12 +106,13 @@ class ActivityController extends Controller
 
             }
 
-            $activity->weight = $data['weight']; 
+            $activity->weight = $data['weight'];
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
             $activity->save();
             //MAKE NOTIFICATION
+            /*
             $data = json_encode([
                 'text' => ' until '.$activity->name.' for project '.$activity->wbs->project->name.' planned start date',
                 'title' => 'Activity',
@@ -123,6 +124,7 @@ class ActivityController extends Controller
             $new_notification->notification_date = $activity->planned_start_date;
             $new_notification->data = $data;
             $new_notification->save();
+            */
 
 
             if($activity->wbs->project->business_unit_id == 2){
@@ -195,7 +197,7 @@ class ActivityController extends Controller
                                         $bomPrep->quantity = $material['quantity'];
                                     }else{
                                         $bomPrep->weight = $weight;
-                                    }                                    
+                                    }
                                     $bomPrep->weight = $weight;
                                     $bomPrep->status = 1;
                                     $bomPrep->source = $material['source'];
@@ -250,7 +252,7 @@ class ActivityController extends Controller
             $activity = new ActivityProfile;
             $activity->name = $data['name'];
             $activity->description = $data['description'];
-            $activity->wbs_id = $data['wbs_id'];            
+            $activity->wbs_id = $data['wbs_id'];
             $activity->duration = $data['duration'];
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
@@ -276,7 +278,7 @@ class ActivityController extends Controller
         try {
             $activity = Activity::find($id);
             $activity->name = $data['name'];
-            $activity->description = $data['description'];         
+            $activity->description = $data['description'];
             $activity->planned_duration = $data['planned_duration'];
 
             $planStartDate = DateTime::createFromFormat('d-m-Y', $data['planned_start_date']);
@@ -284,7 +286,7 @@ class ActivityController extends Controller
 
             $activity->planned_start_date = $planStartDate->format('Y-m-d');
             $activity->planned_end_date = $planEndDate->format('Y-m-d');
-            $activity->weight = $data['weight']; 
+            $activity->weight = $data['weight'];
             if(count($data['allPredecessor']) > 0){
                 $predecessorArray = [];
                 foreach($data['allPredecessor'] as $predecessor){
@@ -292,7 +294,7 @@ class ActivityController extends Controller
                     array_push($temp, $predecessor[0]);
                     array_push($temp, $predecessor[1]);
                     array_push($predecessorArray, $temp);
-                    
+
                 }
                 $activity->predecessor = json_encode($predecessorArray);
             }else{
@@ -307,11 +309,11 @@ class ActivityController extends Controller
                         $bomPrep = $activityDetailMaterial->bomPrep;
                         $delete_bom_prep = false;
                         if($bomPrep->status == 0){
-                            array_push($error, ["Failed to delete, this activity material has been already summarized"]);                
+                            array_push($error, ["Failed to delete, this activity material has been already summarized"]);
                             return response(["error"=> $error],Response::HTTP_OK);
                         }else{
                             if(count($bomPrep->bomDetails) > 0){
-                                array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
+                                array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);
                                 return response(["error"=> $error],Response::HTTP_OK);
                             }else{
                                 if($bomPrep->weight != null){
@@ -339,7 +341,7 @@ class ActivityController extends Controller
                     }
                 }
             }
-            
+
             if($activity->wbs->project->business_unit_id == 2){
 
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
@@ -451,7 +453,7 @@ class ActivityController extends Controller
                         $activityDetailService->area = $data['area'];
                         $activityDetailService->vendor_id = $data['vendor_id'];
                         $activityDetailService->area_uom_id = $data['area_uom_id'];
-                        
+
                         if($new){
                             $activityDetailService->save();
                         }else{
@@ -462,7 +464,7 @@ class ActivityController extends Controller
                 }
             }
             if(!$activity->save()){
-                array_push($error, ["Failed to save, please try again!"]);                
+                array_push($error, ["Failed to save, please try again!"]);
                 return response(["error"=> $error],Response::HTTP_OK);
             }else{
                 DB::commit();
@@ -470,7 +472,7 @@ class ActivityController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollback();
-            array_push($error, [$e->getMessage()]);                
+            array_push($error, [$e->getMessage()]);
             return response(["error"=> $error],Response::HTTP_OK);
         }
     }
@@ -478,12 +480,12 @@ class ActivityController extends Controller
     public function updateActivityProfile(Request $request, $id)
     {
         $data = $request->json()->all();
-        
+
         DB::beginTransaction();
         try {
             $activity = ActivityProfile::find($id);
             $activity->name = $data['name'];
-            $activity->description = $data['description'];         
+            $activity->description = $data['description'];
             $activity->duration = $data['duration'];
 
             if(!$activity->save()){
@@ -497,13 +499,13 @@ class ActivityController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
-    
+
     public function index($id, Request $request)
     {
         $wbs = WBS::find($id);
         if(count($wbs->wbsConfig->activities)>0){
             $activity_config = $wbs->wbsConfig->activities;
-    
+
             $materials = Material::with('dimensionUom')->get();
             foreach ($materials as $material) {
                 $material['selected'] = false;
@@ -513,7 +515,7 @@ class ActivityController extends Controller
             $uoms = Uom::all();
             $project = $wbs->project;
             $menu = "repair";
-    
+
             $index = true;
             return view('activity.createActivityRepair', compact('index','vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
         }else{
@@ -527,7 +529,7 @@ class ActivityController extends Controller
         $project = $activity->wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $activityPredecessor = Collection::make();
-        
+
         if($activity->predecessor != null){
             $predecessor = json_decode($activity->predecessor);
             foreach($predecessor as $activity_predecessor){
@@ -537,8 +539,8 @@ class ActivityController extends Controller
             }
         }
         return view('activity.show', compact('activity','activityPredecessor','menu'));
-    }    
-    
+    }
+
     public function manageNetwork($id,Request $request)
     {
         $project = Project::find($id);
@@ -561,7 +563,7 @@ class ActivityController extends Controller
                     array_push($temp, $predecessor[0]);
                     array_push($temp, $predecessor[1]);
                     array_push($predecessorArray, $temp);
-                    
+
                 }
                 $activity->predecessor = json_encode($predecessorArray);
             }else{
@@ -605,7 +607,7 @@ class ActivityController extends Controller
         $data = $request->json()->all();
         DB::beginTransaction();
         try {
-            $activity = Activity::find($id); 
+            $activity = Activity::find($id);
             if($data['actual_end_date'] == ""){
                 $activity->status = 1;
                 $activity->progress = $data['current_progress'];
@@ -644,8 +646,8 @@ class ActivityController extends Controller
             $oldestWorks= $project->wbss->where('wbs_id', null);
             $progress = 0;
             foreach($oldestWorks as $wbs){
-                $progress += $wbs->progress* ($wbs->weight /100); 
-            }            
+                $progress += $wbs->progress* ($wbs->weight /100);
+            }
             $project->progress = $progress;
             $project->update();
             if($project->progress == 100){
@@ -667,7 +669,7 @@ class ActivityController extends Controller
 
             DB::commit();
             return response(["response"=>"Success to confirm activity ".$activity->code],Response::HTTP_OK);
-            
+
         } catch (\Exception $e) {
             DB::rollback();
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
@@ -701,7 +703,7 @@ class ActivityController extends Controller
         try {
             $activity = Activity::find($id);
             if($activity->progress > 0){
-                array_push($error, ["Failed to delete, this activity already have ".$activity->progress." % progress"]);                
+                array_push($error, ["Failed to delete, this activity already have ".$activity->progress." % progress"]);
                 return response(["error"=> $error],Response::HTTP_OK);
             }
 
@@ -711,7 +713,7 @@ class ActivityController extends Controller
                     $predecessor = json_decode($act->predecessor);
                     foreach($predecessor as $act_id){
                         if($activity->id == $act_id[0]){
-                            array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);                
+                            array_push($error, ["Failed to delete, this activity is predecessor to another activity"]);
                             return response(["error"=> $error],Response::HTTP_OK);
                         }
                     }
@@ -723,11 +725,11 @@ class ActivityController extends Controller
                     $bomPrep = $act_detail->bomPrep;
                     $delete_bom_prep = false;
                     if($bomPrep->status == 0){
-                        array_push($error, ["Failed to delete, this activity material has been already summarized"]);                
+                        array_push($error, ["Failed to delete, this activity material has been already summarized"]);
                         return response(["error"=> $error],Response::HTTP_OK);
                     }else{
                         if(count($bomPrep->bomDetails) > 0){
-                            array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);                
+                            array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);
                             return response(["error"=> $error],Response::HTTP_OK);
                         }else{
                             $bomPrep->weight -= $act_detail->weight;
@@ -749,11 +751,11 @@ class ActivityController extends Controller
             return response(["response"=>"Success to delete Activity"],Response::HTTP_OK);
         } catch (\Exception $e) {
             DB::rollback();
-            array_push($error, [$e->getMessage()]);                
+            array_push($error, [$e->getMessage()]);
             return response(["error"=> $error],Response::HTTP_OK);
         }
     }
-    
+
     //Method
     public function generateActivityCode($id){
         $code = 'ACT';
@@ -763,7 +765,7 @@ class ActivityController extends Controller
         $businessUnit = $project->business_unit_id;
 
         $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
-        
+
         $number = 1;
 		if(isset($modelActivity)){
             $number += intval(substr($modelActivity->code, -4));
@@ -903,7 +905,7 @@ class ActivityController extends Controller
             }
         }
         return response($allActivities->jsonSerialize(), Response::HTTP_OK);
-    }    
+    }
 
     public function getPredecessorAPI($id){
         $activity = Activity::find($id);
