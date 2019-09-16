@@ -20,12 +20,12 @@ class CustomerController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    
+
 
     public function index()
     {
         $customers = Customer::all();
-        
+
         return view('customer.index', compact('customers'));
     }
 
@@ -78,10 +78,10 @@ class CustomerController extends Controller
             $customer->country = $request->input('country');
             $customer->status = $request->input('status');
             $customer->branch_id = Auth::user()->branch->id;
-            
+
             $modelRole = Role::where('name','CUSTOMER')->first();
             $stringBusinessUnit = '['.$request->input('businessUnit').']';
-            
+
             $user = new User;
             $user->username = $request->input('code');
             $user->name = $request->input('name');
@@ -89,6 +89,7 @@ class CustomerController extends Controller
             $user->password = Hash::make($password);
             $user->address = $request->input('address_1');
             $user->phone_number = $request->input('phone_number_1');
+            $user->type = 3;
             $user->role_id = $modelRole->id;
             $user->business_unit_id = $stringBusinessUnit;
             $user->branch_id = Auth::user()->branch->id;
@@ -135,7 +136,7 @@ class CustomerController extends Controller
                 }
             }
         }
-        
+
         return view('customer.show', compact('customer','business_unit','business_ids'));
     }
 
@@ -197,7 +198,7 @@ class CustomerController extends Controller
             $user->phone_number = $request->input('phone_number_1');
             $user->business_unit_id = $stringBusinessUnit;
             $user->update();
-            
+
 
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('success', 'Customer Updated Succesfully');
@@ -216,7 +217,7 @@ class CustomerController extends Controller
             return redirect()->route('customer.index')->with('status', 'Customer Deleted Succesfully!');
         } catch(\Illuminate\Database\QueryException $e){
             return redirect()->route('customer.index')->with('status', 'Can\'t Delete The Customer Because It Is Still Being Used');
-        }   
+        }
     }
 
     public function updateCreditLimit(Request $request,$id){
@@ -227,7 +228,7 @@ class CustomerController extends Controller
             $customer = Customer::find($data->customer_id);
             $customer->credit_limit = $data->datas->credit_limit;
             $customer->used_limit = $data->datas->used_limit;
-            $customer->update();    
+            $customer->update();
 
             DB::commit();
             return redirect()->route('customer.show',$customer->id)->with('success', 'Customer Credit Limit Updated Succesfully');
@@ -241,7 +242,7 @@ class CustomerController extends Controller
     public function generateCustomerCode(){
         $code = 'C15';
         $modelCustomer = Customer::orderBy('code', 'desc')->first();
-        
+
         $number = 1;
 		if(isset($modelCustomer)){
             $number += intval(substr($modelCustomer->code, -3));
