@@ -120,7 +120,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div v-show="warehouse_id > 0 && sloc_id = ''">
+                            <div v-show="warehouse_id > 0 && sloc_id == ''">
                                 <div class="col sm-12 p-l-10 p-r-10 p-t-10">
                                     <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>

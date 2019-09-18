@@ -12,7 +12,10 @@
         'child' => null,
     ); 
     foreach ($sidenavs as $menu) {
-        if($menu->route_name == $route ){
+        if(count((explode(".",$menu->route_name))) > 2){
+            $route = (Request::segment(1)).'.'.(Request::segment(2)).'.'.(Request::segment(3));
+        }
+        if($menu->route_name == $route){
             $menuInfo['child'] = $menu->menu_id;
             if($menu->menu->menu){
                 $menuInfo['parent1'] = $menu->menu->menu->id;

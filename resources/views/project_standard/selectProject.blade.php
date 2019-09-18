@@ -36,7 +36,7 @@
                                 <td class="tdEllipsis">{{ $project->description }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('project_standard.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('project_standard.selectWBS', ['id'=>$project->id,'action'=>$action]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach
