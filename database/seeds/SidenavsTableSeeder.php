@@ -570,15 +570,15 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'project_standard.createActivityStandard',
         ]);
 
-        $material_standard = Menu::where('route_name','project_standard.selectProject')->select('id')->first()->id;
+        $material_standard = Menu::where('route_name','project_standard.selectProjectMaterial')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $material_standard,
-            'route_name' => 'project_standard.selectProject',
+            'route_name' => 'project_standard.selectProject.material',
         ]);
         
         DB::table('sidenav')->insert([
             'menu_id' => $material_standard,
-            'route_name' => 'project_standard.selectWBS',
+            'route_name' => 'project_standard.selectWBS.material',
         ]);
 
         DB::table('sidenav')->insert([
@@ -589,6 +589,27 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $material_standard,
             'route_name' => 'project_standard.showMaterialStandard',
+        ]);
+
+        $resource_standard = Menu::where('route_name','project_standard.selectProjectResource')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $resource_standard,
+            'route_name' => 'project_standard.selectProject.resource',
+        ]);
+        
+        DB::table('sidenav')->insert([
+            'menu_id' => $resource_standard,
+            'route_name' => 'project_standard.selectWBS.resource',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $resource_standard,
+            'route_name' => 'project_standard.manageResource',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $resource_standard,
+            'route_name' => 'project_standard.showResourceStandard',
         ]);
 
         $projectConfig = Menu::where('route_name','project.selectProjectConfig')->select('id')->first()->id;

@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
+@if ($action == "resource")
     @breadcrumb(
         [
-            'title' => 'Manage Material » Select WBS',
+            'title' => 'Manage Resource » Select WBS',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Project' => route('project_standard.selectProject'),
+                'Select Project' => route('project_standard.selectProjectResource'),
                 'Select WBS' => '',
             ]
         ]
     )
     @endbreadcrumb
+@elseif($action == "material")
+    @breadcrumb(
+        [
+            'title' => 'Manage Material » Select WBS',
+            'items' => [
+                'Dashboard' => route('index'),
+                'Select Project' => route('project_standard.selectProjectMaterial'),
+                'Select WBS' => '',
+            ]
+        ]
+    )
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')

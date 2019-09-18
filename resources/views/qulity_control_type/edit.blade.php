@@ -83,6 +83,7 @@
                     <div class="col-md-12 p-t-5">
                         <button id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right"
                             :disabled="createOk">SAVE</button>
+                        <button class="btn btn-danger" @click.prevent="deleteData(mstInput.id)">DELETE</button>
                     </div>
 
                 </div>
@@ -133,7 +134,7 @@
     $(document).ready(function() {
         $('div.overlay').hide();
     });
-
+    const formDelete = document.querySelector('form#delete-qc');
     var data = {
         newIndex: 0,
         modalWork: '',
@@ -197,6 +198,41 @@
                     console.log(error);
                     $('div.overlay').hide();
                 })
+            },
+            deleteData(id){
+                $('div.overlay').show();
+                formDelete.submit();
+                $('div.overlay').hide();
+                // iziToast.question({
+                //     close: false,
+                //     overlay: true,
+                //     timeout : 0,
+                //     displayMode: 'once',
+                //     id: 'question',
+                //     zindex: 9999,
+                //     title: 'Confirm',
+                //     message: 'Are you sure you want to delete this qualty control type?',
+                //     position: 'center',
+                //     buttons: [
+                //         ['<button><b>YES</b></button>', function (instance, toast){
+                //             $('div.overlay').show();
+                //             let struturesElem = document.createElement('input');
+                //             struturesElem.setAttribute('type', 'hidden');
+                //             struturesElem.setAttribute('name', 'datas');
+                //             struturesElem.setAttribute('value', JSON.stringify(@json($qcType)));
+                //             console.log(@json($qcType));
+                //             console.log(struturesElem);
+                //             formDelete.appendChild(struturesElem);
+                //             formDelete.submit();
+                //             $('div.overlay').hide();
+                //             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+
+                //         }, true],
+                //         ['<button>NO</button>', function (instance, toast) {
+                //             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
+                //         }],
+                //     ],
+                // });
             },
             deleteDetails(id, position){
                 if(id != undefined){

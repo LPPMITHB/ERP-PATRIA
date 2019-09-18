@@ -3,12 +3,12 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'View Material Standard',
+            'title' => 'View Resource Standard',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Project' => route('project_standard.selectProjectMaterial'),
-                'Select WBS' => route('project_standard.selectWBS', ['id' => $project->id, 'action' => 'material']),
-                'View Material Standard' => '',
+                'Select Project' => route('project_standard.selectProjectResource'),
+                'Select WBS' => route('project_standard.selectWBS', ['id' => $project->id, 'action' => 'resource']),
+                'View Resource Standard' => '',
             ]
         ]
     )
@@ -52,28 +52,24 @@
                         </div>
 
                         <div class="col-md-2 col-xs-12 pull-right">
-                            <a class="btn btn-sm btn-primary pull-right btn-block" :href="editMaterialStandard(wbs.id)">EDIT</a>
+                            <a class="btn btn-sm btn-primary pull-right btn-block" :href="editResourceStandard(wbs.id)">EDIT</a>
                         </div>    
                     </div>
                     <table class="table table-bordered tableFixed" id="bom-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="20%">Material Number</th>
-                                <th width="45%">Material Description</th>
+                                <th width="20%">Resource Number</th>
+                                <th width="45%">Resource Description</th>
                                 <th width="10%">Quantity</th>
-                                <th width="10%">Unit</th>
-                                <th width="10%">Source</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(materialStandards,index) in materialStandards">
+                            <tr v-for="(resourceStandards,index) in resourceStandards">
                                 <td class="p-t-15 p-b-15">{{ index+1 }}</td>
-                                <td>{{ materialStandards.material.code }}</td>
-                                <td>{{ materialStandards.material.description }}</td>
-                                <td>{{ materialStandards.quantity }}</td>
-                                <td>{{ materialStandards.material.uom.unit }}</td>
-                                <td>{{ materialStandards.source}}</td>
+                                <td>{{ resourceStandards.resource.code }}</td>
+                                <td>{{ resourceStandards.resource.description }}</td>
+                                <td>{{ resourceStandards.quantity }}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -130,7 +126,7 @@
     });
 
     var data = {
-        materialStandards : @json($materialStandards),
+        resourceStandards : @json($resourceStandards),
         wbs : @json($wbs),
         project : @json($project),
         route : @json($route),
@@ -148,25 +144,25 @@
         el : '#show-bom',
         data : data,
         methods:{
-            editMaterialStandard(id){
+            editResourceStandard(id){
                 var url = "";
-                url = "/project_standard/manageMaterial/"+id;
+                url = "/project_standard/manageResource/"+id;
                 return url;
             },
         },
         created: function() {
-            var data = this.materialStandards;
-            data.forEach(materialStandards => {
-                var decimal = (materialStandards.quantity+"").replace(/,/g, '').split('.');
+            var data = this.resourceStandards;
+            data.forEach(resourceStandards => {
+                var decimal = (resourceStandards.quantity+"").replace(/,/g, '').split('.');
                 if(decimal[1] != undefined){
                     var maxDecimal = 2;
                     if((decimal[1]+"").length > maxDecimal){
-                        materialStandards.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        resourceStandards.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
                     }else{
-                        materialStandards.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        resourceStandards.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
                     }
                 }else{
-                    materialStandards.quantity = (materialStandards.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    resourceStandards.quantity = (resourceStandards.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }         
             });
         }
