@@ -12,6 +12,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 use Auth;
 use DB;
+use DateTime;
 
 class StockManagementController extends Controller
 {
@@ -84,18 +85,23 @@ class StockManagementController extends Controller
         $data = array();
 
         $sloc = StorageLocation::where('id',$id)->first();
-        $slocDetails = StorageLocationDetail::where('storage_location_id',$sloc->id)->with('material','material.uom')->get();
+        $slocDetails = StorageLocationDetail::where('storage_location_id',$sloc->id)->with('material.uom','goodsReceiptDetail.goodsReceipt')->get();
         $data['sloc'] = $sloc;
         $data['slocDetail'] = $slocDetails;
+
 
         $inventory_value = 0;
         $inventory_qty = 0;
 
         foreach($slocDetails as $slocDetail){
-            $inventory_value += $slocDetail->material->cost_standard_price * $slocDetail->quantity;
+            $inventory_value += $slocDetail->value * $slocDetail->quantity;
             $inventory_qty += $slocDetail->quantity;
+            $received_date = date_create($slocDetail->goodsReceiptDetail->received_date);
+            $now = date_create(date("Y-m-d"));
+            $aging = date_diff($now,$received_date);
+            $slocDetail->aging = $aging->days;
         }
-
+        
         $inventory_value = number_format($inventory_value,2);
         $inventory_qty = number_format($inventory_qty,2);
 
@@ -103,6 +109,7 @@ class StockManagementController extends Controller
         $data['slocDetail'] = $slocDetails;
         $data['slocValue'] = $inventory_value;
         $data['slocQuantity'] = $inventory_qty;
+
 
         return response($data, Response::HTTP_OK);
     }
