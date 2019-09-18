@@ -111,21 +111,6 @@ class ActivityController extends Controller
             $activity->branch_id = Auth::user()->branch->id;
 
             $activity->save();
-            //MAKE NOTIFICATION
-            /*
-            $data = json_encode([
-                'text' => ' until '.$activity->name.' for project '.$activity->wbs->project->name.' planned start date',
-                'title' => 'Activity',
-                'url' => '/activity/show/'.$activity->id,
-            ]);
-            $new_notification = new Notification;
-            $new_notification->type = "Activity";
-            $new_notification->role_id = Auth::user()->role_id;
-            $new_notification->notification_date = $activity->planned_start_date;
-            $new_notification->data = $data;
-            $new_notification->save();
-            */
-
 
             if($activity->wbs->project->business_unit_id == 2){
                 $project_id = $activity->wbs->project_id;
