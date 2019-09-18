@@ -176,8 +176,6 @@ class QualityControlTypeController extends Controller
 
     public function deleteDetail(Request $request, $id)
     {
-        $modelQcTypeDetail =  QualityControlTypeDetail::findOrFail($id);
-        $modelQcTypeDetail->delete();
         DB::beginTransaction();
         try {
             $modelQcTypeDetail =  QualityControlTypeDetail::findOrFail($id);
@@ -200,6 +198,17 @@ class QualityControlTypeController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $modelQcType =  QualityControlType::findOrFail($id);
+        $modelQcType->delete();
+        // DB::beginTransaction();
+        // try {
+        //     $modelQcType =  QualityControlType::findOrFail($id);
+        //     $modelQcType->delete();
+        //     DB::commit();
+        // } catch (Exception $e) {
+        //     DB::rollback();
+        //     return redirect()->route('qc_type.index')->with('error', $e.'Deleting Quality Control Error');
+        // }
+        return redirect()->route('qc_type.index')->with('success', 'Deleting Quality Control Succsess');
     }
 }
