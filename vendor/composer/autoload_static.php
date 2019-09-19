@@ -589,6 +589,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\Resource' => __DIR__ . '/../..' . '/app/Models/Resource.php',
         'App\\Models\\ResourceDetail' => __DIR__ . '/../..' . '/app/Models/ResourceDetail.php',
         'App\\Models\\ResourceProfile' => __DIR__ . '/../..' . '/app/Models/ResourceProfile.php',
+        'App\\Models\\ResourceStandard' => __DIR__ . '/../..' . '/app/Models/ResourceStandard.php',
         'App\\Models\\ResourceTrx' => __DIR__ . '/../..' . '/app/Models/ResourceTrx.php',
         'App\\Models\\ReverseTransaction' => __DIR__ . '/../..' . '/app/Models/ReverseTransaction.php',
         'App\\Models\\ReverseTransactionDetail' => __DIR__ . '/../..' . '/app/Models/ReverseTransactionDetail.php',

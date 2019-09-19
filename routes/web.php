@@ -540,6 +540,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom-repair');
 
+    Route::get('/selectProjectManage', 'BOMController@selectProjectManage')->name('selectProjectManage')->middleware('can:create-bom-repair');
+
     Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
 
     Route::post('/storeBom', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
@@ -555,6 +557,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:create-bom-repair');
 
     Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:list-bom-repair');
+
+    Route::get('/selectWBSManage/{id}', 'BOMController@selectWBSManage')->name('selectWBSManage')->middleware('can:list-bom-repair');
 
     Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:list-bom-repair');
 
