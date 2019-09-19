@@ -19,7 +19,6 @@ class CreateMstMaterialStandardTable extends Migration
             $table->unsignedInteger('wbs_standard_id')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->float('quantity',15,2);
-            $table->string('source')->default('Stock');
             $table->timestamps();
             
             $table->foreign('project_standard_id')->references('id')->on('mst_project_standard');

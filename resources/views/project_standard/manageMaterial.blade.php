@@ -80,7 +80,6 @@
                                         <th width="28%">Material Description</th>
                                         <th width="10%">Quantity</th>
                                         <th width="10%">Unit</th>
-                                        <th width="10%">Source</th>
                                         <th width="12%"></th>
                                     </tr>
                                 </thead>
@@ -91,7 +90,6 @@
                                         <td :id="material.material_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
                                         <td>{{ material.quantity }}</td>
                                         <td>{{ material.unit }}</td>
-                                        <td>{{ material.source }}</td>
                                         <td class="p-l-5" align="center">
                                             <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
@@ -112,11 +110,6 @@
                                         </td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="materialOk"></td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
-                                        <td class="no-padding">
-                                            <selectize v-model="input.source" :settings="sourceSettings">
-                                                <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
-                                            </selectize>    
-                                        </td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -155,12 +148,6 @@
                                                 <label for="quantity" class="control-label">Unit</label>
                                                 <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
-                                            <div class="col-sm-12">
-                                                <label for="type" class="control-label">Source</label>
-                                                <selectize v-model="editInput.source" :settings="sourceSettings">
-                                                    <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
-                                                </selectize>
-                                            </div>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -190,7 +177,6 @@
     });
 
     var data = {
-        sources : ['Stock','WIP'],
         project : @json($project),
         materials : @json($materials),
         wbs : @json($wbs),
@@ -206,7 +192,6 @@
             material_name : "",
             material_code : "",
             quantity : "",
-            source : "Stock",
             unit : "",
             is_decimal : "",
             material_ok : ""
@@ -217,7 +202,6 @@
             material_code : "",
             material_name : "",
             quantity : "",
-            source : "",
             unit : "",
             is_decimal : "",
             material_ok : ""
@@ -225,9 +209,6 @@
         materialTable : @json($existing_data),
         materialSettings: {
             placeholder: 'Please Select Material'
-        },
-        sourceSettings: {
-            placeholder: 'Please Select Source'
         },
         material_id:@json($material_ids),
         material_id_modal:[],
@@ -249,7 +230,7 @@
             inputOk: function(){
                 let isOk = false;
 
-                if(this.input.material_id == "" || this.input.quantity == "" || this.input.source == ""){
+                if(this.input.material_id == "" || this.input.quantity == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -265,7 +246,7 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.material_id == "" || this.editInput.quantity == "" || this.editInput.source == ""){
+                if(this.editInput.material_id == "" || this.editInput.quantity == ""){
                     isOk = true;
                 }
 
@@ -355,7 +336,6 @@
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
-                this.editInput.source = data.source;
                 this.editInput.unit = data.unit;
                 this.editInput.is_decimal = data.is_decimal;
 
@@ -387,7 +367,7 @@
                 form.submit();
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != "" && this.input.source != ""){
+                if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != ""){
                     $('div.overlay').show();
 
                     var data = JSON.stringify(this.input);
@@ -413,7 +393,6 @@
                     this.input.material_name = "";
                     this.input.quantity = "";
                     this.input.unit = "";
-                    this.input.source = "Stock";
                     this.input.quantityInt = 0;
                 }
             },
@@ -452,7 +431,6 @@
                         material.unit = this.editInput.unit;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
-                        material.source = this.editInput.source;
 
                         var elemCode = document.getElementById(material.material_code);
                         var elemDesc = document.getElementById(material.material_name);

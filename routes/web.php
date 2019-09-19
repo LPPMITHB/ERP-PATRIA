@@ -1744,9 +1744,9 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
 
     Route::get('/selectProject/resource', 'ProjectStandardController@selectProject')->name('selectProjectResource')->middleware('can:manage-project-standard');
 
-    Route::get('/selectWBSResource/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
+    Route::get('/selectWBS/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
 
-    Route::get('/selectWBSMaterial/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
+    Route::get('/selectWBS/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
 
     Route::get('/manageMaterial/{wbs_id}', 'ProjectStandardController@manageMaterial')->name('manageMaterial')->middleware('can:manage-project-standard');
     

@@ -71,5 +71,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstProjectStandardTableSeeder::class);
         $this->call(MstWbsStandardTableSeeder::class);
         $this->call(MstActivityStandardTableSeeder::class);
+        $this->call(MstMaterialStandardTableSeeder::class);
+        $this->call(MstResourceStandardTableSeeder::class);
     }
 }

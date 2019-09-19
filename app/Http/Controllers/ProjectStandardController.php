@@ -161,18 +161,25 @@ class ProjectStandardController extends Controller
         ]);
 
         $route = "";
+        $item_text = "";
         if($action == "resource"){
             $route = "project_standard.manageResource";
+            $item_text = "Resource";
         }elseif($action == "material"){
             $route = "project_standard.manageMaterial";
+            $item_text = "Material";
         }
 
         
         foreach($wbss as $wbs){
             $exist = "";
-            $bom = MaterialStandard::where('wbs_standard_id',$wbs->id)->first();
-            if($bom){
-                $exist = " - this WBS Standard has Material Standard Click to Edit";
+            if($action == "resource"){
+                $item_standard = ResourceStandard::where('wbs_standard_id',$wbs->id)->first();
+            }elseif($action == "material"){
+                $item_standard = MaterialStandard::where('wbs_standard_id',$wbs->id)->first();
+            }            
+            if($item_standard){
+                $exist = " - this WBS Standard has ".$item_text." Standard Click to Edit";
                 if($wbs->wbs){
                     $data->push([
                         "id" => "WBS".$wbs->id, 
@@ -270,7 +277,6 @@ class ProjectStandardController extends Controller
                 $materialStandard->wbs_standard_id = $datas->wbs_id;
                 $materialStandard->material_id = $material->material_id;
                 $materialStandard->quantity = $material->quantity;
-                $materialStandard->source = $material->source;
                 $materialStandard->save();
             }
             DB::commit();
@@ -318,7 +324,6 @@ class ProjectStandardController extends Controller
                     $materialStandard = MaterialStandard::find($material->id);
                     $materialStandard->material_id = $material->material_id;
                     $materialStandard->quantity = $material->quantity;
-                    $materialStandard->source = $material->source;
                     $materialStandard->update();
                 }else{
                     $materialStandard = new MaterialStandard;
@@ -326,7 +331,6 @@ class ProjectStandardController extends Controller
                     $materialStandard->wbs_standard_id = $datas->wbs_id;
                     $materialStandard->material_id = $material->material_id;
                     $materialStandard->quantity = $material->quantity;
-                    $materialStandard->source = $material->source;
                     $materialStandard->save();
                 }
             }
