@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProActivityDetailTable extends Migration
+class CreateProWbsMaterialTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateProActivityDetailTable extends Migration
      */
     public function up()
     {
-        Schema::create('pro_activity_detail', function (Blueprint $table) {
+        Schema::create('pro_wbs_material', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('activity_id');
+            $table->unsignedInteger('wbs_id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('service_detail_id')->nullable();
             $table->unsignedInteger('vendor_id')->nullable();
@@ -31,7 +31,7 @@ class CreateProActivityDetailTable extends Migration
             $table->string('source')->nullable();
             $table->timestamps();
 
-            $table->foreign('activity_id')->references('id')->on('pro_activity');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('service_detail_id')->references('id')->on('mst_service_detail');
             $table->foreign('vendor_id')->references('id')->on('mst_vendor');
@@ -48,6 +48,6 @@ class CreateProActivityDetailTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pro_activity_detail');
+        Schema::dropIfExists('pro_wbs_material');
     }
 }

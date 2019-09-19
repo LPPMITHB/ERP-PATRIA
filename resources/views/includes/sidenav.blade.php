@@ -1,10 +1,4 @@
 @php
-    if(Request::Segment(2) == "" || Request::Segment(2) > 0 ){
-        $route = (Request::segment(1)).'.index';
-    }else{
-        $route = (Request::segment(1)).'.'.(Request::segment(2));
-    }   
-
     $menuInfo = array(
         'parent3' => null,
         'parent2' => null,
@@ -14,6 +8,12 @@
     foreach ($sidenavs as $menu) {
         if(count((explode(".",$menu->route_name))) > 2){
             $route = (Request::segment(1)).'.'.(Request::segment(2)).'.'.(Request::segment(3));
+        }elseif(count((explode(".",$menu->route_name))) < 3){
+            if(Request::Segment(2) == "" || Request::Segment(2) > 0 ){
+                $route = (Request::segment(1)).'.index';
+            }else{
+                $route = (Request::segment(1)).'.'.(Request::segment(2));
+            }
         }
         if($menu->route_name == $route){
             $menuInfo['child'] = $menu->menu_id;

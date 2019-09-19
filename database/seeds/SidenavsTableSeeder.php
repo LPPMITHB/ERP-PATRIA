@@ -454,6 +454,11 @@ class SidenavsTableSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
+            'route_name' => 'project_repair.selectStructure',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProjectRepair,
             'route_name' => 'wbs_repair.createWBS',
         ]);
 
@@ -688,6 +693,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $viewBom,
             'route_name' => 'bom_repair.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewBom,
+            'route_name' => 'bom_repair.selectProject',
         ]);
 
         $viewRap = Menu::where('route_name','rap.indexSelectProject')->select('id')->first()->id;

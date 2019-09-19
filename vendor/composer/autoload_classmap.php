@@ -146,6 +146,7 @@ return array(
     'App\\Models\\Resource' => $baseDir . '/app/Models/Resource.php',
     'App\\Models\\ResourceDetail' => $baseDir . '/app/Models/ResourceDetail.php',
     'App\\Models\\ResourceProfile' => $baseDir . '/app/Models/ResourceProfile.php',
+    'App\\Models\\ResourceStandard' => $baseDir . '/app/Models/ResourceStandard.php',
     'App\\Models\\ResourceTrx' => $baseDir . '/app/Models/ResourceTrx.php',
     'App\\Models\\ReverseTransaction' => $baseDir . '/app/Models/ReverseTransaction.php',
     'App\\Models\\ReverseTransactionDetail' => $baseDir . '/app/Models/ReverseTransactionDetail.php',

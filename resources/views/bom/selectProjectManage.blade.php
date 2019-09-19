@@ -3,7 +3,7 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Material Requirement Summary » Select Project',
+        'title' => 'Manage BOM » Select Project',
         'items' => [
             'Dashboard' => route('index'),
             'Select Project' => '',
@@ -38,7 +38,7 @@
                                 <td class="tdEllipsis">{{ $project->name }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
                                 <td align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.materialSummary', ['id'=>$project->id]) }}">SELECT</a>
+                                    <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.selectWBSManage', ['id'=>$project->id]) }}">SELECT</a>
                                 </td>
                             </tr>
                         @endforeach

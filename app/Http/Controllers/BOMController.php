@@ -60,7 +60,165 @@ class BOMController extends Controller
         return view('bom.selectProject', compact('projects','route'));
     }
 
+    public function selectProjectManage(){
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+
+        return view('bom.selectProjectManage', compact('projects'));
+    }
+
+    public function selectProjectSum(){
+        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
+
+        return view('bom.selectProjectSum', compact('projects'));
+    }
+
+    public function materialSummary($id){
+        $project = Project::where('id',$id)->with('ship','customer')->first();
+        $bomPreps = BomPrep::where('project_id', $id)->where('source', "Stock")->where('status', 1)->with('bomDetails','material')->get();
+        $stocks = Stock::with('material')->get();
+        $existing_bom = $project->boms->first();
+        foreach ($bomPreps as $bomPrep) {
+            if($bomPrep->weight != null){
+                $bomPrep['quantity'] = ceil($bomPrep->weight/$bomPrep->material->weight);
+                if(count($bomPrep->bomDetails) > 0){
+                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
+                    foreach ($bomPrep->bomDetails as $bomDetail) {
+                        $bomDetail['prepared'] = $bomDetail->quantity;
+                    }
+                }else{
+                    $bomPrep['bom_details'] = [];
+                    $bomPrep['already_prepared'] = 0;
+                }
+            }elseif($bomPrep->quantity != null){
+                $bomPrep['quantity'] = $bomPrep->quantity;
+                if(count($bomPrep->bomDetails) > 0){
+                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
+                    foreach ($bomPrep->bomDetails as $bomDetail) {
+                        $bomDetail['prepared'] = $bomDetail->quantity;
+                    }
+                }else{
+                    $bomPrep['bom_details'] = [];
+                    $bomPrep['already_prepared'] = 0;
+                }
+            }
+        }
+
+        return view('bom.materialSummary', compact('project','bomPreps','stocks','existing_bom'));
+    }
+    
     public function selectWBS(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $project = Project::find($id);
+        $wbss = $project->wbss;
+        $data = Collection::make();
+
+        $data->push([
+            "id" => $project->number, 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        if($route == '/bom'){
+            if($project->business_unit_id == 1){
+                foreach($wbss as $wbs){
+                    $bom_code = "";
+                    $bom = Bom::where('wbs_id',$wbs->id)->first();
+                    if($bom){
+                        $bom_code = " - ".$bom->code;
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
+                            ]);
+                        } 
+                    }else{
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
+                            ]);
+                        } 
+                    } 
+                }
+            }else{
+                return redirect()->route('bom.indexProject')->with('error', 'Project isn\'t exist, Please try again !');
+            }
+        }elseif($route == '/bom_repair'){
+            if($project->business_unit_id == 2){
+                foreach($wbss as $wbs){
+                    $bom_code = "";
+                    $bom = Bom::where('wbs_id',$wbs->id)->first();
+                    if($bom){
+                        $bom_code = " - ".$bom->code;
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
+                            ]);
+                        } 
+                    }else{
+                        if($wbs->wbs){
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $wbs->wbs->code,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                            ]);
+                        }else{
+                            $data->push([
+                                "id" => $wbs->code , 
+                                "parent" => $project->number,
+                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                                "icon" => "fa fa-suitcase",
+                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
+                            ]);
+                        } 
+                    } 
+                }
+            }else{
+                return redirect()->route('bom_repair.indexProject')->with('error', 'Project isn\'t exist, Please try again !');
+            }
+        }
+        return view('bom.selectWBS', compact('project','data','route'));
+    }
+
+    public function selectWBSManage(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
         $project = Project::find($id);
@@ -1145,46 +1303,6 @@ class BOMController extends Controller
             DB::rollback();
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
-    }
-
-    public function selectProjectSum(){
-        $projects = Project::where('status',1)->where('business_unit_id',2)->get();
-
-        return view('bom.selectProjectSum', compact('projects'));
-    }
-
-    public function materialSummary($id){
-        $project = Project::where('id',$id)->with('ship','customer')->first();
-        $bomPreps = BomPrep::where('project_id', $id)->where('source', "Stock")->where('status', 1)->with('bomDetails','material')->get();
-        $stocks = Stock::with('material')->get();
-        $existing_bom = $project->boms->first();
-        foreach ($bomPreps as $bomPrep) {
-            if($bomPrep->weight != null){
-                $bomPrep['quantity'] = ceil($bomPrep->weight/$bomPrep->material->weight);
-                if(count($bomPrep->bomDetails) > 0){
-                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
-                    foreach ($bomPrep->bomDetails as $bomDetail) {
-                        $bomDetail['prepared'] = $bomDetail->quantity;
-                    }
-                }else{
-                    $bomPrep['bom_details'] = [];
-                    $bomPrep['already_prepared'] = 0;
-                }
-            }elseif($bomPrep->quantity != null){
-                $bomPrep['quantity'] = $bomPrep->quantity;
-                if(count($bomPrep->bomDetails) > 0){
-                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
-                    foreach ($bomPrep->bomDetails as $bomDetail) {
-                        $bomDetail['prepared'] = $bomDetail->quantity;
-                    }
-                }else{
-                    $bomPrep['bom_details'] = [];
-                    $bomPrep['already_prepared'] = 0;
-                }
-            }
-        }
-
-        return view('bom.materialSummary', compact('project','bomPreps','stocks','existing_bom'));
     }
 
     public function checkValueMaterial($prds){
