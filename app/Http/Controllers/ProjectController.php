@@ -1115,7 +1115,7 @@ class ProjectController extends Controller
         $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
-
+        
         $progressStatus = Collection::make();
         self::getDataStatusProgress($project,$progressStatus);
 
@@ -2434,10 +2434,12 @@ class ProjectController extends Controller
             foreach($group as $activity){
                 $plannedProgress += 100 * ($activity->weight/100);
             }
-            $dataPlannedProgress->push([
-                "t" => $date,
-                "y" => $plannedProgress."",
-            ]);
+            if($date != ""){
+                $dataPlannedProgress->push([
+                    "t" => $date,
+                    "y" => $plannedProgress."",
+                ]);
+            }
         }
 
     }
