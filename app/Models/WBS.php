@@ -77,4 +77,9 @@ class WBS extends Model
     {
         return $this->hasMany('App\Models\WBSImage', 'wbs_id');
     }
+
+    public function wbsMaterials()
+    {
+        return $this->hasMany('App\Models\WbsMaterial', 'wbs_id');
+    }
 }

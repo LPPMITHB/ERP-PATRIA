@@ -19,6 +19,8 @@ use App\Models\Configuration;
 use App\Models\BomPrep;
 use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
+use App\Models\WbsMaterial;
+use App\Models\Vendor;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -232,102 +234,76 @@ class BOMController extends Controller
             "icon" => "fa fa-ship"
         ]);
 
-        if($route == '/bom'){
-            if($project->business_unit_id == 1){
-                foreach($wbss as $wbs){
-                    $bom_code = "";
-                    $bom = Bom::where('wbs_id',$wbs->id)->first();
-                    if($bom){
-                        $bom_code = " - ".$bom->code;
-                        if($wbs->wbs){
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
-                            ]);
-                        }else{
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom.edit',$bom->id)],
-                            ]);
-                        } 
+        if($project->business_unit_id == 2){
+            foreach($wbss as $wbs){
+                $exist = "";
+                $wbs_material = WbsMaterial::where('wbs_id',$wbs->id)->first();
+                if($wbs_material){
+                    $exist = " - this WBS already has materials, Click to Edit";
+                    if($wbs->wbs){
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.manageWbsMaterial',$wbs->id)],
+                        ]);
                     }else{
-                        if($wbs->wbs){
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
-                            ]);
-                        }else{
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom.create',$wbs->id)],
-                            ]);
-                        } 
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.manageWbsMaterial',$wbs->id)],
+                        ]);
                     } 
-                }
-            }else{
-                return redirect()->route('bom.indexProject')->with('error', 'Project isn\'t exist, Please try again !');
-            }
-        }elseif($route == '/bom_repair'){
-            if($project->business_unit_id == 2){
-                foreach($wbss as $wbs){
-                    $bom_code = "";
-                    $bom = Bom::where('wbs_id',$wbs->id)->first();
-                    if($bom){
-                        $bom_code = " - ".$bom->code;
-                        if($wbs->wbs){
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
-                            ]);
-                        }else{
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.edit',$bom->id)],
-                            ]);
-                        } 
+                }else{
+                    if($wbs->wbs){
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $wbs->wbs->code,
+                            "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.manageWbsMaterial',$wbs->id)],
+                        ]);
                     }else{
-                        if($wbs->wbs){
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $wbs->wbs->code,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
-                            ]);
-                        }else{
-                            $data->push([
-                                "id" => $wbs->code , 
-                                "parent" => $project->number,
-                                "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
-                                "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('bom_repair.create',$wbs->id)],
-                            ]);
-                        } 
+                        $data->push([
+                            "id" => $wbs->code , 
+                            "parent" => $project->number,
+                            "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
+                            "icon" => "fa fa-suitcase",
+                            "a_attr" =>  ["href" => route('bom_repair.manageWbsMaterial',$wbs->id)],
+                        ]);
                     } 
-                }
-            }else{
-                return redirect()->route('bom_repair.indexProject')->with('error', 'Project isn\'t exist, Please try again !');
+                } 
             }
         }
         return view('bom.selectWBS', compact('project','data','route'));
+    }
+
+    public function manageWbsMaterial($wbs_id, Request $request)
+    {
+        $wbs = Wbs::find($wbs_id);
+        $project = Project::where('id',$wbs->project_id)->with('ship')->first();
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
+        $vendors = Vendor::all();
+        $existing_data = [];
+
+        $material_ids = [];
+        $edit = false;
+        if(count($wbs->wbsMaterials)>0){
+            $edit = true;
+            $existing_data = WbsMaterial::where('wbs_id', $wbs->id)->with('material.uom')->get();
+            foreach ($existing_data as $material) {
+                array_push($material_ids,$material->material_id);
+                $material->material_code = $material->material->code;
+                $material->material_name = $material->material->description;
+                $material->unit = $material->material->uom->unit;
+            }
+        }
+        
+        return view('bom.manageWbsMaterial', compact('project','materials','wbs','edit','existing_data','material_ids','services','vendors'));
     }
 
     public function indexBom(Request $request,$id)

@@ -552,6 +552,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
 
+    Route::get('/manageWbsMaterial/{id}', 'BOMController@manageWbsMaterial')->name('manageWbsMaterial')->middleware('can:create-bom-repair');
+
     Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:create-bom-repair');
 
     Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:create-bom-repair');
@@ -569,6 +571,10 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
+    
+    Route::post('/storeWbsMaterial', 'ProjectStandardController@storeWbsMaterial')->name('storeWbsMaterial')->middleware('can:manage-project-standard');
+
+    Route::patch('/updateWbsMaterial', 'ProjectStandardController@updateWbsMaterial')->name('updateWbsMaterial')->middleware('can:manage-project-standard');
 
     Route::delete('/deleteMaterial/{id}', 'BOMController@deleteMaterial')->name('deleteMaterial')->middleware('can:edit-bom-repair');
 });
