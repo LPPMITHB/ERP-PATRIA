@@ -144,7 +144,7 @@
                                     </table>
                                 </div>
                             </div>
-                            <div v-show="warehouse_id > 0 && sloc_id >0">
+                            <div v-if="warehouse_id > 0 && sloc_id > 0">
                                 <div class="col sm-12 p-l-10 p-r-10 p-t-10">
                                     <table id="tablePagingVue2" class="table table-bordered showTable tableFixed" style="border-collapse:collapse;">
                                         <thead>
@@ -154,6 +154,8 @@
                                             <th style="width: 5%">Unit</th>
                                             <th style="width: 10%">Material Quantity</th>
                                             <th style="width: 15%">Total Value</th>
+                                            <th style="width: 10%">Aging</th>
+                                            <th style="width: 15%">Goods Receipt Number</th>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(selectedDetail,index) in selectedSlocDetail">
@@ -163,6 +165,10 @@
                                                 <td class="tdEllipsis">{{ selectedDetail.material.uom.unit }}</td>
                                                 <td class="tdEllipsis">{{ selectedDetail.quantity }}</td>
                                                 <td class="tdEllipsis">Rp {{ selectedDetail.totalValue }}</td>
+                                                <td v-if="selectedDetail.goods_receipt_detail != null" class="tdEllipsis"> {{ selectedDetail.aging }} Day(s) </td>
+                                                <td  v-else>-</td>
+                                                <td v-if="selectedDetail.goods_receipt_detail != null" class="tdEllipsis"><a :href="showGrRoute(selectedDetail.goods_receipt_detail.goods_receipt.id)" class="text-primary"><b>{{ selectedDetail.goods_receipt_detail.goods_receipt.number }} </td>
+                                                <td  v-else>-</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -226,10 +232,17 @@
         slocValue : "",
         slocQuantity : "",
     }
-
     var vm = new Vue({
         el : '#stockmanagement',
         data : data,
+        methods:{
+            showGrRoute(id){
+                url = "/goods_receipt/"+id;
+
+                return url;
+            },
+        },
+
         watch : {
             'sloc_id' : function(newValue){
                 $('div.overlay').show();
@@ -255,7 +268,7 @@
                                 slocDetail.quantity = (slocDetail.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                             }
 
-                            slocDetail.totalValue = (slocDetail.material.cost_standard_price * slocDetail.quantity+"");
+                            slocDetail.totalValue = (slocDetail.value * slocDetail.quantity+"");
                             var decimalQty = (slocDetail.totalValue+"").replace(/,/g, '').split('.');
                             if(decimalQty[1] != undefined){
                                 var maxDecimal = 2;
