@@ -813,7 +813,7 @@ class ProjectController extends Controller
                             $wbs_material = new WbsMaterial;
                             $wbs_material->wbs_id = $wbs->id;
                             $wbs_material->material_id = $materialStandard->material_id;
-                            $wbs_material->quantity_material = $materialStandard->quantity;
+                            $wbs_material->quantity = $materialStandard->quantity;
                             $wbs_material->save();
                         }
                     }
@@ -2309,7 +2309,7 @@ class ProjectController extends Controller
                 //                 }else{
                 //                     $tempPlanned->push([
                 //                         "t" => $date,
-                //                         "y" => number_format($price * $act_detail->quantity_material/1000000,2)."",
+                //                         "y" => number_format($price * $act_detail->quantity/1000000,2)."",
                 //                     ]);
                 //                 }
                 //             }else{

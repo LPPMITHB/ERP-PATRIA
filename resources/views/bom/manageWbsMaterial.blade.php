@@ -29,8 +29,8 @@
                     @verbatim
                     <div id="bom">
                         <div class="box-header p-b-0">
-                            <div class="col-xs-12 col-md-4">
-                                <div class="col-sm-12 no-padding"><b>Project Standard Information</b></div>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
         
                                 <div class="col-xs-4 no-padding">Name</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.name)"><b>: {{project.name}}</b></div>
@@ -42,7 +42,7 @@
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.ship.type)"><b>: {{project.ship.type}}</b></div>
                             </div>
                             
-                            <div class="col-xs-12 col-md-4">
+                            <div class="col-xs-12 col-md-3">
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
                                 
                                 <div class="col-xs-4 no-padding">Number</div>
@@ -56,7 +56,7 @@
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
                             </div>
 
-                            <div class="col-xs-12 col-md-4">                                
+                            <div class="col-xs-12 col-md-3">                                
                                 <div class="col-xs-4 no-padding">Service</div>
                                 <selectize id="service" name="service_id" v-model="submittedForm.service_id" :settings="service_settings">
                                     <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
@@ -83,22 +83,38 @@
                                         </selectize>
                                     </div>
                                 </div>
-
+                            </div>
+                            <div class="col-xs-12 col-md-3">
                                 <div class="col-xs-4 no-padding">Vendor</div>
                                 <selectize id="vendor" name="vendor_id" v-model="submittedForm.vendor_id" :settings="vendor_settings">
                                     <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                 </selectize>
+                                
+                                <div class="col-xs-4 no-padding">Quantity/Area</div>
+                                <div class="row">
+                                    <div class="col-sm-8">
+                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                            v-model="submittedForm.area">
+                                    </div>
+                                
+                                    <div class="col-sm-4 p-l-2">
+                                        <selectize id="uom" name="area_uom_id" v-model="submittedForm.area_uom_id" :settings="area_uom_settings">
+                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                        </selectize>
+                                    </div>
+                                </div>
                             </div>
                         </div> <!-- /.box-header -->
-                        <div class="col-md-12 p-t-5">
-                            <table class="table table-bordered tableFixed m-b-0 tablePagingVue">
+                        <div class="col-md-12 p-t-10">
+                            <table id="material-table" class="table table-bordered tableFixed m-b-0">
                                 <thead>
                                     <tr>
-                                        <th width="30px">No</th>
-                                        <th width="25%">Material Number</th>
-                                        <th width="28%">Material Description</th>
+                                        <th width="10px">No</th>
+                                        <th width="20%">Material Number</th>
+                                        <th width="25%">Material Description</th>
                                         <th width="10%">Quantity</th>
-                                        <th width="12%"></th>
+                                        <th width="14%">Dimensions</th>
+                                        <th width="10%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -107,6 +123,14 @@
                                         <td :id="material.material_code" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
                                         <td :id="material.material_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
                                         <td>{{ material.quantity }}</td>
+                                        <td class="p-l-5">
+                                            <template v-if="material.dimensions_value != null">
+                                                {{material.dimension_string}}
+                                            </template>
+                                            <template v-else>
+                                                -
+                                            </template>
+                                        </td>
                                         <td class="p-l-5" align="center">
                                             <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
@@ -125,7 +149,12 @@
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="materialOk"></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity" :disabled="materialOk"></td>
+                                        <td class="p-l-5" align="center">
+                                            <button :disabled="materialDimensionOk" class="btn btn-primary btn-xs" @click.prevent="openManageDimensionModal()">
+                                                MANAGE DIMENSIONS
+                                            </button>
+                                        </td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -164,10 +193,68 @@
                                                 <label for="quantity" class="control-label">Unit</label>
                                                 <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
                                             </div>
+
+                                            <template v-if="editInput.dimensions_value != null">
+                                                <div class="col-sm-12">
+                                                    <label for="quantity" class="control-label">Dimension</label>
+                                                </div>
+                                                <template v-for="dimension in editInput.dimensions_value">
+                                                    <div class="col-sm-12">
+                                                        <label for="name" class="control-label">{{dimension.name}}</label>
+                                                        <div class="row">
+                                                            <div class="col-sm-10">
+                                                                <input type="text" name="name" class="form-control" id="weight" :placeholder="dimension.name"
+                                                                    v-model="dimension.value">
+                                                            </div>
+                                                            <div class="col-sm-2">
+                                                                <selectize disabled id="uom" v-model="dimension.uom_id">
+                                                                    <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                                </selectize>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </template>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="manage_dimension">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Manage Dimensions</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <template v-for="dimension in input.dimensions_value">
+                                                <div class="col-sm-12">
+                                                    <label for="name" class="control-label">{{dimension.name}}</label>
+                                                    <div class="row">
+                                                        <div class="col-sm-10">
+                                                            <input type="text" name="name" class="form-control" id="weight" :placeholder="dimension.name" v-model="dimension.value">
+                                                        </div>
+                                                        <div class="col-sm-2">
+                                                            <selectize disabled id="uom" v-model="dimension.uom_id">
+                                                                <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                            </selectize>
+                                                        </div>
+                                                    </div>
+                                            
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -189,7 +276,17 @@
     const form = document.querySelector('form#create-bom');
 
     $(document).ready(function(){
-        $('div.overlay').hide();
+        var material_table = $('#material-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'bFilter'     : true,
+            'initComplete': function(){
+                $('div.overlay').hide();
+            }
+        });
     });
 
     var data = {
@@ -198,6 +295,7 @@
         wbs : @json($wbs),
         services : @json($services),
         vendors : @json($vendors),
+        uoms : @json($uoms),
         newIndex : 0, 
         submittedForm :{
             project_id : @json($project->id),
@@ -219,9 +317,14 @@
             quantity : "",
             unit : "",
             is_decimal : "",
-            material_ok : ""
+            material_ok : "",
+            selected_material : null,
+
+            dimensions_value : null,
+            dimension_string : null,
         },
         editInput : {
+            index : "",
             old_material_id : "",
             material_id : "",
             material_code : "",
@@ -229,7 +332,11 @@
             quantity : "",
             unit : "",
             is_decimal : "",
-            material_ok : ""
+            material_ok : "",
+            selected_material : null,
+            
+            dimensions_value : null,
+            dimension_string : null,
         },
         materialTable : @json($existing_data),
         materialSettings: {
@@ -253,6 +360,9 @@
         },
         service_detail_settings:{
             placeholder: 'Service Detail'
+        },
+        area_uom_settings: {
+            placeholder: 'Select area UOM!'
         },
     }
 
@@ -307,6 +417,18 @@
 
                 if(this.editInput.material_ok == ""){
                     isOk = true;
+                }
+
+                return isOk;
+            },
+            materialDimensionOk: function(){
+                let isOk = true;
+
+                if(this.input.selected_material != null){
+                    if(this.input.selected_material.dimension_type_id != "" &&
+                    this.input.selected_material.dimension_type_id != null ){
+                        isOk = false;
+                    }
                 }
 
                 return isOk;
@@ -375,10 +497,16 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_number = data.wbs_number;
+                this.editInput.wbs_number = data.wbs.number;
                 this.editInput.index = index;
                 this.editInput.unit = data.unit;
-                this.editInput.is_decimal = data.is_decimal;
+                this.editInput.is_decimal = data.material.is_decimal;
+
+                if(data.dimensions_value == null){
+                    this.editInput.dimensions_value = JSON.parse(this.editInput.selected_material.dimensions_value);
+                }else{
+                    this.editInput.dimensions_value = JSON.parse(data.dimensions_value);
+                }
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
@@ -392,6 +520,14 @@
                 });
                 var jsonMaterialId = JSON.stringify(this.material_id_modal);
                 this.getNewModalMaterials(jsonMaterialId);
+            },
+            openManageDimensionModal(){
+                $('div.overlay').show();
+                if(this.input.selected_material != null){
+                    this.input.dimensions_value = JSON.parse(this.input.selected_material.dimensions_value);
+                    $('#manage_dimension').modal();
+                    $('div.overlay').hide();                    
+                }
             },
             submitForm(){
                 $('div.overlay').show();
@@ -413,28 +549,54 @@
 
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
-                    this.materialTable.push(data);
 
-                    this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+                    if(data.dimensions_value != null){
+                        var dimension_string = "";
+                        data.dimensions_value.forEach(dimension => {
+                            var unit = "";
+                            this.uoms.forEach(uom => {
+                                if(uom.id == dimension.uom_id){
+                                    unit = uom.unit;
+                                }   
+                            });
 
-                    var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
-
-                    this.newIndex = this.materialTable.length + 1;  
-
-                    // refresh tooltip
-                    let datas = [];
-                    datas.push(this.input.material_code,this.input.material_name);
-                    datas = JSON.stringify(datas);
-                    datas = JSON.parse(datas);
-                    this.refreshTooltip(datas[0],datas[1]);
-
-                    this.input.material_id = "";
-                    this.input.material_code = "";
-                    this.input.material_name = "";
-                    this.input.quantity = "";
-                    this.input.unit = "";
-                    this.input.quantityInt = 0;
+                            if(dimension_string == ""){
+                                dimension_string += dimension.value+" "+unit;
+                            }else{
+                                dimension_string += " x "+dimension.value+" "+unit;
+                            }
+                        });
+                        data.dimension_string = dimension_string;
+                        this.materialTable.push(data);
+    
+                        this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+    
+                        var jsonMaterialId = JSON.stringify(this.material_id);
+                        this.getNewMaterials(jsonMaterialId);             
+    
+                        this.newIndex = this.materialTable.length + 1;  
+    
+                        // refresh tooltip
+                        let datas = [];
+                        datas.push(this.input.material_code,this.input.material_name);
+                        datas = JSON.stringify(datas);
+                        datas = JSON.parse(datas);
+                        this.refreshTooltip(datas[0],datas[1]);
+    
+                        this.input.material_id = "";
+                        this.input.material_code = "";
+                        this.input.material_name = "";
+                        this.input.quantity = "";
+                        this.input.unit = "";
+                        this.input.quantityInt = 0;
+                    }else{
+                        iziToast.warning({
+                            title: 'Please manage the material\'s dimension',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    }
                 }
             },
             removeRow: function(material) {
@@ -520,6 +682,7 @@
                         this.input.material_code = data.code;
                         this.input.unit = data.uom.unit;
                         this.input.is_decimal = data.uom.is_decimal;
+                        this.input.selected_material = data;
                     });
                 }else{
                     this.input.material_name = "";
@@ -540,6 +703,7 @@
                         this.editInput.material_code = data.code;
                         this.editInput.unit = data.uom.unit;
                         this.editInput.is_decimal = data.uom.is_decimal;
+                        this.editInput.selected_material = data;
                     });
                 }else{
                     this.editInput.material_name = "";

@@ -21,6 +21,7 @@ use App\Models\PurchaseRequisition;
 use App\Models\PurchaseRequisitionDetail;
 use App\Models\WbsMaterial;
 use App\Models\Vendor;
+use App\Models\Uom;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -288,22 +289,75 @@ class BOMController extends Controller
         $materials = Material::orderBy('code')->get()->jsonSerialize();
         $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
         $vendors = Vendor::all();
+        $uoms = Uom::all();
         $existing_data = [];
 
         $material_ids = [];
         $edit = false;
+
         if(count($wbs->wbsMaterials)>0){
             $edit = true;
-            $existing_data = WbsMaterial::where('wbs_id', $wbs->id)->with('material.uom')->get();
+            $existing_data = WbsMaterial::where('wbs_id', $wbs->id)->with('material.uom','wbs')->get();
             foreach ($existing_data as $material) {
                 array_push($material_ids,$material->material_id);
                 $material->material_code = $material->material->code;
                 $material->material_name = $material->material->description;
                 $material->unit = $material->material->uom->unit;
+                
+                $dimension_string = "";
+                if($material->dimensions_value != null){
+                    $dimension_obj = json_decode($material->dimensions_value);
+                    foreach ($dimension_obj as $dimension) {
+                        $uom = Uom::find($dimension->uom_id);
+                        if($dimension_string == ""){
+                            $dimension_string .= $dimension->value." ".$uom->unit;
+                        }else{
+                            $dimension_string .= " x ".$dimension->value." ".$uom->unit;
+                        } 
+                    }
+                }
+                $material->dimension_string = $dimension_string;
             }
         }
         
-        return view('bom.manageWbsMaterial', compact('project','materials','wbs','edit','existing_data','material_ids','services','vendors'));
+        return view('bom.manageWbsMaterial', compact('project','materials','wbs','edit','existing_data','material_ids','services','vendors','uoms'));
+    }
+
+    public function updateWbsMaterial(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            foreach ($datas->deleted_id as $id) {
+                $materialStandard = WbsMaterial::find($id);
+                $materialStandard->delete();
+            }
+            foreach($datas->materials as $material){
+                if(isset($material->id)){
+                    $materialStandard = WbsMaterial::find($material->id);
+                    $materialStandard->material_id = $material->material_id;
+                    $materialStandard->quantity = $material->quantity;
+                    $materialStandard->update();
+                }else{
+                    $materialStandard = new WbsMaterial;
+                    $materialStandard->wbs_id = $datas->wbs_id;
+                    $materialStandard->material_id = $material->material_id;
+                    $materialStandard->quantity = $material->quantity;
+                    $materialStandard->dimensions_value = json_encode($material->dimension_value);
+                    $materialStandard->save();
+                }
+            }
+            DB::commit();
+            if($datas->edit){
+                return redirect()->route('bom_repair.selectWBSManage', ['id' => $datas->project_id])->with('success', 'Material Standard Updated');
+            }else{
+                return redirect()->route('bom_repair.selectWBSManage', ['id' => $datas->project_id])->with('success', 'Material Standard Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('bom_repair.selectProjectManage')->with('error', $e->getMessage());
+        }
     }
 
     public function indexBom(Request $request,$id)

@@ -841,7 +841,7 @@ class ActivityController extends Controller
 
     //API
     public function getActivitiesAPI($wbs_id){
-        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service')->get()->jsonSerialize();
+        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

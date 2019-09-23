@@ -468,6 +468,21 @@ class ConfigurationsTableSeeder extends Seeder
                 ),
                 'status' => 1,
             ),
+            1 => array(
+                'id' => "2",
+                'name' => "Cylinder",
+                'dimensions' => array(
+                    0 => array(
+                        'name' => "Width",
+                        'uom_id' => 1
+                    ),
+                    1 => array(
+                        'name' => "Radius",
+                        'uom_id' => 1
+                    ),
+                ),
+                'status' => 1,
+            ),
         );
 
         DB::table('mst_configuration')->insert([
