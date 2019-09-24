@@ -454,16 +454,16 @@ class ConfigurationsTableSeeder extends Seeder
                 'name' => "Block",
                 'dimensions' => array(
                     0 => array(
-                        'name' => "Panjang",
-                        'uom_id' => 1
+                        'name' => "Length",
+                        'uom_id' => 11
                     ),
                     1 => array(
-                        'name' => "Lebar",
-                        'uom_id' => 1
+                        'name' => "Width",
+                        'uom_id' => 11
                     ),
                     2 => array(
-                        'name' => "Tinggi",
-                        'uom_id' => 1
+                        'name' => "Height",
+                        'uom_id' => 11
                     ),
                 ),
                 'status' => 1,
@@ -474,11 +474,11 @@ class ConfigurationsTableSeeder extends Seeder
                 'dimensions' => array(
                     0 => array(
                         'name' => "Width",
-                        'uom_id' => 1
+                        'uom_id' => 11
                     ),
                     1 => array(
                         'name' => "Radius",
-                        'uom_id' => 1
+                        'uom_id' => 11
                     ),
                 ),
                 'status' => 1,

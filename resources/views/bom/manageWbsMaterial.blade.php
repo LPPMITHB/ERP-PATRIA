@@ -541,9 +541,18 @@
             openManageDimensionModal(){
                 $('div.overlay').show();
                 if(this.input.selected_material != null){
-                    this.input.dimensions_value = JSON.parse(this.input.selected_material.dimensions_value);
-                    $('#manage_dimension').modal();
-                    $('div.overlay').hide();                    
+                    if(this.input.selected_material.density_id != null){
+                        this.input.dimensions_value = JSON.parse(this.input.selected_material.dimensions_value);
+                        $('#manage_dimension').modal();
+                        $('div.overlay').hide();                    
+                    }else{
+                        iziToast.warning({
+                            title: 'Please manage the material\'s density type at master data',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                        $('div.overlay').hide();
+                    }
                 }
             },
             submitForm(){
@@ -566,9 +575,9 @@
 
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
-                    data.dimensions_value = JSON.stringify(data.dimensions_value);
-
+                    
                     if(data.dimensions_value != null){
+                        data.dimensions_value = JSON.stringify(data.dimensions_value);
                         this.materialTable.push(data);
     
                         this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
@@ -812,7 +821,7 @@
             var jsonMaterialId = JSON.stringify(this.material_id);
             this.getNewMaterials(jsonMaterialId); 
 
-            this.submittedForm.service_id = @json($wbs->serviceDetail->service_id);       
+            this.submittedForm.service_id = @json($wbs->serviceDetail != null ? $wbs->serviceDetail->service_id : "");       
             this.submittedForm.vendor_id = @json($wbs->vendor_id);       
             this.submittedForm.area = @json($wbs->area);       
             this.submittedForm.area_uom_id = @json($wbs->area_uom_id);       

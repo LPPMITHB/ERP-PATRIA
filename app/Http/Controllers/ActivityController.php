@@ -328,7 +328,6 @@ class ActivityController extends Controller
             }
 
             if($activity->wbs->project->business_unit_id == 2){
-
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
                     if(count($data['dataMaterial']) > 0){
                         // print_r(count($data['dataMaterial'])); exit();

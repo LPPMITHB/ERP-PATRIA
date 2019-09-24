@@ -337,7 +337,87 @@ class BOMController extends Controller
                 if($material->dimensions_value != null){
                     $wbsMaterial->dimensions_value = $material->dimensions_value;
                 }
-                $wbsMaterial->save();
+
+                $temp_dimensions = json_decode($wbsMaterial->dimensions_value);
+                $weight = 0;
+                $ref_material = Material::find($material->material_id);
+                if($ref_material->dimension_type_id == 1){
+                    
+                    $densities = Configuration::get('density');
+                    $material_density = 0;
+                    foreach($densities as $density){
+                        if($density->id == $ref_material->density_id){
+                            $material_density = $density->value;
+                        }
+                    }
+                    if($material_density == 0){
+                        DB::rollback();
+                        return redirect()->route('bom_repair.manageWbsMaterial', ['id' => $datas->wbs_id])->with('error', "There is material that doesn't have density, please define it first at material master data");
+                    }
+
+                    $volume = 1;
+                    foreach ($temp_dimensions as $dimension) {
+                        $volume *= $dimension->value;
+                    }
+                    $volume = $volume/1000000;
+                    $weight = round(($volume * $material_density) * $material->quantity,2);
+                    $wbsMaterial->weight = $weight;
+                    $wbsMaterial->save();
+
+                }
+                $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->get();
+                if(count($modelBomPrep) > 0){
+                    $not_found_bom_prep = false;
+                    $not_added = true;
+                    foreach ($modelBomPrep as $bomPrep) {
+                        if($bomPrep->status == 1){
+                            if($weight == 0){
+                                $bomPrep->quantity += $material->quantity;
+                            }else{
+                                $bomPrep->weight += $weight;
+                            }
+                            $bomPrep->update();
+
+                            $wbsMaterial->bom_prep_id = $bomPrep->id;
+                            $wbsMaterial->update();
+                            $not_added = false;
+                        }else{
+                            $not_found_bom_prep = true;
+                        }
+
+                    }
+                    if($not_found_bom_prep && $not_added){
+                        $bomPrep = new BomPrep;
+                        $bomPrep->project_id = $datas->project_id;
+                        $bomPrep->material_id = $material->material_id;
+                        if($weight == 0){
+                            $bomPrep->quantity = $material->quantity;
+                        }else{
+                            $bomPrep->weight = $weight;
+                        }
+                        $bomPrep->status = 1;
+                        // $bomPrep->source = $material['source'];
+                        $bomPrep->save();
+
+                        $wbsMaterial->bom_prep_id = $bomPrep->id;
+                        $wbsMaterial->update();
+                    }
+                }else{
+                    $bomPrep = new BomPrep;
+                    $bomPrep->project_id = $datas->project_id;
+                    $bomPrep->material_id = $material->material_id;
+                    if($weight == 0){
+                        $bomPrep->quantity = $material->quantity;
+                    }else{
+                        $bomPrep->weight = $weight;
+                    }
+                    $bomPrep->status = 1;
+                    // $bomPrep->source = $material['source'];
+                    $bomPrep->save();
+
+                    $wbsMaterial->bom_prep_id = $bomPrep->id;
+                    $wbsMaterial->update();
+                }
             }
             DB::commit();
             return redirect()->route('bom_repair.selectWBSManage', ['id' => $datas->project_id])->with('success', 'Material Standard Created');
