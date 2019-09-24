@@ -677,7 +677,24 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.show',
         ]);
 
-        // bom repair
+        // bom repair manage
+        $manageWbsMaterial = Menu::where('route_name','bom_repair.selectProjectManage')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageWbsMaterial,
+            'route_name' => 'bom_repair.selectProjectManage',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageWbsMaterial,
+            'route_name' => 'bom_repair.selectWBSManage',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageWbsMaterial,
+            'route_name' => 'bom_repair.manageWbsMaterial',
+        ]);
+
+        // bom repair material requirement summary
         $summaryMaterialRepair = Menu::where('route_name','bom_repair.selectProjectSum')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $summaryMaterialRepair,

@@ -551,7 +551,7 @@ class WBSController extends Controller
         $array["WBS ".$wbs->number] = "";
         return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
-
+    
     public function createSubWbsRepair($project_id, $wbs_id, Request $request)
     {
         $wbs = WBS::find($wbs_id);
@@ -573,6 +573,8 @@ class WBSController extends Controller
             'Project|'.$project->number => route('project_repair.show',$project->id),
             'Add WBS' => route('wbs_repair.createWBS',$project->id),
         ];
+        $temp_level = 2;
+        $level = self::getWbsLevel($wbs, $temp_level);
 
         $iteration = 0;
         $array_reverse = [];
@@ -582,7 +584,7 @@ class WBSController extends Controller
         }
 
         $array["WBS ".$wbs->number] = "";
-        return view('wbs.createSubWbsRepair', compact('project', 'wbs','array','menu','wbs_standard'));
+        return view('wbs.createSubWbsRepair', compact('project', 'wbs','array','menu','wbs_standard','level'));
     }
 
     public function update(Request $request, $id)
@@ -954,6 +956,19 @@ class WBSController extends Controller
                     $array_reverse["WBS ".$wbs->number] = route('wbs_repair.createSubWBS',[$project_id,$wbs->id]);
                 }
                 return $array_reverse;
+            }
+        }
+    }
+
+    //Buat ngambil level wbs yang aktif (SUB WBS)
+    public function getWbsLevel($wbs,$level)
+    {
+        if ($wbs) {
+            if($wbs->wbs){
+                $level += 1;
+                return self::getWbsLevel($wbs->wbs,$level);
+            }else{
+                return $level;
             }
         }
     }
