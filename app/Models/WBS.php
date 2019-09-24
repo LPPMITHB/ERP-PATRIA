@@ -82,4 +82,15 @@ class WBS extends Model
     {
         return $this->hasMany('App\Models\WbsMaterial', 'wbs_id');
     }
+
+    public function serviceDetail()
+    {
+        return $this->belongsTo('App\Models\ServiceDetail');
+    }
+
+    public function areaUom()
+    {
+        return $this->belongsTo('App\Models\Uom');
+    }
+
 }

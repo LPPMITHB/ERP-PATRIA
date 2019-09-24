@@ -291,6 +291,7 @@
 
     var data = {
         project : @json($project),
+        all_materials : @json($materials),
         materials : @json($materials),
         wbs : @json($wbs),
         services : @json($services),
@@ -309,6 +310,8 @@
             vendor_id : "",
             area :"",
             area_uom_id : "",
+
+            selected_service_detail : @json($wbs->service_detail_id),
         },
         input : {
             material_id : "",
@@ -387,12 +390,18 @@
                 return isOk;
             },
             createOk: function(){
-                let isOk = false;
+                let isOkMaterial = false;
+                let isOkService = false;
 
                 if(this.materialTable.length < 1){
-                    isOk = true;
+                    isOkMaterial = true;
                 }
-                return isOk;
+
+                if(this.submittedForm.service_detail_id == ""){
+                    isOkService = true;                    
+                }
+
+                return isOkMaterial && isOkService;
             },
             updateOk: function(){
                 let isOk = false;
@@ -491,6 +500,7 @@
             },
             openEditModal(data,index){
                 $('div.overlay').show();
+                this.editInput.dimensions_value = null;
                 this.editInput.material_id = data.material_id;
                 this.editInput.old_material_id = data.material_id;
                 this.editInput.material_code = data.material_code;
@@ -503,7 +513,14 @@
                 this.editInput.is_decimal = data.material.is_decimal;
 
                 if(data.dimensions_value == null){
-                    this.editInput.dimensions_value = JSON.parse(this.editInput.selected_material.dimensions_value);
+                    this.all_materials.forEach(material => {
+                        if(material.id == data.material_id){
+                            this.editInput.selected_material = material;
+                            if(this.editInput.selected_material.dimensions_value != null){
+                                this.editInput.dimensions_value = JSON.parse(this.editInput.selected_material.dimensions_value);
+                            }
+                        }
+                    });
                 }else{
                     this.editInput.dimensions_value = JSON.parse(data.dimensions_value);
                 }
@@ -549,24 +566,9 @@
 
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
+                    data.dimensions_value = JSON.stringify(data.dimensions_value);
 
                     if(data.dimensions_value != null){
-                        var dimension_string = "";
-                        data.dimensions_value.forEach(dimension => {
-                            var unit = "";
-                            this.uoms.forEach(uom => {
-                                if(uom.id == dimension.uom_id){
-                                    unit = uom.unit;
-                                }   
-                            });
-
-                            if(dimension_string == ""){
-                                dimension_string += dimension.value+" "+unit;
-                            }else{
-                                dimension_string += " x "+dimension.value+" "+unit;
-                            }
-                        });
-                        data.dimension_string = dimension_string;
                         this.materialTable.push(data);
     
                         this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
@@ -634,6 +636,7 @@
                         material.unit = this.editInput.unit;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
+                        material.dimensions_value = JSON.stringify(this.editInput.dimensions_value);
 
                         var elemCode = document.getElementById(material.material_code);
                         var elemDesc = document.getElementById(material.material_name);
@@ -673,6 +676,31 @@
             },
         },
         watch: {
+            materialTable:{
+            handler: function(newValue) {
+                newValue.forEach(wbsMaterial => {
+                    if(wbsMaterial.dimensions_value != null){
+                        var dimension_string = "";
+                        JSON.parse(wbsMaterial.dimensions_value).forEach(dimension => {
+                            var unit = "";
+                            this.uoms.forEach(uom => {
+                                if(uom.id == dimension.uom_id){
+                                    unit = uom.unit;
+                                }   
+                            });
+
+                            if(dimension_string == ""){
+                                dimension_string += dimension.value+" "+unit;
+                            }else{
+                                dimension_string += " x "+dimension.value+" "+unit;
+                            }
+                        });
+                        wbsMaterial.dimension_string = dimension_string;
+                    }
+                });
+            },
+            deep: true
+        },
             'input.material_id': function(newValue){
                 this.input.quantity = "";
                 if(newValue != ""){
@@ -755,6 +783,11 @@
                     this.services.forEach(service => {
                         if(service.id == newValue){
                             this.submittedForm.selected_service = service.service_details;
+
+                            if(this.submittedForm.selected_service_detail != null){
+                                this.submittedForm.service_detail_id = this.submittedForm.selected_service_detail;
+                                this.submittedForm.selected_service_detail = null;
+                            }
                         }
                     });
                 }else{
@@ -777,7 +810,12 @@
         created: function() {
             this.newIndex = this.materialTable.length + 1;
             var jsonMaterialId = JSON.stringify(this.material_id);
-            this.getNewMaterials(jsonMaterialId);        
+            this.getNewMaterials(jsonMaterialId); 
+
+            this.submittedForm.service_id = @json($wbs->serviceDetail->service_id);       
+            this.submittedForm.vendor_id = @json($wbs->vendor_id);       
+            this.submittedForm.area = @json($wbs->area);       
+            this.submittedForm.area_uom_id = @json($wbs->area_uom_id);       
         }
     });
        

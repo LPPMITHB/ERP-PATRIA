@@ -171,6 +171,7 @@ return array(
     'App\\Models\\WBS' => $baseDir . '/app/Models/WBS.php',
     'App\\Models\\WBSImage' => $baseDir . '/app/Models/WBSImage.php',
     'App\\Models\\Warehouse' => $baseDir . '/app/Models/Warehouse.php',
+    'App\\Models\\WbsMaterial' => $baseDir . '/app/Models/WbsMaterial.php',
     'App\\Models\\WbsProfile' => $baseDir . '/app/Models/WbsProfile.php',
     'App\\Models\\WbsStandard' => $baseDir . '/app/Models/WbsStandard.php',
     'App\\Models\\Weather' => $baseDir . '/app/Models/Weather.php',

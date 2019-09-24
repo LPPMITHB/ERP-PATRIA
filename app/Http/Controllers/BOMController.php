@@ -323,29 +323,65 @@ class BOMController extends Controller
         return view('bom.manageWbsMaterial', compact('project','materials','wbs','edit','existing_data','material_ids','services','vendors','uoms'));
     }
 
+    public function storeWbsMaterial(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            foreach($datas->materials as $material){
+                $wbsMaterial = new WbsMaterial;
+                $wbsMaterial->wbs_id = $datas->wbs_id;
+                $wbsMaterial->material_id = $material->material_id;
+                $wbsMaterial->quantity = $material->quantity;
+                if($material->dimensions_value != null){
+                    $wbsMaterial->dimensions_value = $material->dimensions_value;
+                }
+                $wbsMaterial->save();
+            }
+            DB::commit();
+            return redirect()->route('bom_repair.selectWBSManage', ['id' => $datas->project_id])->with('success', 'Material Standard Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('bom_repair.selectProjectManage')->with('error', $e->getMessage());
+        }
+    }
+
     public function updateWbsMaterial(Request $request)
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
+            $wbs = WBS::find($datas->wbs_id);
+            $wbs->service_detail_id = $datas->service_detail_id;
+            $wbs->vendor_id = $datas->vendor_id;
+            $wbs->area = $datas->area;
+            $wbs->area_uom_id = $datas->area_uom_id;
+            $wbs->update();
+            
             foreach ($datas->deleted_id as $id) {
-                $materialStandard = WbsMaterial::find($id);
-                $materialStandard->delete();
+                $wbsMaterial = WbsMaterial::find($id);
+                $wbsMaterial->delete();
             }
             foreach($datas->materials as $material){
                 if(isset($material->id)){
-                    $materialStandard = WbsMaterial::find($material->id);
-                    $materialStandard->material_id = $material->material_id;
-                    $materialStandard->quantity = $material->quantity;
-                    $materialStandard->update();
+                    $wbsMaterial = WbsMaterial::find($material->id);
+                    $wbsMaterial->material_id = $material->material_id;
+                    $wbsMaterial->quantity = $material->quantity;  
+                    if($material->dimensions_value != null){
+                        $wbsMaterial->dimensions_value = $material->dimensions_value;
+                    }
+                    $wbsMaterial->update();
                 }else{
-                    $materialStandard = new WbsMaterial;
-                    $materialStandard->wbs_id = $datas->wbs_id;
-                    $materialStandard->material_id = $material->material_id;
-                    $materialStandard->quantity = $material->quantity;
-                    $materialStandard->dimensions_value = json_encode($material->dimension_value);
-                    $materialStandard->save();
+                    $wbsMaterial = new WbsMaterial;
+                    $wbsMaterial->wbs_id = $datas->wbs_id;
+                    $wbsMaterial->material_id = $material->material_id;
+                    $wbsMaterial->quantity = $material->quantity;
+                    if($material->dimensions_value != null){
+                        $wbsMaterial->dimensions_value = $material->dimensions_value;
+                    }
+                    $wbsMaterial->save();
                 }
             }
             DB::commit();

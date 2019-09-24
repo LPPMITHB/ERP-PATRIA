@@ -614,6 +614,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\WBS' => __DIR__ . '/../..' . '/app/Models/WBS.php',
         'App\\Models\\WBSImage' => __DIR__ . '/../..' . '/app/Models/WBSImage.php',
         'App\\Models\\Warehouse' => __DIR__ . '/../..' . '/app/Models/Warehouse.php',
+        'App\\Models\\WbsMaterial' => __DIR__ . '/../..' . '/app/Models/WbsMaterial.php',
         'App\\Models\\WbsProfile' => __DIR__ . '/../..' . '/app/Models/WbsProfile.php',
         'App\\Models\\WbsStandard' => __DIR__ . '/../..' . '/app/Models/WbsStandard.php',
         'App\\Models\\Weather' => __DIR__ . '/../..' . '/app/Models/Weather.php',
