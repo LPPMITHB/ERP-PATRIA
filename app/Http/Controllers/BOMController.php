@@ -79,6 +79,7 @@ class BOMController extends Controller
         $project = Project::where('id',$id)->with('ship','customer')->first();
         $bomPreps = BomPrep::where('project_id', $id)->where('source', "Stock")->where('status', 1)->with('bomDetails','material')->get();
         $stocks = Stock::with('material')->get();
+        $materials = Material::with('stock')->get();
         $existing_bom = $project->boms->first();
         foreach ($bomPreps as $bomPrep) {
             if($bomPrep->weight != null){
@@ -106,7 +107,7 @@ class BOMController extends Controller
             }
         }
 
-        return view('bom.materialSummary', compact('project','bomPreps','stocks','existing_bom'));
+        return view('bom.materialSummary', compact('project','bomPreps','stocks','existing_bom','materials'));
     }
     
     public function selectWBS(Request $request, $id)
