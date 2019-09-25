@@ -362,9 +362,9 @@ class BOMController extends Controller
                     $volume = $volume/1000000;
                     $weight = round(($volume * $material_density) * $material->quantity,2);
                     $wbsMaterial->weight = $weight;
-                    $wbsMaterial->save();
-
                 }
+                $wbsMaterial->save();
+
                 $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->get();
                 if(count($modelBomPrep) > 0){
                     $not_found_bom_prep = false;
@@ -434,10 +434,12 @@ class BOMController extends Controller
         DB::beginTransaction();
         try {
             $wbs = WBS::find($datas->wbs_id);
-            $wbs->service_detail_id = $datas->service_detail_id;
-            $wbs->vendor_id = $datas->vendor_id;
-            $wbs->area = $datas->area;
-            $wbs->area_uom_id = $datas->area_uom_id;
+            if($datas->service_detail_id != ""){
+                $wbs->service_detail_id = $datas->service_detail_id;
+                $wbs->vendor_id = $datas->vendor_id;
+                $wbs->area = $datas->area;
+                $wbs->area_uom_id = $datas->area_uom_id;
+            }
             $wbs->update();
             
             foreach ($datas->deleted_id as $id) {
@@ -462,6 +464,89 @@ class BOMController extends Controller
                         $wbsMaterial->dimensions_value = $material->dimensions_value;
                     }
                     $wbsMaterial->save();
+                }
+
+                $temp_dimensions = json_decode($wbsMaterial->dimensions_value);
+                $weight = 0;
+                $ref_material = Material::find($material->material_id);
+                $old_weight = 0;
+                if($ref_material->dimension_type_id == 1){
+                    
+                    $densities = Configuration::get('density');
+                    $material_density = 0;
+                    foreach($densities as $density){
+                        if($density->id == $ref_material->density_id){
+                            $material_density = $density->value;
+                        }
+                    }
+                    if($material_density == 0){
+                        DB::rollback();
+                        return redirect()->route('bom_repair.manageWbsMaterial', ['id' => $datas->wbs_id])->with('error', "There is material that doesn't have density, please define it first at material master data");
+                    }
+
+                    $volume = 1;
+                    foreach ($temp_dimensions as $dimension) {
+                        $volume *= $dimension->value;
+                    }
+                    $volume = $volume/1000000;
+                    $weight = round(($volume * $material_density) * $material->quantity,2);
+
+                    $old_weight = $wbsMaterial->weight;
+                    $wbsMaterial->weight = $weight;
+                    $wbsMaterial->update();
+                }
+                $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->get();
+                if(count($modelBomPrep) > 0){
+                    $not_found_bom_prep = false;
+                    $not_added = true;
+                    foreach ($modelBomPrep as $bomPrep) {
+                        if($bomPrep->status == 1){
+                            if($weight == 0){
+                                $bomPrep->quantity += $material->quantity;
+                            }else{
+                                $bomPrep->weight += $weight - $old_weight;
+                            }
+                            $bomPrep->update();
+
+                            $wbsMaterial->bom_prep_id = $bomPrep->id;
+                            $wbsMaterial->update();
+                            $not_added = false;
+                        }else{
+                            $not_found_bom_prep = true;
+                        }
+
+                    }
+                    if($not_found_bom_prep && $not_added){
+                        $bomPrep = new BomPrep;
+                        $bomPrep->project_id = $datas->project_id;
+                        $bomPrep->material_id = $material->material_id;
+                        if($weight == 0){
+                            $bomPrep->quantity = $material->quantity;
+                        }else{
+                            $bomPrep->weight = $weight;
+                        }
+                        $bomPrep->status = 1;
+                        // $bomPrep->source = $material['source'];
+                        $bomPrep->save();
+
+                        $wbsMaterial->bom_prep_id = $bomPrep->id;
+                        $wbsMaterial->update();
+                    }
+                }else{
+                    $bomPrep = new BomPrep;
+                    $bomPrep->project_id = $datas->project_id;
+                    $bomPrep->material_id = $material->material_id;
+                    if($weight == 0){
+                        $bomPrep->quantity = $material->quantity;
+                    }else{
+                        $bomPrep->weight = $weight;
+                    }
+                    $bomPrep->status = 1;
+                    // $bomPrep->source = $material['source'];
+                    $bomPrep->save();
+
+                    $wbsMaterial->bom_prep_id = $bomPrep->id;
+                    $wbsMaterial->update();
                 }
             }
             DB::commit();

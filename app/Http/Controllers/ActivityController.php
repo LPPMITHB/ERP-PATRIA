@@ -646,7 +646,6 @@ class ActivityController extends Controller
 
                 $diff=date_diff($start_date,$end_date);
                 $project->actual_duration = $diff->days;
-                $project->status = 0;
                 $project->update();
             }
 
