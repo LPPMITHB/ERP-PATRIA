@@ -18,7 +18,7 @@
                 'title' => "Manage Activities Standard",
                 'items' => [
                     'Dashboard' => route('index'),
-                    $wbs->number => route('project_standard.createWbsStandard'),
+                    $wbs->number => route('project_standard.createWbsStandard', $wbs->project_standard_id),
                     "Manage Activities" => ""
                 ]
             ]
