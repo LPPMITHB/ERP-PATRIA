@@ -17,7 +17,7 @@ class CreateTrxResourceTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('resource_detail_id')->nullable();
-            $table->integer('category_id'); 
+            $table->integer('category_id')->nullable(); 
             $table->unsignedInteger('project_id')->nullable();           
             $table->unsignedInteger('wbs_id')->nullable();       
             $table->integer('quantity')->default(1);

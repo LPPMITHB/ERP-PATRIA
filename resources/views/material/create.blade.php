@@ -163,7 +163,7 @@
                                     </div>
 
                                     <div class="col-sm-2">
-                                        <selectize disabled id="uom" v-model="dimension.uom_id" :settings="weight_uom_settings">
+                                        <selectize disabled id="uom" v-model="dimension.uom_id">
                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                         </selectize>
                                     </div>

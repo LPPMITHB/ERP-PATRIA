@@ -454,16 +454,31 @@ class ConfigurationsTableSeeder extends Seeder
                 'name' => "Block",
                 'dimensions' => array(
                     0 => array(
-                        'name' => "Panjang",
-                        'uom_id' => 1
+                        'name' => "Length",
+                        'uom_id' => 11
                     ),
                     1 => array(
-                        'name' => "Lebar",
-                        'uom_id' => 1
+                        'name' => "Width",
+                        'uom_id' => 11
                     ),
                     2 => array(
-                        'name' => "Tinggi",
-                        'uom_id' => 1
+                        'name' => "Height",
+                        'uom_id' => 11
+                    ),
+                ),
+                'status' => 1,
+            ),
+            1 => array(
+                'id' => "2",
+                'name' => "Cylinder",
+                'dimensions' => array(
+                    0 => array(
+                        'name' => "Width",
+                        'uom_id' => 11
+                    ),
+                    1 => array(
+                        'name' => "Radius",
+                        'uom_id' => 11
                     ),
                 ),
                 'status' => 1,
@@ -481,13 +496,13 @@ class ConfigurationsTableSeeder extends Seeder
 
         $approval_pr = array(
             0 => array(
-                'type' => "Joint Approval",
+                'type' => "Single Approval",
                 'value' => array(
                     0 => array(
                         'minimum' => 0,
                         'maximum' => 500000000,
                         'role_id_1' => 1,
-                        'role_id_2' => 4,
+                        'role_id_2' => null,
                     ),
                 ),
             ),

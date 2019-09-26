@@ -1788,7 +1788,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Manage Material Standard',
             'icon' => 'fa-briefcase',
-            'route_name'=> 'project_standard.selectProject',
+            'route_name'=> 'project_standard.selectProjectMaterial',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $projectStandard,
@@ -1800,7 +1800,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Manage Resource Standard',
             'icon' => 'fa-briefcase',
-            'route_name'=> 'project_standard.createProjectStandard',
+            'route_name'=> 'project_standard.selectProjectResource',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $projectStandard,
@@ -1823,6 +1823,18 @@ class MenusTableSeeder extends Seeder
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Manage BOM',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'bom_repair.selectProjectManage',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $bomRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Material Requirement Summary',
             'icon' => 'fa-file-text-o',
             'route_name' => 'bom_repair.selectProjectSum',
             'is_active' => true,

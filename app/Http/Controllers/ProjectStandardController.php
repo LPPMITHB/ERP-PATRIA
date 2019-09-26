@@ -11,6 +11,8 @@ use App\Models\WbsStandard;
 use App\Models\ActivityStandard;
 use App\Models\Material;
 use App\Models\MaterialStandard;
+use App\Models\Resource;
+use App\Models\ResourceStandard;
 use DB;
 use Auth;
 use Illuminate\Support\Collection;
@@ -131,12 +133,20 @@ class ProjectStandardController extends Controller
 
     public function selectProject(Request $request)
     {
+        $action = null;
+        if($request->is('project_standard/selectProject/resource')){
+            $action = "resource";
+            $route = "selectWBSResource";
+        }elseif($request->is('project_standard/selectProject/material')){
+            $action = "material";
+            $route = "selectWBSMaterial";
+        }
         $projects = ProjectStandard::all();
 
-        return view('project_standard.selectProject', compact('projects'));
+        return view('project_standard.selectProject', compact('projects','action','route'));
     }
 
-    public function selectWBS(Request $request, $id)
+    public function selectWBS(Request $request, $action,$id)
     {
         $route = $request->route()->getPrefix();
         $project = ProjectStandard::find($id);
@@ -150,27 +160,41 @@ class ProjectStandardController extends Controller
             "icon" => "fa fa-ship"
         ]);
 
+        $route = "";
+        $item_text = "";
+        if($action == "resource"){
+            $route = "project_standard.manageResource";
+            $item_text = "Resource";
+        }elseif($action == "material"){
+            $route = "project_standard.manageMaterial";
+            $item_text = "Material";
+        }
+
         
         foreach($wbss as $wbs){
-            $bom_code = "";
-            $bom = MaterialStandard::where('wbs_standard_id',$wbs->id)->first();
-            if($bom){
-                $bom_code = " - this WBS Standard has Material Standard Click to Edit";
+            $exist = "";
+            if($action == "resource"){
+                $item_standard = ResourceStandard::where('wbs_standard_id',$wbs->id)->first();
+            }elseif($action == "material"){
+                $item_standard = MaterialStandard::where('wbs_standard_id',$wbs->id)->first();
+            }            
+            if($item_standard){
+                $exist = " - this WBS Standard has ".$item_text." Standard Click to Edit";
                 if($wbs->wbs){
                     $data->push([
                         "id" => "WBS".$wbs->id, 
                         "parent" => "WBS".$wbs->wbs->id,
-                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$wbs->id)],
+                        "a_attr" =>  ["href" => route($route,$wbs->id)],
                     ]);
                 }else{
                     $data->push([
                         "id" => "WBS".$wbs->id , 
                         "parent" => "PRO".$project->id,
-                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$wbs->id)],
+                        "a_attr" =>  ["href" => route($route,$wbs->id)],
                     ]);
                 } 
             }else{
@@ -178,22 +202,22 @@ class ProjectStandardController extends Controller
                     $data->push([
                         "id" => "WBS".$wbs->id , 
                         "parent" => "WBS".$wbs->wbs->id,
-                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$wbs->id)],
+                        "a_attr" =>  ["href" => route($route,$wbs->id)],
                     ]);
                 }else{
                     $data->push([
                         "id" => "WBS".$wbs->id , 
                         "parent" => "PRO".$project->id,
-                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$bom_code.'</b>',
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>'.$exist.'</b>',
                         "icon" => "fa fa-suitcase",
-                        "a_attr" =>  ["href" => route('project_standard.manageMaterial',$wbs->id)],
+                        "a_attr" =>  ["href" => route($route,$wbs->id)],
                     ]);
                 } 
             } 
         }
-        return view('project_standard.selectWBS', compact('project','data','route'));
+        return view('project_standard.selectWBS', compact('project','data','route','action'));
     }
 
     public function manageMaterial($wbs_id, Request $request)
@@ -219,6 +243,28 @@ class ProjectStandardController extends Controller
         return view('project_standard.manageMaterial', compact('project','materials','wbs','edit','existing_data','material_ids'));
     }
 
+    public function manageResource($wbs_id, Request $request)
+    {
+        $wbs = WbsStandard::find($wbs_id);
+        $project = ProjectStandard::where('id',$wbs->project_standard_id)->with('ship')->first();
+        $resources = Resource::orderBy('code')->get()->jsonSerialize();
+        $existing_data = [];
+
+        $resource_ids = [];
+        $edit = false;
+        if(count($wbs->resourceStandards)>0){
+            $edit = true;
+            $existing_data = ResourceStandard::where('wbs_standard_id', $wbs->id)->with('resource')->get();
+            foreach ($existing_data as $resource) {
+                array_push($resource_ids,$resource->resource_id);
+                $resource->resource_code = $resource->resource->code;
+                $resource->resource_name = $resource->resource->description;
+            }
+        }
+        
+        return view('project_standard.manageResource', compact('project','resources','wbs','edit','existing_data','resource_ids'));
+    }
+
     public function storeMaterialStandard(Request $request)
     {
         $route = $request->route()->getPrefix();
@@ -231,14 +277,35 @@ class ProjectStandardController extends Controller
                 $materialStandard->wbs_standard_id = $datas->wbs_id;
                 $materialStandard->material_id = $material->material_id;
                 $materialStandard->quantity = $material->quantity;
-                $materialStandard->source = $material->source;
                 $materialStandard->save();
             }
             DB::commit();
             return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Material Standard Created');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('project_standard.selectProject')->with('error', $e->getMessage());
+            return redirect()->route('project_standard.selectProjectMaterial')->with('error', $e->getMessage());
+        }
+    }
+
+    public function storeResourceStandard(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            foreach($datas->resources as $resource){
+                $resourceStandard = new ResourceStandard;
+                $resourceStandard->project_standard_id = $datas->project_id;
+                $resourceStandard->wbs_standard_id = $datas->wbs_id;
+                $resourceStandard->resource_id = $resource->resource_id;
+                $resourceStandard->quantity = $resource->quantity;
+                $resourceStandard->save();
+            }
+            DB::commit();
+            return redirect()->route('project_standard.showResourceStandard', ['id' => $datas->wbs_id])->with('success', 'Resource Standard Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project_standard.selectProjectResource')->with('error', $e->getMessage());
         }
     }
 
@@ -257,7 +324,6 @@ class ProjectStandardController extends Controller
                     $materialStandard = MaterialStandard::find($material->id);
                     $materialStandard->material_id = $material->material_id;
                     $materialStandard->quantity = $material->quantity;
-                    $materialStandard->source = $material->source;
                     $materialStandard->update();
                 }else{
                     $materialStandard = new MaterialStandard;
@@ -265,7 +331,6 @@ class ProjectStandardController extends Controller
                     $materialStandard->wbs_standard_id = $datas->wbs_id;
                     $materialStandard->material_id = $material->material_id;
                     $materialStandard->quantity = $material->quantity;
-                    $materialStandard->source = $material->source;
                     $materialStandard->save();
                 }
             }
@@ -277,7 +342,44 @@ class ProjectStandardController extends Controller
             }
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('project_standard.selectProject')->with('error', $e->getMessage());
+            return redirect()->route('project_standard.selectProjectMaterial')->with('error', $e->getMessage());
+        }
+    }
+
+    public function updateResourceStandard(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            foreach ($datas->deleted_id as $id) {
+                $resourceStandard = ResourceStandard::find($id);
+                $resourceStandard->delete();
+            }
+            foreach($datas->resources as $resource){
+                if(isset($resource->id)){
+                    $resourceStandard = ResourceStandard::find($resource->id);
+                    $resourceStandard->resource_id = $resource->resource_id;
+                    $resourceStandard->quantity = $resource->quantity;
+                    $resourceStandard->update();
+                }else{
+                    $resourceStandard = new ResourceStandard;
+                    $resourceStandard->project_standard_id = $datas->project_id;
+                    $resourceStandard->wbs_standard_id = $datas->wbs_id;
+                    $resourceStandard->resource_id = $resource->resource_id;
+                    $resourceStandard->quantity = $resource->quantity;
+                    $resourceStandard->save();
+                }
+            }
+            DB::commit();
+            if($datas->edit){
+                return redirect()->route('project_standard.showResourceStandard', ['id' => $datas->wbs_id])->with('success', 'Resource Standard Updated');
+            }else{
+                return redirect()->route('project_standard.showResourceStandard', ['id' => $datas->wbs_id])->with('success', 'Resource Standard Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project_standard.selectProjectResource')->with('error', $e->getMessage());
         }
     }
 
@@ -289,6 +391,16 @@ class ProjectStandardController extends Controller
         $project = ProjectStandard::where('id', $wbs->project_standard_id)->with('ship')->first();
 
         return view('project_standard.showMaterialStandard', compact('materialStandards','wbs','project','route'));
+    }
+
+    public function showResourceStandard(Request $request, $id)
+    {
+        $route = $request->route()->getPrefix();
+        $resourceStandards = ResourceStandard::where('wbs_standard_id',$id)->with('resource')->get();
+        $wbs = WbsStandard::find($id); 
+        $project = ProjectStandard::where('id', $wbs->project_standard_id)->with('ship')->first();
+
+        return view('project_standard.showResourceStandard', compact('resourceStandards','wbs','project','route'));
     }
 
     public function storeWbsStandard(Request $request)
@@ -505,5 +617,16 @@ class ProjectStandardController extends Controller
     public function getActivityStandardAPI($wbs_id){
         $activities = ActivityStandard::where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
+    }
+
+    public function getResourcesAPI($ids){
+        $ids = json_decode($ids);
+
+        return response(Resource::orderBy('code')->whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getResourceAPI($id){
+
+        return response(Resource::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
     }
 }

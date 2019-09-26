@@ -33,6 +33,9 @@ use App\Models\Stock;
 use App\Models\ProjectStandard;
 use App\Models\WbsStandard;
 use App\Models\ActivityStandard;
+use App\Models\WbsMaterial;
+use App\Models\MaterialStandard;
+use App\Models\ResourceStandard;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use DB;
@@ -804,37 +807,30 @@ class ProjectController extends Controller
                     $wbs->branch_id = Auth::user()->branch->id;
                     $wbs->save();
                     $wbsIdConverter[$wbs_standard_id] = $wbs->id;
-                    // $bom_ref = Bom::where('wbs_id', $wbs_standard->id)->first();
-                    // if($bom_ref != null){
-                    //     $bom = new Bom;
-                    //     $bom = $bom_ref->replicate();
-                    //     $bom->code = self::generateBomCode($project_id);
-                    //     $bom->wbs_id = $wbs->id;
-                    //     $bom->project_id = $project_id;
-                    //     $bom->user_id = Auth::user()->id;
-                    //     $bom->branch_id = Auth::user()->branch->id;
-                    //     $bom->save();
+                    $materialStandards = MaterialStandard::where('wbs_standard_id', $wbs_standard->id)->get();
+                    if(count($materialStandards) > 0){
+                        foreach ($materialStandards as $materialStandard) {
+                            $wbs_material = new WbsMaterial;
+                            $wbs_material->wbs_id = $wbs->id;
+                            $wbs_material->material_id = $materialStandard->material_id;
+                            $wbs_material->quantity = $materialStandard->quantity;
+                            $wbs_material->save();
+                        }
+                    }
 
-                    //     foreach ($bom_ref->bomDetails as $bomD) {
-                    //         $bom_detail = new BomDetail;
-                    //         $bom_detail = $bomD->replicate();
-                    //         $bom_detail->bom_id = $bom->id;
-                    //         $bom_detail->save();
-                    //     }
-                    // }
-
-                    // $resource_ref = ResourceTrx::where('wbs_id', $wbs_ref->id)->get();
-                    // if(count($resource_ref) > 0){
-                    //     foreach ($resource_ref as $resource) {
-                    //         $resource_input = new ResourceTrx;
-                    //         $resource_input = $resource->replicate();
-                    //         $resource_input->wbs_id = $wbs->id;
-                    //         $resource_input->project_id = $project_id;
-                    //         $resource_input->user_id = Auth::user()->id;
-                    //         $resource_input->branch_id = Auth::user()->branch->id;
-                    //         $resource_input->save();
-                    //     }
-                    // }
+                    $resourceStandards = ResourceStandard::where('wbs_standard_id', $wbs_standard->id)->get();
+                    if(count($resourceStandards) > 0){
+                        foreach ($resourceStandards as $resource) {
+                            $resource_input = new ResourceTrx;
+                            $resource_input->resource_id = $resource->resource_id;
+                            $resource_input->wbs_id = $wbs->id;
+                            $resource_input->project_id = $project_id;
+                            $resource_input->quantity = $resource->quantity;
+                            $resource_input->user_id = Auth::user()->id;
+                            $resource_input->branch_id = Auth::user()->branch->id;
+                            $resource_input->save();
+                        }
+                    }
                 }elseif(strpos($dataTree, 'ACT') !== false){
                     $act_standard_id = str_replace("ACT", "", $dataTree);
                     $act_standard = ActivityStandard::find($act_standard_id);
@@ -1119,7 +1115,7 @@ class ProjectController extends Controller
         $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
-
+        
         $progressStatus = Collection::make();
         self::getDataStatusProgress($project,$progressStatus);
 
@@ -1246,9 +1242,11 @@ class ProjectController extends Controller
         }else{
             $wbs_id = WBS::where('project_id', $project->id)->pluck('id')->toArray();
             if(count($wbs_id)>0){
-                $activities = Activity::whereIn("wbs_id",$wbs_id)->with('activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.vendor',
-                'activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.goodsReceipts.purchaseOrder',
-                'wbs.productionOrder.goodsReceipts.goodsReceiptDetails','wbs.materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->get();
+                $activities = Activity::whereIn("wbs_id",$wbs_id)->
+                // with('activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.vendor',
+                // 'activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.goodsReceipts.purchaseOrder',
+                // 'wbs.productionOrder.goodsReceipts.goodsReceiptDetails','wbs.materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->
+                get();
             }
         }
         $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
@@ -2297,39 +2295,39 @@ class ProjectController extends Controller
             }
         }else{
             foreach($sorted as $date => $group){
-                foreach($group as $act){
-                    if(count($act->activityDetails)>0){
-                        foreach ($act->activityDetails as $act_detail) {
-                            if($act_detail->material != null){
-                                $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
-                                $price = $act_detail->material->cost_standard_price;
-                                if($act_detail->weight != null){
-                                    $tempPlanned->push([
-                                        "t" => $date,
-                                        "y" => number_format($price_per_kg * $act_detail->weight/1000000,2)."",
-                                    ]);
-                                }else{
-                                    $tempPlanned->push([
-                                        "t" => $date,
-                                        "y" => number_format($price * $act_detail->quantity_material/1000000,2)."",
-                                    ]);
-                                }
-                            }else{
-                                if($act_detail->weight != null){
-                                    $tempPlanned->push([
-                                        "t" => $date,
-                                        "y" => number_format(0,2)."",
-                                    ]);
-                                }else{
-                                    $tempPlanned->push([
-                                        "t" => $date,
-                                        "y" => number_format(0,2)."",
-                                    ]);
-                                }
-                            }
-                        }
-                    }
-                }
+                // foreach($group as $act){
+                //     if(count($act->activityDetails)>0){
+                //         foreach ($act->activityDetails as $act_detail) {
+                //             if($act_detail->material != null){
+                //                 $price_per_kg = $act_detail->material->cost_standard_price_per_kg;
+                //                 $price = $act_detail->material->cost_standard_price;
+                //                 if($act_detail->weight != null){
+                //                     $tempPlanned->push([
+                //                         "t" => $date,
+                //                         "y" => number_format($price_per_kg * $act_detail->weight/1000000,2)."",
+                //                     ]);
+                //                 }else{
+                //                     $tempPlanned->push([
+                //                         "t" => $date,
+                //                         "y" => number_format($price * $act_detail->quantity/1000000,2)."",
+                //                     ]);
+                //                 }
+                //             }else{
+                //                 if($act_detail->weight != null){
+                //                     $tempPlanned->push([
+                //                         "t" => $date,
+                //                         "y" => number_format(0,2)."",
+                //                     ]);
+                //                 }else{
+                //                     $tempPlanned->push([
+                //                         "t" => $date,
+                //                         "y" => number_format(0,2)."",
+                //                     ]);
+                //                 }
+                //             }
+                //         }
+                //     }
+                // }
             }
         }
         $tempPlanned = $tempPlanned->groupBy('t');
@@ -2436,10 +2434,12 @@ class ProjectController extends Controller
             foreach($group as $activity){
                 $plannedProgress += 100 * ($activity->weight/100);
             }
-            $dataPlannedProgress->push([
-                "t" => $date,
-                "y" => $plannedProgress."",
-            ]);
+            if($date != ""){
+                $dataPlannedProgress->push([
+                    "t" => $date,
+                    "y" => $plannedProgress."",
+                ]);
+            }
         }
 
     }

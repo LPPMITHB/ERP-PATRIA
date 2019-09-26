@@ -540,6 +540,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom-repair');
 
+    Route::get('/selectProjectManage', 'BOMController@selectProjectManage')->name('selectProjectManage')->middleware('can:create-bom-repair');
+
     Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
 
     Route::post('/storeBom', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
@@ -550,11 +552,15 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom-repair');
 
+    Route::get('/manageWbsMaterial/{id}', 'BOMController@manageWbsMaterial')->name('manageWbsMaterial')->middleware('can:create-bom-repair');
+
     Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:create-bom-repair');
 
     Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:create-bom-repair');
 
     Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:list-bom-repair');
+
+    Route::get('/selectWBSManage/{id}', 'BOMController@selectWBSManage')->name('selectWBSManage')->middleware('can:list-bom-repair');
 
     Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:list-bom-repair');
 
@@ -565,6 +571,10 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
+    
+    Route::post('/storeWbsMaterial', 'BOMController@storeWbsMaterial')->name('storeWbsMaterial')->middleware('can:manage-project-standard');
+
+    Route::patch('/updateWbsMaterial', 'BOMController@updateWbsMaterial')->name('updateWbsMaterial')->middleware('can:manage-project-standard');
 
     Route::delete('/deleteMaterial/{id}', 'BOMController@deleteMaterial')->name('deleteMaterial')->middleware('can:edit-bom-repair');
 });
@@ -1736,19 +1746,31 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
 
     Route::get('/createSubWbsStandard/{wbs_id}', 'ProjectStandardController@createSubWbsStandard')->name('createSubWbsStandard')->middleware('can:manage-project-standard');
 
-    Route::get('/selectProject', 'ProjectStandardController@selectProject')->name('selectProject')->middleware('can:list-bom');
+    Route::get('/selectProject/material', 'ProjectStandardController@selectProject')->name('selectProjectMaterial')->middleware('can:manage-project-standard');
 
-    Route::get('/selectWBS/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
+    Route::get('/selectProject/resource', 'ProjectStandardController@selectProject')->name('selectProjectResource')->middleware('can:manage-project-standard');
+
+    Route::get('/selectWBS/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
+
+    Route::get('/selectWBS/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
 
     Route::get('/manageMaterial/{wbs_id}', 'ProjectStandardController@manageMaterial')->name('manageMaterial')->middleware('can:manage-project-standard');
+    
+    Route::get('/manageResource/{wbs_id}', 'ProjectStandardController@manageResource')->name('manageResource')->middleware('can:manage-project-standard');
 
     Route::get('/showMaterialStandard/{wbs_id}', 'ProjectStandardController@showMaterialStandard')->name('showMaterialStandard')->middleware('can:manage-project-standard');
 
+    Route::get('/showResourceStandard/{wbs_id}', 'ProjectStandardController@showResourceStandard')->name('showResourceStandard')->middleware('can:manage-project-standard');
+
     Route::post('/storeMaterialStandard', 'ProjectStandardController@storeMaterialStandard')->name('storeMaterialStandard')->middleware('can:manage-project-standard');
+
+    Route::post('/storeResourceStandard', 'ProjectStandardController@storeResourceStandard')->name('storeResourceStandard')->middleware('can:manage-project-standard');
 
     Route::post('/storeWbsStandard', 'ProjectStandardController@storeWbsStandard')->name('storeWbsStandard')->middleware('can:manage-project-standard');
 
     Route::patch('/updateMaterialStandard', 'ProjectStandardController@updateMaterialStandard')->name('updateMaterialStandard')->middleware('can:manage-project-standard');
+
+    Route::patch('/updateResourceStandard', 'ProjectStandardController@updateResourceStandard')->name('updateResourceStandard')->middleware('can:manage-project-standard');
 
     Route::put('/updateWbsStandard/{id}', 'ProjectStandardController@updateWbsStandard')->name('updateWbsStandard')->middleware('can:manage-project-standard');
 

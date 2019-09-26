@@ -328,7 +328,6 @@ class ActivityController extends Controller
             }
 
             if($activity->wbs->project->business_unit_id == 2){
-
                 if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
                     if(count($data['dataMaterial']) > 0){
                         // print_r(count($data['dataMaterial'])); exit();
@@ -647,7 +646,6 @@ class ActivityController extends Controller
 
                 $diff=date_diff($start_date,$end_date);
                 $project->actual_duration = $diff->days;
-                $project->status = 0;
                 $project->update();
             }
 
@@ -841,7 +839,7 @@ class ActivityController extends Controller
 
     //API
     public function getActivitiesAPI($wbs_id){
-        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service')->get()->jsonSerialize();
+        $activities = Activity::orderBy('planned_start_date', 'asc')->where('wbs_id', $wbs_id)->get()->jsonSerialize();
         return response($activities, Response::HTTP_OK);
     }
 

@@ -1,32 +1,17 @@
 @extends('layouts.main')
 @section('content-header')
-@if ($wbs->wbs != null)
     @breadcrumb(
         [
-            'title' => 'Manage Material',
-            'subtitle' => '',
+            'title' => 'Manage Resource',
             'items' => [
                 'Dashboard' => route('index'),
-                $wbs->number => route('project_standard.createSubWbsStandard', $wbs->wbs->id),
-                'Manage Material' => '',
+                'Select Project' => route('project_standard.selectProjectResource'),
+                'Select WBS' => route('project_standard.selectWBS', ['id'=>$project->id,'action'=>'resource']),
+                'Manage Resource' => "",
             ]
         ]
     )
     @endbreadcrumb
-@else
-    @breadcrumb(
-        [
-            'title' => 'Manage Material',
-            'subtitle' => '',
-            'items' => [
-                'Dashboard' => route('index'),
-                $wbs->number => route('project_standard.createWbsStandard', $wbs->project_standard_id),
-                'Manage Material' => '',
-            ]
-        ]
-    )
-    @endbreadcrumb
-@endif
 @endsection
 
 @section('content')
@@ -35,10 +20,10 @@
         <div class="box">
             <div class="box-body no-padding p-b-10">
                 @if ($edit)
-                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.updateMaterialStandard') }}">
+                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.updateResourceStandard') }}">
                     <input type="hidden" name="_method" value="PATCH">
                 @else
-                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.storeMaterialStandard') }}">
+                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('project_standard.storeResourceStandard') }}">
                 @endif
                 @csrf
                     @verbatim
@@ -76,25 +61,23 @@
                                 <thead>
                                     <tr>
                                         <th width="5%">No</th>
-                                        <th width="25%">Material Number</th>
-                                        <th width="28%">Material Description</th>
+                                        <th width="25%">Resource Number</th>
+                                        <th width="28%">Resource Description</th>
                                         <th width="10%">Quantity</th>
-                                        <th width="10%">Unit</th>
                                         <th width="12%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(material, index) in materialTable">
+                                    <tr v-for="(resource, index) in resourceTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td :id="material.material_code" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
-                                        <td :id="material.material_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
-                                        <td>{{ material.quantity }}</td>
-                                        <td>{{ material.unit }}</td>
+                                        <td :id="resource.resource_code" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(resource.resource_code)">{{ resource.resource_code}}</td>
+                                        <td :id="resource.resource_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(resource.resource_name)">{{ resource.resource_name }}</td>
+                                        <td>{{ resource.quantity }}</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(resource,index)">
                                                 EDIT
                                             </a>
-                                            <a href="#" @click="removeRow(material)" class="btn btn-danger btn-xs">
+                                            <a href="#" @click="removeRow(resource)" class="btn btn-danger btn-xs">
                                                 <div class="btn-group">DELETE</div>
                                             </a>
                                         </td>
@@ -104,12 +87,11 @@
                                     <tr>
                                         <td>{{newIndex}}</td>
                                         <td colspan="2" class="no-padding">
-                                            <selectize class="selectizeFull" id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                            <selectize class="selectizeFull" id="resource" v-model="input.resource_id" :settings="resourceSettings">
+                                                <option v-for="(resource, index) in resources" :value="resource.id">{{ resource.code }} - {{ resource.description }}</option>
                                             </selectize>    
                                         </td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="materialOk"></td>
-                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
+                                        <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="resourceOk"></td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
@@ -130,19 +112,19 @@
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">×</span>
                                         </button>
-                                        <h4 class="modal-title">Edit Material</h4>
+                                        <h4 class="modal-title">Edit Resource</h4>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="col-sm-12">
-                                                <label for="type" class="control-label">Material</label>
-                                                <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                <label for="type" class="control-label">Resource</label>
+                                                <selectize id="edit_modal" v-model="editInput.resource_id" :settings="resourceSettings">
+                                                    <option v-for="(resource, index) in resources_modal" :value="resource.id">{{ resource.code }} - {{ resource.description }}</option>
                                                 </selectize>
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResourceOk">
                                             </div>
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Unit</label>
@@ -151,7 +133,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_resource_id, editInput.resource_id)">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -177,8 +159,9 @@
     });
 
     var data = {
+        sources : ['Stock','WIP'],
         project : @json($project),
-        materials : @json($materials),
+        resources : @json($resources),
         wbs : @json($wbs),
         newIndex : 0, 
         submittedForm :{
@@ -188,31 +171,30 @@
             deleted_id : [],
         },
         input : {
-            material_id : "",
-            material_name : "",
-            material_code : "",
+            resource_id : "",
+            resource_name : "",
+            resource_code : "",
             quantity : "",
-            unit : "",
-            is_decimal : "",
-            material_ok : ""
+            resource_ok : ""
         },
         editInput : {
-            old_material_id : "",
-            material_id : "",
-            material_code : "",
-            material_name : "",
+            old_resource_id : "",
+            resource_id : "",
+            resource_code : "",
+            resource_name : "",
             quantity : "",
-            unit : "",
-            is_decimal : "",
-            material_ok : ""
+            resource_ok : ""
         },
-        materialTable : @json($existing_data),
-        materialSettings: {
-            placeholder: 'Please Select Material'
+        resourceTable : @json($existing_data),
+        resourceSettings: {
+            placeholder: 'Please Select Resource'
         },
-        material_id:@json($material_ids),
-        material_id_modal:[],
-        materials_modal :[],
+        sourceSettings: {
+            placeholder: 'Please Select Source'
+        },
+        resource_id:@json($resource_ids),
+        resource_id_modal:[],
+        resources_modal :[],
     }
 
     Vue.directive('tooltip', function(el, binding){
@@ -230,7 +212,7 @@
             inputOk: function(){
                 let isOk = false;
 
-                if(this.input.material_id == "" || this.input.quantity == ""){
+                if(this.input.resource_id == "" || this.input.quantity == "" || this.input.source == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -238,7 +220,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.materialTable.length < 1){
+                if(this.resourceTable.length < 1){
                     isOk = true;
                 }
                 return isOk;
@@ -246,25 +228,25 @@
             updateOk: function(){
                 let isOk = false;
 
-                if(this.editInput.material_id == "" || this.editInput.quantity == ""){
+                if(this.editInput.resource_id == "" || this.editInput.quantity == "" || this.editInput.source == ""){
                     isOk = true;
                 }
 
                 return isOk;
             },
-            materialOk : function(){
+            resourceOk : function(){
                 let isOk = false;
 
-                if(this.input.material_ok == ""){
+                if(this.input.resource_ok == ""){
                     isOk = true;
                 }
 
                 return isOk;
             },
-            editMaterialOk : function(){
+            editResourceOk : function(){
                 let isOk = false;
 
-                if(this.editInput.material_ok == ""){
+                if(this.editInput.resource_ok == ""){
                     isOk = true;
                 }
 
@@ -297,9 +279,9 @@
             tooltipDesc: function(desc) {
                 return desc;
             },
-            getNewMaterials(jsonMaterialId){
-                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
-                    this.materials = data;
+            getNewResource(jsonResourceId){
+                window.axios.get('/api/getResourcesProjectStandard/'+jsonResourceId).then(({ data }) => {
+                    this.resources = data;
                     $('div.overlay').hide();
                 })
                 .catch((error) => {
@@ -311,9 +293,9 @@
                     $('div.overlay').hide();
                 })
             },
-            getNewModalMaterials(jsonMaterialId){
-                window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
-                    this.materials_modal = data;
+            getNewModalResource(jsonResourceId){
+                window.axios.get('/api/getResourcesProjectStandard/'+jsonResourceId).then(({ data }) => {
+                    this.resources_modal = data;
                     $('#edit_item').modal();
                     $('div.overlay').hide();
                 })
@@ -328,36 +310,37 @@
             },
             openEditModal(data,index){
                 $('div.overlay').show();
-                this.editInput.material_id = data.material_id;
-                this.editInput.old_material_id = data.material_id;
-                this.editInput.material_code = data.material_code;
-                this.editInput.material_name = data.material_name;
+                this.editInput.resource_id = data.resource_id;
+                this.editInput.old_resource_id = data.resource_id;
+                this.editInput.resource_code = data.resource_code;
+                this.editInput.resource_name = data.resource_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.wbs_number = data.wbs_number;
                 this.editInput.index = index;
+                this.editInput.source = data.source;
                 this.editInput.unit = data.unit;
                 this.editInput.is_decimal = data.is_decimal;
 
-                var material_id = JSON.stringify(this.material_id);
-                material_id = JSON.parse(material_id);
+                var resource_id = JSON.stringify(this.resource_id);
+                resource_id = JSON.parse(resource_id);
                 
-                this.material_id_modal = material_id;
-                this.material_id_modal.forEach(id => {
-                    if(id == data.material_id){
-                        var index = this.material_id_modal.indexOf(id);
-                        this.material_id_modal.splice(index, 1);
+                this.resource_id_modal = resource_id;
+                this.resource_id_modal.forEach(id => {
+                    if(id == data.resource_id){
+                        var index = this.resource_id_modal.indexOf(id);
+                        this.resource_id_modal.splice(index, 1);
                     }
                 });
-                var jsonMaterialId = JSON.stringify(this.material_id_modal);
-                this.getNewModalMaterials(jsonMaterialId);
+                var jsonResourceId = JSON.stringify(this.resource_id_modal);
+                this.getNewModalResource(jsonResourceId);
             },
             submitForm(){
                 $('div.overlay').show();
-                this.materialTable.forEach(data=>{
+                this.resourceTable.forEach(data=>{
                     data.quantity = (data.quantity+"").replace(/,/g , '');
                 })
-                this.submittedForm.materials = this.materialTable;
+                this.submittedForm.resources = this.resourceTable;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -367,88 +350,87 @@
                 form.submit();
             },
             submitToTable(){
-                if(this.input.material_id != "" && this.input.material_name != "" && this.input.quantity != ""){
+                if(this.input.resource_id != "" && this.input.resource_name != "" && this.input.quantity != "" && this.input.source != ""){
                     $('div.overlay').show();
 
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
-                    this.materialTable.push(data);
+                    this.resourceTable.push(data);
 
-                    this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
+                    this.resource_id.push(data.resource_id); //ini buat nambahin resource_id terpilih
 
-                    var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
+                    var jsonResourceId = JSON.stringify(this.resource_id);
+                    this.getNewResource(jsonResourceId);             
 
-                    this.newIndex = this.materialTable.length + 1;  
+                    this.newIndex = this.resourceTable.length + 1;  
 
                     // refresh tooltip
                     let datas = [];
-                    datas.push(this.input.material_code,this.input.material_name);
+                    datas.push(this.input.resource_code,this.input.resource_name);
                     datas = JSON.stringify(datas);
                     datas = JSON.parse(datas);
                     this.refreshTooltip(datas[0],datas[1]);
 
-                    this.input.material_id = "";
-                    this.input.material_code = "";
-                    this.input.material_name = "";
+                    this.input.resource_id = "";
+                    this.input.resource_code = "";
+                    this.input.resource_name = "";
                     this.input.quantity = "";
-                    this.input.unit = "";
                     this.input.quantityInt = 0;
                 }
             },
-            removeRow: function(material) {
+            removeRow: function(resource) {
                 $('div.overlay').show();
-                var index_materialId = "";
-                var index_materialTable = "";
-                if(typeof material.id !== 'undefined'){
-                    this.submittedForm.deleted_id.push(material.id);
+                var index_resourceId = "";
+                var index_resourceTable = "";
+                if(typeof resource.id !== 'undefined'){
+                    this.submittedForm.deleted_id.push(resource.id);
                 }
                 
-                this.material_id.forEach(id => {
-                    if(id == material.material_id){
-                        index_materialId = this.material_id.indexOf(id);
+                this.resource_id.forEach(id => {
+                    if(id == resource.resource_id){
+                        index_resourceId = this.resource_id.indexOf(id);
                     }
                 });
-                for (var i in this.materialTable) { 
-                    if(this.materialTable[i].material_id == material.material_id){
-                        index_materialTable = i;
+                for (var i in this.resourceTable) { 
+                    if(this.resourceTable[i].resource_id == resource.resource_id){
+                        index_resourceTable = i;
                     }
                 }
 
-                this.materialTable.splice(index_materialTable, 1);
-                this.material_id.splice(index_materialId, 1);
-                this.newIndex = this.materialTable.length + 1;
+                this.resourceTable.splice(index_resourceTable, 1);
+                this.resource_id.splice(index_resourceId, 1);
+                this.newIndex = this.resourceTable.length + 1;
 
-                var jsonMaterialId = JSON.stringify(this.material_id);
-                this.getNewMaterials(jsonMaterialId);
+                var jsonResourceId = JSON.stringify(this.resource_id);
+                this.getNewResource(jsonResourceId);
             },
-            update(old_material_id, new_material_id){
-                this.materialTable.forEach(material => {
-                    if(material.material_id == old_material_id){
-                        var material = this.materialTable[this.editInput.index];
-                        material.quantityInt = this.editInput.quantityInt;
-                        material.quantity = this.editInput.quantity;
-                        material.unit = this.editInput.unit;
-                        material.material_id = new_material_id;
-                        material.wbs_id = this.editInput.wbs_id;
+            update(old_resource_id, new_resource_id){
+                this.resourceTable.forEach(resource => {
+                    if(resource.resource_id == old_resource_id){
+                        var resource = this.resourceTable[this.editInput.index];
+                        resource.quantityInt = this.editInput.quantityInt;
+                        resource.quantity = this.editInput.quantity;
+                        resource.resource_id = new_resource_id;
+                        resource.wbs_id = this.editInput.wbs_id;
+                        resource.source = this.editInput.source;
 
-                        var elemCode = document.getElementById(material.material_code);
-                        var elemDesc = document.getElementById(material.material_name);
+                        var elemCode = document.getElementById(resource.resource_code);
+                        var elemDesc = document.getElementById(resource.resource_name);
 
-                        window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
-                            material.material_name = data.description;
-                            material.material_code = data.code;
+                        window.axios.get('/api/getResourceProjectStandard/'+new_resource_id).then(({ data }) => {
+                            resource.resource_name = data.description;
+                            resource.resource_code = data.code;
 
-                            this.material_id.forEach(id => {
-                                if(id == old_material_id){
-                                    var index = this.material_id.indexOf(id);
-                                    this.material_id.splice(index, 1);
+                            this.resource_id.forEach(id => {
+                                if(id == old_resource_id){
+                                    var index = this.resource_id.indexOf(id);
+                                    this.resource_id.splice(index, 1);
                                 }
                             });
-                            this.material_id.push(new_material_id);
+                            this.resource_id.push(new_resource_id);
 
-                            var jsonMaterialId = JSON.stringify(this.material_id);
-                            this.getNewMaterials(jsonMaterialId);
+                            var jsonResourceId = JSON.stringify(this.resource_id);
+                            this.getNewResource(jsonResourceId);
 
                             // refresh tooltip
                             elemCode.id = data.code;
@@ -470,85 +452,51 @@
             },
         },
         watch: {
-            'input.material_id': function(newValue){
+            'input.resource_id': function(newValue){
                 this.input.quantity = "";
                 if(newValue != ""){
-                    this.input.material_ok = "ok";
-                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                        this.input.material_name = data.description;
-                        this.input.material_code = data.code;
-                        this.input.unit = data.uom.unit;
-                        this.input.is_decimal = data.uom.is_decimal;
+                    this.input.resource_ok = "ok";
+                    window.axios.get('/api/getResourceProjectStandard/'+newValue).then(({ data }) => {
+                        this.input.resource_name = data.description;
+                        this.input.resource_code = data.code;
                     });
                 }else{
-                    this.input.material_name = "";
-                    this.input.material_code = "";
-                    this.input.unit = "";
-                    this.input.is_decimal = "";
-                    this.input.material_ok = "";
+                    this.input.resource_name = "";
+                    this.input.resource_code = "";
+                    this.input.resource_ok = "";
                 }
             },
-            'editInput.material_id': function(newValue){
-                if(newValue != this.editInput.old_material_id){
+            'editInput.resource_id': function(newValue){
+                if(newValue != this.editInput.old_resource_id){
                     this.editInput.quantity = "";
                 }
                 if(newValue != ""){
-                    this.editInput.material_ok = "ok";
-                    window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {
-                        this.editInput.material_name = data.description;
-                        this.editInput.material_code = data.code;
-                        this.editInput.unit = data.uom.unit;
-                        this.editInput.is_decimal = data.uom.is_decimal;
+                    this.editInput.resource_ok = "ok";
+                    window.axios.get('/api/getResourceProjectStandard/'+newValue).then(({ data }) => {
+                        this.editInput.resource_name = data.description;
+                        this.editInput.resource_code = data.code;
                     });
                 }else{
-                    this.editInput.material_name = "";
-                    this.editInput.material_code = "";
-                    this.editInput.unit = "";
-                    this.editInput.is_decimal = "";
-                    this.editInput.material_ok = "";
+                    this.editInput.resource_name = "";
+                    this.editInput.resource_code = "";
+                    this.editInput.resource_ok = "";
                 }
             },
             'input.quantity': function(newValue){
-                var is_decimal = this.input.is_decimal;
-                if(is_decimal == 0){
-                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
-                    if(decimal[1] != undefined){
-                        var maxDecimal = 2;
-                        if((decimal[1]+"").length > maxDecimal){
-                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
-                        }else{
-                            this.input.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
-                        }
-                    }else{
-                        this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    }
+                if(newValue != ""){
+                    this.input.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'editInput.quantity': function(newValue){
-                var is_decimal = this.editInput.is_decimal;
-                if(is_decimal == 0){
-                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                }else{
-                    var decimal = (newValue+"").replace(/,/g, '').split('.');
-                    if(decimal[1] != undefined){
-                        var maxDecimal = 2;
-                        if((decimal[1]+"").length > maxDecimal){
-                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
-                        }else{
-                            this.editInput.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
-                        }
-                    }else{
-                        this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    }
+                if(newValue != ""){
+                    this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }  
             },
         },
         created: function() {
-            this.newIndex = this.materialTable.length + 1;
-            var jsonMaterialId = JSON.stringify(this.material_id);
-            this.getNewMaterials(jsonMaterialId);        
+            this.newIndex = this.resourceTable.length + 1;
+            var jsonResourceId = JSON.stringify(this.resource_id);
+            this.getNewResource(jsonResourceId);        
         }
     });
        

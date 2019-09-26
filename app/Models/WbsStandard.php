@@ -13,6 +13,11 @@ class WbsStandard extends Model
         return $this->hasMany('App\Models\MaterialStandard', 'wbs_standard_id');
     }
 
+    public function resourceStandards()
+    {
+        return $this->hasMany('App\Models\ResourceStandard', 'wbs_standard_id');
+    }
+
     public function activities()
     {
         return $this->hasMany('App\Models\ActivityStandard', 'wbs_id');

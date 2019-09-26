@@ -63,7 +63,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstBomPrepTableSeeder::class);
         $this->call(MstBomTableSeeder::class);
         $this->call(MstBomDetailTableSeeder::class);
-        $this->call(ProActivityDetailTableSeeder::class);
+        // $this->call(ProActivityDetailTableSeeder::class);
         $this->call(TrxGoodsReceiptTableSeeder::class);
         $this->call(TrxGoodsReceiptDetailTableSeeder::class);
         $this->call(MstStorageLocationDetailTableSeeder::class);
@@ -71,5 +71,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstProjectStandardTableSeeder::class);
         $this->call(MstWbsStandardTableSeeder::class);
         $this->call(MstActivityStandardTableSeeder::class);
+        $this->call(MstMaterialStandardTableSeeder::class);
+        $this->call(MstResourceStandardTableSeeder::class);
     }
 }
