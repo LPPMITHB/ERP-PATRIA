@@ -1113,6 +1113,7 @@ class BOMController extends Controller
                             $bom_detail_input->bom_prep_id = $bom_prep->id;
                             $bom_detail_input->material_id = $bom_detail->material_id;
                             $bom_detail_input->quantity = $bom_detail->prepared;
+                            $bom_detail_input->source = $bom_prep_model->source;
 
                             $stock = Stock::where('material_id', $bom_detail->material_id)->first();
                             if($stock == null){
@@ -1235,7 +1236,7 @@ class BOMController extends Controller
             if($pr_id != null){
                 $bom_details = $bom_prep_model->bomDetails;
                 foreach ($bom_details as $bom_detail) {
-                    if($bom_detail->pr_quantity != null){
+                    if($bom_detail->pr_quantity != null && $bom_detail->source != "WIP"){
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $pr_id;
                         $PRD->material_id = $bom_detail->material_id;
