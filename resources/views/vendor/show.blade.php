@@ -59,8 +59,14 @@
                 <div class="col-xs-12 col-lg-6 col-md-12">
 
                     @if(in_array(2,json_decode($business_ids)))
+                    <div class="col-md-4 col-xs-6 no-padding">Currencies</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->currencies}}</b></div>
                     <div class="col-md-4 col-xs-6 no-padding">Tax Number</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->tax_number}}</b></div>
+                    <div class="col-md-4 col-xs-6 no-padding">PPn</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->pajak_pertambahan_nilai}}%</b></div>
+                    <div class="col-md-4 col-xs-6 no-padding">PPh</div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->pajak_penghasilan}}%</b></div>
                     @endif
 
                     <div class="col-md-4 col-xs-6 no-padding">Contact Name</div>
