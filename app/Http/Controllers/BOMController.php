@@ -772,6 +772,7 @@ class BOMController extends Controller
                 $bom_prep->update();
             }
 
+            // dd($datas->bom_preps);
             self::saveBomDetailRepair($bom,$datas->bom_preps, $rap);
             if($rap == null){
                 self::createRap($bom);
@@ -1108,20 +1109,29 @@ class BOMController extends Controller
                             $bom_detail_input->quantity = $bom_detail->prepared;
 
                             $stock = Stock::where('material_id', $bom_detail->material_id)->first();
-                            $stock_available_old = $stock->quantity - $stock->reserved;
-                            $still_positive = true;
-                            if($stock_available_old < 0){
-                                $bom_detail_input->pr_quantity = $bom_detail->prepared;
-                                $still_positive = false;
+                            if($stock == null){
+                                $new_stock = new Stock;
+                                $new_stock->material_id = $bom_detail->material_id;
+                                $new_stock->quantity = 0;
+                                $new_stock->reserved = $bom_detail->prepared;
+                                $new_stock->branch_id = Auth::user()->branch->id;
+                                $new_stock->save();
+                            }else{
+                                $stock_available_old = $stock->quantity - $stock->reserved;
+                                $still_positive = true;
+                                if($stock_available_old < 0){
+                                    $bom_detail_input->pr_quantity = $bom_detail->prepared;
+                                    $still_positive = false;
+                                }
+                                $stock->reserved += $bom_detail->prepared;
+                                $stock_available_new = $stock->quantity - $stock->reserved;
+                                if($stock_available_new < 0 && $still_positive){
+                                    $bom_detail_input->pr_quantity = $stock->reserved - $stock->quantity;
+                                }
+    
+                                $stock->update();
                             }
 
-                            $stock->reserved += $bom_detail->prepared;
-                            $stock_available_new = $stock->quantity - $stock->reserved;
-                            if($stock_available_new < 0 && $still_positive){
-                                $bom_detail_input->pr_quantity = $stock->reserved - $stock->quantity;
-                            }
-
-                            $stock->update();
                             $bom_detail_input->save();
 
                             if($rap != null){
@@ -1151,18 +1161,27 @@ class BOMController extends Controller
                             $bom_detail_update->quantity = $bom_detail->prepared;
 
                             $stock = Stock::where('material_id', $bom_detail_update->material_id)->first();
-                            $stock_available_old = $stock->quantity - $stock->reserved;
-                            $still_positive = true;
-                            if($stock_available_old < 0){
-                                $bom_detail_update->pr_quantity = $bom_detail->prepared;
-                                $still_positive = false;
+                            if($stock == null){
+                                $new_stock = new Stock;
+                                $new_stock->material_id = $bom_detail_update->material_id;
+                                $new_stock->quantity = 0;
+                                $new_stock->reserved = $bom_detail->prepared - $temp_quantity;
+                                $new_stock->branch_id = Auth::user()->branch->id;
+                                $new_stock->save();
+                            }else{
+                                $stock_available_old = $stock->quantity - $stock->reserved;
+                                $still_positive = true;
+                                if($stock_available_old < 0){
+                                    $bom_detail_update->pr_quantity = $bom_detail->prepared;
+                                    $still_positive = false;
+                                }
+                                $stock->reserved += $bom_detail->prepared - $temp_quantity;
+                                $stock_available_new = $stock->quantity - $stock->reserved;
+                                if($stock_available_new < 0 && $still_positive){
+                                    $bom_detail_update->pr_quantity = $stock->reserved - $stock->quantity;
+                                }
+                                $stock->update();
                             }
-                            $stock->reserved += $bom_detail->prepared - $temp_quantity;
-                            $stock_available_new = $stock->quantity - $stock->reserved;
-                            if($stock_available_new < 0 && $still_positive){
-                                $bom_detail_update->pr_quantity = $stock->reserved - $stock->quantity;
-                            }
-                            $stock->update();
                             $bom_detail_update->update();
 
                             if($rap != null){

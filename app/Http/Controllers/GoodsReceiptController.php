@@ -371,7 +371,7 @@ class GoodsReceiptController extends Controller
         }else{
             $modelStock = new Stock;
             $modelStock->quantity = $received;
-            $modelStock->branch_id = Auth::user()->branch->id;;
+            $modelStock->branch_id = Auth::user()->branch->id;
             $modelStock->material_id = $material_id;
             $modelStock->save();
                 
