@@ -43,9 +43,9 @@ class Material extends Model
         return $this->hasMany('App\Models\RapDetail');
     }
 
-    public function Stocks()
+    public function stock()
     {
-        return $this->hasMany('App\Models\Stock');
+        return $this->hasOne('App\Models\Stock');
     }
 
     public function snapshotDetails()
