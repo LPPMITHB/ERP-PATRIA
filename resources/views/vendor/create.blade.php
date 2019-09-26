@@ -3,27 +3,27 @@
 
 @if($vendor->id)
 @breadcrumb(
-    [
-        'title' => 'Edit Vendor',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Vendors' => route('vendor.index'),
-            $vendor->name => route('vendor.show',$vendor->id),
-            'Edit Vendor' => route('vendor.edit',$vendor->id),
-        ]
-    ]
+[
+'title' => 'Edit Vendor',
+'items' => [
+'Dashboard' => route('index'),
+'View All Vendors' => route('vendor.index'),
+$vendor->name => route('vendor.show',$vendor->id),
+'Edit Vendor' => route('vendor.edit',$vendor->id),
+]
+]
 )
 @endbreadcrumb
 @else
 @breadcrumb(
-    [
-        'title' => 'Create Vendor',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Vendors' => route('vendor.index'),
-            'Create Vendor' => route('vendor.create'),
-        ]
-    ]
+[
+'title' => 'Create Vendor',
+'items' => [
+'Dashboard' => route('index'),
+'View All Vendors' => route('vendor.index'),
+'Create Vendor' => route('vendor.create'),
+]
+]
 )
 @endbreadcrumb
 @endif
@@ -32,213 +32,253 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12">
-        <div class="box">
+        <div class="box" id="vendor">
             <div class="box-body">
 
                 @if($vendor->id)
-                    <form class="form-horizontal" method="POST" action="{{ route('vendor.update',['id'=>$vendor->id]) }}">
+                <form class="form-horizontal" method="POST" action="{{ route('vendor.update',['id'=>$vendor->id]) }}">
                     <input type="hidden" name="_method" value="PATCH">
-                @else
+                    @else
                     <form class="form-horizontal" method="POST" action="{{ route('vendor.store') }}">
-                @endif
-                    @csrf
-                    <div class="box-body">
+                        @endif
+                        @csrf
+                        <div class="box-body">
 
-                        <div class="form-group">
-                            <label for="code" class="col-sm-2 control-label">Code *</label>
+                            <div class="form-group">
+                                <label for="code" class="col-sm-2 control-label">Code *</label>
 
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="code" name="code" required autofocus value="{{ $vendor->code == null ? $vendor_code: $vendor->code }}">
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="code" name="code" required autofocus
+                                        value="{{ $vendor->code == null ? $vendor_code: $vendor->code }}">
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name *</label>
+                            <div class="form-group">
+                                <label for="name" class="col-sm-2 control-label">Name *</label>
 
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus
-                                @if($vendor->name != null) value="{{ $vendor->name }}"
-                                @else value="{{ old('name') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="name" name="name" required autofocus
+                                        @if($vendor->name != null) value="{{ $vendor->name }}"
+                                    @else value="{{ old('name') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="type" class="col-sm-2 control-label">Type *</label>
+                            <div class="form-group">
+                                <label for="type" class="col-sm-2 control-label">Type *</label>
 
-                            <div class="col-sm-10">
-                                <select class="form-control" name="type" id="type" required>
-                                    @foreach($vendor_categories as $category)
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="type" id="type" required>
+                                        @foreach($vendor_categories as $category)
                                         <option value="{{ $category->name }}">{{ $category->name }}</option>
-                                    @endforeach
-                                </select>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="address" class="col-sm-2 control-label">Address</label>
+                            <div class="form-group">
+                                <label for="address" class="col-sm-2 control-label">Address</label>
 
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address"
-                                @if($vendor->address != null) value="{{ $vendor->address }}"
-                                @else value="{{ old('address') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="address" name="address"
+                                        @if($vendor->address != null) value="{{ $vendor->address }}"
+                                    @else value="{{ old('address') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
 
-                        @if(in_array(2,json_decode($business_ids)))
-                        <div class="form-group">
-                            <label for="city" class="col-sm-2 control-label">City</label>
+                            @if(in_array(2,json_decode($business_ids)))
+                            <div class="form-group">
+                                <label for="city" class="col-sm-2 control-label">City</label>
 
-                            <div class="col-sm-10">
-                                <input type="string" class="form-control" id="city" name="city"
-                                @if($vendor->city != null) value="{{ $vendor->city }}"
-                                @else value="{{ old('city') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="string" class="form-control" id="city" name="city" @if($vendor->city !=
+                                    null) value="{{ $vendor->city }}"
+                                    @else value="{{ old('city') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
-                        @endif
+                            @endif
 
-                        @if(in_array(2,json_decode($business_ids)))
-                        <div class="form-group">
-                            <label for="province" class="col-sm-2 control-label">Province</label>
+                            @if(in_array(2,json_decode($business_ids)))
+                            <div class="form-group">
+                                <label for="province" class="col-sm-2 control-label">Province</label>
 
-                            <div class="col-sm-10">
-                                <input type="string" class="form-control" id="province" name="province"
-                                @if($vendor->province != null) value="{{ $vendor->province }}"
-                                @else value="{{ old('province') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="string" class="form-control" id="province" name="province"
+                                        @if($vendor->province != null) value="{{ $vendor->province }}"
+                                    @else value="{{ old('province') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
-                        @endif
+                            @endif
 
-                        @if(in_array(2,json_decode($business_ids)))
-                        <div class="form-group">
-                            <label for="country" class="col-sm-2 control-label">Country</label>
+                            @if(in_array(2,json_decode($business_ids)))
+                            <div class="form-group">
+                                <label for="country" class="col-sm-2 control-label">Country</label>
 
-                            <div class="col-sm-10">
-                                <input type="string" class="form-control" id="country" name="country"
-                                @if($vendor->country != null) value="{{ $vendor->country }}"
-                                @else value="{{ old('country') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="string" class="form-control" id="country" name="country"
+                                        @if($vendor->country != null) value="{{ $vendor->country }}"
+                                    @else value="{{ old('country') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
-                        @endif
+                            @endif
 
-                        <div class="form-group">
-                            <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
+                            <div class="form-group">
+                                <label for="phone_number_1" class="col-sm-2 control-label">Phone Number 1</label>
 
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_1"
-                                @if($vendor->phone_number_1 != null) value="{{ $vendor->phone_number_1 }}"
-                                @else value="{{ old('phone_number_1') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10"
+                                        maxlength="11" name="phone_number_1" @if($vendor->phone_number_1 != null)
+                                    value="{{ $vendor->phone_number_1 }}"
+                                    @else value="{{ old('phone_number_1') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2 / Fax</label>
-                            <div class="col-sm-10">
-                            <input type="text" class="form-control" onkeypress="validate(event)" minlength="10" maxlength="11" name="phone_number_2"
-                            @if($vendor->phone_number_2 != null) value="{{ $vendor->phone_number_2 }}"
-                            @else value="{{ old('phone_number_2') }}"
-                            @endif>
+                            <div class="form-group">
+                                <label for="phone_number_2" class="col-sm-2 control-label">Phone Number 2 / Fax</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" minlength="10"
+                                        maxlength="11" name="phone_number_2" @if($vendor->phone_number_2 != null)
+                                    value="{{ $vendor->phone_number_2 }}"
+                                    @else value="{{ old('phone_number_2') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
 
-                        @if(in_array(2,json_decode($business_ids)))
-                        <div class="form-group">
-                            <label for="tax_number" class="col-sm-2 control-label">Tax Number</label>
-                            
-                            <div class="col-sm-10">
-                                <input type="numeric" onkeypress="validate(event)" class="form-control" id="tax_number" name="tax_number"
-                                @if($vendor->tax_number != null) value="{{ $vendor->tax_number }}"
-                                @else value="{{ old('tax_number') }}"
-                                @endif>
+                            @if(in_array(2,json_decode($business_ids)))
+                            <div class="form-group">
+                                <label for="tax_number" class="col-sm-2 control-label">Tax Number</label>
+
+                                <div class="col-sm-10">
+                                    <input type="numeric" onkeypress="validate(event)" class="form-control"
+                                        id="tax_number" name="tax_number" @if($vendor->tax_number != null)
+                                    value="{{ $vendor->tax_number }}"
+                                    @else value="{{ old('tax_number') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
-                        @endif
+                            @endif
 
-                        <div class="form-group">
-                            <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
+                            <div class="form-group">
+                                <label for="contact_name" class="col-sm-2 control-label">Contact Name</label>
 
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="contact_name" name="contact_name"
-                                @if($vendor->contact_name != null) value="{{ $vendor->contact_name }}"
-                                @else value="{{ old('contact_name') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="contact_name" name="contact_name"
+                                        @if($vendor->contact_name != null) value="{{ $vendor->contact_name }}"
+                                    @else value="{{ old('contact_name') }}"
+                                    @endif>
+                                </div>
                             </div>
-                        </div>
+                            <!-- START FORM PAJAK PERTAMBAHAN NILAI -->
+                            <div class="form-group">
+                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label">PPn. (%)</label>
 
-                        <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label">Email</label>
-
-                            <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email"
-                                @if($vendor->email != null) value="{{ $vendor->email }}"
-                                @else value="{{ old('email') }}"
-                                @endif>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_pertambahan_nilai"
+                                        name="pajak_pertambahan_nilai">
+                                </div>
                             </div>
-                        </div>
+                            <!-- END FORM PAJAK PERTAMBAHAN NILAI -->
 
-                        <div class="form-group">
-                            <label for="delivery_term" class="col-sm-2 control-label">Delivery Term</label>
+                            <!-- START FORM PAJAK PENGHASILAN -->
+                            <div class="form-group">
+                                <label for="pajak_penghasilan" class="col-sm-2 control-label">PPh. (%)</label>
 
-                            <div class="col-sm-10">
-                                <select class="form-control" name="delivery_term" id="delivery_term">
-                                    <option value="" selected >Select Delivery Term</option>
-                                    @foreach($delivery_terms as $delivery_term)
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_penghasilan"
+                                        name="pajak_penghasilan">
+                                </div>
+                            </div>
+                            <!-- END FORM PAJAK PENGHASILAN -->
+
+                            <!-- START FORM CURRENCY -->
+                            <div class="form-group">
+                                <label for="currencies" class="col-sm-2 control-label">Currencies </label>
+
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="currencies" id="currencies">
+                                        <option value="" selected>Select Currencies</option>
+                                        @foreach($currencies as $currencies_lists)
+                                        <option value="{{$currencies_lists->id}}">
+                                            {{$currencies_lists->unit." - ". $currencies_lists->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- END FORM CURRENCY -->
+                            <div class="form-group">
+                                <label for="email" class="col-sm-2 control-label">Email</label>
+
+                                <div class="col-sm-10">
+                                    <input type="email" class="form-control" id="email" name="email" @if($vendor->email
+                                    != null) value="{{ $vendor->email }}"
+                                    @else value="{{ old('email') }}"
+                                    @endif>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="delivery_term" class="col-sm-2 control-label">Delivery Term</label>
+
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="delivery_term" id="delivery_term">
+                                        <option value="" selected>Select Delivery Term</option>
+                                        @foreach($delivery_terms as $delivery_term)
                                         <option value="{{$delivery_term->id}}">{{ $delivery_term->name }}</option>
-                                    @endforeach
-                                </select>
+                                        @endforeach
+                                    </select>
+                                </div>
                             </div>
-                        </div>
 
-                        <div class="form-group">
-                            <label for="payment_term" class="col-sm-2 control-label">Payment Term</label>
+                            <div class="form-group">
+                                <label for="payment_term" class="col-sm-2 control-label">Payment Term</label>
 
-                            <div class="col-sm-10">
-                                <select class="form-control" name="payment_term" id="payment_term">
-                                    <option value="" selected >Select Payment Term</option>
-                                    @foreach($payment_terms as $payment_term)
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="payment_term" id="payment_term">
+                                        <option value="" selected>Select Payment Term</option>
+                                        @foreach($payment_terms as $payment_term)
                                         <option value="{{$payment_term->id}}">{{ $payment_term->name }}</option>
-                                    @endforeach
-                                </select>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="description" class="col-sm-2 control-label">Description</label>
+
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="description" name="description"
+                                        @if($vendor->description != null) value="{{ $vendor->description }}"
+                                    @else value="{{ old('description') }}"
+                                    @endif>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="status" class="col-sm-2 control-label">Status *</label>
+
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="status" id="status" required>
+                                        <option value="1">Active</option>
+                                        <option value="0">Non Active</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="form-group">
-                            <label for="description" class="col-sm-2 control-label">Description</label>
-
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="description" name="description"
-                                @if($vendor->description != null) value="{{ $vendor->description }}"
-                                @else value="{{ old('description') }}"
-                                @endif>
-                            </div>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="status" class="col-sm-2 control-label">Status *</label>
-
-                            <div class="col-sm-10">
-                                <select class="form-control" name="status" id="status" required>
-                                    <option value="1">Active</option>
-                                    <option value="0">Non Active</option>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- /.box-body -->
-                    <div class="box-footer">
-                        @if($vendor->id)
+                        <!-- /.box-body -->
+                        <div class="box-footer">
+                            @if($vendor->id)
                             <button type="submit" class="btn btn-primary pull-right">SAVE</button>
-                        @else
+                            @else
                             <button type="submit" class="btn btn-primary pull-right">CREATE</button>
-                        @endif
-                    </div>
-                    <!-- /.box-footer -->
-                </form>
+                            @endif
+                        </div>
+                        <!-- /.box-footer -->
+                    </form>
             </div> <!-- /.box-body -->
             <div class="overlay">
                 <i class="fa fa-refresh fa-spin"></i>
@@ -279,7 +319,9 @@
         $("#phone_number").inputmask();
     });
     document.getElementById("code").readOnly = true;
+    var data = {
 
+    }
 function validate(evt) {
   var theEvent = evt || window.event;
 
