@@ -61,10 +61,11 @@
                                         <th width="5%">No</th>
                                         <th width="13%">Material Number</th>
                                         <th width="25%">Material Description</th>
+                                        <th width="7%">Source</th>
                                         <th width="13%">Qty</th>
                                         <th width="13%">Prepared Qty</th>
                                         <th width="14%"></th>
-                                        <th width="6%">Fulfilled ?</th>
+                                        <th width="7%">Fulfilled ?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,6 +73,7 @@
                                         <td>{{ index+1 }}</td>
                                         <td>{{ bomPrep.material.code }}</td>
                                         <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomPrep.material.description)">{{ bomPrep.material.description }}</td>
+                                        <td>{{ bomPrep.source }}</td>
                                         <td>{{ bomPrep.quantity }}</td>
                                         <td>{{ bomPrep.already_prepared }}</td>
                                         <td class="p-l-0 p-r-0 textCenter">
@@ -173,25 +175,6 @@
     const form = document.querySelector('form#create-bom-repair');
 
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title != 'Material Description' && title != 'Material Number'){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tableNonPagingVue.column(i).search() !== this.value ) {
-                    tableNonPagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
-        });
-
         var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
             orderCellsTop   : true,
             paging          : false,

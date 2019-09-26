@@ -77,7 +77,7 @@ class BOMController extends Controller
 
     public function materialSummary($id){
         $project = Project::where('id',$id)->with('ship','customer')->first();
-        $bomPreps = BomPrep::where('project_id', $id)->where('source', "Stock")->where('status', 1)->with('bomDetails','material')->get();
+        $bomPreps = BomPrep::where('project_id', $id)->where('status', 1)->with('bomDetails','material')->get();
         $stocks = Stock::with('material')->get();
         $materials = Material::with('stock')->get();
         $existing_bom = $project->boms->first();
@@ -335,6 +335,7 @@ class BOMController extends Controller
                 $wbsMaterial->wbs_id = $datas->wbs_id;
                 $wbsMaterial->material_id = $material->material_id;
                 $wbsMaterial->quantity = $material->quantity;
+                $wbsMaterial->source = $material->source;
                 if($material->dimensions_value != null){
                     $wbsMaterial->dimensions_value = $material->dimensions_value;
                 }
@@ -366,7 +367,7 @@ class BOMController extends Controller
                 }
                 $wbsMaterial->save();
 
-                $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->get();
+                $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->where('source', $material->source)->get();
                 if(count($modelBomPrep) > 0){
                     $not_found_bom_prep = false;
                     $not_added = true;
@@ -377,6 +378,7 @@ class BOMController extends Controller
                             }else{
                                 $bomPrep->weight += $weight;
                             }
+                            $bomPrep->source = $material->source;
                             $bomPrep->update();
 
                             $wbsMaterial->bom_prep_id = $bomPrep->id;
@@ -397,7 +399,7 @@ class BOMController extends Controller
                             $bomPrep->weight = $weight;
                         }
                         $bomPrep->status = 1;
-                        // $bomPrep->source = $material['source'];
+                        $bomPrep->source = $material->source;
                         $bomPrep->save();
 
                         $wbsMaterial->bom_prep_id = $bomPrep->id;
@@ -413,7 +415,7 @@ class BOMController extends Controller
                         $bomPrep->weight = $weight;
                     }
                     $bomPrep->status = 1;
-                    // $bomPrep->source = $material['source'];
+                    $bomPrep->source = $material->source;
                     $bomPrep->save();
 
                     $wbsMaterial->bom_prep_id = $bomPrep->id;
@@ -450,11 +452,13 @@ class BOMController extends Controller
             foreach($datas->materials as $material){
                 if(isset($material->id)){
                     $wbsMaterial = WbsMaterial::find($material->id);
+                    $old_material_source = $wbsMaterial->source;
                     $wbsMaterial->material_id = $material->material_id;
                     $wbsMaterial->quantity = $material->quantity;  
                     if($material->dimensions_value != null){
                         $wbsMaterial->dimensions_value = $material->dimensions_value;
                     }
+                    $wbsMaterial->source = $material->source;
                     $wbsMaterial->update();
                 }else{
                     $wbsMaterial = new WbsMaterial;
@@ -464,6 +468,7 @@ class BOMController extends Controller
                     if($material->dimensions_value != null){
                         $wbsMaterial->dimensions_value = $material->dimensions_value;
                     }
+                    $wbsMaterial->source = $material->source;
                     $wbsMaterial->save();
                 }
 
@@ -496,7 +501,7 @@ class BOMController extends Controller
                     $wbsMaterial->weight = $weight;
                     $wbsMaterial->update();
                 }
-                $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->get();
+                $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->where('source', $old_material_source)->get();
                 if(count($modelBomPrep) > 0){
                     $not_found_bom_prep = false;
                     $not_added = true;
@@ -507,6 +512,7 @@ class BOMController extends Controller
                             }else{
                                 $bomPrep->weight += $weight - $old_weight;
                             }
+                            $bomPrep->source = $material->source;
                             $bomPrep->update();
 
                             $wbsMaterial->bom_prep_id = $bomPrep->id;
@@ -527,7 +533,7 @@ class BOMController extends Controller
                             $bomPrep->weight = $weight;
                         }
                         $bomPrep->status = 1;
-                        // $bomPrep->source = $material['source'];
+                        $bomPrep->source = $material->source;
                         $bomPrep->save();
 
                         $wbsMaterial->bom_prep_id = $bomPrep->id;
@@ -543,7 +549,7 @@ class BOMController extends Controller
                         $bomPrep->weight = $weight;
                     }
                     $bomPrep->status = 1;
-                    // $bomPrep->source = $material['source'];
+                    $bomPrep->source = $material->source;
                     $bomPrep->save();
 
                     $wbsMaterial->bom_prep_id = $bomPrep->id;
