@@ -73,10 +73,27 @@
                                         <input class="form-control" v-model="estimated_freight" placeholder="Estimated Freight">
                                     </div>
 
-                                    <div class="col-sm-5 no-padding p-t-15">
-                                        <label for="">Tax (%)</label>
+                                    
+                                    <!-- PPN PAMI ONLY -->
+                                    <div v-if ="isPami" class="col-sm-5 no-padding p-t-15">
+                                        <label for="">PPN (%)</label>
                                     </div>
                                     <div class="col-sm-7 p-t-13 p-l-0">
+                                        <input class="form-control" v-model="pajak_pertambahan_nilai" placeholder="PPn">
+                                    </div>
+                                    <!-- END LABEL PPN -->
+                                    <!-- PPH PAMI ONLY -->
+                                    <div v-if ="isPami" class="col-sm-5 no-padding p-t-15">
+                                        <label for="">PPH (%)</label>
+                                    </div>
+                                    <div class="col-sm-7 p-t-13 p-l-0">
+                                        <input class="form-control" v-model="pajak_penghasilan" placeholder="PPh">
+                                    </div>
+                                    <!-- END PPH -->
+                                    <div v-if ="!isPami" class="col-sm-5 no-padding p-t-15">
+                                        <label for="">Tax (%)</label>
+                                    </div>
+                                    <div v-if ="!isPami" class="col-sm-7 p-t-13 p-l-0">
                                         <input class="form-control" v-model="tax" placeholder="Tax">
                                     </div>
 
@@ -398,6 +415,9 @@
         projects : @json($projects),
         project_id : null,
         currencies : @json($currencies),
+        isPami :@json($isPami),
+        pajak_pertambahan_nilai:"",
+        pajak_penghasilan:"",
         modelVendor : [],
         vendorSettings: {
             placeholder: 'Please Select Vendor'

@@ -124,6 +124,44 @@ $vendor->name => route('vendor.show',$vendor->id),
                                     @endif>
                                 </div>
                             </div>
+
+                            <!-- START FORM PAJAK PERTAMBAHAN NILAI -->
+                            <div class="form-group">
+                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label">PPn. (%)</label>
+                            
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_pertambahan_nilai"
+                                        name="pajak_pertambahan_nilai">
+                                </div>
+                            </div>
+                            <!-- END FORM PAJAK PERTAMBAHAN NILAI -->
+                            
+                            <!-- START FORM PAJAK PENGHASILAN -->
+                            <div class="form-group">
+                                <label for="pajak_penghasilan" class="col-sm-2 control-label">PPh. (%)</label>
+                            
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_penghasilan"
+                                        name="pajak_penghasilan">
+                                </div>
+                            </div>
+                            <!-- END FORM PAJAK PENGHASILAN -->
+                            
+                            <!-- START FORM CURRENCY -->
+                            <div class="form-group">
+                                <label for="currencies" class="col-sm-2 control-label">Currencies </label>
+                            
+                                <div class="col-sm-10">
+                                    <select class="form-control" name="currencies" id="currencies">
+                                        <option value="" selected>Select Currencies</option>
+                                        @foreach($currencies as $currencies_lists)
+                                        <option value="{{$currencies_lists->id}}">
+                                            {{$currencies_lists->unit." - ". $currencies_lists->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- END FORM CURRENCY -->
                             @endif
 
                             <div class="form-group">
@@ -173,43 +211,7 @@ $vendor->name => route('vendor.show',$vendor->id),
                                     @endif>
                                 </div>
                             </div>
-                            <!-- START FORM PAJAK PERTAMBAHAN NILAI -->
-                            <div class="form-group">
-                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label">PPn. (%)</label>
-
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_pertambahan_nilai"
-                                        name="pajak_pertambahan_nilai">
-                                </div>
-                            </div>
-                            <!-- END FORM PAJAK PERTAMBAHAN NILAI -->
-
-                            <!-- START FORM PAJAK PENGHASILAN -->
-                            <div class="form-group">
-                                <label for="pajak_penghasilan" class="col-sm-2 control-label">PPh. (%)</label>
-
-                                <div class="col-sm-10">
-                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_penghasilan"
-                                        name="pajak_penghasilan">
-                                </div>
-                            </div>
-                            <!-- END FORM PAJAK PENGHASILAN -->
-
-                            <!-- START FORM CURRENCY -->
-                            <div class="form-group">
-                                <label for="currencies" class="col-sm-2 control-label">Currencies </label>
-
-                                <div class="col-sm-10">
-                                    <select class="form-control" name="currencies" id="currencies">
-                                        <option value="" selected>Select Currencies</option>
-                                        @foreach($currencies as $currencies_lists)
-                                        <option value="{{$currencies_lists->id}}">
-                                            {{$currencies_lists->unit." - ". $currencies_lists->name }}</option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-                            <!-- END FORM CURRENCY -->
+                            
                             <div class="form-group">
                                 <label for="email" class="col-sm-2 control-label">Email</label>
 
