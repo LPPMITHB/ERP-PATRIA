@@ -1122,6 +1122,9 @@ class BOMController extends Controller
                                 $new_stock->quantity = 0;
                                 $new_stock->reserved = $bom_detail->prepared;
                                 $new_stock->branch_id = Auth::user()->branch->id;
+                                if($bom_detail_input->source == "Stock"){
+                                    $bom_detail_input->pr_quantity = $bom_detail->prepared;
+                                }
                                 $new_stock->save();
                             }else{
                                 $stock_available_old = $stock->quantity - $stock->reserved;
@@ -1175,6 +1178,9 @@ class BOMController extends Controller
                                 $new_stock->reserved = $bom_detail->prepared - $temp_quantity;
                                 $new_stock->branch_id = Auth::user()->branch->id;
                                 $new_stock->save();
+                                if($bom_detail_input->source == "Stock"){
+                                    $bom_detail_input->pr_quantity = $bom_detail->prepared;
+                                }
                             }else{
                                 $stock_available_old = $stock->quantity - $stock->reserved;
                                 $still_positive = true;
