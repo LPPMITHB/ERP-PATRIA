@@ -135,6 +135,7 @@
                                     <th width="45%">Material Description</th>
                                     <th width="10%">Quantity</th>
                                     <th width="10%">Unit</th>
+                                    <th width="10%">Source</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -146,6 +147,7 @@
                                         <td>{{ bomDetail.material.description }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
                                         <td>{{ bomDetail.material.uom.unit }}</td>
+                                        <td>{{ bomDetail.source }}</td>
                                     </template>
                                 </tr>
                             </tbody>
