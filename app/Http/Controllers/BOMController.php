@@ -781,7 +781,7 @@ class BOMController extends Controller
             // dd($datas->bom_preps);
             self::saveBomDetailRepair($bom,$datas->bom_preps, $rap);
             if($rap == null){
-                self::createRap($bom);
+                self::createRapRepair($bom);
             }
 
             DB::commit();
@@ -1303,6 +1303,51 @@ class BOMController extends Controller
         }
     }
 
+    public function createRapRepair($bom){
+        $rap_number = self::generateRapNumber();
+        $rap = new Rap;
+        $rap->number = $rap_number;
+        $rap->project_id = $bom->project_id;
+        $rap->bom_id = $bom->id;
+        $rap->user_id = Auth::user()->id;
+        $rap->branch_id = Auth::user()->branch->id;
+        if(!$rap->save()){
+            return redirect()->route('bom.create')->with('error', 'Failed Save RAP !');
+        }else{
+            self::saveRapDetailRepair($rap->id,$bom->bomDetails);
+            $total_price = self::calculateTotalPrice($rap->id);
+
+            $modelRap = Rap::findOrFail($rap->id);
+            $modelRap->total_price = $total_price;
+            $modelRap->save();
+        }
+    }
+
+    public function saveRapDetailRepair($rap_id,$bomDetails){
+        foreach($bomDetails as $bomDetail){
+            $wbs_materials = $bomDetail->bomPrep->wbsMaterials;
+            foreach ($wbs_materials as $wbs_material) {
+                dd($wbs_material);
+            }
+            $exist_rap = RapDetail::where('material_id', $bomDetail->material_id)->where('dimensions_value',);
+
+            $rap_detail = new RapDetail;
+            $rap_detail->rap_id = $rap_id;
+            $rap_detail->material_id = $bomDetail->material_id;
+            $rap_detail->quantity = $bomDetail->quantity;
+            if($bomDetail->material_id != null){
+                if($bomDetail->source == 'WIP'){
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price_service;
+                }else{
+                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                }
+            }else{
+                $rap_detail->price = $bomDetail->quantity * $bomDetail->service->cost_standard_price;
+            }
+            $rap_detail->save();
+        }
+    }
+
     public function calculateTotalPrice($id){
         $modelRap = Rap::findOrFail($id);
         $total_price = 0;
@@ -1313,7 +1358,6 @@ class BOMController extends Controller
     }
 
     public function checkStock($bom,$route){
-
         if($route=="/bom"){
             $business_unit = 1;
         }elseif($route == "/bom_repair"){

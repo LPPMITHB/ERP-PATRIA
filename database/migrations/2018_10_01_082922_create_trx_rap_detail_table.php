@@ -17,14 +17,14 @@ class CreateTrxRapDetailTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('rap_id');
             $table->unsignedInteger('material_id')->nullable();
-            $table->unsignedInteger('service_id')->nullable();
+            $table->unsignedInteger('wbs_id')->nullable();
             $table->longText('dimensions_value')->nullable();
             $table->float('quantity',15,2);
             $table->double('price');
             $table->timestamps();
     
             $table->foreign('material_id')->references('id')->on('mst_material');
-            $table->foreign('service_id')->references('id')->on('mst_service');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
             $table->foreign('rap_id')->references('id')->on('trx_rap');
         });
     }
