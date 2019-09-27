@@ -113,6 +113,7 @@
                                         <th width="20%">Material Number</th>
                                         <th width="25%">Material Description</th>
                                         <th width="10%">Quantity</th>
+                                        <th width="10%">Source</th>
                                         <th width="14%">Dimensions</th>
                                         <th width="10%"></th>
                                     </tr>
@@ -123,6 +124,7 @@
                                         <td :id="material.material_code" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
                                         <td :id="material.material_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
                                         <td>{{ material.quantity }}</td>
+                                        <td>{{ material.source }}</td>
                                         <td class="p-l-5">
                                             <template v-if="material.dimensions_value != null">
                                                 {{material.dimension_string}}
@@ -150,15 +152,21 @@
                                             </selectize>    
                                         </td>
                                         <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity" :disabled="materialOk"></td>
+                                        <td class="no-padding">
+                                            <selectize id="source" name="source" v-model="input.source" :settings="source_settings">
+                                                <option value="Stock">Stock</option>
+                                                <option value="WIP">WIP</option>
+                                            </selectize>
+                                        </td>
                                         <td class="p-l-5" align="center">
                                             <button :disabled="materialDimensionOk" class="btn btn-primary btn-xs" @click.prevent="openManageDimensionModal()">
                                                 MANAGE DIMENSIONS
                                             </button>
                                         </td>
-                                        <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
+                                        <td class="p-l-0" align="center"><button type="button" @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
                                                 ADD
-                                            </div></a>
+                                            </div></button>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -185,6 +193,15 @@
                                                     <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </div>
+
+                                            <div class="col-sm-12">
+                                                <label for="type" class="control-label">Source</label>
+                                                <selectize id="source" name="source" v-model="editInput.source" :settings="source_settings">
+                                                    <option value="Stock">Stock</option>
+                                                    <option value="WIP">WIP</option>
+                                                </selectize>
+                                            </div>
+
                                             <div class="col-sm-6">
                                                 <label for="quantity" class="control-label">Quantity</label>
                                                 <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
@@ -322,6 +339,7 @@
             is_decimal : "",
             material_ok : "",
             selected_material : null,
+            source : "",
 
             dimensions_value : null,
             dimension_string : null,
@@ -337,7 +355,8 @@
             is_decimal : "",
             material_ok : "",
             selected_material : null,
-            
+            source : "",
+                        
             dimensions_value : null,
             dimension_string : null,
         },
@@ -367,6 +386,9 @@
         area_uom_settings: {
             placeholder: 'Select area UOM!'
         },
+        source_settings:{
+            placeholder: 'Source'
+        },
     }
 
     Vue.directive('tooltip', function(el, binding){
@@ -384,7 +406,7 @@
             inputOk: function(){
                 let isOk = false;
 
-                if(this.input.material_id == "" || this.input.quantity == ""){
+                if(this.input.material_id == "" || this.input.quantity == "" || this.input.source == ""){
                     isOk = true;
                 }
                 return isOk;
@@ -507,10 +529,14 @@
                 this.editInput.material_name = data.material_name;
                 this.editInput.quantity = data.quantity;
                 this.editInput.wbs_id = data.wbs_id;
-                this.editInput.wbs_number = data.wbs.number;
                 this.editInput.index = index;
                 this.editInput.unit = data.unit;
-                this.editInput.is_decimal = data.material.is_decimal;
+                this.editInput.source = data.source;
+                if(data.material != undefined){
+                    this.editInput.is_decimal = data.material.is_decimal;
+                }else{
+                    this.editInput.is_decimal = data.is_decimal;
+                }
 
                 if(data.dimensions_value == null){
                     this.all_materials.forEach(material => {
@@ -576,8 +602,10 @@
                     var data = JSON.stringify(this.input);
                     data = JSON.parse(data);
                     
-                    if(data.dimensions_value != null){
-                        data.dimensions_value = JSON.stringify(data.dimensions_value);
+                    if(data.dimensions_value != null || data.selected_material.dimension_type_id == null){
+                        if(data.dimensions_value != null){
+                            data.dimensions_value = JSON.stringify(data.dimensions_value);
+                        }
                         this.materialTable.push(data);
     
                         this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
@@ -645,7 +673,10 @@
                         material.unit = this.editInput.unit;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
-                        material.dimensions_value = JSON.stringify(this.editInput.dimensions_value);
+                        material.source = this.editInput.source;
+                        if(this.editInput.dimensions_value != null){
+                            material.dimensions_value = JSON.stringify(this.editInput.dimensions_value);
+                        }
 
                         var elemCode = document.getElementById(material.material_code);
                         var elemDesc = document.getElementById(material.material_name);
@@ -685,33 +716,35 @@
             },
         },
         watch: {
-            materialTable:{
-            handler: function(newValue) {
-                newValue.forEach(wbsMaterial => {
-                    if(wbsMaterial.dimensions_value != null){
-                        var dimension_string = "";
-                        JSON.parse(wbsMaterial.dimensions_value).forEach(dimension => {
-                            var unit = "";
-                            this.uoms.forEach(uom => {
-                                if(uom.id == dimension.uom_id){
-                                    unit = uom.unit;
-                                }   
-                            });
+            materialTable:{ 
+                handler: function(newValue) {
+                    newValue.forEach(wbsMaterial => {
+                        if(wbsMaterial.dimensions_value != null){
+                            var dimension_string = "";
+                            JSON.parse(wbsMaterial.dimensions_value).forEach(dimension => {
+                                var unit = "";
+                                this.uoms.forEach(uom => {
+                                    if(uom.id == dimension.uom_id){
+                                        unit = uom.unit;
+                                    }   
+                                });
 
-                            if(dimension_string == ""){
-                                dimension_string += dimension.value+" "+unit;
-                            }else{
-                                dimension_string += " x "+dimension.value+" "+unit;
-                            }
-                        });
-                        wbsMaterial.dimension_string = dimension_string;
-                    }
-                });
+                                if(dimension_string == ""){
+                                    dimension_string += dimension.value+" "+unit;
+                                }else{
+                                    dimension_string += " x "+dimension.value+" "+unit;
+                                }
+                            });
+                            wbsMaterial.dimension_string = dimension_string;
+                        }
+                    });
+                },
+                deep: true
             },
-            deep: true
-        },
             'input.material_id': function(newValue){
                 this.input.quantity = "";
+                this.input.source = "";
+                this.input.dimensions_value = null;
                 if(newValue != ""){
                     this.input.material_ok = "ok";
                     window.axios.get('/api/getMaterialBOM/'+newValue).then(({ data }) => {

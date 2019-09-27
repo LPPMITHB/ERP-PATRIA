@@ -42,9 +42,10 @@ class VendorController extends Controller
         $vendor_categories = Configuration::get('vendor_category');
         $payment_terms = Configuration::get('payment_terms');
         $delivery_terms = Configuration::get('delivery_terms');
+        $currencies = Configuration::get('currencies');
         $business_ids = Auth::user()->business_unit_id;
 
-        return view('vendor.create',compact('vendor','vendor_code','vendor_categories','payment_terms','delivery_terms','business_ids'));
+        return view('vendor.create',compact('vendor','vendor_code','vendor_categories','payment_terms','delivery_terms','business_ids', 'currencies'));
     }
 
     /**
@@ -78,6 +79,7 @@ class VendorController extends Controller
         $vendor->email = $request->input('email');
         $vendor->status = $request->input('status');
         $vendor->description = $request->input('description');
+        
         if($request->input('payment_term') != ""){
             $vendor->payment_term = $request->input('payment_term');
         }else{
@@ -90,6 +92,17 @@ class VendorController extends Controller
         }
         $vendor->user_id = Auth::user()->id;
         $vendor->branch_id = Auth::user()->branch->id;
+        $business_ids = Auth::user()->business_unit_id;
+        //input untuk user pami dan mengabaikan untuk user pmp
+        if (in_array("2",json_decode($business_ids))){
+            $vendor->pajak_pertambahan_nilai = $request->input('pajak_pertambahan_nilai');
+            $vendor->pajak_penghasilan = $request->input('pajak_penghasilan');
+            $vendor->currencies = $request->input('currencies');
+        }else{
+            $vendor->pajak_penambahan_nilai = "0";
+            $vendor->pajak_penghasilan = "0";
+            $vendor->currencies = "1";
+        }
         $vendor->save();
 
         DB::commit();
@@ -138,6 +151,14 @@ class VendorController extends Controller
                 $dt_name = $delivery_term->name;
             }
         }
+        $currencies = Configuration::get('currencies');
+    
+        for($i=0;$i<$currencies;$i++){
+            if($currencies[$i]->id== $vendor->currencies){
+                $vendor->currencies = $currencies[$i]->unit." - ".$currencies[$i]->name;
+                break;
+            }
+        }
         return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name','business_ids','modelGRDs','modelPODs'));
     }
 
@@ -147,9 +168,10 @@ class VendorController extends Controller
         $vendor_categories = Configuration::get('vendor_category');
         $payment_terms = Configuration::get('payment_terms');
         $delivery_terms = Configuration::get('delivery_terms');
+        $currencies = Configuration::get('currencies');
         $business_ids = Auth::user()->business_unit_id;
 
-        return view('vendor.create',compact('vendor','vendor_categories','payment_terms','delivery_terms','business_ids'));
+        return view('vendor.create',compact('vendor','vendor_categories','payment_terms','delivery_terms','business_ids', 'currencies'));
     }
 
     public function update(Request $request, $id)

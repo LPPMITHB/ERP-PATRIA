@@ -61,10 +61,11 @@
                                         <th width="5%">No</th>
                                         <th width="13%">Material Number</th>
                                         <th width="25%">Material Description</th>
+                                        <th width="7%">Source</th>
                                         <th width="13%">Qty</th>
                                         <th width="13%">Prepared Qty</th>
                                         <th width="14%"></th>
-                                        <th width="6%">Fulfilled ?</th>
+                                        <th width="7%">Fulfilled ?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -72,6 +73,7 @@
                                         <td>{{ index+1 }}</td>
                                         <td>{{ bomPrep.material.code }}</td>
                                         <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomPrep.material.description)">{{ bomPrep.material.description }}</td>
+                                        <td>{{ bomPrep.source }}</td>
                                         <td>{{ bomPrep.quantity }}</td>
                                         <td>{{ bomPrep.already_prepared }}</td>
                                         <td class="p-l-0 p-r-0 textCenter">
@@ -173,25 +175,6 @@
     const form = document.querySelector('form#create-bom-repair');
 
     $(document).ready(function(){
-        $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-            var title = $(this).text();
-            if(title != 'Material Description' && title != 'Material Number'){
-                $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-            }else{
-                $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-            }
-
-            $( 'input', this ).on( 'keyup change', function () {
-                if ( tableNonPagingVue.column(i).search() !== this.value ) {
-                    tableNonPagingVue
-                        .column(i)
-                        .search( this.value )
-                        .draw();
-                }
-            });
-        });
-
         var tableNonPagingVue = $('.tableNonPagingVue').DataTable( {
             orderCellsTop   : true,
             paging          : false,
@@ -215,7 +198,8 @@
     var data = {
         modelProject: @json($project),
         modelBomPrep : @json($bomPreps),
-        stocks : @json($stocks),
+        // stocks : @json($stocks),
+        materials : @json($materials),
         submittedForm :{},
         total : [],
         description : @json($existing_bom != null ? $existing_bom->description : ""),
@@ -253,12 +237,23 @@
                 this.modelBomPrep[this.activeBomPrep.index].bom_details = this.activeBomPrep.details;
                 this.modelBomPrep[this.activeBomPrep.index].already_prepared = this.activeBomPrep.prepared;
 
-                this.stocks.forEach(stock => {
+                this.materials.forEach(material => {
                     this.activeBomPrep.details.forEach(bom_detail => {
-                        if(stock.material_id == bom_detail.material_id){
-                                var temp_available = stock.quantity - stock.reserved;
+                        if(material.id == bom_detail.material_id){
+                            if(material.stock != null){
+                                var temp_available = material.stock.quantity - material.stock.reserved;
                                 var add = temp_available - parseFloat((bom_detail.available_quantity+"").replace(/,/g, ''));
-                                stock.reserved += parseFloat((add+"").replace(/,/g, ''));
+                                material.stock.reserved += parseFloat((add+"").replace(/,/g, ''));
+                            }else{
+                                var temp = {};
+                                temp.material_id = material.id;
+                                temp.quantity = 0;
+                                var add = parseFloat((bom_detail.prepared+"").replace(/,/g, ''));
+                                temp.reserved = parseFloat((add+"").replace(/,/g, ''));
+                                temp.reserved_gi = 0;
+
+                                material.stock = temp;
+                            }
                         }
                     });
                 });
@@ -274,10 +269,10 @@
                 if(data.material.family_id != null){
                     var family_ids = JSON.parse(data.material.family_id);
                     if(data.bom_details.length > 0){
-                        this.stocks.forEach(stock => {
+                        this.materials.forEach(material => {
                             var found = false;
-                            if(stock.material.family_id != null){
-                                family_ids_stock = JSON.parse(stock.material.family_id);
+                            if(material.family_id != null){
+                                family_ids_stock = JSON.parse(material.family_id);
                                 family_ids_stock.forEach(family_id => {
                                     if(family_ids.includes(family_id)){
                                         found = true;
@@ -288,15 +283,15 @@
                             if(found){
                                 var temp = {};
                                 temp.id = null;
-                                temp.material_id = stock.material_id;
-                                temp.material_name = stock.material.code+" - "+stock.material.description;
-                                temp.available_quantity = stock.quantity - stock.reserved;
-                                temp.const_available_quantity = stock.quantity - stock.reserved;
+                                temp.material_id = material_id;
+                                temp.material_name = material.code+" - "+material.description;
+                                temp.available_quantity = material.stock.quantity - material.stock.reserved;
+                                temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
                                 temp.prepared = "";
 
                                 this.activeBomPrep.details.push(temp);
                             }
-                        });  
+                        });   
 
                         data.bom_details.forEach(bom_detail => {
                             this.activeBomPrep.details.forEach(detail =>{
@@ -328,10 +323,10 @@
                             });
                         });
                     }else{
-                        this.stocks.forEach(stock => {
+                        this.materials.forEach(material => {
                             var found = false;
-                            if(stock.material.family_id != null){
-                                family_ids_stock = JSON.parse(stock.material.family_id);
+                            if(material.family_id != null){
+                                family_ids_stock = JSON.parse(material.family_id);
                                 family_ids_stock.forEach(family_id => {
                                     if(family_ids.includes(family_id)){
                                         found = true;
@@ -342,10 +337,10 @@
                             if(found){
                                 var temp = {};
                                 temp.id = null;
-                                temp.material_id = stock.material_id;
-                                temp.material_name = stock.material.code+" - "+stock.material.description;
-                                temp.available_quantity = stock.quantity - stock.reserved;
-                                temp.const_available_quantity = stock.quantity - stock.reserved;
+                                temp.material_id = material_id;
+                                temp.material_name = material.code+" - "+material.description;
+                                temp.available_quantity = material.stock.quantity - material.stock.reserved;
+                                temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
                                 temp.prepared = "";
 
                                 this.activeBomPrep.details.push(temp);
@@ -354,19 +349,28 @@
                     }
                 }else{
                     if(data.bom_details.length > 0){
-                        this.stocks.forEach(stock => {
-                            if(data.material_id == stock.material_id){
+                        this.materials.forEach(material => {
+                            if(data.material_id == material.id){
                                 var temp = {};
-                                temp.id = null;
-                                temp.material_id = stock.material_id;
-                                temp.material_name = stock.material.code+" - "+stock.material.description;
-                                temp.available_quantity = stock.quantity - stock.reserved;
-                                temp.const_available_quantity = stock.quantity - stock.reserved;
-                                temp.prepared = "";
+                                if(material.stock != null){
+                                    temp.id = null;
+                                    temp.material_id = material.id;
+                                    temp.material_name = material.code+" - "+material.description;
+                                    temp.available_quantity = material.stock.quantity - material.stock.reserved;
+                                    temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
+                                    temp.prepared = "";
+                                }else{
+                                    temp.id = null;
+                                    temp.material_id = material.id;
+                                    temp.material_name = material.code+" - "+material.description;
+                                    temp.available_quantity = 0;
+                                    temp.const_available_quantity = 0;
+                                    temp.prepared = "";
+                                }
 
                                 this.activeBomPrep.details.push(temp);
                             }
-                        }); 
+                        });   
 
                         data.bom_details.forEach(bom_detail => {
                             this.activeBomPrep.details.forEach(detail =>{
@@ -398,15 +402,24 @@
                             });
                         });
                     }else{
-                        this.stocks.forEach(stock => {
-                            if(data.material_id == stock.material_id){
+                        this.materials.forEach(material => {
+                            if(data.material_id == material.id){
                                 var temp = {};
-                                temp.id = null;
-                                temp.material_id = stock.material_id;
-                                temp.material_name = stock.material.code+" - "+stock.material.description;
-                                temp.available_quantity = stock.quantity - stock.reserved;
-                                temp.const_available_quantity = stock.quantity - stock.reserved;
-                                temp.prepared = "";
+                                if(material.stock != null){
+                                    temp.id = null;
+                                    temp.material_id = material.id;
+                                    temp.material_name = material.code+" - "+material.description;
+                                    temp.available_quantity = material.stock.quantity - material.stock.reserved;
+                                    temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
+                                    temp.prepared = "";
+                                }else{
+                                    temp.id = null;
+                                    temp.material_id = material.id;
+                                    temp.material_name = material.code+" - "+material.description;
+                                    temp.available_quantity = 0;
+                                    temp.const_available_quantity = 0;
+                                    temp.prepared = "";
+                                }
 
                                 this.activeBomPrep.details.push(temp);
                             }

@@ -30,6 +30,9 @@ class CreateMstVendorTable extends Migration
             $table->string('email')->nullable();
             $table->unsignedInteger('payment_term')->nullable();
             $table->unsignedInteger('delivery_term')->nullable();
+            $table->unsignedInteger('currencies')->nullable();//pami only nilai mata uang
+            $table->float('pajak_pertambahan_nilai')->nullable(); //pami only pajak pertambahan nilai PPn
+            $table->float('pajak_penghasilan')->nullable();//pami only  pajak penghasilan PPh
             $table->string('status');
             $table->unsignedInteger('branch_id');
             $table->unsignedInteger('user_id');
