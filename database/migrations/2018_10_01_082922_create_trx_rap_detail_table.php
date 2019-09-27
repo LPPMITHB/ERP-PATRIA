@@ -21,6 +21,7 @@ class CreateTrxRapDetailTable extends Migration
             $table->longText('dimensions_value')->nullable();
             $table->float('quantity',15,2);
             $table->double('price');
+            $table->string('source')->nullable();
             $table->timestamps();
     
             $table->foreign('material_id')->references('id')->on('mst_material');
