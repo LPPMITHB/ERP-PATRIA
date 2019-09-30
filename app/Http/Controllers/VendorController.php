@@ -13,6 +13,7 @@ use App\Models\Configuration;
 use App\Models\Material;
 use Illuminate\Http\Response;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Auth;
 use DB;
 
@@ -120,7 +121,12 @@ class VendorController extends Controller
         $modelWOs = WorkOrder::where('vendor_id', $id)->get();
         $business_ids = Auth::user()->business_unit_id;
         $po_ids = $modelPOs->pluck('id')->toArray();
-        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->with('goodsReceiptDetails', 'purchaseOrder.purchaseOrderDetails')->get();
+        $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->with('goodsReceiptDetails','purchaseOrder.purchaseOrderDetails')->get();
+        
+        $modelMaterialIds = PurchaseOrderDetail::whereIn('purchase_order_id', $po_ids)->pluck('material_id')->toArray();
+        $modelMaterialIds = array_unique($modelMaterialIds);
+        $modelMaterials = Material::whereIn('id',$modelMaterialIds)->get();
+
         $gr_ids = $modelGRs->pluck('id')->toArray();
         $modelGRDs = GoodsReceiptDetail::whereIn('goods_receipt_id', $gr_ids)->get();
         $modelPODs = [];
@@ -159,7 +165,7 @@ class VendorController extends Controller
                 break;
             }
         }
-        return view('vendor.show', compact('vendor', 'modelPOs', 'modelWOs', 'return', 'modelGRs', 'resourceDetails', 'pt_name', 'dt_name', 'business_ids', 'modelGRDs', 'modelPODs'));
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name','business_ids','modelGRDs','modelPODs','modelMaterials'));
     }
 
     public function edit($id)
@@ -246,5 +252,20 @@ class VendorController extends Controller
     public function getMaterialAPI($id)
     {
         return response(Material::where('id', $id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getDataChartVendorAPI($material_id, $vendor_id){
+        $modelPOs = PurchaseOrder::where('vendor_id',$vendor_id)->get();
+        $po_ids = $modelPOs->pluck('id')->toArray();
+        $modelPODs = PurchaseOrderDetail::whereIn('purchase_order_id', $po_ids)->where('material_id', $material_id)->orderBy('created_at', 'asc')->get();
+
+        $tempCost = Collection::make();
+        foreach($modelPODs as $modelPOD){
+            $tempCost->push([
+                "t" => $modelPOD->created_at->toDateString(),
+                "y" => ($modelPOD->total_price/$modelPOD->quantity-$modelPOD->discount)."",
+            ]);
+        }
+        return response($tempCost->jsonSerialize(), Response::HTTP_OK);
     }
 }

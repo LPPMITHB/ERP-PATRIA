@@ -100,6 +100,7 @@
                             <li class="active"><a href="#quality" data-toggle="tab">Quality</a></li>
                             <li><a href="#cost" data-toggle="tab">Cost</a></li>
                             <li><a href="#delivery" data-toggle="tab">Delivery</a></li>
+                            <li><a href="#price" data-toggle="tab">Price History</a></li>
                             @if($vendor->type == "Subcon")
                                 <li><a href="#safety" data-toggle="tab">Safety</a></li>
                                 <li><a href="#morale" data-toggle="tab">Morale</a></li>
@@ -263,7 +264,7 @@
                                             <div class="modal-body">
                                                 <div class="row">
                                                     <div class="col-sm-12">
-                                                        <table class="table table-bordered">
+                                                        <table class="table table-bordered showTable">
                                                             <thead>
                                                                 <tr>
                                                                     <th>Material Number</th>
@@ -298,6 +299,60 @@
                                     </div>
                                 </div>
                             </div>
+                            @endverbatim
+                        </div>
+                    </div>
+                    @verbatim
+                    <div class="tab-pane" id="price">
+                        <div class="box-body p-t-0 m-l-10 m-r-10">
+                            <table class="table table-bordered priceTable">
+                                <thead>
+                                    <tr>
+                                        <th width="5%">No</th>
+                                        <th width="15%">Material Number</th>
+                                        <th width="15%">Material Description</th>
+                                        <th width="10%">Details</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="(material,index) in modelMaterials">
+                                        <td> {{ index+1 }} </td>
+                                        <td class="tdEllipsis">{{material.code}}</td>
+                                        <td class="tdEllipsis">{{material.description}}</td>
+                                        <td class="p-l-0 p-r-0 textCenter">
+                                            <button class="btn btn-primary btn-xs" @click="openModalCost(material)" data-toggle="modal" data-target="#cost_detail">DETAILS</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                                <div class="modal fade" id="cost_detail">
+                                    <div class="modal-dialog modalFull">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title">Cost Details</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="box box-solid">
+                                                    <div class="box-body" style="">
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="chart">
+                                                                    <canvas id="cost_chart" width="703" height="300"></canvas>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             @endverbatim
                         </div>
                     </div>
@@ -443,33 +498,7 @@
                 $('div.overlay').hide();
             }
         });
-        // $('.qualityTable thead tr').clone(true).appendTo( '.qualityTable thead' );
-        // $('.qualityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Returned Quantity"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( qualityTable.column(i).search() !== this.value ) {
-        //             qualityTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var qualityTable = $('.qualityTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
+        
 
         $('.poCostTable').DataTable({
             'paging'      : true,
@@ -482,34 +511,7 @@
             }
         });
 
-        // $('.poCostTable thead tr').clone(true).appendTo( '.poCostTable thead' );
-        // $('.poCostTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Total Price"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( poCostTable.column(i).search() !== this.value ) {
-        //             poCostTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var poCostTable = $('.poCostTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
-
+        
         $('.woCostTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -521,34 +523,7 @@
             }
         });
 
-        // $('.woCostTable thead tr').clone(true).appendTo( '.woCostTable thead' );
-        // $('.woCostTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Total Price"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( woCostTable.column(i).search() !== this.value ) {
-        //             woCostTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var woCostTable = $('.woCostTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
-
+        
         $('.deliveryTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -560,33 +535,6 @@
             }
         });
 
-        // $('.deliveryTable thead tr').clone(true).appendTo( '.deliveryTable thead' );
-        // $('.deliveryTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Day(s)"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( deliveryTable.column(i).search() !== this.value ) {
-        //             deliveryTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var deliveryTable = $('.deliveryTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
 
         $('.productivityTable').DataTable({
             'paging'      : true,
@@ -598,34 +546,7 @@
                 $('div.overlay').hide();
             }
         });
-
-        // $('.productivityTable thead tr').clone(true).appendTo( '.productivityTable thead' );
-        // $('.productivityTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Performance" || title == "Usage" || title == "Productivity"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( productivityTable.column(i).search() !== this.value ) {
-        //             productivityTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var productivityTable = $('.productivityTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
+        
 
         $('.safetyTable').DataTable({
             'paging'      : true,
@@ -638,33 +559,6 @@
             }
         });
 
-        // $('.safetyTable thead tr').clone(true).appendTo( '.safetyTable thead' );
-        // $('.safetyTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Total Accident"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( safetyTable.column(i).search() !== this.value ) {
-        //             safetyTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var safetyTable = $('.safetyTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
 
         $('.moraleTable').DataTable({
             'paging'      : true,
@@ -676,48 +570,18 @@
                 $('div.overlay').hide();
             }
         });
-
-        // $('.moraleTable thead tr').clone(true).appendTo( '.moraleTable thead' );
-        // $('.moraleTable thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No'){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
-
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( moraleTable.column(i).search() !== this.value ) {
-        //             moraleTable
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var moraleTable = $('.moraleTable').DataTable( {
-        //     orderCellsTop   : true,
-        //     fixedHeader     : true,
-        //     paging          : true,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : true,
-        // });
-
-        // $('div.overlay').hide();
     });
+
+    function details(id){
+        var details = ""
+        document.getElementById("details").value = details;
+    };
 
     var data = {
         modelGRDs: @json($modelGRDs),
         modelPODs: @json($modelPODs),
         selectedGRD: [],
         selectedPOD: [],
-    };
-
-    function details(id){
-        var details = ""
-        document.getElementById("details").value = details;
     };
 
     var vm = new Vue({
@@ -761,6 +625,111 @@
             }
         }
     });
+
+    var data2 = {
+        selectedGRD: [],
+        selectedPOD: [],
+        modelMaterials: @json($modelMaterials),
+        vendor: @json($vendor),
+      
+    };
+
+    var vm = new Vue({
+        el:"#price",
+        data: data2,
+        methods: {
+            openModalCost(material){
+                window.axios.get('/api/getDataChartVendor/'+material.id+'/'+this.vendor.id).then(({ data }) => {
+                    var updateChart =[
+                        {
+                            label: "Cost",
+                            backgroundColor: "rgba(242, 38, 2, 0.7)",
+                            data: data,
+                        },
+
+                    ];
+                    costChart.config.data.datasets = updateChart;
+                    window.costChart.update();
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    console.log(error);
+                    $('div.overlay').hide();
+                })
+            }
+        }
+    });
+
+    var costCanvas = document.getElementById("cost_chart").getContext("2d");
+
+    var configCost = {
+        type: 'line',
+        data: {
+            datasets: [
+                {
+                    label: "Cost",
+                    borderColor: "rgba(0, 0, 255, 0.7)",
+                    data: [],
+                },
+            ]
+        },  
+        options: {
+            elements: {
+                point: {
+                    radius: 4,
+                    hitRadius: 4,
+                    hoverRadius: 6
+                }
+            },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        var value = tooltipItem.yLabel;
+                        if(parseInt(value) >= 1000){
+                            return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        } else {
+                            return 'Rp' + value;
+                        }
+                    }
+                } // end callbacks:
+            }, //end tooltips
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        tooltipFormat: 'll',
+                        unit: 'week',
+                    }
+                }],
+                yAxes: [{
+                    gridLines: {
+                        display:false
+                    },
+                    ticks: {
+                        beginAtZero:true,
+                        callback: function(value, index, values) {
+                            if(parseInt(value) >= 1000){
+                               return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                            } else {
+                               return 'Rp' + value;
+                            }
+                       },
+                    },
+                    scaleLabel: {
+                        display: true,
+                    }
+                }]
+            },
+        }
+    };
+
+    var costChart = new Chart(costCanvas, configCost);
 
 </script>
 @endpush
