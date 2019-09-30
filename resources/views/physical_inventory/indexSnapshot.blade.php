@@ -51,7 +51,7 @@
                                         <div class="col-sm-10">
                                             <select id="sloc" name="sloc[]" multiple="multiple">
                                                 @foreach ($storage_locations as $storage_location)
-                                                    <option value="{{$storage_location->id}}">{{$storage_location->name}}</option>
+                                                    <option value="{{$storage_location->id}}" warehouse_id="{{$storage_location->warehouse_id}}" >{{$storage_location->name}}</option>
                                                 @endforeach
                                             </select>
                                         </div>
@@ -159,6 +159,7 @@
 
 @push('script')
 <script>
+    var sloc_options = @json($storage_locations);
     $(document).ready(function(){
         $('div.overlay').hide();
         $('#sloc, #material, #warehouse').multiselect({
@@ -176,6 +177,20 @@
                     document.getElementById("display").disabled = false;
                 }else{
                     document.getElementById("display").disabled = true;
+                }
+                var data = [];
+                if(warehouse.length > 0){
+                    sloc_options.forEach(sloc_option => {
+                        for (let j = 0; j < warehouse.length; j++) {
+                            const warehouse_selected = warehouse[j];
+                            if(warehouse_selected == sloc_option.warehouse_id){
+                                data.push(
+                                    {label: sloc_option.name, value: sloc_option.id}
+                                );
+                            }
+                        }
+                    });
+                    $("#sloc").multiselect('dataprovider', data);
                 }
             }
         })
