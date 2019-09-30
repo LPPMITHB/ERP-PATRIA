@@ -13,9 +13,9 @@ class BomPrep extends Model
         return $this->hasMany('App\Models\BomDetail');
     }
 
-    public function activityDetails()
+    public function wbsMaterials()
     {
-        return $this->hasMany('App\Models\ActivityDetail');
+        return $this->hasMany('App\Models\WbsMaterial');
     }
 
     public function material()

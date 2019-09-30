@@ -120,6 +120,12 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+        $isPami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        //mendeteksi bahwa user adalah pami
+        if (in_array("2", json_decode($business_ids))) {
+            $isPami = true;
+        }
         $currencies = Configuration::get('currencies');
         foreach ($currencies as $key => $currency) {
             if ($currency->status == 0) {
@@ -153,7 +159,7 @@ class PurchaseOrderController extends Controller
         $delivery_terms = Configuration::get('delivery_terms');
         $projects = Project::where('status', 1)->get();
 
-        return view('purchase_order.create', compact('modelPR', 'modelPRD', 'currencies', 'route', 'materials', 'payment_terms', 'delivery_terms', 'projects'));
+        return view('purchase_order.create', compact('modelPR', 'modelPRD', 'currencies', 'route', 'materials', 'payment_terms', 'delivery_terms', 'projects', 'isPami'));
     }
 
     public function selectPRD(Request $request, $id)

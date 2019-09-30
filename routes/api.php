@@ -203,6 +203,7 @@ Route::get('/getDocuments/{id}/{menu}', 'ReverseTransactionController@getDocumen
 
 // Vendor
 Route::get('/getMaterialVendor/{id}', 'VendorController@getMaterialAPI')->name('api.vendor.getMaterialAPI');
+Route::get('/getDataChartVendor/{material_id}/{vendor_id}', 'VendorController@getDataChartVendorAPI')->name('api.vendor.getDataChartVendorAPI');
 
 //Project Standard
 Route::get('/getProjectStandard', 'ProjectStandardController@getProjectStandardAPI')->name('api.wbs.getProjectStandardAPI');
