@@ -1822,7 +1822,7 @@ class MenusTableSeeder extends Seeder
         $bomRepair =  Menu::where('name', 'Bill of Material')->where('menu_id', $repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
-            'name' => 'Manage BOM',
+            'name' => 'Manage BOM / BOS',
             'icon' => 'fa-file-text-o',
             'route_name' => 'bom_repair.selectProjectManage',
             'is_active' => true,

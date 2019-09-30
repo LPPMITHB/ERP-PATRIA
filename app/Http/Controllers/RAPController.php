@@ -18,6 +18,7 @@ use App\Models\PurchaseRequisitionDetail;
 use App\Models\Project;
 use App\Models\Cost;
 use App\Models\WBS;
+use App\Models\Uom;
 use Auth;
 use App\Http\Controllers\PurchaseRequisitionController;
 use Illuminate\Support\Collection;
@@ -811,9 +812,25 @@ class RAPController extends Controller
                 return redirect()->route('rap.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
             }
         } elseif ($route == "/rap_repair") {
+            $modelRapDetails = $modelRap->rapDetails;
+            $wbss = $modelRap->project->wbss->where('service_detail_id', '!=', null);
+            foreach ($modelRapDetails as $rapDetail) {
+                $dimensions_obj = json_decode($rapDetail->dimensions_value);
+                $dimensions_string = "-";
+                if($dimensions_obj != null){
+                    foreach ($dimensions_obj as $dimension) {
+                        $uom = Uom::find($dimension->uom_id);
+                        if($dimensions_string == "-"){
+                            $dimensions_string = $dimension->value." ".$uom->unit; 
+                        }else{
+                            $dimensions_string .= " x ".$dimension->value." ".$uom->unit; 
+                        }
+                    }
+                }
+            }
             if ($modelRap) {
                 if ($modelRap->project->business_unit_id == 2) {
-                    return view('rap.show', compact('modelRap', 'route'));
+                    return view('rap.show', compact('modelRap', 'modelRapDetails', 'route', 'wbss'));
                 } else {
                     return redirect()->route('rap_repair.indexSelectProject')->with('error', 'RAP isn\'t exist, Please try again !');
                 }

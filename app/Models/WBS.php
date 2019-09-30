@@ -93,4 +93,9 @@ class WBS extends Model
         return $this->belongsTo('App\Models\Uom');
     }
 
+    public function vendor()
+    {
+        return $this->belongsTo('App\Models\Vendor');
+    }
+
 }
