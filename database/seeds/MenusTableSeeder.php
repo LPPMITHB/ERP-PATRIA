@@ -2002,6 +2002,18 @@ class MenusTableSeeder extends Seeder
 
         DB::table('menus')->insert([
             'level' => 4,
+            'name' => 'Repeat Order',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'purchase_requisition.repeatOrder',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $purchaseRequisition,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 4,
             'name' => 'PR Consolidation',
             'icon' => 'fa-file-text-o',
             'route_name' => 'purchase_requisition_repair.indexConsolidation',

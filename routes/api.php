@@ -53,6 +53,7 @@ Route::get('/getAllWbss/{id}', 'RAPController@getAllWbssCostAPI')->name('api.bom
 Route::get('/getProjectPR/{id}', 'PurchaseRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
 Route::get('/getMaterialPR/{id}', 'PurchaseRequisitionController@getMaterialAPI')->name('api.purchase_requisition.getMaterialAPI');
 Route::get('/ProjectStandardPR/{id}', 'PurchaseRequisitionController@ProjectStandardAPI')->name('api.purchase_requisition.ProjectStandardAPI');
+Route::get('/getRepeatPR/{id}', 'PurchaseRequisitionController@getRepeatAPI')->name('api.purchase_requisition.getRepeatAPI');
 // Route::get('/getMaterials/{id}', 'PurchaseRequisitionController@getMaterialsAPI')->name('api.purchase_requisition.getMaterialsAPI');
 Route::get('/getWbsPR/{id}', 'PurchaseRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
 Route::get('/getModelWbsPR/{id}', 'PurchaseRequisitionController@getModelWbsAPI')->name('api.purchase_requisition.getModelWbsAPI');
