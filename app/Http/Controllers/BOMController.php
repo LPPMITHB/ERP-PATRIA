@@ -1327,24 +1327,34 @@ class BOMController extends Controller
         foreach($bomDetails as $bomDetail){
             $wbs_materials = $bomDetail->bomPrep->wbsMaterials;
             foreach ($wbs_materials as $wbs_material) {
-                dd($wbs_material);
-            }
-            $exist_rap = RapDetail::where('material_id', $bomDetail->material_id)->where('dimensions_value',);
-
-            $rap_detail = new RapDetail;
-            $rap_detail->rap_id = $rap_id;
-            $rap_detail->material_id = $bomDetail->material_id;
-            $rap_detail->quantity = $bomDetail->quantity;
-            if($bomDetail->material_id != null){
-                if($bomDetail->source == 'WIP'){
-                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price_service;
+                $exist_rap = RapDetail::where('material_id', $bomDetail->material_id)
+                ->where('dimensions_value',$wbs_material->dimensions_value)
+                ->where('source',$wbs_material->source)
+                ->where('wbs_id',$wbs_material->wbs_id)->first();
+                if($exist_rap != null){
+                    $exist_rap->quantity += $wbs_material->quantity;
+                    if($exist_rap->source == 'WIP'){
+                        $exist_rap->price += $wbs_material->quantity * $wbs_material->material->cost_standard_price_service;
+                    }else{
+                        $exist_rap->price += $wbs_material->quantity * $wbs_material->material->cost_standard_price;
+                    }
+                    $rap_detail->update();
                 }else{
-                    $rap_detail->price = $bomDetail->quantity * $bomDetail->material->cost_standard_price;
+                    $rap_detail = new RapDetail;
+                    $rap_detail->rap_id = $rap_id;
+                    $rap_detail->wbs_id = $wbs_material->wbs_id;
+                    $rap_detail->material_id = $wbs_material->material_id;
+                    $rap_detail->quantity = $wbs_material->quantity;
+                    $rap_detail->dimensions_value = $wbs_material->dimensions_value;
+                    $rap_detail->source = $wbs_material->source;
+                    if($rap_detail->source == 'WIP'){
+                        $rap_detail->price = $wbs_material->quantity * $wbs_material->material->cost_standard_price_service;
+                    }else{
+                        $rap_detail->price = $wbs_material->quantity * $wbs_material->material->cost_standard_price;
+                    }
+                    $rap_detail->save();
                 }
-            }else{
-                $rap_detail->price = $bomDetail->quantity * $bomDetail->service->cost_standard_price;
             }
-            $rap_detail->save();
         }
     }
 
