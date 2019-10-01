@@ -30,7 +30,7 @@
                                 </selectize>
                             </div>
                         </div>
-                        <div v-show="selectedPR_id != ''">
+                        <div v-if="selectedPR.length > 0" >
                             <div class="box-body no-padding">
                                 <span class="info-box-text">PR Number</span>
                                 <span class="info-box-number">{{ selectedPR.length > 0 ? selectedPR[0].number : "-"}}</span>
@@ -53,58 +53,51 @@
                                         Description
                                     </div>
                                     <div class="col-xs-8 col-md-8 tdEllipsis" data-container="body" data-toggle="tooltip" title="">
-                                        : <b></b>
+                                        : <b>{{ selectedPR[0].description }}</b>
                                     </div>
                                 </div>
                             </div>
                             <div>
                                 <table class="table table-bordered tableFixed showTable" id="pr-table">
                                     <thead>
-                                        <tr v-if="selectedPR.type == 3">
+                                        <tr v-if="selectedPR[0].type == 3">
                                             <th width="5%">No</th>
                                             <th width="15%">Project Number</th>
                                             <th width="25%">WBS</th>
                                             <th width="40%">Job Order</th>
                                         </tr>
-                                        <tr v-else>
+                                        <tr v-else-if="selectedPR[0].type == 1">
                                             <th width="5%">No</th>
-                                            <div v-if="selectedPR.type == 1">
-                                                <th width="20%">Material Number</th>
-                                                <th width="25%">Material Description</th>
-                                            </div>
-                                            <div v-else>
-                                                <th width="20%">Resource Number</th>
-                                                <th width="25%">Resource Description</th>
-                                            </div>
-                                            <th width="8%">Request Quantity</th>
-                                            <th width="7%">Unit</th>
-                                            <th width="14%">Project Number</th>
-                                            <th width="13%">Required Date</th>
-                                            <th width="10%">Allocation</th>
+                                            <th width="75%">Material</th>
+                                            <th width="12%">Request Quantity</th>
+                                            <th width="8%">Unit</th>
+                                        </tr>
+                                        <tr v-else>
+                                            <th width="20%">Resource Number</th>
+                                            <th width="25%">Resource Description</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr v-if="selectedPR.type == 3">
-                                            <div v-for="(selectedPRD,index) in selectedPR.purchase_requisition_details">
-                                                <td>{{ index }}</td>
+                                        <template v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details" v-if="selectedPR[0].type == 3">
+                                            <tr>
+                                                <td>{{ index + 1 }}</td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                            </div>
-                                        </tr>
-                                        <tr v-else>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                            <td></td>
-                                        </tr>
+                                            </tr>
+                                        </template>
+                                        <template v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details" v-if="selectedPR[0].type != 3">
+                                            <tr>
+                                                <td>{{ index + 1 }}</td>
+                                                <td>{{ selectedPRD.material.code }} - {{ selectedPRD.material.description }}</td>
+                                                <td>{{ selectedPRD.quantity }}</td>
+                                                <td>{{ selectedPRD.material.uom.unit }}</td>
+                                            </tr>
+                                        </template>
                                     </tbody>
                                 </table>
                             </div>
+                            <a class="col-xs-12 col-md-2 btn btn-primary pull-right m-r-5" onclick="">CREATE</a>
                         </div>
                     </div>
                 @endverbatim
