@@ -645,11 +645,26 @@ class ProductionOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $wbs = WBS::find($id);
+        if($wbs->planned_start_date = null || $wbs->planned_end_date == null || $wbs->weight == null){
+            return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "Please define planned start date, end date, and weight for ".$wbs->number);
+        }
+
         $project = Project::findOrFail($wbs->project_id);
         $materials = Material::all()->jsonSerialize();
         $resources = Resource::all()->jsonSerialize();
         $services = Service::all()->jsonSerialize();
-        $modelActivities = Activity::where('wbs_id',$id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
+        $modelActivities = Activity::where('wbs_id',$id)->get();
+
+        $activity_not_ok = false;
+        for ($i=0; $i < count($modelActivities); $i++) { 
+            if($modelActivities[$i]->planned_start_date == null || $modelActivities[$i]->planned_end_date == null || $modelActivities[$i]->weight == null){
+                $activity_not_ok = true;
+                $i = count($modelActivities)+1;
+            }
+        }
+        if($activity_not_ok){
+            return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "Please define planned start date, end date, and weight for ".$wbs->number." activities");
+        }
 
         if(count($modelActivities) > 0){
             $modelBOM = Bom::where('project_id',$project->id)->first();

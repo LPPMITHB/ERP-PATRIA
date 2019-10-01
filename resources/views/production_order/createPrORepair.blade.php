@@ -95,7 +95,7 @@
 
             <div class="box-body p-t-0 p-b-5">
                 <h4>Activity</h4>
-                <table class="table table-bordered tableFixed" id="activity-table">
+                <table class="table table-bordered tableFixed showTable" id="activity-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -103,26 +103,31 @@
                             <th width="30%">Description</th>
                             <th width="15%">Planned Start Date</th>
                             <th width="15%">Planned End Date</th>
-                            <th width="8%"></th>
                         </tr>
                     </thead>
                     <tbody>
-                        @php($counter=1)
+                        @php
+                            $counter=1
+                        @endphp
                         @foreach($modelActivities as $activity)
+                            @php
+                                if($activity->planned_start_date != null || $activity->planned_end_date != null){
+                                    $planned_start_date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date);
+                                    $planned_start_date = $planned_start_date->format('d-m-Y');
+                                    $planned_end_date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date);
+                                    $planned_end_date = $planned_end_date->format('d-m-Y');
+                                }else{
+                                    $planned_start_date = "-";
+                                    $planned_end_date = "-";
+                                }
+                            @endphp
                             @if($activity->id != "")
-                                @php($planned_start_date = DateTime::createFromFormat('Y-m-d', $activity->planned_start_date))
-                                @php($planned_start_date = $planned_start_date->format('d-m-Y'))
-                                @php($planned_end_date = DateTime::createFromFormat('Y-m-d', $activity->planned_end_date))
-                                @php($planned_end_date = $planned_end_date->format('d-m-Y'))
                                 <tr>
                                     <td>{{ $counter++ }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->name}}">{{ $activity->name }}</td>
                                     <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$activity->description}}">{{ $activity->description }}</td>
                                     <td>{{ $planned_start_date }}</td>
                                     <td>{{ $planned_end_date }}</td>
-                                    <td>
-                                        <button class="btn btn-primary btn-xs col-xs-12 buttonDetail" id="{{$activity->id}}">DETAILS</button>
-                                    </td>
                                 </tr>
                             @endif
                         @endforeach
@@ -566,7 +571,7 @@
 
     $('.buttonDetail').on( 'click', function () {
         var id = this.id;
-        vm.openActDetails(id);
+        // vm.openActDetails(id);
     });
 </script>
 @endpush
