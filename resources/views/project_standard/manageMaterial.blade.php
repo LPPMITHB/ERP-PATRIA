@@ -237,21 +237,21 @@
                                                             <td>{{ index_part + 1 }}</td>
                                                             <template v-if="part.edit">
                                                                 <td class="no-padding">
-                                                                    <input v-model="edit_part.description" type="text" class="form-control width100" placeholder="Part Description">    
+                                                                    <input v-model="part.description" type="text" class="form-control width100" placeholder="Part Description">    
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in edit_part.dimensions_value" class="col-sm-4 no-padding">
+                                                                        <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
                                                                             <input v-model="dimension.value_input" type="text" class="form-control width100"
                                                                                 :placeholder="dimension.name">
                                                                         </div>
                                                                     </template> 
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="edit_part.quantity" type="text" class="form-control width100" placeholder="Quantity">
+                                                                    <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="edit_part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                                    <input disabled v-model="part.weight" type="text" class="form-control width100" placeholder="Weight">
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="updateRowPart(index_part)">
@@ -313,8 +313,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal"
-                                            @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
                                     </div>
                                 </div>
                             </div>
@@ -754,11 +753,7 @@
                 if(!still_empty){
                     if(data.dimensions_value != null){
                         data.dimensions_value = JSON.stringify(data.dimensions_value);
-                    }
-                    if(this.input.parts_weight == ""){
-                        this.input.parts_weight = data.weight;
-                    }else{
-                        this.input.parts_weight += data.weight;
+                        data.dimensions_value_obj = JSON.parse(data.dimensions_value);
                     }
                     
                     this.input.parts_details.push(data);
@@ -797,13 +792,13 @@
             },
             editRowPart(index){
                 this.input.parts_details[index].edit = true;
-                var temp_selected_data = JSON.stringify(this.input.parts_details[index]);
-                temp_selected_data = JSON.parse(temp_selected_data); 
+                // var temp_selected_data = JSON.stringify(this.input.parts_details[index]);
+                // temp_selected_data = JSON.parse(temp_selected_data); 
                 
-                this.edit_part.description = temp_selected_data.description;
-                this.edit_part.dimensions_value = JSON.parse(temp_selected_data.dimensions_value);
-                this.edit_part.quantity = temp_selected_data.quantity;
-                this.edit_part.weight = temp_selected_data.weight;
+                // this.edit_part.description = temp_selected_data.description;
+                // this.edit_part.dimensions_value = JSON.parse(temp_selected_data.dimensions_value);
+                // this.edit_part.quantity = temp_selected_data.quantity;
+                // this.edit_part.weight = temp_selected_data.weight;
             },
             removeRowPart(part, index){
                 this.input.parts_details.splice(index, 1);
@@ -826,34 +821,34 @@
                 })
             },
             updateRowPart(index){
-                var data = JSON.stringify(this.edit_part);
-                data = JSON.parse(data); 
+                // var data = JSON.stringify(this.edit_part);
+                // data = JSON.parse(data); 
 
-                var still_empty = false;
-                data.dimensions_value.forEach(dimension => {
-                    if(dimension.value_input == undefined || dimension.value_input == ""){
-                        still_empty = true;
-                    }
-                });
+                // var still_empty = false;
+                // data.dimensions_value.forEach(dimension => {
+                //     if(dimension.value_input == undefined || dimension.value_input == ""){
+                //         still_empty = true;
+                //     }
+                // });
 
-                if(!still_empty){
-                    if(data.dimensions_value != null){
-                        data.dimensions_value = JSON.stringify(data.dimensions_value);
-                    }
-                    this.input.parts_details[index].description = data.description;
-                    this.input.parts_details[index].dimensions_value = data.dimensions_value;
-                    this.input.parts_details[index].dimension_string = data.dimension_string;
-                    this.input.parts_details[index].quantity = data.quantity;
-                    this.input.parts_details[index].weight = data.weight;
-                    this.input.parts_details[index].volume = data.volume;
+                // if(!still_empty){
+                //     if(data.dimensions_value != null){
+                //         data.dimensions_value = JSON.stringify(data.dimensions_value);
+                //     }
+                //     this.input.parts_details[index].description = data.description;
+                //     this.input.parts_details[index].dimensions_value = data.dimensions_value;
+                //     this.input.parts_details[index].dimension_string = data.dimension_string;
+                //     this.input.parts_details[index].quantity = data.quantity;
+                //     this.input.parts_details[index].weight = data.weight;
+                //     this.input.parts_details[index].volume = data.volume;
                     this.input.parts_details[index].edit = false;
 
-                    this.edit_part.description = "";
-                    this.edit_part.dimensions_value = null;
-                    this.edit_part.dimension_string = "";
-                    this.edit_part.quantity = "";
-                    this.edit_part.weight = "";
-                    this.edit_part.volume = "";
+                    // this.edit_part.description = "";
+                    // this.edit_part.dimensions_value = null;
+                    // this.edit_part.dimension_string = "";
+                    // this.edit_part.quantity = "";
+                    // this.edit_part.weight = "";
+                    // this.edit_part.volume = "";
 
                     $('#part-table').DataTable().destroy();
                     this.$nextTick(function() {
@@ -870,14 +865,14 @@
                             }
                         });
                     })
-                }else{
-                    iziToast.warning({
-                        title: 'Please manage the part\'s dimension',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
-                }  
+                // }else{
+                //     iziToast.warning({
+                //         title: 'Please manage the part\'s dimension',
+                //         position: 'topRight',
+                //         displayMode: 'replace'
+                //     });
+                //     $('div.overlay').hide();
+                // }  
             }
         },
         watch: {
@@ -889,7 +884,10 @@
             'input.parts_details':{ 
                 handler: function(newValue) {
                     if(newValue.length > 0){
+                        var temp_total_weight = 0;
                         newValue.forEach(part_detail => {
+                            temp_total_weight += part_detail.weight;
+                            part_detail.dimensions_value = JSON.stringify(part_detail.dimensions_value_obj);
                             if(part_detail.dimensions_value != null){
                                 var dimension_string = "";
                                 JSON.parse(part_detail.dimensions_value).forEach(dimension => {
@@ -901,8 +899,31 @@
                                     }
                                 });
                                 part_detail.dimension_string = dimension_string;
+
+                                var still_empty = false;
+                                var temp_volume = 1;
+                                part_detail.dimensions_value_obj.forEach(dimension => {
+                                    if(dimension.value_input != undefined || dimension.value_input == ""){
+                                        var temp_dimension_value = (dimension.value_input+"").replace(/,/g , '');
+                                        temp_volume *= temp_dimension_value;
+                                    }else{
+                                        still_empty = true;
+                                    }
+                                });
+
+                                if(!still_empty){
+                                    part_detail.volume = temp_volume;
+                                }
+
+                                if(part_detail.volume != "" && part_detail.quantity != ""){
+                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , '');                            
+                                    var temp_weight = ((part_detail.volume)/ 1000000) * this.input.selected_material.density.value * temp_part_quantity;
+                                    part_detail.weight = parseFloat(temp_weight.toFixed(2));
+                                }
                             }
                         });
+
+                        this.input.parts_weight = parseFloat(temp_total_weight.toFixed(2));
                     }
                 },
                 deep: true
@@ -973,78 +994,6 @@
                         this.input_part.weight = parseFloat(temp_weight.toFixed(2));
                     }
                     this.input_part.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                }
-            },
-
-            'edit_part.dimensions_value':{
-                handler: function(newValue) {
-                    if(newValue != null){
-                        var still_empty = false;
-                        var temp_volume = 1;
-                        newValue.forEach(dimension => {
-                            if(dimension.value_input != undefined || dimension.value_input == ""){
-                                var temp_dimension_value = (dimension.value_input+"").replace(/,/g , '');
-                                temp_volume *= temp_dimension_value;
-
-                                if(dimension.uom.is_decimal == 1){
-                                    var decimal_dimension_value = temp_dimension_value.replace(/,/g, '').split('.');
-                                    if(decimal_dimension_value[1] != undefined){
-                                        var maxDecimal = 2;
-                                        if((decimal_dimension_value[1]+"").length > maxDecimal){
-                                            dimension.value_input = (decimal_dimension_value[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_dimension_value[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
-                                        }else{
-                                            dimension.value_input = (decimal_dimension_value[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal_dimension_value[1]+"").replace(/\D/g, "");
-                                        }
-                                    }else{
-                                        dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    } 
-                                }else{
-                                    dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                }
-                            }else{
-                                still_empty = true;
-                            }
-                        });
-
-                        if(!still_empty){
-                            this.edit_part.volume = temp_volume;
-                        }
-
-                        if(this.edit_part.volume != "" && this.edit_part.quantity != ""){
-                            var temp_part_quantity = (this.edit_part.quantity+"").replace(/,/g , '');                            
-                            var temp_weight = ((this.edit_part.volume)/ 1000000) * this.input.selected_material.density.value * temp_part_quantity;
-                            this.edit_part.weight = parseFloat(temp_weight.toFixed(2));
-                        }
-                    }   
-                },
-                deep: true
-            }, 
-            'edit_part.quantity': function(newValue){
-                if(newValue != null){
-                    var still_empty = false;
-                    var temp_volume = 1;
-
-                    if(this.edit_part.dimensions_value != null){
-                        this.edit_part.dimensions_value.forEach(dimension => {
-                            if(dimension.value_input != undefined || dimension.value_input == ""){
-                                var temp_dimension_value = (dimension.value_input+"").replace(/,/g , '');
-                                temp_volume *= temp_dimension_value;
-                            }else{
-                                still_empty = true;
-                            }
-                        });
-
-                        if(!still_empty){
-                            this.edit_part.volume = temp_volume;
-                        }
-
-                        if(this.edit_part.volume != ""){
-                            var temp_part_quantity = (newValue+"").replace(/,/g , '');                            
-                            var temp_weight = ((this.edit_part.volume)/ 1000000) * this.input.selected_material.density.value * temp_part_quantity;
-                            this.edit_part.weight = parseFloat(temp_weight.toFixed(2));
-                        }
-                    }
-                    this.edit_part.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
             'input.material_id': function(newValue){
