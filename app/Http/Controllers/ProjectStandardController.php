@@ -13,6 +13,8 @@ use App\Models\Material;
 use App\Models\MaterialStandard;
 use App\Models\Resource;
 use App\Models\ResourceStandard;
+use App\Models\Configuration;
+use App\Models\Uom;
 use DB;
 use Auth;
 use Illuminate\Support\Collection;
@@ -628,5 +630,24 @@ class ProjectStandardController extends Controller
     public function getResourceAPI($id){
 
         return response(Resource::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getMaterialAPI($id){
+        $material = Material::where('id',$id)->with('uom','weightUom')->first();
+        $densities = Configuration::get('density');
+        foreach ($densities as $density) {
+            if($density->id == $material->density_id){
+                $material->density = $density;
+            }
+        }
+        if($material->dimensions_value != null){
+            $dimensions = json_decode($material->dimensions_value);
+            foreach ($dimensions as $dimension) {
+                $uom = Uom::find($dimension->uom_id);
+                $dimension->uom = $uom;
+            }
+            $material->dimensions_value = json_encode($dimensions);
+        }
+        return response($material->jsonSerialize(), Response::HTTP_OK);
     }
 }
