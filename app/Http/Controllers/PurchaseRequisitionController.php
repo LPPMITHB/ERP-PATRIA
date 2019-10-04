@@ -133,7 +133,7 @@ class PurchaseRequisitionController extends Controller
     public function repeatOrder(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::where('business_unit_id',2)->get();
+        $modelPRs = PurchaseRequisition::where('business_unit_id',2)->where('status',2)->get();
         return view('purchase_requisition.repeatOrder', compact('modelPRs', 'route'));
     }
 
