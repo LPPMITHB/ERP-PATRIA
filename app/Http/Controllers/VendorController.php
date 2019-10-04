@@ -165,7 +165,7 @@ class VendorController extends Controller
                 break;
             }
         }
-        return view('vendor.show',compact('vendor', 'modelPOs', 'modelWOs', 'return', 'modelGRs', 'resourceDetails', 'pt_name', 'dt_name', 'business_ids', 'modelGRDs', 'modelPODs','modelMaterials'));
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name','business_ids','modelGRDs','modelPODs','modelMaterials'));
     }
 
     public function edit($id)
