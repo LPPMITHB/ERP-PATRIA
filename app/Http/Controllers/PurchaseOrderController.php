@@ -200,7 +200,7 @@ class PurchaseOrderController extends Controller
             $PO->number = $po_number;
             $PO->purchase_requisition_id = $datas->pr_id;
             $PO->vendor_id = $datas->vendor_id;
-            $PO->currency = $datas->currency;
+            
             if ($datas->tax == "") {
                 $PO->tax = 0;
             } else {
@@ -229,6 +229,7 @@ class PurchaseOrderController extends Controller
             $PO->status = 1;
             $PO->user_id = Auth::user()->id;
             $PO->branch_id = Auth::user()->branch->id;
+            $PO->currency = $datas->currency;
             $PO->save();
 
             $status = 0;
@@ -280,6 +281,23 @@ class PurchaseOrderController extends Controller
                 }
             }
             $PO->total_price = $total_price;
+            //Pertambahan Pajak PPN dan Pajak PPH
+            $business_ids = Auth::user()->business_unit_id;
+            //input untuk user pami dan mengabaikan untuk user pmp
+            if (in_array("2", json_decode($business_ids))) {
+                $PO->pajak_pertambahan_nilai = $datas->pajak_pertambahan_nilai;
+                $PO->pajak_penghasilan = $datas->pajak_penghasilan;
+                $PO->tax = "0";
+            } else {
+                $PO->pajak_pertambahan_nilai = "0";
+                $PO->pajak_penghasilan = "0";
+                if ($datas->tax == "") {
+                    $PO->tax = 0;
+                } else {
+                    $PO->tax = $datas->tax;
+                }
+            }
+            
             $PO->save();
             $this->checkStatusPr($datas->pr_id, $status);
             DB::commit();
@@ -707,7 +725,18 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id', $id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id', $id)->with('material', 'purchaseRequisitionDetail.wbs', 'purchaseRequisitionDetail.project', 'wbs', 'resource', 'material.uom', 'purchaseRequisitionDetail.purchaseRequisition', 'activityDetail', 'activityDetail.areaUom', 'activityDetail.serviceDetail', 'activityDetail.serviceDetail.service')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id', $id)->with('material', 
+        'purchaseRequisitionDetail.wbs', 
+        'purchaseRequisitionDetail.project', 
+        'wbs', 
+        'resource', 
+        'material.uom', 
+        'purchaseRequisitionDetail.purchaseRequisition', 
+        // 'pro_wbs_material', 
+        // 'pro_wbs_material.areaUom', 
+        // 'pro_wbs_material.serviceDetail', 
+        // 'pro_wbs_material.serviceDetail.service'
+        )->get();
         foreach ($modelPOD as $POD) {
             $POD['old_price'] = $POD->total_price / $POD->quantity;
         }
@@ -882,7 +911,8 @@ class PurchaseOrderController extends Controller
                  * End Fungsi untuk Standard Price
                  */
                 $modelPO->status = 2;
-                $modelPO->revision_description = $datas->desc;
+                
+                $modelPO->revision_description = "-";
                 $modelPO->approved_by = Auth::user()->id;
                 $modelPO->approval_date = Carbon::now();
                 $modelPO->update();
@@ -1125,5 +1155,9 @@ class PurchaseOrderController extends Controller
         $datas = $datas->values();
 
         return response($datas, Response::HTTP_OK);
+    }
+    public function getVendorDetailAPI($id){
+        $vendor = Vendor::where('id', $id)->first();
+        return response($vendor, Response::HTTP_OK);
     }
 }

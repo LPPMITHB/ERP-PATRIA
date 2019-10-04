@@ -594,6 +594,8 @@
                 this.submittedForm.payment_term = this.payment_term;
                 this.submittedForm.project_id = this.project_id;
                 this.submittedForm.delivery_date_subcon = this.delivery_date_subcon;
+                this.submittedForm.pajak_penghasilan = this.pajak_penghasilan;
+                this.submittedForm.pajak_pertambahan_nilai = this.pajak_pertambahan_nilai;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -845,6 +847,22 @@
                 })
             },
             'vendor_id':function(newValue){
+                console.log(newValue);
+                if(newValue != ""){
+                    window.axios.get('/api/getVendorDetail/'+newValue).then(({ data }) => {
+                        this.pajak_penghasilan = data.pajak_penghasilan;
+                        this.pajak_pertambahan_nilai = data.pajak_pertambahan_nilai;
+                    })
+                    .catch((error) => {
+                        iziToast.warning({
+                            title: 'Please Try Again..',
+                            position: 'topRight',
+                            displayMode: 'replace'
+                        });
+                    })
+                }else{
+                    this.vendorList.po_list = [];
+                }
                 this.modelVendor.forEach(vendor=>{
                     if(vendor.id == newValue){
                         this.delivery_term = vendor.delivery_term;

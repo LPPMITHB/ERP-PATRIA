@@ -112,114 +112,114 @@ class ActivityController extends Controller
 
             $activity->save();
 
-            if($activity->wbs->project->business_unit_id == 2){
-                $project_id = $activity->wbs->project_id;
-                if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
-                    if(count($data['dataMaterial']) > 0){
-                        foreach ($data['dataMaterial'] as $material) {
-                            $weight = 0;
-                            $uom = UOM::find($material['dimension_uom_id']);
-                            if($uom != null){
-                                $uom_name = $uom->name;
-                                if($uom_name == "Milimeter" || $uom_name == "milimeter"){
-                                    $densities = Configuration::get('density');
-                                    $model_material = Material::find($material['material_id']);
-                                    $material_density = 0;
-                                    foreach($densities as $density){
-                                        if($density->id == $model_material->density_id){
-                                            $material_density = $density->value;
-                                        }
-                                    }
-                                    if($material_density == 0){
-                                        DB::rollback();
-                                        return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
-                                    }
-                                    $volume = ($material['lengths'] * $material['width'] * $material['height'] )/ 1000000;
-                                    $weight = round(($volume * $material_density) * $material['quantity'],2);
-                                }
-                            }
+            // if($activity->wbs->project->business_unit_id == 2){
+            //     $project_id = $activity->wbs->project_id;
+            //     if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
+            //         if(count($data['dataMaterial']) > 0){
+            //             foreach ($data['dataMaterial'] as $material) {
+            //                 $weight = 0;
+            //                 $uom = UOM::find($material['dimension_uom_id']);
+            //                 if($uom != null){
+            //                     $uom_name = $uom->name;
+            //                     if($uom_name == "Milimeter" || $uom_name == "milimeter"){
+            //                         $densities = Configuration::get('density');
+            //                         $model_material = Material::find($material['material_id']);
+            //                         $material_density = 0;
+            //                         foreach($densities as $density){
+            //                             if($density->id == $model_material->density_id){
+            //                                 $material_density = $density->value;
+            //                             }
+            //                         }
+            //                         if($material_density == 0){
+            //                             DB::rollback();
+            //                             return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
+            //                         }
+            //                         $volume = ($material['lengths'] * $material['width'] * $material['height'] )/ 1000000;
+            //                         $weight = round(($volume * $material_density) * $material['quantity'],2);
+            //                     }
+            //                 }
 
-                            $activityDetailMaterial = new ActivityDetail;
-                            $activityDetailMaterial->activity_id = $activity->id;
-                            $activityDetailMaterial->material_id = $material['material_id'];
-                            $activityDetailMaterial->quantity_material = $material['quantity'];
-                            $activityDetailMaterial->source = $material['source'];
-                            if($material['dimension_uom_id'] != "" && $material['dimension_uom_id'] != null){
-                                $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
-                                $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
-                                $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
-                                $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
-                                $activityDetailMaterial->weight = $weight;
-                            }
-                            $activityDetailMaterial->save();
+            //                 $activityDetailMaterial = new ActivityDetail;
+            //                 $activityDetailMaterial->activity_id = $activity->id;
+            //                 $activityDetailMaterial->material_id = $material['material_id'];
+            //                 $activityDetailMaterial->quantity_material = $material['quantity'];
+            //                 $activityDetailMaterial->source = $material['source'];
+            //                 if($material['dimension_uom_id'] != "" && $material['dimension_uom_id'] != null){
+            //                     $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
+            //                     $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
+            //                     $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
+            //                     $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
+            //                     $activityDetailMaterial->weight = $weight;
+            //                 }
+            //                 $activityDetailMaterial->save();
 
-                            $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
-                            if(count($modelBomPrep) > 0){
-                                $found_bom_prep = false;
-                                $not_added = true;
-                                foreach ($modelBomPrep as $bomPrep) {
-                                    if($bomPrep->status == 1){
-                                        if($weight == 0){
-                                            $bomPrep->quantity += $material['quantity'];
-                                        }else{
-                                            $bomPrep->weight += $weight;
-                                        }
-                                        $bomPrep->update();
+            //                 $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
+            //                 if(count($modelBomPrep) > 0){
+            //                     $found_bom_prep = false;
+            //                     $not_added = true;
+            //                     foreach ($modelBomPrep as $bomPrep) {
+            //                         if($bomPrep->status == 1){
+            //                             if($weight == 0){
+            //                                 $bomPrep->quantity += $material['quantity'];
+            //                             }else{
+            //                                 $bomPrep->weight += $weight;
+            //                             }
+            //                             $bomPrep->update();
 
-                                        $activityDetailMaterial->bom_prep_id = $bomPrep->id;
-                                        $activityDetailMaterial->update();
-                                        $not_added = false;
-                                    }else{
-                                        $found_bom_prep = true;
-                                    }
+            //                             $activityDetailMaterial->bom_prep_id = $bomPrep->id;
+            //                             $activityDetailMaterial->update();
+            //                             $not_added = false;
+            //                         }else{
+            //                             $found_bom_prep = true;
+            //                         }
 
-                                }
-                                if($found_bom_prep && $not_added){
-                                    $bomPrep = new BomPrep;
-                                    $bomPrep->project_id = $project_id;
-                                    $bomPrep->material_id = $material['material_id'];
-                                    if($weight == 0){
-                                        $bomPrep->quantity = $material['quantity'];
-                                    }else{
-                                        $bomPrep->weight = $weight;
-                                    }
-                                    $bomPrep->weight = $weight;
-                                    $bomPrep->status = 1;
-                                    $bomPrep->source = $material['source'];
-                                    $bomPrep->save();
+            //                     }
+            //                     if($found_bom_prep && $not_added){
+            //                         $bomPrep = new BomPrep;
+            //                         $bomPrep->project_id = $project_id;
+            //                         $bomPrep->material_id = $material['material_id'];
+            //                         if($weight == 0){
+            //                             $bomPrep->quantity = $material['quantity'];
+            //                         }else{
+            //                             $bomPrep->weight = $weight;
+            //                         }
+            //                         $bomPrep->weight = $weight;
+            //                         $bomPrep->status = 1;
+            //                         $bomPrep->source = $material['source'];
+            //                         $bomPrep->save();
 
-                                    $activityDetailMaterial->bom_prep_id = $bomPrep->id;
-                                    $activityDetailMaterial->update();
-                                }
-                            }else{
-                                $bomPrep = new BomPrep;
-                                $bomPrep->project_id = $project_id;
-                                $bomPrep->material_id = $material['material_id'];
-                                if($weight == 0){
-                                    $bomPrep->quantity = $material['quantity'];
-                                }else{
-                                    $bomPrep->weight = $weight;
-                                }
-                                $bomPrep->status = 1;
-                                $bomPrep->source = $material['source'];
-                                $bomPrep->save();
+            //                         $activityDetailMaterial->bom_prep_id = $bomPrep->id;
+            //                         $activityDetailMaterial->update();
+            //                     }
+            //                 }else{
+            //                     $bomPrep = new BomPrep;
+            //                     $bomPrep->project_id = $project_id;
+            //                     $bomPrep->material_id = $material['material_id'];
+            //                     if($weight == 0){
+            //                         $bomPrep->quantity = $material['quantity'];
+            //                     }else{
+            //                         $bomPrep->weight = $weight;
+            //                     }
+            //                     $bomPrep->status = 1;
+            //                     $bomPrep->source = $material['source'];
+            //                     $bomPrep->save();
 
-                                $activityDetailMaterial->bom_prep_id = $bomPrep->id;
-                                $activityDetailMaterial->update();
-                            }
-                        }
-                    }
-                    if($data['service_id'] != null){
-                        $activityDetailService = new ActivityDetail;
-                        $activityDetailService->activity_id = $activity->id;
-                        $activityDetailService->service_detail_id = $data['service_detail_id'];
-                        $activityDetailService->area = $data['area'];
-                        $activityDetailService->vendor_id = $data['vendor_id'];
-                        $activityDetailService->area_uom_id = $data['area_uom_id'];
-                        $activityDetailService->save();
-                    }
-                }
-            }
+            //                     $activityDetailMaterial->bom_prep_id = $bomPrep->id;
+            //                     $activityDetailMaterial->update();
+            //                 }
+            //             }
+            //         }
+            //         if($data['service_id'] != null){
+            //             $activityDetailService = new ActivityDetail;
+            //             $activityDetailService->activity_id = $activity->id;
+            //             $activityDetailService->service_detail_id = $data['service_detail_id'];
+            //             $activityDetailService->area = $data['area'];
+            //             $activityDetailService->vendor_id = $data['vendor_id'];
+            //             $activityDetailService->area_uom_id = $data['area_uom_id'];
+            //             $activityDetailService->save();
+            //         }
+            //     }
+            // }
             DB::commit();
             return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -287,166 +287,166 @@ class ActivityController extends Controller
             }
 
             $project_id = $activity->wbs->project_id;
-            if(isset($data['deletedActDetail'])){
-                if(count($data['deletedActDetail'])>0){
-                    foreach ($data['deletedActDetail'] as $act_detail_id) {
-                        $activityDetailMaterial = ActivityDetail::find($act_detail_id);
-                        $bomPrep = $activityDetailMaterial->bomPrep;
-                        $delete_bom_prep = false;
-                        if($bomPrep->status == 0){
-                            array_push($error, ["Failed to delete, this activity material has been already summarized"]);
-                            return response(["error"=> $error],Response::HTTP_OK);
-                        }else{
-                            if(count($bomPrep->bomDetails) > 0){
-                                array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);
-                                return response(["error"=> $error],Response::HTTP_OK);
-                            }else{
-                                if($bomPrep->weight != null){
-                                    $bomPrep->weight -= $activityDetailMaterial->weight;
-                                    if($bomPrep->weight == 0){
-                                        $delete_bom_prep = true;
-                                    }else{
-                                        $bomPrep->update();
-                                    }
-                                }else{
-                                    $bomPrep->quantity -= $activityDetailMaterial->quantity_material;
-                                    if($bomPrep->quantity == 0){
-                                        $delete_bom_prep = true;
-                                    }else{
-                                        $bomPrep->update();
-                                    }
-                                }
+            // if(isset($data['deletedActDetail'])){
+            //     if(count($data['deletedActDetail'])>0){
+            //         foreach ($data['deletedActDetail'] as $act_detail_id) {
+            //             $activityDetailMaterial = ActivityDetail::find($act_detail_id);
+            //             $bomPrep = $activityDetailMaterial->bomPrep;
+            //             $delete_bom_prep = false;
+            //             if($bomPrep->status == 0){
+            //                 array_push($error, ["Failed to delete, this activity material has been already summarized"]);
+            //                 return response(["error"=> $error],Response::HTTP_OK);
+            //             }else{
+            //                 if(count($bomPrep->bomDetails) > 0){
+            //                     array_push($error, ["Failed to delete, this activity material has been already partially summarized"]);
+            //                     return response(["error"=> $error],Response::HTTP_OK);
+            //                 }else{
+            //                     if($bomPrep->weight != null){
+            //                         $bomPrep->weight -= $activityDetailMaterial->weight;
+            //                         if($bomPrep->weight == 0){
+            //                             $delete_bom_prep = true;
+            //                         }else{
+            //                             $bomPrep->update();
+            //                         }
+            //                     }else{
+            //                         $bomPrep->quantity -= $activityDetailMaterial->quantity_material;
+            //                         if($bomPrep->quantity == 0){
+            //                             $delete_bom_prep = true;
+            //                         }else{
+            //                             $bomPrep->update();
+            //                         }
+            //                     }
 
-                            }
-                        }
-                        $activityDetailMaterial->delete();
-                        if($delete_bom_prep){
-                            $bomPrep->delete();
-                        }
-                    }
-                }
-            }
+            //                 }
+            //             }
+            //             $activityDetailMaterial->delete();
+            //             if($delete_bom_prep){
+            //                 $bomPrep->delete();
+            //             }
+            //         }
+            //     }
+            // }
 
-            if($activity->wbs->project->business_unit_id == 2){
-                if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
-                    if(count($data['dataMaterial']) > 0){
-                        // print_r(count($data['dataMaterial'])); exit();
-                        foreach ($data['dataMaterial'] as $material) {
-                            if($material['id'] == null){
-                                $weight = 0;
-                                $uom = UOM::find($material['dimension_uom_id']);
-                                if($uom != null){
-                                    $uom_name = $uom->name;
-                                    if($uom_name == "Milimeter" || $uom_name == "milimeter"){
-                                        $densities = Configuration::get('density');
-                                        $model_material = Material::find($material['material_id']);
-                                        $material_density = 0;
-                                        foreach($densities as $density){
-                                            if($density->id == $model_material->density_id){
-                                                $material_density = $density->value;
-                                            }
-                                        }
-                                        if($material_density == 0){
-                                            DB::rollback();
-                                            return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
-                                        }
-                                        $volume = ($material['lengths'] * $material['width'] * $material['height'] )/ 1000000;
-                                        $weight = round(($volume * $material_density) * $material['quantity'],2);
-                                    }
-                                }
+            // if($activity->wbs->project->business_unit_id == 2){
+            //     if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
+            //         if(count($data['dataMaterial']) > 0){
+            //             // print_r(count($data['dataMaterial'])); exit();
+            //             foreach ($data['dataMaterial'] as $material) {
+            //                 if($material['id'] == null){
+            //                     $weight = 0;
+            //                     $uom = UOM::find($material['dimension_uom_id']);
+            //                     if($uom != null){
+            //                         $uom_name = $uom->name;
+            //                         if($uom_name == "Milimeter" || $uom_name == "milimeter"){
+            //                             $densities = Configuration::get('density');
+            //                             $model_material = Material::find($material['material_id']);
+            //                             $material_density = 0;
+            //                             foreach($densities as $density){
+            //                                 if($density->id == $model_material->density_id){
+            //                                     $material_density = $density->value;
+            //                                 }
+            //                             }
+            //                             if($material_density == 0){
+            //                                 DB::rollback();
+            //                                 return response(["error"=> "There is material that doesn't have density, please define it first at material master data"],Response::HTTP_OK);
+            //                             }
+            //                             $volume = ($material['lengths'] * $material['width'] * $material['height'] )/ 1000000;
+            //                             $weight = round(($volume * $material_density) * $material['quantity'],2);
+            //                         }
+            //                     }
 
-                                $activityDetailMaterial = new ActivityDetail;
-                                $activityDetailMaterial->activity_id = $activity->id;
-                                $activityDetailMaterial->material_id = $material['material_id'];
-                                $activityDetailMaterial->quantity_material = $material['quantity'];
-                                $activityDetailMaterial->source = $material['source'];
-                                if($material['dimension_uom_id'] != "" && $material['dimension_uom_id'] != null){
-                                    $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
-                                    $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
-                                    $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
-                                    $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
-                                    $activityDetailMaterial->weight = $weight;
-                                }
-                                $activityDetailMaterial->save();
-                                $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
-                                if(count($modelBomPrep) > 0){
-                                    $not_found_bom_prep = false;
-                                    $not_added = true;
-                                    foreach ($modelBomPrep as $bomPrep) {
-                                        if($bomPrep->status == 1){
-                                            //Masih belum pakai hitungan rumus
-                                            if($weight == 0){
-                                                $bomPrep->quantity += $material['quantity'];
-                                            }else{
-                                                $bomPrep->weight += $weight;
-                                            }
-                                            $bomPrep->update();
+            //                     $activityDetailMaterial = new ActivityDetail;
+            //                     $activityDetailMaterial->activity_id = $activity->id;
+            //                     $activityDetailMaterial->material_id = $material['material_id'];
+            //                     $activityDetailMaterial->quantity_material = $material['quantity'];
+            //                     $activityDetailMaterial->source = $material['source'];
+            //                     if($material['dimension_uom_id'] != "" && $material['dimension_uom_id'] != null){
+            //                         $activityDetailMaterial->dimension_uom_id = $material['dimension_uom_id'];
+            //                         $activityDetailMaterial->length = $material['lengths'] == "" ? 0 : $material['lengths'];
+            //                         $activityDetailMaterial->width = $material['width'] == "" ? 0 : $material['width'];
+            //                         $activityDetailMaterial->height = $material['height'] == "" ? 0 : $material['height'];
+            //                         $activityDetailMaterial->weight = $weight;
+            //                     }
+            //                     $activityDetailMaterial->save();
+            //                     $modelBomPrep = BomPrep::where('project_id', $project_id)->where('material_id', $material['material_id'])->get();
+            //                     if(count($modelBomPrep) > 0){
+            //                         $not_found_bom_prep = false;
+            //                         $not_added = true;
+            //                         foreach ($modelBomPrep as $bomPrep) {
+            //                             if($bomPrep->status == 1){
+            //                                 //Masih belum pakai hitungan rumus
+            //                                 if($weight == 0){
+            //                                     $bomPrep->quantity += $material['quantity'];
+            //                                 }else{
+            //                                     $bomPrep->weight += $weight;
+            //                                 }
+            //                                 $bomPrep->update();
 
-                                            $activityDetailMaterial->bom_prep_id = $bomPrep->id;
-                                            $activityDetailMaterial->update();
-                                            $not_added = false;
-                                        }else{
-                                            $not_found_bom_prep = true;
-                                        }
+            //                                 $activityDetailMaterial->bom_prep_id = $bomPrep->id;
+            //                                 $activityDetailMaterial->update();
+            //                                 $not_added = false;
+            //                             }else{
+            //                                 $not_found_bom_prep = true;
+            //                             }
 
-                                    }
-                                    if($not_found_bom_prep && $not_added){
-                                        $bomPrep = new BomPrep;
-                                        $bomPrep->project_id = $project_id;
-                                        $bomPrep->material_id = $material['material_id'];
-                                        if($weight == 0){
-                                            $bomPrep->quantity = $material['quantity'];
-                                        }else{
-                                            $bomPrep->weight = $weight;
-                                        }
-                                        $bomPrep->status = 1;
-                                        $bomPrep->source = $material['source'];
-                                        $bomPrep->save();
+            //                         }
+            //                         if($not_found_bom_prep && $not_added){
+            //                             $bomPrep = new BomPrep;
+            //                             $bomPrep->project_id = $project_id;
+            //                             $bomPrep->material_id = $material['material_id'];
+            //                             if($weight == 0){
+            //                                 $bomPrep->quantity = $material['quantity'];
+            //                             }else{
+            //                                 $bomPrep->weight = $weight;
+            //                             }
+            //                             $bomPrep->status = 1;
+            //                             $bomPrep->source = $material['source'];
+            //                             $bomPrep->save();
 
-                                        $activityDetailMaterial->bom_prep_id = $bomPrep->id;
-                                        $activityDetailMaterial->update();
-                                    }
-                                }else{
-                                    $bomPrep = new BomPrep;
-                                    $bomPrep->project_id = $project_id;
-                                    $bomPrep->material_id = $material['material_id'];
-                                    if($weight == 0){
-                                        $bomPrep->quantity = $material['quantity'];
-                                    }else{
-                                        $bomPrep->weight = $weight;
-                                    }
-                                    $bomPrep->status = 1;
-                                    $bomPrep->source = $material['source'];
-                                    $bomPrep->save();
+            //                             $activityDetailMaterial->bom_prep_id = $bomPrep->id;
+            //                             $activityDetailMaterial->update();
+            //                         }
+            //                     }else{
+            //                         $bomPrep = new BomPrep;
+            //                         $bomPrep->project_id = $project_id;
+            //                         $bomPrep->material_id = $material['material_id'];
+            //                         if($weight == 0){
+            //                             $bomPrep->quantity = $material['quantity'];
+            //                         }else{
+            //                             $bomPrep->weight = $weight;
+            //                         }
+            //                         $bomPrep->status = 1;
+            //                         $bomPrep->source = $material['source'];
+            //                         $bomPrep->save();
 
-                                    $activityDetailMaterial->bom_prep_id = $bomPrep->id;
-                                    $activityDetailMaterial->update();
-                                }
-                            }
-                        }
-                    }
-                    if($data['service_id'] != null){
-                        $activityDetailService = ActivityDetail::find($data['act_detail_service_id']);
-                        $new = false;
-                        if($activityDetailService == null){
-                            $activityDetailService = new ActivityDetail;
-                            $activityDetailService->activity_id = $activity->id;
-                            $new = true;
-                        }
-                        $activityDetailService->service_detail_id = $data['service_detail_id'];
-                        $activityDetailService->area = $data['area'];
-                        $activityDetailService->vendor_id = $data['vendor_id'];
-                        $activityDetailService->area_uom_id = $data['area_uom_id'];
+            //                         $activityDetailMaterial->bom_prep_id = $bomPrep->id;
+            //                         $activityDetailMaterial->update();
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //         if($data['service_id'] != null){
+            //             $activityDetailService = ActivityDetail::find($data['act_detail_service_id']);
+            //             $new = false;
+            //             if($activityDetailService == null){
+            //                 $activityDetailService = new ActivityDetail;
+            //                 $activityDetailService->activity_id = $activity->id;
+            //                 $new = true;
+            //             }
+            //             $activityDetailService->service_detail_id = $data['service_detail_id'];
+            //             $activityDetailService->area = $data['area'];
+            //             $activityDetailService->vendor_id = $data['vendor_id'];
+            //             $activityDetailService->area_uom_id = $data['area_uom_id'];
 
-                        if($new){
-                            $activityDetailService->save();
-                        }else{
-                            $activityDetailService->update();
-                        }
+            //             if($new){
+            //                 $activityDetailService->save();
+            //             }else{
+            //                 $activityDetailService->update();
+            //             }
 
-                    }
-                }
-            }
+            //         }
+            //     }
+            // }
             if(!$activity->save()){
                 array_push($error, ["Failed to save, please try again!"]);
                 return response(["error"=> $error],Response::HTTP_OK);

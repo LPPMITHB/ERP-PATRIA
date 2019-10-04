@@ -138,6 +138,24 @@
                                 : <b> {{ $modelPO->approvedBy->name }} </b>
                             </div>
                         @endif
+                        <!-- Revision Description -->
+                        @if($modelPO->status != 1 && $modelPO->status != 8)
+                        @if($modelPO->status == 3 || $modelPO->status == 4)
+                        <div class="col-xs-4 col-md-4">
+                            Revise Description
+                        </div>
+                        @elseif($modelPO->status == 5)
+                        <div class="col-xs-4 col-md-4">
+                            Rejected Description
+                        </div>
+                        @endif
+                        @if($modelPO->status == 3 || $modelPO->status == 4 || $modelPO->status == 5)
+                        <div class="col-xs-8 col-md-8 tdEllipsis" data-toggle="tooltip" title="{{ ($modelPO->revision_description != null) ? $modelPO->revision_description : '-' }}">
+                            : <b> {{ $modelPO->revision_description }} </b>
+                        </div>
+                        @endif
+                        @endif
+                        <!-- End Revision Description -->
                         @php
                             $approval_date = "";
                             if($modelPO->approval_date != NULL){

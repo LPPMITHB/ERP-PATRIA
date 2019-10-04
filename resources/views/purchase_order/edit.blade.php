@@ -129,7 +129,7 @@
                                         </div>
                                         <template v-if="modelPO.status == 3">
                                             <div class="col-sm-12">
-                                                <label for="">Revision Description</label>
+                                                <label for="">Revision/Rejected Description</label>
                                             </div>
                                             <div class="col-sm-12">
                                                 <textarea class="form-control" rows="2" v-model="modelPO.revision_description"></textarea>

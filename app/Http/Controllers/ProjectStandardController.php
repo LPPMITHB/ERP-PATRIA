@@ -13,6 +13,9 @@ use App\Models\Material;
 use App\Models\MaterialStandard;
 use App\Models\Resource;
 use App\Models\ResourceStandard;
+use App\Models\Configuration;
+use App\Models\Uom;
+use App\Models\PartDetailStandard;
 use DB;
 use Auth;
 use Illuminate\Support\Collection;
@@ -278,6 +281,26 @@ class ProjectStandardController extends Controller
                 $materialStandard->material_id = $material->material_id;
                 $materialStandard->quantity = $material->quantity;
                 $materialStandard->save();
+
+                if(isset($material->parts_details)){
+                    if(count($material->parts_details) > 0){
+                        foreach ($material->parts_details as $part_detail) {
+                            foreach ($part_detail->dimensions_value_obj as $dimension) {
+                                unset($dimension->value);
+                                unset($dimension->uom);
+                            }
+                            $temp_dimensions_value = json_encode($part_detail->dimensions_value_obj);
+
+                            $new_part = new PartDetailStandard;
+                            $new_part->description = $part_detail->description;
+                            $new_part->material_standard_id = $materialStandard->id;
+                            $new_part->dimensions_value = $temp_dimensions_value;
+                            $new_part->weight = $part_detail->weight;
+                            $new_part->quantity = $part_detail->quantity;
+                            $new_part->save();
+                        }
+                    }
+                }
             }
             DB::commit();
             return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Material Standard Created');
@@ -332,6 +355,25 @@ class ProjectStandardController extends Controller
                     $materialStandard->material_id = $material->material_id;
                     $materialStandard->quantity = $material->quantity;
                     $materialStandard->save();
+                }
+                if(isset($material->parts_details)){
+                    if(count($material->parts_details) > 0){
+                        foreach ($material->parts_details as $part_detail) {
+                            foreach ($part_detail->dimensions_value_obj as $dimension) {
+                                unset($dimension->value);
+                                unset($dimension->uom);
+                            }
+                            $temp_dimensions_value = json_encode($part_detail->dimensions_value_obj);
+
+                            $new_part = new PartDetailStandard;
+                            $new_part->description = $part_detail->description;
+                            $new_part->material_standard_id = $materialStandard->id;
+                            $new_part->dimensions_value = $temp_dimensions_value;
+                            $new_part->weight = $part_detail->weight;
+                            $new_part->quantity = $part_detail->quantity;
+                            $new_part->save();
+                        }
+                    }
                 }
             }
             DB::commit();
@@ -628,5 +670,24 @@ class ProjectStandardController extends Controller
     public function getResourceAPI($id){
 
         return response(Resource::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getMaterialAPI($id){
+        $material = Material::where('id',$id)->with('uom','weightUom')->first();
+        $densities = Configuration::get('density');
+        foreach ($densities as $density) {
+            if($density->id == $material->density_id){
+                $material->density = $density;
+            }
+        }
+        if($material->dimensions_value != null){
+            $dimensions = json_decode($material->dimensions_value);
+            foreach ($dimensions as $dimension) {
+                $uom = Uom::find($dimension->uom_id);
+                $dimension->uom = $uom;
+            }
+            $material->dimensions_value = json_encode($dimensions);
+        }
+        return response($material->jsonSerialize(), Response::HTTP_OK);
     }
 }
