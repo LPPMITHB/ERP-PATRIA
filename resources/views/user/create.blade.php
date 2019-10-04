@@ -26,34 +26,34 @@
                     <div class="box-body">
 
                         <div class="form-group">
-                            <label for="username" class="col-sm-2 control-label">Username</label>
+                            <label for="username" class="col-sm-2 control-label">Username *</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="username" name="username" required autofocus value="{{ old('username') }}">
+                                <input type="text" class="form-control" id="username" name="username" required autofocus value="{{ old('username') }}" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <label for="name" class="col-sm-2 control-label">Name *</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ old('name') }}">
+                                <input type="text" class="form-control" id="name" name="name" autofocus value="{{ old('name') }}" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label">Email</label>
+                            <label for="email" class="col-sm-2 control-label">Email *</label>
             
                             <div class="col-sm-10">
-                                <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}">
+                                <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                             </div>
                         </div>
 
                         <div class="form-group">
-                            <label for="address" class="col-sm-2 control-label">Address</label>
+                            <label for="address" class="col-sm-2 control-label">Address *</label>
             
                             <div class="col-sm-10">
-                                <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}">
+                                <input type="text" class="form-control" id="address" name="address" value="{{ old('address') }}" required>
                             </div>
                         </div>
                         
@@ -61,7 +61,7 @@
                             <label for="phone_number" class="col-sm-2 control-label">Phone Number</label>
             
                             <div class="col-sm-10">
-                                <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="phone_number" name="phone_number" value="{{ old('phone_number') }}">
+                                <input type="text" onkeypress="validate(event)" minlength="10" maxlength="12" class="form-control" id="phone_number" name="phone_number" value="{{ old('phone_number') }}" required>
                             </div>
                         </div>
 
@@ -69,7 +69,7 @@
                             <label for="role" class="col-sm-2 control-label">Role</label>
             
                             <div class="col-sm-10">
-                                <select name="role" id="role" required placeholder="Select Role..">
+                                <select name="role" id="role" placeholder="Select Role.." required>
                                     <option></option>
                                     @foreach($roles as $name => $id)
                                         <option value="{{ $id }}">{{ $name }}</option>
@@ -79,10 +79,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="branch" class="col-sm-2 control-label">Branch</label>
+                            <label for="branch" class="col-sm-2 control-label">Branch *</label>
 
                             <div class="col-sm-10">
-                                <select name="branch" id="branch" required placeholder="Select Branch..">
+                                <select name="branch" id="branch" required placeholder="Select Branch.." required>
                                     <option></option>
                                     @foreach($branches as $name => $id)
                                         <option value="{{ $id }}">{{ $name }}</option>
@@ -92,10 +92,10 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="businessUnit" class="col-sm-2 control-label">Business Unit</label>
+                            <label for="businessUnit" class="col-sm-2 control-label">Business Unit*</label>
             
                             <div class="col-sm-10">
-                                <select id="businessUnit" name="businessUnit[]" multiple="multiple" placeholder="Select Business Unit..">
+                                <select id="businessUnit" name="businessUnit[]" multiple="multiple" placeholder="Select Business Unit.." required>
                                     @foreach ($businessUnits as $businessUnit)
                                         <option value="{{$businessUnit->id}}">{{$businessUnit->name}}</option>
                                     @endforeach

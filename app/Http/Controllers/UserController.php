@@ -63,7 +63,7 @@ class UserController extends Controller
             'role' => 'required',
             'branch' => 'required',
         ]);
-
+        $request->businessUnit = null ? "[2]" : $request->businessUnit;
         $stringBusinessUnit = '['.implode(',', $request->businessUnit).']';
         $configuration = Configuration::get('default-password');
         DB::beginTransaction();
