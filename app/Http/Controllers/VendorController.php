@@ -165,7 +165,7 @@ class VendorController extends Controller
                 break;
             }
         }
-        return view('vendor.show', compact('vendor', 'modelPOs', 'modelWOs', 'return', 'modelGRs', 'resourceDetails', 'pt_name', 'dt_name', 'business_ids', 'modelGRDs', 'modelPODs','modelMaterials'));
+        return view('vendor.show',compact('vendor','modelPOs','modelWOs','return','modelGRs','resourceDetails','pt_name','dt_name','business_ids','modelGRDs','modelPODs','modelMaterials'));
     }
 
     public function edit($id)
@@ -263,7 +263,7 @@ class VendorController extends Controller
         foreach($modelPODs as $modelPOD){
             $tempCost->push([
                 "t" => $modelPOD->created_at->toDateString(),
-                "y" => ($modelPOD->total_price/$modelPOD->quantity)."",
+                "y" => ($modelPOD->total_price/$modelPOD->quantity-$modelPOD->discount)."",
             ]);
         }
         return response($tempCost->jsonSerialize(), Response::HTTP_OK);

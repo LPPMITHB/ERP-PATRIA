@@ -76,7 +76,7 @@
                                 <th style="width: 2px">No</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 15%">Description</th>
-                                <th style="width: 10%">Number</th>
+                                <th style="width: 10%">WBS</th>
                                 <th style="width: 7%">Start Date</th>
                                 <th style="width: 7%">End Date</th>
                                 <th style="width: 7%">Duration</th>

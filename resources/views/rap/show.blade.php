@@ -135,36 +135,29 @@
                         </tfoot>
                     </table>     
                 @elseif($route == '/rap_repair')
+                    <h4>Material</h4>
                     <table class="table table-bordered tableFixed showTable" id="rap-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="8%">Type</th>
                                 <th width="15%">Number</th>
                                 <th width="30%">Description</th>
+                                <th width="20%">Dimension</th>
                                 <th width="8%">Qty</th>
-                                <th width="5%">Unit</th>
+                                <th width="10%">Source</th>
                                 <th width="15%">Cost per pcs</th>
                                 <th width="15%">Sub Total Cost</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($modelRap->rapDetails as $rapDetail)
+                            @foreach($modelRapDetails as $rapDetail)
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
-                                    @if($rapDetail->material_id != null)
-                                        <td>Material</td>
-                                        <td class="tdEllipsis">{{ $rapDetail->material->code }}</td>
-                                        <td class="tdEllipsis">{{ $rapDetail->material->description }}</td>
-                                        <td>{{ number_format($rapDetail->quantity,2) }}</td>
-                                        <td>{{ $rapDetail->material->uom->unit }}</td>
-                                    @elseif($rapDetail->service_id != null)
-                                        <td>Service</td>
-                                        <td class="tdEllipsis">{{ $rapDetail->service->code }}</td>
-                                        <td class="tdEllipsis">{{ $rapDetail->service->description }}</td>
-                                        <td>{{ number_format($rapDetail->quantity,2) }}</td>
-                                        <td>-</td>
-                                    @endif
+                                    <td class="tdEllipsis">{{ $rapDetail->material->code }}</td>
+                                    <td class="tdEllipsis">{{ $rapDetail->material->description }}</td>
+                                    <td class="tdEllipsis">{{$rapDetail->dimensions_string}}</td>
+                                    <td>{{ number_format($rapDetail->quantity,2) }}</td>                                    
+                                    <td class="tdEllipsis">{{$rapDetail->source}}</td>
                                     <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity,2) }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price,2) }}</td>
                                 </tr>
@@ -173,11 +166,44 @@
                         <tfoot>
                             <tr>
                                 <td colspan="6" style="visibility:hidden"></td>
-                                <td class="text-right p-r-5"><b>Total Cost :</b></td>
+                                <td class="text-right p-r-5"><b>Total Material Cost :</b></td>
                                 <td class="text-left p-r-5"><b>Rp.{{ number_format($modelRap->total_price,2) }}</b></td>
                             </tr>
                         </tfoot>
                     </table>   
+
+                    <h4>Service</h4>
+                    <table class="table table-bordered tableFixed showTable" id="service-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="15%">Number</th>
+                                <th width="20%">Description</th>
+                                <th width="25%">Service Detail</th>
+                                <th width="10%">Qty/Area</th>
+                                <th width="20%">Vendor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($wbss as $wbs)
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td class="tdEllipsis">{{ $wbs->number }}</td>
+                                <td class="tdEllipsis">{{ $wbs->description }}</td>
+                                <td class="tdEllipsis">{{ $wbs->serviceDetail->name }} - {{ $wbs->serviceDetail->description }}</td>
+                                <td class="tdEllipsis">{{ $wbs->area }} {{ $wbs->areaUom->unit }}</td>
+                                <td class="tdEllipsis">{{ $wbs->vendor->code }} - {{ $wbs->vendor->name }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" style="visibility:hidden"></td>
+                                <td class="text-right p-r-5"><b>Total Cost :</b></td>
+                                <td class="text-left p-r-5"><b>Rp.{{ number_format($modelRap->total_price,2) }}</b></td>
+                            </tr>
+                        </tfoot>
+                    </table>
                 @endif
                 </div> <!-- /.box-body -->
             <div class="overlay">
@@ -191,34 +217,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        // $('.tableNonPagingVue thead tr').clone(true).appendTo( '.tableNonPagingVue thead' );
-        // $('.tableNonPagingVue thead tr:eq(1) th').addClass('indexTable').each( function (i) {
-        //     var title = $(this).text();
-        //     if(title == 'No' || title == "Cost per pcs" || title == "Sub Total Cost" || title == "Quantity"){
-        //         $(this).html( '<input disabled class="form-control width100" type="text"/>' );
-        //     }else{
-        //         $(this).html( '<input class="form-control width100" type="text" placeholder="Search '+title+'"/>' );
-        //     }
 
-        //     $( 'input', this ).on( 'keyup change', function () {
-        //         if ( table.column(i).search() !== this.value ) {
-        //             table
-        //             .column(i)
-        //             .search( this.value )
-        //             .draw();
-        //         }
-        //     });
-        // });
-
-        // var table = $('.tableNonPagingVue').DataTable( {
-        //     orderCellsTop   : true,
-        //     paging          : false,
-        //     autoWidth       : false,
-        //     lengthChange    : false,
-        //     info            : false,
-        // });
-
-        // $('div.overlay').hide();
         $('#rap-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -227,6 +226,19 @@
             'autoWidth'   : false,
             'initComplete': function(){
                 $('div.overlay').hide();
+                document.getElementById("rap-table_wrapper").setAttribute("style", "margin-top: -30px");
+            }
+        });
+
+        $('#service-table').DataTable({
+            'paging'      : true,
+            'lengthChange': false,
+            'ordering'    : true,
+            'info'        : true,
+            'autoWidth'   : false,
+            'initComplete': function(){
+                $('div.overlay').hide();
+                document.getElementById("service-table_wrapper").setAttribute("style", "margin-top: -30px");
             }
         });
     });

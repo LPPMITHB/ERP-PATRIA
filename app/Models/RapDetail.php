@@ -19,6 +19,11 @@ class RapDetail extends Model
         return $this->belongsTo('App\Models\Bom');
     }
 
+    public function wbs()
+    {
+        return $this->belongsTo('App\Models\WBS');
+    }
+
     public function material()
     {
         return $this->belongsTo('App\Models\Material');
