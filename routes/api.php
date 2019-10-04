@@ -81,6 +81,7 @@ Route::get('/getPRD/{id}', 'GoodsReceiptController@getGRDAPI')->name('api.goods_
 Route::get('/getVendor', 'PurchaseOrderController@getVendorAPI')->name('api.purchase_order.getVendorAPI');
 Route::get('/ProjectStandardPO/{id}', 'PurchaseOrderController@ProjectStandardAPI')->name('api.purchase_order.ProjectStandardAPI');
 Route::get('/getVendorList/{id}', 'PurchaseOrderController@getVendorListAPI')->name('api.purchase_order.getVendorListAPI');
+Route::get('/getVendorDetail/{id}', 'PurchaseOrderController@getVendorDetailAPI')->name('api.purchase_order.getVendorDetail');
 
 // stock management
 Route::get('/getSlocSM/{id}', 'StockManagementController@getSlocApi')->name('api.stock_management.getSlocApi');
