@@ -64,6 +64,9 @@ class UserController extends Controller
             'branch' => 'required',
         ]);
 
+        if($request->businessUnit == null){
+            return redirect()->route('user.create')->with('error', "Please fill Business Unit")->withInput(Input::all());
+        }
         $stringBusinessUnit = '['.implode(',', $request->businessUnit).']';
         $configuration = Configuration::get('default-password');
         DB::beginTransaction();
