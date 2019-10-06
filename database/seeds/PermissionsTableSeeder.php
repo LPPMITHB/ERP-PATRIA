@@ -302,7 +302,7 @@ class PermissionsTableSeeder extends Seeder
         //BOM Repair
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $bomRepair =  Menu::where('name','Bill of Material')->where('menu_id',$repair)->select('id')->first()->id;
-        $manageBOMRepair = Menu::where('name','Manage BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
+        $manageBOMRepair = Menu::where('name','Manage BOM / BOS')->where('menu_id',$bomRepair)->select('id')->first()->id;
         $viewBOMRepair = Menu::where('name','View BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
 
         DB::table('permissions')->insert([

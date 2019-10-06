@@ -1018,6 +1018,8 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition');
 
+    Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
+
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-requisition');
@@ -2073,7 +2075,7 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::patch('/', 'QualityControlTaskController@update')->name('update');
     // ->middleware('can:edit-qc-task');
-    
+
     Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
 
     Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');

@@ -83,7 +83,7 @@
                     </div>
                 </div>
             </div>
-            @if ($menu == "building")
+            {{-- @if ($menu == "building")
                 <form id="uploadImage" class="form-horizontal" method="POST" action="{{ route('wbs.updateWithForm',['id'=>$wbs->id]) }}" enctype="multipart/form-data">
             @elseif ($menu == "repair")
                 <form id="uploadImage" class="form-horizontal" method="POST" action="{{ route('wbs_repair.updateWithForm',['id'=>$wbs->id]) }}" enctype="multipart/form-data">
@@ -91,7 +91,7 @@
             @endif
                 @csrf
                 <input type="hidden" name="_method" value="PATCH">
-            </form>
+            </form> --}}
         </div>
     </div>
 </div>

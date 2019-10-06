@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="role" class="col-sm-2 control-label">Role</label>
+                            <label for="role" class="col-sm-2 control-label">Role *</label>
             
                             <div class="col-sm-10">
                                 <select name="role" id="role" placeholder="Select Role.." required>
