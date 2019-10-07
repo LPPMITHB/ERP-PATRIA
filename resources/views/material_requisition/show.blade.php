@@ -111,6 +111,12 @@
                         <div class="col-xs-7 col-md-7">
                             : <b> {{ $modelMR->created_at->format('d-m-Y H:i:s') }} </b>
                         </div>
+                        <div class="col-xs-5 col-md-5">
+                            Updated At
+                        </div>
+                        <div class="col-xs-7 col-md-7">
+                            : <b> {{ $modelMR->updated_at->format('d-m-Y H:i:s') }} </b>
+                        </div>
                         @if($modelMR->delivery_date != null)
                         <div class="col-xs-5 col-md-5">
                             Delivery Date
