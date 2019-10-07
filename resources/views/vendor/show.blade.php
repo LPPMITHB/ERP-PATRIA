@@ -498,7 +498,7 @@
                 $('div.overlay').hide();
             }
         });
-        
+
 
         $('.poCostTable').DataTable({
             'paging'      : true,
@@ -511,7 +511,7 @@
             }
         });
 
-        
+
         $('.woCostTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -523,7 +523,7 @@
             }
         });
 
-        
+
         $('.deliveryTable').DataTable({
             'paging'      : true,
             'lengthChange': false,
@@ -546,7 +546,7 @@
                 $('div.overlay').hide();
             }
         });
-        
+
 
         $('.safetyTable').DataTable({
             'paging'      : true,
@@ -631,7 +631,7 @@
         selectedPOD: [],
         modelMaterials: @json($modelMaterials),
         vendor: @json($vendor),
-      
+
     };
 
     var vm = new Vue({
@@ -677,7 +677,7 @@
                     data: [],
                 },
             ]
-        },  
+        },
         options: {
             elements: {
                 point: {

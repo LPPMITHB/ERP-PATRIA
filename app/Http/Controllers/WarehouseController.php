@@ -97,7 +97,7 @@ class WarehouseController extends Controller
     public function edit($id)
     {
         $warehouse = Warehouse::findOrFail($id);
-        $users = User::where('type', '2')->get();
+        $users = User::where('type','2')->get();
 
         return view('warehouse.create', compact('warehouse','users'));
     }
