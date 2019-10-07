@@ -200,7 +200,7 @@ class PurchaseOrderController extends Controller
             $PO->number = $po_number;
             $PO->purchase_requisition_id = $datas->pr_id;
             $PO->vendor_id = $datas->vendor_id;
-            
+
             if ($datas->tax == "") {
                 $PO->tax = 0;
             } else {
@@ -297,7 +297,7 @@ class PurchaseOrderController extends Controller
                     $PO->tax = $datas->tax;
                 }
             }
-            
+
             $PO->save();
             $this->checkStatusPr($datas->pr_id, $status);
             DB::commit();
@@ -725,16 +725,16 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id', $id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id', $id)->with('material', 
-        'purchaseRequisitionDetail.wbs', 
-        'purchaseRequisitionDetail.project', 
-        'wbs', 
-        'resource', 
-        'material.uom', 
-        'purchaseRequisitionDetail.purchaseRequisition', 
-        // 'pro_wbs_material', 
-        // 'pro_wbs_material.areaUom', 
-        // 'pro_wbs_material.serviceDetail', 
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id', $id)->with('material',
+        'purchaseRequisitionDetail.wbs',
+        'purchaseRequisitionDetail.project',
+        'wbs',
+        'resource',
+        'material.uom',
+        'purchaseRequisitionDetail.purchaseRequisition' 
+        // 'pro_wbs_material',
+        // 'pro_wbs_material.areaUom',
+        // 'pro_wbs_material.serviceDetail',
         // 'pro_wbs_material.serviceDetail.service'
         )->get();
         foreach ($modelPOD as $POD) {
@@ -911,7 +911,7 @@ class PurchaseOrderController extends Controller
                  * End Fungsi untuk Standard Price
                  */
                 $modelPO->status = 2;
-                
+
                 $modelPO->revision_description = "-";
                 $modelPO->approved_by = Auth::user()->id;
                 $modelPO->approval_date = Carbon::now();
