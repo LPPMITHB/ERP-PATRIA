@@ -51,9 +51,10 @@ class PhysicalInventoryController extends Controller
         $snapshots = Snapshot::whereIn('status', [1, 2, 4, 5])->get();
         $materials = Material::all();
         $storage_locations = StorageLocation::all();
+        $storage_location_details = StorageLocationDetail::with('material')->get();
         $warehouses = Warehouse::all();
 
-        return view('physical_inventory.indexSnapshot', compact('snapshots', 'materials', 'storage_locations', 'warehouses', 'menu'));
+        return view('physical_inventory.indexSnapshot', compact('snapshots', 'materials', 'storage_locations', 'storage_location_details', 'warehouses', 'menu'));
     }
 
     public function indexCountStock(Request $request)
