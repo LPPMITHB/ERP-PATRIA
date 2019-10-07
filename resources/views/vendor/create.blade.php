@@ -127,7 +127,7 @@ $vendor->name => route('vendor.show',$vendor->id),
 
                             <!-- START FORM PAJAK PERTAMBAHAN NILAI -->
                             <div class="form-group">
-                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label">PPn. (%)</label>
+                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label" required>PPn. (%)*</label>
                             
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_pertambahan_nilai"
@@ -138,7 +138,7 @@ $vendor->name => route('vendor.show',$vendor->id),
                             
                             <!-- START FORM PAJAK PENGHASILAN -->
                             <div class="form-group">
-                                <label for="pajak_penghasilan" class="col-sm-2 control-label">PPh. (%)</label>
+                                <label for="pajak_penghasilan" class="col-sm-2 control-label" required>PPh. (%)</label>
                             
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_penghasilan"
