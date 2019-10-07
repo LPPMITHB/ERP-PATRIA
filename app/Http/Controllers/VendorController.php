@@ -159,7 +159,7 @@ class VendorController extends Controller
         }
         $currencies = Configuration::get('currencies');
 
-        for ($i = 0; $i < $currencies; $i++) {
+        for ($i = 0; $i < sizeof($currencies); $i++) {
             if ($currencies[$i]->id == $vendor->currencies) {
                 $vendor->currencies = $currencies[$i]->unit . " - " . $currencies[$i]->name;
                 break;

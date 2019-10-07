@@ -40,10 +40,10 @@
 
                     @if(in_array(2,json_decode($business_ids)))
                     <div class="col-md-4 col-xs-6 no-padding">City</div>
-                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->city}}</b></div>
 
                     <div class="col-md-4 col-xs-6 no-padding">Province</div>
-                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->phone_number_1}}</b></div>
+                    <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->province}}</b></div>
 
                     <div class="col-md-4 col-xs-6 no-padding">Country</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->country}}</b></div>
