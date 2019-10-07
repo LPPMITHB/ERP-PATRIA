@@ -263,7 +263,7 @@ class VendorController extends Controller
         foreach($modelPODs as $modelPOD){
             $tempCost->push([
                 "t" => $modelPOD->created_at->toDateString(),
-                "y" => ($modelPOD->total_price/$modelPOD->quantity-$modelPOD->discount)."",
+                "y" => ($modelPOD->total_price/$modelPOD->quantity*((100-$modelPOD->discount)/100))."",
             ]);
         }
         return response($tempCost->jsonSerialize(), Response::HTTP_OK);
