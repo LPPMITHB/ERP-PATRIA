@@ -195,12 +195,16 @@ class VendorController extends Controller
             $vendor->name = ucwords($request->input('name'));
             $vendor->type = ucwords($request->input('type'));
             $vendor->address = ucfirst($request->input('address'));
+            $vendor->city = ucfirst($request->input('city'));
+            $vendor->province = ucfirst($request->input('province'));
+            $vendor->country = ucfirst($request->input('country'));
             $vendor->phone_number_1 = $request->input('phone_number_1');
             $vendor->phone_number_2 = $request->input('phone_number_2');
             $vendor->contact_name = $request->input('contact_name');
             $vendor->email = $request->input('email');
             $vendor->status = $request->input('status');
             $vendor->description = $request->input('description');
+            $vendor->tax_number = $request->input('tax_number');
             if ($request->input('payment_term') != "") {
                 $vendor->payment_term = $request->input('payment_term');
             } else {
