@@ -44,7 +44,7 @@ class PhysicalInventoryController extends Controller
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
         /**
          * Snapshot
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {open,need revision,counted,revised}{1,2,4,5}
          * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
          */
@@ -62,7 +62,7 @@ class PhysicalInventoryController extends Controller
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
         /**
          * Count Stock
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {open,need revision,counted,revised}{1,2,4,5}
          * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
          */
@@ -76,7 +76,7 @@ class PhysicalInventoryController extends Controller
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
         /**
          * Adjust Stock
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {counted,revised }{2,5}
          * family {showConfirmCountStock,indexAdjustStock}
          */
@@ -136,9 +136,9 @@ class PhysicalInventoryController extends Controller
 
             DB::commit();
             if ($menu == "building") {
-                return redirect()->route('physical_inventory.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
+                return redirect()->route('physical_inventory.showSnapshot', ['id' => $snapshot->id])->with('success', 'Stock Take Created');
             } else {
-                return redirect()->route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])->with('success', 'Snapshot Created');
+                return redirect()->route('physical_inventory_repair.showSnapshot', ['id' => $snapshot->id])->with('success', 'Stock Take Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -155,7 +155,7 @@ class PhysicalInventoryController extends Controller
         $route = $request->route()->getPrefix();
         /**
          * Snapshot
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {open,need revision,counted,revised}{1,2,4,5}
          * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
          * First or fail mencegah pencarian diluar Wherein
@@ -191,7 +191,7 @@ class PhysicalInventoryController extends Controller
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
         /**
          * Count Stock
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {open,need revision,counted,revised}{1,2,4,5}
          * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
          */
@@ -212,7 +212,7 @@ class PhysicalInventoryController extends Controller
     public function showCountStock($id)
     {
         /**
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {open,need revision,counted,revised}{1,2,4,5}
          * family {countStock,indexCountStock,showSnapshot,indexSnapshot}
          */
@@ -227,7 +227,7 @@ class PhysicalInventoryController extends Controller
         $menu = $request->route()->getPrefix() == "/physical_inventory" ? "building" : "repair";
         /**
          * Adjust Stock
-         * Hanya membuka jika statusnya 
+         * Hanya membuka jika statusnya
          * {counted,revised }{2,5}
          * family {showConfirmCountStock,indexAdjustStock}
          * first or fail mencega pencarian diluar WhereIn
@@ -261,7 +261,7 @@ class PhysicalInventoryController extends Controller
             } else {
                 $snapshot->status = 2;
             }
-            $snapshot->audited_by = Auth::user()->id;
+            $snapshot->counted_by = Auth::user()->id;
             $snapshot->save();
 
             foreach ($data as $countStock) {

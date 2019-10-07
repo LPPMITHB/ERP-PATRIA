@@ -28,9 +28,9 @@ class Snapshot extends Model
      * untuk membuat relasi dengan tabel user
      * @return void
      */
-    public function auditedBy()
+    public function countedBy()
     {
-        return $this->hasOne('App\Models\User', 'id', 'audited_by');
+        return $this->hasOne('App\Models\User', 'id', 'counted_by');
     }
 
     public function branch()
