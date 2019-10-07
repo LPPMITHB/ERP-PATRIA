@@ -122,7 +122,7 @@ class VendorController extends Controller
         $business_ids = Auth::user()->business_unit_id;
         $po_ids = $modelPOs->pluck('id')->toArray();
         $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->with('goodsReceiptDetails','purchaseOrder.purchaseOrderDetails')->get();
-        
+
         $modelMaterialIds = PurchaseOrderDetail::whereIn('purchase_order_id', $po_ids)->pluck('material_id')->toArray();
         $modelMaterialIds = array_unique($modelMaterialIds);
         $modelMaterials = Material::whereIn('id',$modelMaterialIds)->get();
@@ -157,9 +157,9 @@ class VendorController extends Controller
                 $dt_name = $delivery_term->name;
             }
         }
-        $currencies = Configuration::get('currencies');
 
-        for ($i = 0; $i < $currencies; $i++) {
+        $currencies = Configuration::get('currencies');
+        for($i = 0; $i < sizeof($currencies); $i++) {
             if ($currencies[$i]->id == $vendor->currencies) {
                 $vendor->currencies = $currencies[$i]->unit . " - " . $currencies[$i]->name;
                 break;
