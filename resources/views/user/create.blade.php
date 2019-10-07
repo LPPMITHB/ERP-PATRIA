@@ -92,7 +92,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="businessUnit" class="col-sm-2 control-label">Business Unit*</label>
+                            <label for="businessUnit" class="col-sm-2 control-label">Business Unit *</label>
             
                             <div class="col-sm-10">
                                 <select id="businessUnit" name="businessUnit[]" multiple="multiple" placeholder="Select Business Unit.." required>
