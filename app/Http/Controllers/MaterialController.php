@@ -353,21 +353,23 @@ class MaterialController extends Controller
             'id' => $data->standard_price_config,
             'range' => ($data->standard_price_config_range == null) ? 1 : $data->standard_price_config_range,
         );
-        $request = new Request([
-            'code' => $data->code,
-            // 'name' => $data->name,
-            'description' => $data->description,
-            'cost_standard_price' => $data->cost_standard_price,
-            'cost_standard_price_service' => $data->cost_standard_service,
-            'cost_standard_price_config' => $jsonCostStandardPriceConfig,
-            'weight' => $data->weight,
-            'height' => $data->height,
-            'length' => $data->lengths,
-            'width' => $data->width,
-            'volume' => $data->volume,
-            'location_detail' => $data->location_detail
+        // $request = new Request([
+        //     'code' => $data->code,
+        //     // 'name' => $data->name,
+        //     'description' => $data->description,
+        //     'cost_standard_price' => $data->cost_standard_price,
+        //     'cost_standard_price_service' => $data->cost_standard_service,
+        //     'cost_standard_price_config' => $jsonCostStandardPriceConfig,
+        //     'weight' => $data->weight,
+        //     'height' => $data->height,
+        //     'length' => $data->lengths,
+        //     'width' => $data->width,
+        //     'volume' => $data->volume,
+        //     'image' => $data->image,
+        //     'location_detail' => $data->location_detail,
+        //     // 
 
-        ]);
+        // ]);
 
         $this->validate($request, [
             'code' => 'required|alpha_dash|unique:mst_material,code,' . $id . ',id|string|max:255',
@@ -380,7 +382,9 @@ class MaterialController extends Controller
             'length' => 'nullable',
             'width' => 'nullable',
             'volume' => 'nullable',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:3000',
             'location_detail' => 'nullable',
+            
 
         ]);
            
@@ -443,8 +447,13 @@ class MaterialController extends Controller
                 $fileNameToStore = $fileName . '_' . time() . '.' . $extension;
                 // Upload image
                 $path = $request->file('image')->storeAs('documents/material', $fileNameToStore);
+                
+                
             } else {
                 $fileNameToStore =  null;
+                
+               
+              
             }
             $material->image = $fileNameToStore;
             $material->location_detail = $data->location_detail;
