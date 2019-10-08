@@ -810,11 +810,23 @@ class ProjectController extends Controller
                     $materialStandards = MaterialStandard::where('wbs_standard_id', $wbs_standard->id)->get();
                     if(count($materialStandards) > 0){
                         foreach ($materialStandards as $materialStandard) {
-                            $wbs_material = new WbsMaterial;
-                            $wbs_material->wbs_id = $wbs->id;
-                            $wbs_material->material_id = $materialStandard->material_id;
-                            $wbs_material->quantity = $materialStandard->quantity;
-                            $wbs_material->save();
+                            if(count($materialStandard->partDetails) > 0){
+                                foreach ($materialStandard->partDetails as $part) {
+                                    $wbs_material = new WbsMaterial;
+                                    $wbs_material->wbs_id = $wbs->id;
+                                    $wbs_material->material_id = $part->materialStandard->material_id;
+                                    $wbs_material->quantity = $part->quantity;
+                                    $wbs_material->dimensions_value = $part->dimensions_value;
+                                    $wbs_material->weight = $part->weight;
+                                    $wbs_material->save();
+                                }
+                            }else{
+                                $wbs_material = new WbsMaterial;
+                                $wbs_material->wbs_id = $wbs->id;
+                                $wbs_material->material_id = $materialStandard->material_id;
+                                $wbs_material->quantity = $materialStandard->quantity;
+                                $wbs_material->save();
+                            }
                         }
                     }
 

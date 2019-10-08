@@ -290,34 +290,80 @@ class BOMController extends Controller
         $materials = Material::orderBy('code')->get()->jsonSerialize();
         $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
         $vendors = Vendor::all();
+        $densities = Configuration::get('density');
         $uoms = Uom::all();
         $existing_data = [];
 
         $material_ids = [];
         $edit = false;
 
+        $temp_wbs_material = [];
+
         if(count($wbs->wbsMaterials)>0){
             $edit = true;
-            $existing_data = WbsMaterial::where('wbs_id', $wbs->id)->with('material.uom','wbs')->get();
+            $existing_data = WbsMaterial::where('wbs_id', $wbs->id)->get();
             foreach ($existing_data as $material) {
-                array_push($material_ids,$material->material_id);
-                $material->material_code = $material->material->code;
-                $material->material_name = $material->material->description;
-                $material->unit = $material->material->uom->unit;
-                
-                $dimension_string = "";
-                if($material->dimensions_value != null){
-                    $dimension_obj = json_decode($material->dimensions_value);
-                    foreach ($dimension_obj as $dimension) {
-                        $uom = Uom::find($dimension->uom_id);
-                        if($dimension_string == ""){
-                            $dimension_string .= $dimension->value." ".$uom->unit;
-                        }else{
-                            $dimension_string .= " x ".$dimension->value." ".$uom->unit;
-                        } 
+                if(!isset($temp_wbs_material[$material->material_id])){
+                    array_push($material_ids,$material->material_id);
+                    $temp_material = new \stdClass;
+                    $temp_material->id = $material->id;
+                    $temp_material->material_code = $material->material->code;
+                    $temp_material->material_name = $material->material->description;
+                    $temp_material->unit = $material->material->uom->unit;
+                    $temp_material->uom = $material->material->uom;
+                    $temp_material->weight_uom = $material->material->weightUom;
+                    $temp_material->part_details = [];
+                    $temp_material->selected_material = $material->material;
+
+                    if($temp_material->selected_material->dimensions_value != null){
+                        $dimensions = json_decode($temp_material->selected_material->dimensions_value);
+                        foreach ($dimensions as $dimension) {
+                            $uom = Uom::find($dimension->uom_id);
+                            $dimension->uom = $uom;
+                        }
+                        $temp_material->selected_material->dimensions_value_obj = $dimensions;
+                        $temp_material->selected_material->dimensions_value = json_encode($dimensions);
                     }
+
+                    if($temp_material->selected_material->density_id != null){
+                        foreach ($densities as $density) {
+                            if($density->id == $temp_material->selected_material->density_id){
+                                $temp_material->selected_material->density = $density;
+                            }
+                        }
+                    }
+                    
+                    if($material->dimensions_value != null){
+                        $part = new \stdClass;                        
+                        $part->id = $material->id;
+                        $part->description = $material->description;
+                        $part->edit = false;
+                        $part->dimensions_value = $material->dimensions_value;
+                        $part->dimensions_value_obj = json_decode($part->dimensions_value);
+                        foreach ($part->dimensions_value_obj as $dimension) {
+                            $dimension->uom = Uom::find($dimension->uom_id);
+                        }
+                        array_push($temp_material->part_details,$part);
+                        dd($temp_material);
+                    }
+
+
+                    $temp_wbs_material[$material->material_id] = $temp_material;
+                }else{
+                    if($material->dimensions_value != null){
+                        $part = new \stdClass;                        
+                        $part->id = $material->id;
+                        $part->edit = false;
+                        $part->dimensions_value = $material->dimensions_value;
+                        $part->dimensions_value_obj = json_decode($part->dimensions_value);
+                        foreach ($part->dimensions_value_obj as $dimension) {
+                            $dimension->uom = Uom::find($dimension->uom_id);
+                        }
+                    }
+                    dd($temp_wbs_material[$material->material_id],$temp_wbs_material);
+
+                    $temp_wbs_material[$material->material_id] = $temp_material;
                 }
-                $material->dimension_string = $dimension_string;
             }
         }
         
