@@ -87,7 +87,11 @@
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">Job No</div>
                         <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                            : {{$modelGI->materialRequisition->project != null ? $modelGI->materialRequisition->project->number : "-"}}
+                            : @if($modelGI->materialRequisition != null && $modelGI->materialRequisition->project != null)
+                            {{ $modelGI->materialRequisition->project->number}}
+                            @else 
+                            -
+                            @endif
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
