@@ -23,9 +23,9 @@ class MstMaterialStandardTableSeeder extends Seeder
                 'project_standard_id' => 1,
                 'wbs_standard_id' => 5,
                 'material_id' => 1780,
-                'quantity' => 2.0,
+                'quantity' => 11.0,
                 'created_at' => '2019-09-19 14:28:51',
-                'updated_at' => '2019-09-19 14:28:51',
+                'updated_at' => '2019-10-09 01:33:31',
             ),
             1 => 
             array (
@@ -46,6 +46,16 @@ class MstMaterialStandardTableSeeder extends Seeder
                 'quantity' => 2.0,
                 'created_at' => '2019-09-19 14:44:33',
                 'updated_at' => '2019-09-19 14:44:33',
+            ),
+            3 => 
+            array (
+                'id' => 4,
+                'project_standard_id' => 1,
+                'wbs_standard_id' => 5,
+                'material_id' => 1781,
+                'quantity' => 10.0,
+                'created_at' => '2019-10-09 01:33:31',
+                'updated_at' => '2019-10-09 01:33:31',
             ),
         ));
         

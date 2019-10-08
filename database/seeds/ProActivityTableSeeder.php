@@ -3236,55 +3236,8 @@ class ProActivityTableSeeder extends Seeder
                 'branch_id' => 1,
                 'created_at' => '2019-06-18 00:00:00',
                 'updated_at' => '2019-06-18 00:00:00',
-            ),
-            140 => 
-            array (
-                'id' => 141,
-                'code' => 'ACT192060001',
-                'name' => 'Satu',
-                'description' => 'Satu',
-                'status' => 1,
-                'wbs_id' => 53,
-                'activity_standard_id' => 2,
-                'planned_duration' => 1,
-                'planned_start_date' => NULL,
-                'planned_end_date' => NULL,
-                'actual_duration' => NULL,
-                'actual_start_date' => NULL,
-                'actual_end_date' => NULL,
-                'progress' => 0.0,
-                'weight' => NULL,
-                'predecessor' => NULL,
-                'user_id' => 3,
-                'branch_id' => 2,
-                'created_at' => '2019-09-27 15:52:03',
-                'updated_at' => '2019-09-27 15:52:03',
-            ),
-            141 => 
-            array (
-                'id' => 142,
-                'code' => 'ACT192060002',
-                'name' => 'b',
-                'description' => 'b',
-                'status' => 1,
-                'wbs_id' => 55,
-                'activity_standard_id' => 3,
-                'planned_duration' => 2,
-                'planned_start_date' => NULL,
-                'planned_end_date' => NULL,
-                'actual_duration' => NULL,
-                'actual_start_date' => NULL,
-                'actual_end_date' => NULL,
-                'progress' => 0.0,
-                'weight' => NULL,
-                'predecessor' => NULL,
-                'user_id' => 3,
-                'branch_id' => 2,
-                'created_at' => '2019-09-27 15:52:03',
-                'updated_at' => '2019-09-27 15:52:03',
-            ),
+            )
         ));
-        
         
     }
 }

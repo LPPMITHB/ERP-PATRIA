@@ -814,6 +814,7 @@ class ProjectController extends Controller
                                 foreach ($materialStandard->partDetails as $part) {
                                     $wbs_material = new WbsMaterial;
                                     $wbs_material->wbs_id = $wbs->id;
+                                    $wbs_material->part_description = $part->description;
                                     $wbs_material->material_id = $part->materialStandard->material_id;
                                     $wbs_material->quantity = $part->quantity;
                                     $wbs_material->dimensions_value = $part->dimensions_value;
