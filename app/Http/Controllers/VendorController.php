@@ -122,7 +122,7 @@ class VendorController extends Controller
         $business_ids = Auth::user()->business_unit_id;
         $po_ids = $modelPOs->pluck('id')->toArray();
         $modelGRs = GoodsReceipt::whereIn('purchase_order_id', $po_ids)->with('goodsReceiptDetails','purchaseOrder.purchaseOrderDetails')->get();
-        
+
         $modelMaterialIds = PurchaseOrderDetail::whereIn('purchase_order_id', $po_ids)->pluck('material_id')->toArray();
         $modelMaterialIds = array_unique($modelMaterialIds);
         $modelMaterials = Material::whereIn('id',$modelMaterialIds)->get();
@@ -157,9 +157,9 @@ class VendorController extends Controller
                 $dt_name = $delivery_term->name;
             }
         }
-        $currencies = Configuration::get('currencies');
 
-        for ($i = 0; $i < $currencies; $i++) {
+        $currencies = Configuration::get('currencies');
+        for($i = 0; $i < sizeof($currencies); $i++) {
             if ($currencies[$i]->id == $vendor->currencies) {
                 $vendor->currencies = $currencies[$i]->unit . " - " . $currencies[$i]->name;
                 break;
@@ -195,12 +195,16 @@ class VendorController extends Controller
             $vendor->name = ucwords($request->input('name'));
             $vendor->type = ucwords($request->input('type'));
             $vendor->address = ucfirst($request->input('address'));
+            $vendor->city = ucfirst($request->input('city'));
+            $vendor->province = ucfirst($request->input('province'));
+            $vendor->country = ucfirst($request->input('country'));
             $vendor->phone_number_1 = $request->input('phone_number_1');
             $vendor->phone_number_2 = $request->input('phone_number_2');
             $vendor->contact_name = $request->input('contact_name');
             $vendor->email = $request->input('email');
             $vendor->status = $request->input('status');
             $vendor->description = $request->input('description');
+            $vendor->tax_number = $request->input('tax_number');
             if ($request->input('payment_term') != "") {
                 $vendor->payment_term = $request->input('payment_term');
             } else {
@@ -263,7 +267,7 @@ class VendorController extends Controller
         foreach($modelPODs as $modelPOD){
             $tempCost->push([
                 "t" => $modelPOD->created_at->toDateString(),
-                "y" => ($modelPOD->total_price/$modelPOD->quantity-$modelPOD->discount)."",
+                "y" => ($modelPOD->total_price/$modelPOD->quantity*((100-$modelPOD->discount)/100))."",
             ]);
         }
         return response($tempCost->jsonSerialize(), Response::HTTP_OK);

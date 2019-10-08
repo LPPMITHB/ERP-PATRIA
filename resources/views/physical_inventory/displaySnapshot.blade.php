@@ -61,7 +61,10 @@
                         @endforeach
                         @if(count($stocks) == 0)
                             <tr>
-                                <td colspan="4" class="textCenter"><b>NO STOCK</b></td>
+                                <td colspan="7" class="textCenter"><b>NO STOCK</b></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
+                                <td style="display: none;"></td>
                                 <td style="display: none;"></td>
                                 <td style="display: none;"></td>
                                 <td style="display: none;"></td>

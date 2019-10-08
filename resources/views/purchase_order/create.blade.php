@@ -202,7 +202,8 @@
                                                 <td>{{ index + 1 }}</td>
                                                 <template v-if="modelPR.type == 1">
                                                     <td class="tdEllipsis">{{ PRD.material.code }}</td>
-                                                    <td class="tdEllipsis">{{ PRD.material.description }}</td>
+                                                    <td class="tdEllipsis"><a data-toggle="modal" href="#show_image" @click="openViewGambar(PRD,index)"><span>
+                                                            {{ PRD.material.description }}</span></a></td>
                                                 </template>
                                                 <template v-else>
                                                     <td class="tdEllipsis">{{ PRD.resource.code }}</td>
@@ -341,9 +342,25 @@
                                             <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="close">CLOSE</button>
                                         </div>
                                     </div>
+                                    
                                 </div>
                             </div>
 
+                        </div>
+                        <div class="modal fade" id="show_image">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">{{this.imageTitle}}</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <img style="width:100%; height:500px" v-bind:src="this.imageSource">
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 @endverbatim
@@ -403,13 +420,14 @@
 
         // $('div.overlay').hide();
     });
-
+var URLTO = "{{ URL::to('/') }}";
     var data = {
         payment_terms : @json($payment_terms),
         delivery_terms : @json($delivery_terms),
         payment_term : null,
         delivery_term : null,
         materials : @json($materials),
+        imageSource: "",
         modelPR : @json($modelPR),
         PRDetail : @json($modelPRD),
         projects : @json($projects),
@@ -448,13 +466,15 @@
         editRemark : {
             remark : "",
         },
+        urlTo: URLTO,
+        imageSource: "",
         submittedForm : {},
         vendorList : {
             material_id : "",
             po_list : [],
         }
     }
-
+   
     var vm = new Vue({
         el : '#po',
         data : data,
@@ -529,6 +549,10 @@
         methods : {
             vendor_list(){
                 this.vendorList.material_id = "";
+            },
+            openViewGambar(data, index) {
+                this.imageSource = this.urlTo +'/app/documents/material/'+ data.material.image;
+                this.imageTitle = data.material.description;
             },
             makeId(id){
                 return "datepicker"+id;

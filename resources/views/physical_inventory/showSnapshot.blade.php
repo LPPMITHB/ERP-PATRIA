@@ -115,7 +115,7 @@
             'initComplete': function(){
                 $('div.overlay').hide();
             }
-        });
+        });     
     });
 </script>
 @endpush

@@ -66,11 +66,11 @@
                     </div>
                     <div class="row">
                         <div class="col-md-2">
-                            Audited By
+                            Counted By
                         </div>
                         <div class="col-md-3">
                             :
-                            <b>{{$snapshot->auditedBy->name}}</b>
+                            <b>{{$snapshot->countedBy->name}}</b>
                         </div>
                     </div>
                     @if($snapshot->status == 5)

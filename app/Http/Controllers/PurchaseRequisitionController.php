@@ -32,7 +32,8 @@ class PurchaseRequisitionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function cancel(Request $request, $id){
+    public function cancel(Request $request, $id)
+    {
         $route = $request->route()->getPrefix();
 
         DB::beginTransaction();
@@ -40,24 +41,25 @@ class PurchaseRequisitionController extends Controller
             $modelPR = PurchaseRequisition::find($id);
             $modelPR->status = 8;
             $modelPR->update();
-            
+
             DB::commit();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$id)->with('success', 'Purchase Requisition Canceled');
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$id)->with('success', 'Purchase Requisition Canceled');
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $id)->with('success', 'Purchase Requisition Canceled');
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $id)->with('success', 'Purchase Requisition Canceled');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$id)->with('error', $e->getMessage());
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$id)->with('error', $e->getMessage());
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $id)->with('error', $e->getMessage());
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $id)->with('error', $e->getMessage());
             }
         }
     }
 
-    public function cancelApproval(Request $request, $id){
+    public function cancelApproval(Request $request, $id)
+    {
         $route = $request->route()->getPrefix();
 
         DB::beginTransaction();
@@ -69,33 +71,33 @@ class PurchaseRequisitionController extends Controller
             $modelPR->approved_by_2 = null;
             $modelPR->approval_date_2 = null;
             $modelPR->update();
-            
+
             DB::commit();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$id)->with('success', 'Approval Canceled');
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$id)->with('success', 'Approval Canceled');
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $id)->with('success', 'Approval Canceled');
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $id)->with('success', 'Approval Canceled');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$id)->with('error', $e->getMessage());
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$id)->with('error', $e->getMessage());
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $id)->with('error', $e->getMessage());
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $id)->with('error', $e->getMessage());
             }
         }
     }
 
     public function index(Request $request)
     {
-        $route = $request->route()->getPrefix(); 
-        if($route == "/purchase_requisition"){
-            $modelPRs = PurchaseRequisition::where('business_unit_id',1)->get();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelPRs = PurchaseRequisition::where('business_unit_id',2)->get();
+        $route = $request->route()->getPrefix();
+        if ($route == "/purchase_requisition") {
+            $modelPRs = PurchaseRequisition::where('business_unit_id', 1)->get();
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelPRs = PurchaseRequisition::where('business_unit_id', 2)->get();
         }
 
-        return view('purchase_requisition.index', compact('modelPRs','route'));
+        return view('purchase_requisition.index', compact('modelPRs', 'route'));
     }
 
     public function indexApprove(Request $request)
@@ -103,31 +105,38 @@ class PurchaseRequisitionController extends Controller
         $user_role = Auth::user()->role->id;
 
         $route = $request->route()->getPrefix();
-        if($route == "/purchase_requisition"){
-            $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',1)->where(function($q) use ($user_role){
+        if ($route == "/purchase_requisition") {
+            $modelPRs = PurchaseRequisition::whereIn('status', [1, 4])->where('business_unit_id', 1)->where(function ($q) use ($user_role) {
                 $q->where('role_approve_1', $user_role)
-                  ->orWhere('role_approve_2', $user_role);
+                    ->orWhere('role_approve_2', $user_role);
             })->get();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelPRs = PurchaseRequisition::whereIn('status',[1,4])->where('business_unit_id',2)->where(function($q) use ($user_role){
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelPRs = PurchaseRequisition::whereIn('status', [1, 4])->where('business_unit_id', 2)->where(function ($q) use ($user_role) {
                 $q->where('role_approve_1', $user_role)
-                  ->orWhere('role_approve_2', $user_role);
+                    ->orWhere('role_approve_2', $user_role);
             })->get();
         }
 
-        return view('purchase_requisition.indexApprove', compact('modelPRs','route'));
+        return view('purchase_requisition.indexApprove', compact('modelPRs', 'route'));
     }
 
     public function indexConsolidation(Request $request)
     {
         $route = $request->route()->getPrefix();
-        if($route == "/purchase_requisition"){
-            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',1)->where('type','!=',3)->with('project')->get();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelPRs = PurchaseRequisition::whereIn('status',[1])->where('business_unit_id',2)->where('type','!=',3)->with('project')->get();
+        if ($route == "/purchase_requisition") {
+            $modelPRs = PurchaseRequisition::whereIn('status', [1])->where('business_unit_id', 1)->where('type', '!=', 3)->with('project')->get();
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelPRs = PurchaseRequisition::whereIn('status', [1])->where('business_unit_id', 2)->where('type', '!=', 3)->with('project')->get();
         }
-        
-        return view('purchase_requisition.indexConsolidation', compact('modelPRs','route'));
+
+        return view('purchase_requisition.indexConsolidation', compact('modelPRs', 'route'));
+    }
+
+    public function repeatOrder(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $modelPRs = PurchaseRequisition::where('business_unit_id', 2)->where('status', 2)->get();
+        return view('purchase_requisition.repeatOrder', compact('modelPRs', 'route'));
     }
 
     /**
@@ -138,15 +147,15 @@ class PurchaseRequisitionController extends Controller
     public function create(Request $request)
     {
         $route = $request->route()->getPrefix();
-        if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get()->jsonSerialize();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get()->jsonSerialize();
+        if ($route == "/purchase_requisition") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 1)->get()->jsonSerialize();
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 2)->get()->jsonSerialize();
         }
         $modelMaterial = Material::orderBy('code')->get()->jsonSerialize();
         $modelResource = Resource::orderBy('code')->get()->jsonSerialize();
 
-        return view('purchase_requisition.create', compact('modelMaterial','modelProject','modelResource','route'));
+        return view('purchase_requisition.create', compact('modelMaterial', 'modelProject', 'modelResource', 'route'));
     }
 
     /**
@@ -160,16 +169,17 @@ class PurchaseRequisitionController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $pr_number = $this->generatePRNumber();
+        //   if()  
 
         DB::beginTransaction();
         try {
-            if($datas->pr_type == "Material"){
+            if ($datas->pr_type == "Material") {
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                if($route == '/purchase_requisition'){
+                if ($route == '/purchase_requisition') {
                     $PR->business_unit_id = 1;
-                }else if($route == '/purchase_requisition_repair'){
+                } else if ($route == '/purchase_requisition_repair') {
                     $PR->business_unit_id = 2;
                 }
                 $PR->status = 1;
@@ -178,58 +188,58 @@ class PurchaseRequisitionController extends Controller
                 $PR->branch_id = Auth::user()->branch->id;
                 $PR->save();
 
-                foreach($datas->datas as $data){
-                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
+                foreach ($datas->datas as $data) {
+                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $PR->id)->get();
                     $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
-                    if($required_date){
+                    if ($required_date) {
                         $required_date = $required_date->format('Y-m-d');
-                    }else{
+                    } else {
                         $required_date = null;
                     }
-                    if(count($modelPRD)>0){
+                    if (count($modelPRD) > 0) {
                         $status = 0;
-                        foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date){
-                                $PurchaseRD->quantity +=$data->quantity;
+                        foreach ($modelPRD as $PurchaseRD) {
+                            if ($PurchaseRD->material_id == $data->material_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date) {
+                                $PurchaseRD->quantity += $data->quantity;
                                 $PurchaseRD->update();
 
                                 $status = 1;
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->quantity = $data->quantity;
                             $PRD->material_id = $data->material_id;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;
-                            if($data->project_id != null){
+                            if ($data->project_id != null) {
                                 $PRD->project_id = $data->project_id;
                             }
                             $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
-                    }else{
+                    } else {
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = $data->quantity;
                         $PRD->material_id = $data->material_id;
                         $PRD->alocation = $data->alocation;
                         $PRD->required_date = $required_date;
-                        if($data->project_id != null){
+                        if ($data->project_id != null) {
                             $PRD->project_id = $data->project_id;
                         }
                         $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
                 }
-            }elseif($datas->pr_type == "Resource"){
+            } elseif ($datas->pr_type == "Resource") {
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                if($route == '/purchase_requisition'){
+                if ($route == '/purchase_requisition') {
                     $PR->business_unit_id = 1;
-                }else if($route == '/purchase_requisition_repair'){
+                } else if ($route == '/purchase_requisition_repair') {
                     $PR->business_unit_id = 2;
                 }
                 $PR->status = 1;
@@ -238,56 +248,57 @@ class PurchaseRequisitionController extends Controller
                 $PR->branch_id = Auth::user()->branch->id;
                 $PR->save();
 
-                foreach($datas->datas as $data){
-                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
+                foreach ($datas->datas as $data) {
+                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $PR->id)->get();
                     $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
-                    if($required_date){
+                    if ($required_date) {
                         $required_date = $required_date->format('Y-m-d');
-                    }else{
+                    } else {
                         $required_date = null;
                     }
-                    if(count($modelPRD)>0){
+                    if (count($modelPRD) > 0) {
                         $status = 0;
-                        foreach($modelPRD as $PurchaseRD){
-                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->required_date == $required_date){
-                                $PurchaseRD->quantity +=$data->quantity;
+                        foreach ($modelPRD as $PurchaseRD) {
+                            if ($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->required_date == $required_date) {
+                                $PurchaseRD->quantity += $data->quantity;
                                 $PurchaseRD->update();
 
                                 $status = 1;
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->quantity = $data->quantity;
                             $PRD->resource_id = $data->resource_id;
                             $PRD->required_date = $required_date;
-                            if($data->project_id != null){
+                            if ($data->project_id != null) {
                                 $PRD->project_id = $data->project_id;
                             }
                             $PRD->user_id = Auth::user()->id;
                             $PRD->save();
                         }
-                    }else{
+                    } else {
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = $data->quantity;
                         $PRD->resource_id = $data->resource_id;
                         $PRD->required_date = $required_date;
-                        if($data->project_id != null){
+                        if ($data->project_id != null) {
                             $PRD->project_id = $data->project_id;
                         }
                         $PRD->user_id = Auth::user()->id;
                         $PRD->save();
                     }
                 }
-            }elseif($datas->pr_type == "Subcon"){
+            } elseif ($datas->pr_type == "Subcon") {
+
                 $PR = new PurchaseRequisition;
                 $PR->description = $datas->description;
                 $PR->number = $pr_number;
-                if($route == '/purchase_requisition'){
+                if ($route == '/purchase_requisition') {
                     $PR->business_unit_id = 1;
-                }else if($route == '/purchase_requisition_repair'){
+                } else if ($route == '/purchase_requisition_repair') {
                     $PR->business_unit_id = 2;
                 }
                 $PR->status = 1;
@@ -295,7 +306,7 @@ class PurchaseRequisitionController extends Controller
                 $PR->user_id = Auth::user()->id;
                 $PR->branch_id = Auth::user()->branch->id;
                 $PR->save();
-                foreach($datas->datas as $data){
+                foreach ($datas->datas as $data) {
                     $PRD = new PurchaseRequisitionDetail;
                     $PRD->purchase_requisition_id = $PR->id;
                     $PRD->quantity = 1;
@@ -309,27 +320,27 @@ class PurchaseRequisitionController extends Controller
             }
 
             //MAKE NOTIFICATION
-            if($route == '/purchase_requisition'){
+            if ($route == '/purchase_requisition') {
                 $data = json_encode([
-                    'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been created, action required',
                     'time_info' => 'Created at',
                     'title' => 'Purchase Requisition',
-                    'url' => '/purchase_requisition/showApprove/'.$PR->id,
+                    'url' => '/purchase_requisition/showApprove/' . $PR->id,
                 ]);
-            }else if($route == '/purchase_requisition_repair'){
+            } else if ($route == '/purchase_requisition_repair') {
                 $data = json_encode([
-                    'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been created, action required',
                     'time_info' => 'Created at',
                     'title' => 'Purchase Requisition',
-                    'url' => '/purchase_requisition_repair/showApprove/'.$PR->id,
+                    'url' => '/purchase_requisition_repair/showApprove/' . $PR->id,
                 ]);
             }
 
-            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails);
+            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails, $datas->pr_type);
             $approval_config = Configuration::get('approval-pr')[0];
-            foreach($approval_config->value as $pr_config){
-                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
-                    if($pr_config->role_id_1 != null){
+            foreach ($approval_config->value as $pr_config) {
+                if ($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value) {
+                    if ($pr_config->role_id_1 != null) {
                         $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
@@ -348,14 +359,14 @@ class PurchaseRequisitionController extends Controller
                         $PR->role_approve_1 = $pr_config->role_id_1;
                         $PR->save();
                     }
-                    
-                    if($pr_config->role_id_2 != null){
+
+                    if ($pr_config->role_id_2 != null) {
                         $users = User::where('role_id', $pr_config->role_id_2)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
                         $users = json_encode($users);
-                        
+
                         $new_notification = new Notification;
                         $new_notification->type = "Purchase Requisition";
                         $new_notification->document_id = $PR->id;
@@ -364,25 +375,25 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->data = $data;
                         $new_notification->user_data = $users;
                         $new_notification->save();
-                        
+
                         $PR->role_approve_2 = $pr_config->role_id_2;
                         $PR->save();
                     }
                 }
             }
             // END MAKE NOTIF
-            
+
             DB::commit();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Created');
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$PR->id)->with('success', 'Purchase Requisition Created');
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $PR->id)->with('success', 'Purchase Requisition Created');
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $PR->id)->with('success', 'Purchase Requisition Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($route == "/purchase_requisition"){
+            if ($route == "/purchase_requisition") {
                 return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
-            }elseif($route == "/purchase_requisition_repair"){
+            } elseif ($route == "/purchase_requisition_repair") {
                 return redirect()->route('purchase_requisition_repair.create')->with('error', $e->getMessage());
             }
         }
@@ -401,29 +412,28 @@ class PurchaseRequisitionController extends Controller
             $PR->status = 1;
             $PR->type = $datas->type;
             $PR->description = 'PR Consolidation';
-            if($route == '/purchase_requisition'){
+            if ($route == '/purchase_requisition') {
                 $PR->business_unit_id = 1;
-
-            }elseif($route == '/purchase_requisition_repair'){
+            } elseif ($route == '/purchase_requisition_repair') {
                 $PR->business_unit_id = 2;
             }
             $PR->user_id = Auth::user()->id;
             $PR->branch_id = Auth::user()->branch->id;
             $PR->save();
 
-            foreach($datas->checkedPR as $pr_id){
+            foreach ($datas->checkedPR as $pr_id) {
                 $modelPR = PurchaseRequisition::findOrFail($pr_id);
                 $modelPR->status = 6;
                 $modelPR->purchase_requisition_id = $PR->id;
                 $modelPR->update();
-                if($datas->type == 1){
-                    foreach($modelPR->purchaseRequisitionDetails as $PRD){
+                if ($datas->type == 1) {
+                    foreach ($modelPR->purchaseRequisitionDetails as $PRD) {
 
                         $status = 0;
-                        $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
-                        if(count($modelPRDs) > 0){
-                            foreach($modelPRDs as $modelPRD){
-                                if($modelPRD->material_id == $PRD->material_id && $modelPRD->alocation == $PRD->alocation && $modelPRD->required_date == $PRD->required_date && $modelPRD->project_id == $PRD->project_id){
+                        $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id', $PR->id)->get();
+                        if (count($modelPRDs) > 0) {
+                            foreach ($modelPRDs as $modelPRD) {
+                                if ($modelPRD->material_id == $PRD->material_id && $modelPRD->alocation == $PRD->alocation && $modelPRD->required_date == $PRD->required_date && $modelPRD->project_id == $PRD->project_id) {
                                     $modelPRD->quantity += $PRD->quantity;
                                     $modelPRD->update();
 
@@ -431,8 +441,8 @@ class PurchaseRequisitionController extends Controller
                                 }
                             }
                         }
-                        
-                        if($status == 0){
+
+                        if ($status == 0) {
                             $modelPRD = new PurchaseRequisitionDetail;
                             $modelPRD->purchase_requisition_id = $PR->id;
                             $modelPRD->material_id = $PRD->material_id;
@@ -440,23 +450,23 @@ class PurchaseRequisitionController extends Controller
                             $modelPRD->reserved = $PRD->reserved;
                             $modelPRD->alocation = $PRD->alocation;
                             $modelPRD->required_date = $PRD->required_date;
-                            if($PRD->user_id == null){
+                            if ($PRD->user_id == null) {
                                 $modelPRD->user_id = $PRD->purchaseRequisition->user_id;
                                 $modelPRD->project_id = $PRD->project_id;
-                            }else{
+                            } else {
                                 $modelPRD->user_id = $PRD->user_id;
                                 $modelPRD->project_id = $PRD->project_id;
                             }
-                            $modelPRD->save();                            
+                            $modelPRD->save();
                         }
                     }
-                }else{
-                    foreach($modelPR->purchaseRequisitionDetails as $PRD){
+                } else {
+                    foreach ($modelPR->purchaseRequisitionDetails as $PRD) {
                         $status = 0;
-                        $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id',$PR->id)->get();
-                        if(count($modelPRDs) > 0){
-                            foreach($modelPRDs as $modelPRD){
-                                if($modelPRD->resource_id == $PRD->resource_id && $modelPRD->required_date == $PRD->required_date && $modelPRD->project_id == $PRD->project_id){
+                        $modelPRDs = PurchaseRequisitionDetail::where('purchase_requisition_id', $PR->id)->get();
+                        if (count($modelPRDs) > 0) {
+                            foreach ($modelPRDs as $modelPRD) {
+                                if ($modelPRD->resource_id == $PRD->resource_id && $modelPRD->required_date == $PRD->required_date && $modelPRD->project_id == $PRD->project_id) {
                                     $modelPRD->quantity += $PRD->quantity;
                                     $modelPRD->update();
 
@@ -464,17 +474,17 @@ class PurchaseRequisitionController extends Controller
                                 }
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $modelPRD = new PurchaseRequisitionDetail;
                             $modelPRD->purchase_requisition_id = $PR->id;
                             $modelPRD->resource_id = $PRD->resource_id;
                             $modelPRD->quantity = $PRD->quantity;
                             $modelPRD->reserved = $PRD->reserved;
                             $modelPRD->required_date = $PRD->required_date;
-                            if($PRD->purchaseRequisition->user_id == null){
+                            if ($PRD->purchaseRequisition->user_id == null) {
                                 $modelPRD->user_id = $PRD->purchaseRequisition->user_id;
                                 $modelPRD->project_id = $PRD->project_id;
-                            }else{
+                            } else {
                                 $modelPRD->user_id = $PRD->user_id;
                                 $modelPRD->project_id = $PRD->project_id;
                             }
@@ -485,30 +495,30 @@ class PurchaseRequisitionController extends Controller
             }
 
             //MAKE NOTIFICATION
-            if($route == '/purchase_requisition'){
+            if ($route == '/purchase_requisition') {
                 $data = json_encode([
-                    'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been created, action required',
                     'time_info' => 'Created at',
                     'title' => 'Purchase Requisition',
-                    'url' => '/purchase_requisition/showApprove/'.$PR->id,
+                    'url' => '/purchase_requisition/showApprove/' . $PR->id,
                 ]);
-            }else if($route == '/purchase_requisition_repair'){
+            } else if ($route == '/purchase_requisition_repair') {
                 $data = json_encode([
-                    'text' => 'Purchase Requisition ('.$PR->number.') has been created, action required',
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been created, action required',
                     'time_info' => 'Created at',
                     'title' => 'Purchase Requisition',
-                    'url' => '/purchase_requisition_repair/showApprove/'.$PR->id,
+                    'url' => '/purchase_requisition_repair/showApprove/' . $PR->id,
                 ]);
             }
 
             $pr_value = 0;
-            foreach ($PR->purchaseRequisitionDetails as $prd) {
-                $pr_value += $prd->material->cost_standard_price * $prd->quantity;
-            }
+            // foreach ($PR->purchaseRequisitionDetails as $prd) {
+            //     $pr_value += $prd->material->cost_standard_price * $prd->quantity;
+            // }
             $approval_config = Configuration::get('approval-pr')[0];
-            foreach($approval_config->value as $pr_config){
-                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
-                    if($pr_config->role_id_1 != null){
+            foreach ($approval_config->value as $pr_config) {
+                if ($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value) {
+                    if ($pr_config->role_id_1 != null) {
                         $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
@@ -527,14 +537,14 @@ class PurchaseRequisitionController extends Controller
                         $PR->role_approve_1 = $pr_config->role_id_1;
                         $PR->save();
                     }
-                    
-                    if($pr_config->role_id_2 != null){
+
+                    if ($pr_config->role_id_2 != null) {
                         $users = User::where('role_id', $pr_config->role_id_2)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
                         $users = json_encode($users);
-                        
+
                         $new_notification = new Notification;
                         $new_notification->type = "Purchase Requisition";
                         $new_notification->document_id = $PR->id;
@@ -543,7 +553,7 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->data = $data;
                         $new_notification->user_data = $users;
                         $new_notification->save();
-                        
+
                         $PR->role_approve_2 = $pr_config->role_id_2;
                         $PR->save();
                     }
@@ -551,16 +561,16 @@ class PurchaseRequisitionController extends Controller
             }
 
             DB::commit();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Consolidation Created');
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$PR->id)->with('success', 'Purchase Requisition Consolidation Created');
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $PR->id)->with('success', 'Purchase Requisition Consolidation Created');
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $PR->id)->with('success', 'Purchase Requisition Consolidation Created');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($route == "/purchase_requisition"){
+            if ($route == "/purchase_requisition") {
                 return redirect()->route('purchase_requisition.indexConsolidation')->with('error', $e->getMessage());
-            }elseif($route == "/purchase_requisition_repair"){
+            } elseif ($route == "/purchase_requisition_repair") {
                 return redirect()->route('purchase_requisition_repair.indexConsolidation')->with('error', $e->getMessage());
             }
         }
@@ -578,13 +588,13 @@ class PurchaseRequisitionController extends Controller
         $route = $request->route()->getPrefix();
         $user_id = Auth::user()->id;
 
-        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $id)->orderBy('created_at','desc')->get();
+        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $id)->orderBy('created_at', 'desc')->get();
         foreach ($notifications as $notification) {
             $data = json_decode($notification->data);
-            if($data->url == "/purchase_requisition/".$id){
+            if ($data->url == "/purchase_requisition/" . $id) {
                 $user_datas = json_decode($notification->user_data);
                 foreach ($user_datas as $user_data) {
-                    if($user_id == $user_data->id){
+                    if ($user_id == $user_data->id) {
                         $user_data->status = 0;
                     }
                 }
@@ -595,72 +605,57 @@ class PurchaseRequisitionController extends Controller
 
         $approval_type = Configuration::get('approval-pr')[0]->type;
         $modelPR = PurchaseRequisition::findOrFail($id);
-        if($modelPR->status == 1){
+        if ($modelPR->status == 1) {
             $status = 'OPEN';
-        }
-        elseif($modelPR->status == 2){
+        } elseif ($modelPR->status == 2) {
             $status = 'APPROVED';
-        }
-        elseif($modelPR->status == 3){
+        } elseif ($modelPR->status == 3) {
             $status = 'NEEDS REVISION';
-        }
-        elseif($modelPR->status == 4){
+        } elseif ($modelPR->status == 4) {
             $status = 'REVISED';
-        }
-        elseif($modelPR->status == 5){
+        } elseif ($modelPR->status == 5) {
             $status = 'REJECTED';
-        }
-        elseif($modelPR->status == 0 || $modelPR->status == 7){
+        } elseif ($modelPR->status == 0 || $modelPR->status == 7) {
             $status = 'ORDERED';
-        }
-        elseif($modelPR->status == 6){
+        } elseif ($modelPR->status == 6) {
             $status = 'CONSOLIDATED';
-        }
-        elseif($modelPR->status == 8){
+        } elseif ($modelPR->status == 8) {
             $status = 'CANCELED';
-        }
-        elseif($modelPR->status == 9){
+        } elseif ($modelPR->status == 9) {
             $status = 'APPROVED PARTIALLY';
         }
 
         $po = true;
-        $modelPO = PurchaseOrder::where('purchase_requisition_id',$modelPR->id)->where('status','!=',8)->get();
-        if(count($modelPO) > 0 || $modelPR->status != 2){
+        $modelPO = PurchaseOrder::where('purchase_requisition_id', $modelPR->id)->where('status', '!=', 8)->get();
+        if (count($modelPO) > 0 || $modelPR->status != 2) {
             $po = false;
         }
-        return view('purchase_requisition.show', compact('modelPR','route','status','po','approval_type'));
+        return view('purchase_requisition.show', compact('modelPR', 'route', 'status', 'po', 'approval_type'));
     }
 
     public function showApprove(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
-        if($modelPR->status == 1){
+        if ($modelPR->status == 1) {
             $status = 'OPEN';
-        }
-        elseif($modelPR->status == 2){
+        } elseif ($modelPR->status == 2) {
             $status = 'APPROVED';
-        }
-        elseif($modelPR->status == 3){
+        } elseif ($modelPR->status == 3) {
             $status = 'NEEDS REVISION';
-        }
-        elseif($modelPR->status == 4){
+        } elseif ($modelPR->status == 4) {
             $status = 'REVISED';
-        }
-        elseif($modelPR->status == 5){
+        } elseif ($modelPR->status == 5) {
             $status = 'REJECTED';
-        }
-        elseif($modelPR->status == 0 || $modelPR->status == 7){
+        } elseif ($modelPR->status == 0 || $modelPR->status == 7) {
             $status = 'ORDERED';
-        }
-        elseif($modelPR->status == 6){
+        } elseif ($modelPR->status == 6) {
             $status = 'CONSOLIDATED';
-        }
-        elseif($modelPR->status == 9){
+        } elseif ($modelPR->status == 9) {
             $status = 'APPROVED PARTIALLY';
         }
 
-        return view('purchase_requisition.showApprove', compact('modelPR','route','status'));
+        return view('purchase_requisition.showApprove', compact('modelPR', 'route', 'status'));
     }
     /**
      * Show the form for editing the specified resource.
@@ -668,18 +663,18 @@ class PurchaseRequisitionController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit(Request $request,$id)
+    public function edit(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
         $modelPR = PurchaseRequisition::findOrFail($id);
 
-        $PRD = PurchaseRequisitionDetail::where('purchase_requisition_id',$modelPR->id)->with('material','project','resource','material.uom','purchaseRequisition')->get();
+        $PRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $modelPR->id)->with('material', 'project', 'resource', 'material.uom', 'purchaseRequisition')->get();
         $modelPRD = Collection::make();
-        foreach($PRD as $data){
-            if($data->purchaseRequisition->type == 1){
+        foreach ($PRD as $data) {
+            if ($data->purchaseRequisition->type == 1) {
                 $modelPRD->push([
-                    "id" => $data->id, 
-                    "material_id" => $data->material_id, 
+                    "id" => $data->id,
+                    "material_id" => $data->material_id,
                     "material_name" => $data->material->description,
                     "material_code" => $data->material->code,
                     "quantity" => $data->quantity,
@@ -689,10 +684,10 @@ class PurchaseRequisitionController extends Controller
                     "required_date" => $data->required_date,
                     "alocation" => $data->alocation,
                 ]);
-            }elseif($data->purchaseRequisition->type == 2){
+            } elseif ($data->purchaseRequisition->type == 2) {
                 $modelPRD->push([
-                    "id" => $data->id, 
-                    "resource_id" => $data->resource_id, 
+                    "id" => $data->id,
+                    "resource_id" => $data->resource_id,
                     "resource_name" => $data->resource->description,
                     "resource_code" => $data->resource->code,
                     "quantity" => $data->quantity,
@@ -702,26 +697,26 @@ class PurchaseRequisitionController extends Controller
                     "required_date" => $data->required_date,
                     "alocation" => $data->alocation,
                 ]);
-            }elseif($data->purchaseRequisition->type == 3){
+            } elseif ($data->purchaseRequisition->type == 3) {
                 $modelPRD->push([
-                    "id" => $data->id, 
-                    "project_number" => $data->project->number, 
+                    "id" => $data->id,
+                    "project_number" => $data->project->number,
                     "wbs_number" => $data->wbs->number,
                     "wbs_description" => $data->wbs->description,
                     "job_order" => $data->job_order,
                 ]);
             }
         }
-        
+
         $materials = Material::orderBy('code')->get()->jsonSerialize();
         $resources = Resource::orderBy('code')->get()->jsonSerialize();
 
-        if($route == "/purchase_requisition"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get()->jsonSerialize();
-        }elseif($route == "/purchase_requisition_repair"){
-            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get()->jsonSerialize();
+        if ($route == "/purchase_requisition") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 1)->get()->jsonSerialize();
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 2)->get()->jsonSerialize();
         }
-        return view('purchase_requisition.edit', compact('modelPR','modelPRD','materials','resources','route','modelProject'));
+        return view('purchase_requisition.edit', compact('modelPR', 'modelPRD', 'materials', 'resources', 'route', 'modelProject'));
     }
 
     /**
@@ -733,13 +728,13 @@ class PurchaseRequisitionController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $route = $request->route()->getPrefix();    
+        $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $user_id = Auth::user()->id;
         DB::beginTransaction();
         try {
             $prd_id = [];
-            foreach($datas->deletedId as $id){
+            foreach ($datas->deletedId as $id) {
                 $modelPRD = PurchaseRequisitionDetail::findOrFail($id);
                 $modelPRD->delete();
             }
@@ -747,10 +742,10 @@ class PurchaseRequisitionController extends Controller
             $PR->role_decision_1 = null;
             $PR->role_decision_2 = null;
             $PR->description = $datas->description;
-            if($PR->status == 3){
+            if ($PR->status == 3) {
                 $PR->status = 4;
 
-                $notification = Notification::where('type', "Purchase Requisition")->where('document_id',$PR->id)->orderBy('created_at','desc')->first();
+                $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $PR->id)->orderBy('created_at', 'desc')->first();
                 $user_data = @json_decode($notification->user_data);
                 foreach ($user_data as $data) {
                     $data->status = 0;
@@ -759,18 +754,18 @@ class PurchaseRequisitionController extends Controller
                 $notification->update();
             }
             $PR->update();
-            if($PR->type == 1){
-                foreach($datas->datas as $data){
-                    if($data->required_date != null && $data->required_date != ''){
+            if ($PR->type == 1) {
+                foreach ($datas->datas as $data) {
+                    if ($data->required_date != null && $data->required_date != '') {
                         $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
                         $required_date = $required_date->format('Y-m-d');
-                    }else{
+                    } else {
                         $required_date = null;
                     }
-                    if($data->prd_id != null){
+                    if ($data->prd_id != null) {
                         $status = 0;
-                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->id != $data->id && $PurchaseRD->required_date == $required_date){
+                        foreach ($PR->purchaseRequisitionDetails as $PurchaseRD) {
+                            if ($PurchaseRD->material_id == $data->material_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->id != $data->id && $PurchaseRD->required_date == $required_date) {
                                 $quantity = $PurchaseRD->quantity + $data->quantity;
 
                                 $PRD = new PurchaseRequisitionDetail;
@@ -779,35 +774,35 @@ class PurchaseRequisitionController extends Controller
                                 $PRD->material_id = $data->material_id;
                                 $PRD->alocation = $data->alocation;
                                 $PRD->required_date = $required_date;
-                                if($data->project_id != null){
+                                if ($data->project_id != null) {
                                     $PRD->project_id = $data->project_id;
                                 }
                                 $PRD->user_id = Auth::user()->id;
                                 $PRD->save();
-                                array_push($prd_id,$PurchaseRD->id,$data->id);
-    
+                                array_push($prd_id, $PurchaseRD->id, $data->id);
+
                                 $status = 1;
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $PRD = PurchaseRequisitionDetail::find($data->id);
                             $PRD->material_id = $data->material_id;
                             $PRD->quantity = $data->quantity;
                             $PRD->alocation = $data->alocation;
-                            if($data->project_id != null){
+                            if ($data->project_id != null) {
                                 $PRD->project_id = $data->project_id;
                             }
                             $PRD->required_date = $required_date;
                             $PRD->update();
                         }
-                    }else{
+                    } else {
                         $status = 0;
-                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                            if($PurchaseRD->material_id == $data->material_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date){
-                                $PurchaseRD->quantity +=$data->quantity;
+                        foreach ($PR->purchaseRequisitionDetails as $PurchaseRD) {
+                            if ($PurchaseRD->material_id == $data->material_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date) {
+                                $PurchaseRD->quantity += $data->quantity;
                                 $PurchaseRD->alocation = $data->alocation;
                                 $PurchaseRD->required_date = $required_date;
-                                if($data->project_id != null){
+                                if ($data->project_id != null) {
                                     $PurchaseRD->project_id = $data->project_id;
                                 }
                                 $PurchaseRD->update();
@@ -815,14 +810,14 @@ class PurchaseRequisitionController extends Controller
                                 $status = 1;
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->quantity = $data->quantity;
                             $PRD->material_id = $data->material_id;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;
-                            if($data->project_id != null){
+                            if ($data->project_id != null) {
                                 $PRD->project_id = $data->project_id;
                             }
                             $PRD->user_id = Auth::user()->id;
@@ -831,18 +826,18 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
                 $this->destroy(json_encode($prd_id));
-            }elseif($PR->type == 2){
-                foreach($datas->datas as $data){
-                    if($data->required_date != null && $data->required_date != ''){
+            } elseif ($PR->type == 2) {
+                foreach ($datas->datas as $data) {
+                    if ($data->required_date != null && $data->required_date != '') {
                         $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
                         $required_date = $required_date->format('Y-m-d');
-                    }else{
+                    } else {
                         $required_date = null;
                     }
-                    if($data->prd_id != null){
+                    if ($data->prd_id != null) {
                         $status = 0;
-                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->id != $data->id && $PurchaseRD->required_date == $required_date){
+                        foreach ($PR->purchaseRequisitionDetails as $PurchaseRD) {
+                            if ($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->id != $data->id && $PurchaseRD->required_date == $required_date) {
                                 $quantity = $PurchaseRD->quantity + $data->quantity;
 
                                 $PRD = new PurchaseRequisitionDetail;
@@ -851,34 +846,34 @@ class PurchaseRequisitionController extends Controller
                                 $PRD->resource_id = $data->resource_id;
                                 $PRD->alocation = $data->alocation;
                                 $PRD->required_date = $required_date;
-                                if($data->project_id != null){
+                                if ($data->project_id != null) {
                                     $PRD->project_id = $data->project_id;
                                 }
                                 $PRD->user_id = Auth::user()->id;
                                 $PRD->save();
-                                array_push($prd_id,$PurchaseRD->id,$data->id);
-    
+                                array_push($prd_id, $PurchaseRD->id, $data->id);
+
                                 $status = 1;
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $PRD = PurchaseRequisitionDetail::find($data->id);
                             $PRD->quantity = $data->quantity;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;
-                            if($data->project_id != null){
+                            if ($data->project_id != null) {
                                 $PRD->project_id = $data->project_id;
                             }
                             $PRD->update();
                         }
-                    }else{
+                    } else {
                         $status = 0;
-                        foreach($PR->purchaseRequisitionDetails as $PurchaseRD){
-                            if($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->required_date == $required_date){
-                                $PurchaseRD->quantity +=$data->quantity;
+                        foreach ($PR->purchaseRequisitionDetails as $PurchaseRD) {
+                            if ($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->required_date == $required_date) {
+                                $PurchaseRD->quantity += $data->quantity;
                                 $PurchaseRD->alocation = $data->alocation;
                                 $PurchaseRD->required_date = $required_date;
-                                if($data->project_id != null){
+                                if ($data->project_id != null) {
                                     $PurchaseRD->project_id = $data->project_id;
                                 }
                                 $PurchaseRD->update();
@@ -886,14 +881,14 @@ class PurchaseRequisitionController extends Controller
                                 $status = 1;
                             }
                         }
-                        if($status == 0){
+                        if ($status == 0) {
                             $PRD = new PurchaseRequisitionDetail;
                             $PRD->purchase_requisition_id = $PR->id;
                             $PRD->quantity = $data->quantity;
                             $PRD->resource_id = $data->resource_id;
                             $PRD->alocation = $data->alocation;
                             $PRD->required_date = $required_date;
-                            if($data->project_id != null){
+                            if ($data->project_id != null) {
                                 $PRD->project_id = $data->project_id;
                             }
                             $PRD->user_id = Auth::user()->id;
@@ -902,9 +897,9 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
                 $this->destroy(json_encode($prd_id));
-            }elseif($PR->type == 3){
-                foreach($datas->datas as $data){
-                    if($data->prd_id == null){
+            } elseif ($PR->type == 3) {
+                foreach ($datas->datas as $data) {
+                    if ($data->prd_id == null) {
                         $PRD = new PurchaseRequisitionDetail;
                         $PRD->purchase_requisition_id = $PR->id;
                         $PRD->quantity = 1;
@@ -919,28 +914,28 @@ class PurchaseRequisitionController extends Controller
             }
 
             //MAKE NOTIFICATION
-            if($route == '/purchase_requisition'){
+            if ($route == '/purchase_requisition') {
                 $data = json_encode([
-                    'text' => 'Purchase Requisition ('.$PR->number.') has been updated, action required',
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been updated, action required',
                     'time_info' => 'Updated at',
                     'title' => 'Purchase Requisition',
-                    'url' => '/purchase_requisition/showApprove/'.$PR->id,
+                    'url' => '/purchase_requisition/showApprove/' . $PR->id,
                 ]);
-            }else if($route == '/purchase_requisition_repair'){
+            } else if ($route == '/purchase_requisition_repair') {
                 $data = json_encode([
-                    'text' => 'Purchase Requisition ('.$PR->number.') has been updated, action required',
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been updated, action required',
                     'time_info' => 'Updated at',
                     'title' => 'Purchase Requisition',
-                    'url' => '/purchase_requisition_repair/showApprove/'.$PR->id,
+                    'url' => '/purchase_requisition_repair/showApprove/' . $PR->id,
                 ]);
             }
 
-            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails);
-            
+            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails, $datas->pr_type);
+
             $approval_config = Configuration::get('approval-pr')[0];
-            foreach($approval_config->value as $pr_config){
-                if($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value){
-                    if($pr_config->role_id_1 != null){
+            foreach ($approval_config->value as $pr_config) {
+                if ($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value) {
+                    if ($pr_config->role_id_1 != null) {
                         $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
@@ -959,14 +954,14 @@ class PurchaseRequisitionController extends Controller
                         $PR->role_approve_1 = $pr_config->role_id_1;
                         $PR->save();
                     }
-                    
-                    if($pr_config->role_id_2 != null){
+
+                    if ($pr_config->role_id_2 != null) {
                         $users = User::where('role_id', $pr_config->role_id_2)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
                         $users = json_encode($users);
-                        
+
                         $new_notification = new Notification;
                         $new_notification->type = "Purchase Requisition";
                         $new_notification->document_id = $PR->id;
@@ -975,7 +970,7 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->data = $data;
                         $new_notification->user_data = $users;
                         $new_notification->save();
-                        
+
                         $PR->role_approve_2 = $pr_config->role_id_2;
                         $PR->save();
                     }
@@ -983,17 +978,17 @@ class PurchaseRequisitionController extends Controller
             }
 
             DB::commit();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.show',$PR->id)->with('success', 'Purchase Requisition Updated');
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.show',$PR->id)->with('success', 'Purchase Requisition Updated');
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $PR->id)->with('success', 'Purchase Requisition Updated');
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $PR->id)->with('success', 'Purchase Requisition Updated');
             }
         } catch (\Exception $e) {
             DB::rollback();
-            if($route == "/purchase_requisition"){
-                return redirect()->route('purchase_requisition.edit',$PR->id)->with('error', $e->getMessage());
-            }elseif($route == "/purchase_requisition_repair"){
-                return redirect()->route('purchase_requisition_repair.edit',$PR->id)->with('error', $e->getMessage());
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.edit', $PR->id)->with('error', $e->getMessage());
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.edit', $PR->id)->with('error', $e->getMessage());
             }
         }
     }
@@ -1012,28 +1007,29 @@ class PurchaseRequisitionController extends Controller
         try {
             $modelPRD->delete();
             DB::commit();
-            return response('ok',Response::HTTP_OK);
-        } catch(\Illuminate\Database\QueryException $e){
+            return response('ok', Response::HTTP_OK);
+        } catch (\Illuminate\Database\QueryException $e) {
             DB::rollback();
-            return redirect()->route('bom.edit',$bom->id)->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
-        }  
+            return redirect()->route('bom.edit', $bom->id)->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
+        }
     }
 
-    public function destroy($id){
+    public function destroy($id)
+    {
         $prd_id = json_decode($id);
 
         DB::beginTransaction();
         try {
-            foreach($prd_id as $id){
+            foreach ($prd_id as $id) {
                 $modelPRD = PurchaseRequisitionDetail::findOrFail($id);
                 $modelPRD->delete();
             }
             DB::commit();
             return true;
-        } catch(\Illuminate\Database\QueryException $e){
+        } catch (\Illuminate\Database\QueryException $e) {
             DB::rollback();
             return redirect()->route('purchase_requisition.create')->with('error', 'Can\'t Delete The Material Because It Is Still Being Used');
-        }  
+        }
     }
     public function approval(Request $request)
     {
@@ -1042,13 +1038,13 @@ class PurchaseRequisitionController extends Controller
         $approval_config = Configuration::get('approval-pr')[0];
         $url_notif = "showApprove";
         $user_role = Auth::user()->role_id;
-        
+
         DB::beginTransaction();
-        try{
+        try {
             $modelPR = PurchaseRequisition::findOrFail($datas->pr_id);
             $creator_role = $modelPR->user->role_id;
-            if($datas->status == "approve"){
-                if($approval_config->type == "Single Approval"){
+            if ($datas->status == "approve") {
+                if ($approval_config->type == "Single Approval") {
                     $modelPR->status = 2;
                     $modelPR->revision_description = $datas->desc;
                     $modelPR->approved_by_1 = Auth::user()->id;
@@ -1056,8 +1052,7 @@ class PurchaseRequisitionController extends Controller
                     $modelPR->approval_date_1 = Carbon::now();
                     $modelPR->update();
 
-                    $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                    where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
+                    $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->first();
 
                     $user_data = @json_decode($notification->user_data);
                     foreach ($user_data as $data) {
@@ -1071,15 +1066,15 @@ class PurchaseRequisitionController extends Controller
                     foreach ($users as $user) {
                         $user->status = 1;
                     }
-                    $users = json_encode($users);  
-                                      
+                    $users = json_encode($users);
+
                     $data = json_encode([
-                        'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                        'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy1->name,
                         'time_info' => 'Approved at',
                         'title' => 'Purchase Requisition',
-                        'url' => $route.'/'.$modelPR->id,
+                        'url' => $route . '/' . $modelPR->id,
                     ]);
-                  
+
                     $new_notification = new Notification;
                     $new_notification->type = "Purchase Requisition";
                     $new_notification->document_id = $modelPR->id;
@@ -1088,9 +1083,8 @@ class PurchaseRequisitionController extends Controller
                     $new_notification->user_data = $users;
                     $new_notification->data = $data;
                     $new_notification->save();
-
-                }elseif($approval_config->type == "Two Step Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
+                } elseif ($approval_config->type == "Two Step Approval") {
+                    if ($modelPR->role_approve_1 == $user_role) {
                         $modelPR->status = 2;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
@@ -1099,9 +1093,8 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous Notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
-                        
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
+
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1113,12 +1106,12 @@ class PurchaseRequisitionController extends Controller
 
                         //MAKE NOTIFICATION
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy1->name,
                             'time_info' => 'Approved at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
-                        
+
                         $users = User::where('role_id', $creator_role)->select('id')->get();
                         foreach ($users as $user) {
                             $user->status = 1;
@@ -1132,13 +1125,13 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->user_data = $users;
                         $new_notification->data = $data;
                         $new_notification->save();
-                        
+
                         $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
                         foreach ($approver_2 as $user) {
                             $user->status = 1;
                         }
 
-                        if($creator_role != $modelPR->role_approve_2){
+                        if ($creator_role != $modelPR->role_approve_2) {
                             $approver_2 = json_encode($approver_2);
                             $new_notification = new Notification;
                             $new_notification->type = "Purchase Requisition";
@@ -1149,7 +1142,7 @@ class PurchaseRequisitionController extends Controller
                             $new_notification->data = $data;
                             $new_notification->save();
                         }
-                    }elseif($modelPR->role_approve_2 == $user_role){
+                    } elseif ($modelPR->role_approve_2 == $user_role) {
                         $modelPR->status = 9;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
@@ -1158,8 +1151,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1174,13 +1166,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
-                        $users = json_encode($users);  
-                                        
+                        $users = json_encode($users);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy2->name,
                             'time_info' => 'Approved at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1197,13 +1189,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($approver_1 as $user) {
                             $user->status = 1;
                         }
-                        $approver_1 = json_encode($approver_1);  
-                                        
+                        $approver_1 = json_encode($approver_1);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name.', next action required',
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy2->name . ', next action required',
                             'time_info' => 'Approved at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/showApprove/'.$modelPR->id,
+                            'url' => $route . '/showApprove/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1215,10 +1207,8 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->data = $data;
                         $new_notification->save();
                     }
-                }
-                
-                elseif($approval_config->type == "Joint Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
+                } elseif ($approval_config->type == "Joint Approval") {
+                    if ($modelPR->role_approve_1 == $user_role) {
                         $modelPR->status = 9;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
@@ -1227,8 +1217,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1237,8 +1226,8 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                        
-                        if($modelPR->role_decision_1 == "approve" && $modelPR->role_decision_2 == "approve"){
+
+                        if ($modelPR->role_decision_1 == "approve" && $modelPR->role_decision_2 == "approve") {
                             $modelPR->status = 2;
                             $modelPR->update();
 
@@ -1247,13 +1236,13 @@ class PurchaseRequisitionController extends Controller
                             foreach ($users as $user) {
                                 $user->status = 1;
                             }
-                            $users = json_encode($users);  
-                                            
+                            $users = json_encode($users);
+
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy1->name,
                                 'time_info' => 'Approved at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/'.$modelPR->id,
+                                'url' => $route . '/' . $modelPR->id,
                             ]);
 
                             $new_notification = new Notification;
@@ -1270,7 +1259,7 @@ class PurchaseRequisitionController extends Controller
                             foreach ($approver_2 as $user) {
                                 $user->status = 1;
                             }
-                            $approver_2 = json_encode($approver_2);  
+                            $approver_2 = json_encode($approver_2);
 
                             $new_notification = new Notification;
                             $new_notification->type = "Purchase Requisition";
@@ -1280,19 +1269,19 @@ class PurchaseRequisitionController extends Controller
                             $new_notification->user_data = $approver_2;
                             $new_notification->data = $data;
                             $new_notification->save();
-                        }elseif($modelPR->role_decision_2 != "approve" || $modelPR->role_decision_2 == null){
+                        } elseif ($modelPR->role_decision_2 != "approve" || $modelPR->role_decision_2 == null) {
                             //MAKE NOTIFICATION
                             $users = User::where('role_id', $creator_role)->select('id')->get();
                             foreach ($users as $user) {
                                 $user->status = 1;
                             }
-                            $users = json_encode($users);  
-                                            
+                            $users = json_encode($users);
+
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name,
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy1->name,
                                 'time_info' => 'Approved at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/'.$modelPR->id,
+                                'url' => $route . '/' . $modelPR->id,
                             ]);
 
                             $new_notification = new Notification;
@@ -1309,13 +1298,13 @@ class PurchaseRequisitionController extends Controller
                             foreach ($approver_2 as $user) {
                                 $user->status = 1;
                             }
-                            $approver_2 = json_encode($approver_2);  
-                                            
+                            $approver_2 = json_encode($approver_2);
+
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy1->name.', next action required',
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy1->name . ', next action required',
                                 'time_info' => 'Approved at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/showApprove/'.$modelPR->id,
+                                'url' => $route . '/showApprove/' . $modelPR->id,
                             ]);
 
                             $new_notification = new Notification;
@@ -1327,17 +1316,16 @@ class PurchaseRequisitionController extends Controller
                             $new_notification->data = $data;
                             $new_notification->save();
                         }
-                    }elseif($modelPR->role_approve_2 == $user_role){
+                    } elseif ($modelPR->role_approve_2 == $user_role) {
                         $modelPR->status = 9;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
                         $modelPR->role_decision_2 = $datas->status;
                         $modelPR->approval_date_2 = Carbon::now();
                         $modelPR->update();
-                        
+
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1346,8 +1334,8 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                        
-                        if($modelPR->role_decision_1 == "approve" && $modelPR->role_decision_2 == "approve"){
+
+                        if ($modelPR->role_decision_1 == "approve" && $modelPR->role_decision_2 == "approve") {
                             $modelPR->status = 2;
                             $modelPR->update();
 
@@ -1356,13 +1344,13 @@ class PurchaseRequisitionController extends Controller
                             foreach ($users as $user) {
                                 $user->status = 1;
                             }
-                            $users = json_encode($users);  
-                                            
+                            $users = json_encode($users);
+
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name,
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy2->name,
                                 'time_info' => 'Approved at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/'.$modelPR->id,
+                                'url' => $route . '/' . $modelPR->id,
                             ]);
 
                             $new_notification = new Notification;
@@ -1379,7 +1367,7 @@ class PurchaseRequisitionController extends Controller
                             foreach ($approver_1 as $user) {
                                 $user->status = 1;
                             }
-                            $approver_1 = json_encode($approver_1);  
+                            $approver_1 = json_encode($approver_1);
 
                             $new_notification = new Notification;
                             $new_notification->type = "Purchase Requisition";
@@ -1389,19 +1377,19 @@ class PurchaseRequisitionController extends Controller
                             $new_notification->user_data = $approver_1;
                             $new_notification->data = $data;
                             $new_notification->save();
-                        }elseif($modelPR->role_decision_1 != "approve" || $modelPR->role_decision_1 == null){
+                        } elseif ($modelPR->role_decision_1 != "approve" || $modelPR->role_decision_1 == null) {
                             //MAKE NOTIFICATION
                             $users = User::where('role_id', $creator_role)->select('id')->get();
                             foreach ($users as $user) {
                                 $user->status = 1;
                             }
-                            $users = json_encode($users);  
-                                            
+                            $users = json_encode($users);
+
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name,
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy2->name,
                                 'time_info' => 'Approved at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/'.$modelPR->id,
+                                'url' => $route . '/' . $modelPR->id,
                             ]);
 
                             $new_notification = new Notification;
@@ -1418,13 +1406,13 @@ class PurchaseRequisitionController extends Controller
                             foreach ($approver_1 as $user) {
                                 $user->status = 1;
                             }
-                            $approver_1 = json_encode($approver_1);  
-                                            
+                            $approver_1 = json_encode($approver_1);
+
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been approved by '.$modelPR->approvedBy2->name.', next action required',
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been approved by ' . $modelPR->approvedBy2->name . ', next action required',
                                 'time_info' => 'Approved at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/showApprove/'.$modelPR->id,
+                                'url' => $route . '/showApprove/' . $modelPR->id,
                             ]);
 
                             $new_notification = new Notification;
@@ -1440,16 +1428,13 @@ class PurchaseRequisitionController extends Controller
                 }
 
                 DB::commit();
-                if($route == "/purchase_requisition"){
-                    return redirect()->route('purchase_requisition.show',$datas->pr_id)->with('success', 'Purchase Requisition Approved');
-                }elseif($route == "/purchase_requisition_repair"){
-                    return redirect()->route('purchase_requisition_repair.show',$datas->pr_id)->with('success', 'Purchase Requisition Approved');
+                if ($route == "/purchase_requisition") {
+                    return redirect()->route('purchase_requisition.show', $datas->pr_id)->with('success', 'Purchase Requisition Approved');
+                } elseif ($route == "/purchase_requisition_repair") {
+                    return redirect()->route('purchase_requisition_repair.show', $datas->pr_id)->with('success', 'Purchase Requisition Approved');
                 }
-            }
-            
-            
-            elseif($datas->status == "need-revision"){
-                if($approval_config->type == "Single Approval"){
+            } elseif ($datas->status == "need-revision") {
+                if ($approval_config->type == "Single Approval") {
                     $modelPR->status = 3;
                     $modelPR->revision_description = $datas->desc;
                     $modelPR->approved_by_1 = Auth::user()->id;
@@ -1457,8 +1442,7 @@ class PurchaseRequisitionController extends Controller
                     $modelPR->approval_date_1 = Carbon::now();
                     $modelPR->update();
 
-                    $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                    where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
+                    $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->first();
 
                     $user_data = @json_decode($notification->user_data);
                     foreach ($user_data as $data) {
@@ -1472,12 +1456,12 @@ class PurchaseRequisitionController extends Controller
                     foreach ($users as $user) {
                         $user->status = 1;
                     }
-                    $users = json_encode($users);                    
+                    $users = json_encode($users);
                     $data = json_encode([
-                        'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.', revision needed',
+                        'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy1->name . ', revision needed',
                         'time_info' => 'Checked at',
                         'title' => 'Purchase Requisition',
-                        'url' => $route.'/edit/'.$modelPR->id,
+                        'url' => $route . '/edit/' . $modelPR->id,
                     ]);
                     $new_notification = new Notification;
                     $new_notification->type = "Purchase Requisition";
@@ -1487,10 +1471,8 @@ class PurchaseRequisitionController extends Controller
                     $new_notification->user_data = $users;
                     $new_notification->data = $data;
                     $new_notification->save();
-                }
-                
-                elseif($approval_config->type == "Two Step Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
+                } elseif ($approval_config->type == "Two Step Approval") {
+                    if ($modelPR->role_approve_1 == $user_role) {
                         $modelPR->status = 3;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
@@ -1499,8 +1481,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1509,13 +1490,13 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                        
+
                         //MAKE NOTIFICATION
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.', revision needed',
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy1->name . ', revision needed',
                             'time_info' => 'Checked at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/edit/'.$modelPR->id,
+                            'url' => $route . '/edit/' . $modelPR->id,
                         ]);
                         $users = User::where('role_id', $creator_role)->select('id')->get();
                         foreach ($users as $user) {
@@ -1530,14 +1511,14 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->user_data = $users;
                         $new_notification->data = $data;
                         $new_notification->save();
-                        
-                        if($creator_role != $modelPR->role_approve_2){
+
+                        if ($creator_role != $modelPR->role_approve_2) {
                             //MAKE NOTIFICATION
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.'',
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy1->name . '',
                                 'time_info' => 'Checked at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/'.$modelPR->id,
+                                'url' => $route . '/' . $modelPR->id,
                             ]);
 
                             $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
@@ -1554,8 +1535,7 @@ class PurchaseRequisitionController extends Controller
                             $new_notification->data = $data;
                             $new_notification->save();
                         }
-
-                    }elseif($modelPR->role_approve_2 == $user_role){
+                    } elseif ($modelPR->role_approve_2 == $user_role) {
                         $modelPR->status = 3;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
@@ -1564,8 +1544,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1574,13 +1553,13 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                        
+
                         //MAKE NOTIFICATION
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy2->name.', revision needed',
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy2->name . ', revision needed',
                             'time_info' => 'Checked at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/edit/'.$modelPR->id,
+                            'url' => $route . '/edit/' . $modelPR->id,
                         ]);
                         $users = User::where('role_id', $creator_role)->select('id')->get();
                         foreach ($users as $user) {
@@ -1596,10 +1575,8 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->data = $data;
                         $new_notification->save();
                     }
-                }
-                
-                elseif($approval_config->type == "Joint Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
+                } elseif ($approval_config->type == "Joint Approval") {
+                    if ($modelPR->role_approve_1 == $user_role) {
                         $modelPR->status = 3;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
@@ -1608,8 +1585,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1624,13 +1600,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
-                        $users = json_encode($users);  
-                                        
+                        $users = json_encode($users);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name.', revision needed',
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy1->name . ', revision needed',
                             'time_info' => 'Checked at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/edit/'.$modelPR->id,
+                            'url' => $route . '/edit/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1647,13 +1623,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($approver_2 as $user) {
                             $user->status = 1;
                         }
-                        $approver_2 = json_encode($approver_2);  
-                                        
+                        $approver_2 = json_encode($approver_2);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy1->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy1->name,
                             'time_info' => 'Checked at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1664,8 +1640,7 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->user_data = $approver_2;
                         $new_notification->data = $data;
                         $new_notification->save();
-                        
-                    }elseif($modelPR->role_approve_2 == $user_role){
+                    } elseif ($modelPR->role_approve_2 == $user_role) {
                         $modelPR->status = 3;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
@@ -1674,8 +1649,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1690,13 +1664,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
-                        $users = json_encode($users);  
-                                        
+                        $users = json_encode($users);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy2->name.', revision needed',
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy2->name . ', revision needed',
                             'time_info' => 'Checked at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/edit/'.$modelPR->id,
+                            'url' => $route . '/edit/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1713,13 +1687,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($approver_1 as $user) {
                             $user->status = 1;
                         }
-                        $approver_1 = json_encode($approver_1);  
-                                        
+                        $approver_1 = json_encode($approver_1);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been checked by '.$modelPR->approvedBy2->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been checked by ' . $modelPR->approvedBy2->name,
                             'time_info' => 'Checked at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1733,30 +1707,27 @@ class PurchaseRequisitionController extends Controller
                     }
                 }
                 DB::commit();
-                if($route == "/purchase_requisition"){
-                    return redirect()->route('purchase_requisition.show',$datas->pr_id)->with('success', 'Purchase Requisition Need Revision');
-                }elseif($route == "/purchase_requisition_repair"){
-                    return redirect()->route('purchase_requisition_repair.show',$datas->pr_id)->with('success', 'Purchase Requisition Need Revision');
+                if ($route == "/purchase_requisition") {
+                    return redirect()->route('purchase_requisition.show', $datas->pr_id)->with('success', 'Purchase Requisition Need Revision');
+                } elseif ($route == "/purchase_requisition_repair") {
+                    return redirect()->route('purchase_requisition_repair.show', $datas->pr_id)->with('success', 'Purchase Requisition Need Revision');
                 }
-            }
-            
-            elseif($datas->status == "reject"){
-                if($approval_config->type == "Single Approval"){
+            } elseif ($datas->status == "reject") {
+                if ($approval_config->type == "Single Approval") {
                     $modelPR->status = 5;
                     $modelPR->revision_description = $datas->desc;
                     $modelPR->approved_by_1 = Auth::user()->id;
                     $modelPR->role_decision_1 = $datas->status;
                     $modelPR->approval_date_1 = Carbon::now();
                     $modelPR->update();
-                    if($modelPR->type == 3){
-                        foreach($modelPR->purchaseRequisitionDetails as $PRD){
+                    if ($modelPR->type == 3) {
+                        foreach ($modelPR->purchaseRequisitionDetails as $PRD) {
                             $PRD->status = 0;
                             $PRD->update();
                         }
                     }
 
-                    $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                    where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->first();
+                    $notification = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->first();
 
                     $user_data = @json_decode($notification->user_data);
                     foreach ($user_data as $data) {
@@ -1770,12 +1741,12 @@ class PurchaseRequisitionController extends Controller
                     foreach ($users as $user) {
                         $user->status = 1;
                     }
-                    $users = json_encode($users);                    
+                    $users = json_encode($users);
                     $data = json_encode([
-                        'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                        'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy1->name,
                         'time_info' => 'Rejected at',
                         'title' => 'Purchase Requisition',
-                        'url' => $route.'/'.$modelPR->id,
+                        'url' => $route . '/' . $modelPR->id,
                     ]);
                     $new_notification = new Notification;
                     $new_notification->type = "Purchase Requisition";
@@ -1785,10 +1756,8 @@ class PurchaseRequisitionController extends Controller
                     $new_notification->user_data = $users;
                     $new_notification->data = $data;
                     $new_notification->save();
-                }
-                
-                elseif($approval_config->type == "Two Step Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
+                } elseif ($approval_config->type == "Two Step Approval") {
+                    if ($modelPR->role_approve_1 == $user_role) {
                         $modelPR->status = 5;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
@@ -1797,8 +1766,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1807,13 +1775,13 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                        
+
                         //MAKE NOTIFICATION
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy1->name,
                             'time_info' => 'Rejected at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
                         $users = User::where('role_id', $creator_role)->select('id')->get();
                         foreach ($users as $user) {
@@ -1828,14 +1796,14 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->user_data = $users;
                         $new_notification->data = $data;
                         $new_notification->save();
-                        
-                        if($creator_role != $modelPR->role_approve_2){
+
+                        if ($creator_role != $modelPR->role_approve_2) {
                             //MAKE NOTIFICATION
                             $data = json_encode([
-                                'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name.'',
+                                'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy1->name . '',
                                 'time_info' => 'Rejected at',
                                 'title' => 'Purchase Requisition',
-                                'url' => $route.'/'.$modelPR->id,
+                                'url' => $route . '/' . $modelPR->id,
                             ]);
 
                             $approver_2 = User::where('role_id', $modelPR->role_approve_2)->select('id')->get();
@@ -1852,7 +1820,7 @@ class PurchaseRequisitionController extends Controller
                             $new_notification->data = $data;
                             $new_notification->save();
                         }
-                    }elseif($modelPR->role_approve_2 == $user_role){
+                    } elseif ($modelPR->role_approve_2 == $user_role) {
                         $modelPR->status = 5;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
@@ -1861,8 +1829,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1871,13 +1838,13 @@ class PurchaseRequisitionController extends Controller
                             $notification->user_data = @json_encode($user_data);
                             $notification->update();
                         }
-                        
+
                         //MAKE NOTIFICATION
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy2->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy2->name,
                             'time_info' => 'Rejected at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
                         $users = User::where('role_id', $creator_role)->select('id')->get();
                         foreach ($users as $user) {
@@ -1893,10 +1860,8 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->data = $data;
                         $new_notification->save();
                     }
-                }
-                
-                elseif($approval_config->type == "Joint Approval"){
-                    if($modelPR->role_approve_1 == $user_role){
+                } elseif ($approval_config->type == "Joint Approval") {
+                    if ($modelPR->role_approve_1 == $user_role) {
                         $modelPR->status = 5;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_1 = Auth::user()->id;
@@ -1905,8 +1870,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1921,13 +1885,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
-                        $users = json_encode($users);  
-                                        
+                        $users = json_encode($users);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy1->name,
                             'time_info' => 'Rejected at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1944,13 +1908,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($approver_2 as $user) {
                             $user->status = 1;
                         }
-                        $approver_2 = json_encode($approver_2);  
-                                        
+                        $approver_2 = json_encode($approver_2);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy1->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy1->name,
                             'time_info' => 'Rejected at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -1961,8 +1925,7 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->user_data = $approver_2;
                         $new_notification->data = $data;
                         $new_notification->save();
-                        
-                    }elseif($modelPR->role_approve_2 == $user_role){
+                    } elseif ($modelPR->role_approve_2 == $user_role) {
                         $modelPR->status = 5;
                         $modelPR->revision_description = $datas->desc;
                         $modelPR->approved_by_2 = Auth::user()->id;
@@ -1971,8 +1934,7 @@ class PurchaseRequisitionController extends Controller
                         $modelPR->update();
 
                         //Non Active previous notif
-                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->
-                        where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at','desc')->get();
+                        $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $modelPR->id)->where('data', 'like', '%' . $url_notif . '%')->orderBy('created_at', 'desc')->get();
                         foreach ($notifications as $notification) {
                             $user_data = @json_decode($notification->user_data);
                             foreach ($user_data as $data) {
@@ -1987,13 +1949,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($users as $user) {
                             $user->status = 1;
                         }
-                        $users = json_encode($users);  
-                                        
+                        $users = json_encode($users);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy2->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy2->name,
                             'time_info' => 'Rejected at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -2010,13 +1972,13 @@ class PurchaseRequisitionController extends Controller
                         foreach ($approver_1 as $user) {
                             $user->status = 1;
                         }
-                        $approver_1 = json_encode($approver_1);  
-                                        
+                        $approver_1 = json_encode($approver_1);
+
                         $data = json_encode([
-                            'text' => 'Purchase Requisition ('.$modelPR->number.') has been rejected by '.$modelPR->approvedBy2->name,
+                            'text' => 'Purchase Requisition (' . $modelPR->number . ') has been rejected by ' . $modelPR->approvedBy2->name,
                             'time_info' => 'Rejected at',
                             'title' => 'Purchase Requisition',
-                            'url' => $route.'/'.$modelPR->id,
+                            'url' => $route . '/' . $modelPR->id,
                         ]);
 
                         $new_notification = new Notification;
@@ -2029,40 +1991,41 @@ class PurchaseRequisitionController extends Controller
                         $new_notification->save();
                     }
                 }
-                
+
                 DB::commit();
-                if($route == "/purchase_requisition"){
-                    return redirect()->route('purchase_requisition.show',$datas->pr_id)->with('success', 'Purchase Requisition Rejected');
-                }elseif($route == "/purchase_requisition_repair"){
-                    return redirect()->route('purchase_requisition_repair.show',$datas->pr_id)->with('success', 'Purchase Requisition Rejected');
+                if ($route == "/purchase_requisition") {
+                    return redirect()->route('purchase_requisition.show', $datas->pr_id)->with('success', 'Purchase Requisition Rejected');
+                } elseif ($route == "/purchase_requisition_repair") {
+                    return redirect()->route('purchase_requisition_repair.show', $datas->pr_id)->with('success', 'Purchase Requisition Rejected');
                 }
             }
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('purchase_requisition.showApprove',$datas->pr_id)->with('error', $e->getMessage());
+            return redirect()->route('purchase_requisition.showApprove', $datas->pr_id)->with('error', $e->getMessage());
         }
     }
 
     // function
-    public function generatePRNumber(){
-        $modelPR = PurchaseRequisition::orderBy('created_at','desc')->first();
+    public function generatePRNumber()
+    {
+        $modelPR = PurchaseRequisition::orderBy('created_at', 'desc')->first();
         $yearNow = date('y');
-        
-		$number = 1;
-        if(isset($modelPR)){
-            $yearDoc = substr($modelPR->number, 3,2);
-            if($yearNow == $yearDoc){
+
+        $number = 1;
+        if (isset($modelPR)) {
+            $yearDoc = substr($modelPR->number, 3, 2);
+            if ($yearNow == $yearDoc) {
                 $number += intval(substr($modelPR->number, -5));
             }
         }
 
-        $year = date($yearNow.'00000');
+        $year = date($yearNow . '00000');
         $year = intval($year);
 
-		$pr_number = $year+$number;
-        $pr_number = 'PR-'.$pr_number;
+        $pr_number = $year + $number;
+        $pr_number = 'PR-' . $pr_number;
 
-		return $pr_number;
+        return $pr_number;
     }
 
     public function printPdf($id, Request $request)
@@ -2072,73 +2035,91 @@ class PurchaseRequisitionController extends Controller
         $pdf->getDomPDF()->set_option("enable_php", true);
         $branch = Branch::find(Auth::user()->branch_id);
         $route = $request->route()->getPrefix();
-        $pdf->loadView('purchase_requisition.pdf',['modelPR' => $modelPR, 'branch' => $branch, 'route'=> $route]);
+        $pdf->loadView('purchase_requisition.pdf', ['modelPR' => $modelPR, 'branch' => $branch, 'route' => $route]);
         $now = date("Y_m_d_H_i_s");
-        
-        return $pdf->stream('Purchase_Requisition_'.$now.'.pdf');
+
+        return $pdf->stream('Purchase_Requisition_' . $now . '.pdf');
     }
 
-    public function checkValueMaterial($prds){
+    public function checkValueMaterial($prds, $pr_type)
+    {
         $pr_value = 0;
-        foreach ($prds as $prd) {
-            $pr_value += $prd->material->cost_standard_price * $prd->quantity;
+        if ($pr_type == "Subcon") {
+            
+        } elseif($pr_type == "Resource") {
+            foreach ($prds as $prd) {
+                $pr_value += $prd->resource->cost_standard_price * $prd->quantity;
+            }
+        } elseif($pr_type== "Material"){
+            foreach ($prds as $prd) {
+                $pr_value += $prd->material->cost_standard_price * $prd->quantity;
+            }
+        }else{
+            exit();
         }
-
         return $pr_value;
     }
 
     // API
-    public function getProjectApi($id){
+    public function getProjectApi($id)
+    {
 
-        return response(Project::where('id',$id)->with('ship', 'customer')->first()->jsonSerialize(), Response::HTTP_OK);
+        return response(Project::where('id', $id)->with('ship', 'customer')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getMaterialAPI($id){
-        
-        return response(Material::where('id',$id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
+    public function getMaterialAPI($id)
+    {
+
+        return response(Material::where('id', $id)->with('uom')->first()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getResourceAPI($id){
-        
+    public function getResourceAPI($id)
+    {
+
         return response(Resource::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getMaterialsAPI($ids){
+    public function getMaterialsAPI($ids)
+    {
         $ids = json_decode($ids);
 
-        return response(Material::whereNotIn('id',$ids)->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(Material::whereNotIn('id', $ids)->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getWbsAPI($id){
+    public function getWbsAPI($id)
+    {
 
         return response(WBS::findOrFail($id)->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getPRDAPI($id){
+    public function getPRDAPI($id)
+    {
 
-        return response(PurchaseRequisitionDetail::where('purchase_requisition_id',$id)->with('material','wbs')->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(PurchaseRequisitionDetail::where('purchase_requisition_id', $id)->with('material', 'wbs')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getModelWbsAPI($id){
+    public function getModelWbsAPI($id)
+    {
 
-        return response(WBS::where('project_id',$id)->with('project')->get()->jsonSerialize(), Response::HTTP_OK);
+        return response(WBS::where('project_id', $id)->with('project')->get()->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getModelActivityAPI($id,$ids){
+    public function getModelActivityAPI($id, $ids)
+    {
         $ids = json_decode($ids);
-        $modelActivity = Activity::where('wbs_id',$id)->with('activityDetails.serviceDetail','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
+        $modelActivity = Activity::where('wbs_id', $id)->with('activityDetails.serviceDetail', 'activityDetails.serviceDetail.service', 'activityDetails.vendor')->get();
         $serviceDetails = Collection::make();
 
-        foreach($modelActivity as $activity){
-            foreach($activity->activityDetails as $AD){
-                if($AD->service_detail_id != null){
+        foreach ($modelActivity as $activity) {
+            foreach ($activity->activityDetails as $AD) {
+                if ($AD->service_detail_id != null) {
                     $status = true;
-                    foreach($ids as $id){
-                        if($id == $AD->id){
+                    foreach ($ids as $id) {
+                        if ($id == $AD->id) {
                             $status = false;
                         }
                     }
-                    if($status){
+                    if ($status) {
                         $serviceDetails->push($AD);
                     }
                 }
@@ -2147,14 +2128,24 @@ class PurchaseRequisitionController extends Controller
         return response($serviceDetails->jsonSerialize(), Response::HTTP_OK);
     }
 
-    public function getActivityIdAPI(){
+    public function getActivityIdAPI()
+    {
         $activity_id = [];
-        $modelPRD = PurchaseRequisitionDetail::where('activity_detail_id','!=',null)->where('status',1)->get();
+        $modelPRD = PurchaseRequisitionDetail::where('activity_detail_id', '!=', null)->where('status', 1)->get();
 
-        foreach($modelPRD as $PRD){
-            array_push($activity_id,$PRD->activity_detail_id);
+        foreach ($modelPRD as $PRD) {
+            array_push($activity_id, $PRD->activity_detail_id);
         }
 
         return response(json_encode($activity_id), Response::HTTP_OK);
+    }
+
+    public function getRepeatAPI($id)
+    {
+        $pr = PurchaseRequisition::where('id', $id)->with('user', 'purchaseRequisitionDetails.material.uom')->first();
+        $old_created = date_create($pr->created_at);
+        $new_created = date_format($old_created, "d-m-Y H:i:s");
+        $pr->new_created = $new_created;
+        return response($pr, Response::HTTP_OK);
     }
 }
