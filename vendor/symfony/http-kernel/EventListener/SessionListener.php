@@ -35,14 +35,15 @@ class SessionListener extends AbstractSessionListener
     protected function getSession()
     {
         if (!$this->container->has('session')) {
-            return;
+            return null;
         }
 
         if ($this->container->has('session_storage')
             && ($storage = $this->container->get('session_storage')) instanceof NativeSessionStorage
-            && $this->container->get('request_stack')->getMasterRequest()->isSecure()
+            && ($masterRequest = $this->container->get('request_stack')->getMasterRequest())
+            && $masterRequest->isSecure()
         ) {
-            $storage->setOptions(array('cookie_secure' => true));
+            $storage->setOptions(['cookie_secure' => true]);
         }
 
         return $this->container->get('session');

@@ -1009,6 +1009,7 @@ class PurchaseOrderController extends Controller
 
     public function printPdfJobOrder($id, Request $request)
     {
+        // comment
         $branch = Auth::user()->branch;
         $modelPO = PurchaseOrder::find($id);
         $projectName = PurchaseRequisitionDetail::where('purchase_requisition_id', $modelPO->purchase_requisition_id)->first();

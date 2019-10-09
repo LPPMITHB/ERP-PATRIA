@@ -1672,6 +1672,16 @@
                     this.input_part_edit.quantity = (newValue+"").replace(/[^0-9]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             },
+            'input.quantity_by_weight': function(newValue){
+                if(newValue != null){
+                    this.input.quantity = newValue;
+                }
+            },
+            'editInput.quantity_by_weight': function(newValue){
+                if(newValue != null){
+                    this.editInput.quantity = newValue;
+                }
+            },
             'input.quantity': function(newValue){
                 var is_decimal = this.input.is_decimal;
                 if(is_decimal == 0){
