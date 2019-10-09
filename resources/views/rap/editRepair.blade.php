@@ -70,8 +70,8 @@
                                     <td>{{ index+1 }}</td>
                                     <td class="tdEllipsis" v-if="rapd.material_id != null">Material</td>
                                     <td class="tdEllipsis" v-else-if="rapd.service_id != null">Service</td>
-                                    <td class="tdEllipsis" v-if="rapd.material_id != null">{{ rapd.material.code }} - {{ rapd.material.name }}</td>
-                                    <td class="tdEllipsis"v-else-if="rapd.service_id != null">{{ rapd.service.code }} - {{ rapd.service.name }}</td>
+                                    <td class="tdEllipsis" v-if="rapd.material_id != null">{{ rapd.material.code }} - {{ rapd.material.description }}</td>
+                                    <td class="tdEllipsis"v-else-if="rapd.service_id != null">{{ rapd.service.code }} - {{ rapd.service.description }}</td>
                                     <td class="">{{ rapd.quantity }}</td>
                                     <td class="no-padding">
                                         <input v-model="rapd.price" class="form-control width100">
