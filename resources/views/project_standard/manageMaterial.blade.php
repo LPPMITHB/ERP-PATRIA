@@ -917,6 +917,22 @@
                             }
                         });
                     })
+
+                    $('#part-table').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('#part-table').DataTable({
+                            'paging' : true,
+                            'lengthChange': false,
+                            'ordering' : true,
+                            'info' : true,
+                            'autoWidth' : false,
+                            'bFilter' : true,
+                            'initComplete': function(){
+                            $('div.overlay').hide();
+                            document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+                            }
+                        });
+                    })
                 }
             },
             removeRow: function(material) {
