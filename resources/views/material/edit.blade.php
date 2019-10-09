@@ -322,29 +322,6 @@
                     isOk = true;
                 }
 
-                if(this.submittedForm.weight_uom_id != ""){
-                    if(this.submittedForm.weight == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.submittedForm.height_uom_id != ""){
-                    if(this.submittedForm.height == "" || this.submittedForm.density_id == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.submittedForm.length_uom_id != ""){
-                    if(this.submittedForm.lengths == "" || this.submittedForm.density_id == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.submittedForm.width_uom_id != ""){
-                    if(this.submittedForm.width == "" || this.submittedForm.density_id == ""){
-                        isOk = true;
-                    }
-                }
                 return isOk;
             },
             weightOk :function(){
@@ -401,11 +378,6 @@
                 this.submittedForm.selectedDimensionType = this.selectedDimensionType;
                 this.submittedForm.standard_price_config = (this.submittedForm.standard_price_config + "").replace(/,/g, '');
                 this.submittedForm.standard_price_config_range = (this.submittedForm.standard_price_config_range + "").replace(/,/g, '');
-                this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
-                this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
-                this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');
-                this.submittedForm.width = this.submittedForm.width.replace(/,/g , '');
-                this.submittedForm.volume = this.submittedForm.volume.replace(/,/g , '');
 
                 if(parseInt(this.submittedForm.max) < parseInt(this.submittedForm.min)){
                     iziToast.error({
