@@ -30,17 +30,14 @@ class CombinationExtension extends AbstractExtension
      */
     public function getCombinationTranslators(): array
     {
-        return array(
-            ' ' => array($this, 'translateDescendant'),
-            '>' => array($this, 'translateChild'),
-            '+' => array($this, 'translateDirectAdjacent'),
-            '~' => array($this, 'translateIndirectAdjacent'),
-        );
+        return [
+            ' ' => [$this, 'translateDescendant'],
+            '>' => [$this, 'translateChild'],
+            '+' => [$this, 'translateDirectAdjacent'],
+            '~' => [$this, 'translateIndirectAdjacent'],
+        ];
     }
 
-    /**
-     * @return XPathExpr
-     */
     public function translateDescendant(XPathExpr $xpath, XPathExpr $combinedXpath): XPathExpr
     {
         return $xpath->join('/descendant-or-self::*/', $combinedXpath);

@@ -1,7 +1,57 @@
-Version 4.2.1-dev
+Version 4.2.5-dev
 -----------------
 
 Nothing yet.
+
+Version 4.2.4 (2019-09-01)
+--------------------------
+
+### Added
+
+* Added getProperties(), getConstants() and getTraitUses() to ClassLike. (#629, #630)
+
+### Fixed
+
+* Fixed flexible heredoc emulation to check for digits after the end label. This synchronizes
+  behavior with the upcoming PHP 7.3.10 release.
+
+Version 4.2.3 (2019-08-12)
+--------------------------
+
+### Added
+
+* [PHP 7.4] Add support for numeric literal separators. (#615)
+
+### Fixed
+
+* Fixed resolution of return types for arrow functions. (#613)
+* Fixed compatibility with PHP 7.4.
+
+Version 4.2.2 (2019-05-25)
+--------------------------
+
+### Added
+
+* [PHP 7.4] Add support for arrow functions using a new `Expr\ArrowFunction` node. (#602)
+* [PHP 7.4] Add support for array spreads, using a new `unpack` subnode on `ArrayItem`. (#609)
+* Added support for inserting into empty list nodes in the formatting preserving pretty printer.
+
+### Changed
+
+* `php-parse` will now print messages to stderr, so that stdout only contains the actual result of
+  the operation (such as a JSON dump). (#605)
+
+### Fixed
+
+* Fixed attribute assignment for zero-length nop statements, and a related assertion failure in
+  the formatting-preserving pretty printer. (#589)
+
+Version 4.2.1 (2019-02-16)
+--------------------------
+
+### Added
+
+* [PHP 7.4] Add support for `??=` operator through a new `AssignOp\Coalesce` node. (#575)
 
 Version 4.2.0 (2019-01-12)
 --------------------------
