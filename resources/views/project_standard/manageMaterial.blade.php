@@ -807,6 +807,7 @@
             },
             openViewParts(material_standard){
                 this.view = material_standard;
+                $('#part-table-view').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table-view').DataTable({
                         'paging' : true,
@@ -817,7 +818,7 @@
                         'bFilter' : true,
                         'initComplete': function(){
                         $('div.overlay').hide();
-                        document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
+                            document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
                         }
                     });
                 })
