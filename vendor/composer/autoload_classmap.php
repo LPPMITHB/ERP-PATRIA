@@ -119,6 +119,7 @@ return array(
     'App\\Models\\MaterialWriteOffDetail' => $baseDir . '/app/Models/MaterialWriteOffDetail.php',
     'App\\Models\\Menu' => $baseDir . '/app/Models/Menu.php',
     'App\\Models\\Notification' => $baseDir . '/app/Models/Notification.php',
+    'App\\Models\\PartDetailStandard' => $baseDir . '/app/Models/PartDetailStandard.php',
     'App\\Models\\Payment' => $baseDir . '/app/Models/Payment.php',
     'App\\Models\\Permission' => $baseDir . '/app/Models/Permission.php',
     'App\\Models\\Pica' => $baseDir . '/app/Models/Pica.php',
