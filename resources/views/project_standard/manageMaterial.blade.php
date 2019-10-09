@@ -98,7 +98,7 @@
                                         </td>
                                         <td v-else>-</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
                                             <a href="#" @click="removeRow(material)" class="btn btn-danger btn-xs">
@@ -807,6 +807,7 @@
             },
             openViewParts(material_standard){
                 this.view = material_standard;
+                $('#part-table-view').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table-view').DataTable({
                         'paging' : true,
@@ -817,7 +818,7 @@
                         'bFilter' : true,
                         'initComplete': function(){
                         $('div.overlay').hide();
-                        document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
+                            document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
                         }
                     });
                 })
@@ -913,6 +914,22 @@
                             'initComplete': function(){
                             $('div.overlay').hide();
                             // document.getElementById("material-standard-table_wrapper").setAttribute("style", "margin-top: -30px");
+                            }
+                        });
+                    })
+
+                    $('#part-table').DataTable().destroy();
+                    this.$nextTick(function() {
+                        $('#part-table').DataTable({
+                            'paging' : true,
+                            'lengthChange': false,
+                            'ordering' : true,
+                            'info' : true,
+                            'autoWidth' : false,
+                            'bFilter' : true,
+                            'initComplete': function(){
+                            $('div.overlay').hide();
+                            document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
                             }
                         });
                     })
@@ -1687,7 +1704,7 @@
                 if(is_decimal == 0){
                     this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){

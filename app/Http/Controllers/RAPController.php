@@ -868,9 +868,9 @@ class RAPController extends Controller
                     foreach ($dimensions_obj as $dimension) {
                         $uom = Uom::find($dimension->uom_id);
                         if($dimensions_string == "-"){
-                            $dimensions_string = $dimension->value." ".$uom->unit; 
+                            $dimensions_string = $dimension->value_input." ".$uom->unit; 
                         }else{
-                            $dimensions_string .= " x ".$dimension->value." ".$uom->unit; 
+                            $dimensions_string .= " x ".$dimension->value_input." ".$uom->unit; 
                         }
                     }
                 }
