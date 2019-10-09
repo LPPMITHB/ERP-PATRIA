@@ -51,7 +51,7 @@
                                     : <a href="{{ route('material_requisition_repair.show', ['id'=>$modelGI->materialRequisition->id]) }}" class="text-primary"><b>{{$modelGI->materialRequisition->number}}</b></a>
                                 @endif
                             @else
-                                -
+                                : <b>-</b>
                             @endif
                         </div>
                     </div>

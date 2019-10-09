@@ -562,6 +562,7 @@ class ComposerStaticInitd270b2c2405293f0078dca28ea2f5c78
         'App\\Models\\MaterialWriteOffDetail' => __DIR__ . '/../..' . '/app/Models/MaterialWriteOffDetail.php',
         'App\\Models\\Menu' => __DIR__ . '/../..' . '/app/Models/Menu.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
+        'App\\Models\\PartDetailStandard' => __DIR__ . '/../..' . '/app/Models/PartDetailStandard.php',
         'App\\Models\\Payment' => __DIR__ . '/../..' . '/app/Models/Payment.php',
         'App\\Models\\Permission' => __DIR__ . '/../..' . '/app/Models/Permission.php',
         'App\\Models\\Pica' => __DIR__ . '/../..' . '/app/Models/Pica.php',

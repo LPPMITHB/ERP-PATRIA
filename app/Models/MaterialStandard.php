@@ -33,4 +33,8 @@ class MaterialStandard extends Model
         return $this->belongsTo('App\Models\ProjectStandard');
     }
 
+    public function partDetails()
+    {    
+        return $this->hasMany('App\Models\PartDetailStandard');
+    }
 }

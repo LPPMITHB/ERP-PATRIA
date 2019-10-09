@@ -49,6 +49,19 @@
                         <div class="box-body">
                             <div class="col-md-4 col-xs-4 no-padding"> Project Name</div>
                             <div class="col-md-6 no-padding"> : <b> {{ isset($modelGR->purchaseOrder->project) ? $modelGR->purchaseOrder->project->name :  '-'}} </b></div>
+                            
+                            <div class="col-md-4 col-xs-4 no-padding"> GR Number</div>
+                            <div class="col-md-6 no-padding"> : <b>
+                                @if($modelGR->goods_receipt_id != null)
+                            <a href="{{ route('goods_receipt.show', ['id'=>$modelGR->goods_receipt_id]) }}"
+                                class="text-primary">
+                                {{ $modelGR->goodsReceipt->number  }}
+                            </a>  
+                            @else
+                            -
+                            @endif
+                             
+                            </b></div>
 
                             <div class="col-md-4 col-xs-4 no-padding">PR Number</div>
                             <div class="col-md-6 no-padding">: <b><a href= "{{ route('purchase_requisition.show', ['id'=>$modelGR->purchaseOrder->PurchaseRequisition->id]) }}" class="text-primary"> {{ isset($modelGR->purchaseOrder->PurchaseRequisition->number) ? $modelGR->purchaseOrder->PurchaseRequisition->number : '-' }} </a></b></div>

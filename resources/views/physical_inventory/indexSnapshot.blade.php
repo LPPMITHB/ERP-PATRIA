@@ -178,6 +178,39 @@
     var material_options = @json($storage_location_details);
     $(document).ready(function(){
         $('div.overlay').hide();
+        
+        $('#warehouse').multiselect({
+            includeSelectAllOption: true,
+            buttonWidth: '100%',
+            enableFiltering: true,
+            filterBehavior: 'text',
+            enableCaseInsensitiveFiltering: true,
+            maxHeight: 400,
+            onChange: function(element, checked) {
+                var sloc = $('#sloc').val();
+                var material = $('#material').val();
+                var warehouse = $('#warehouse').val();
+                if(sloc.length > 0 && material.length > 0 && warehouse.length > 0){
+                    document.getElementById("display").disabled = false;
+                }else{
+                    document.getElementById("display").disabled = true;
+                }
+                var data = [];
+                if(warehouse.length > 0){
+                    sloc_options.forEach(sloc_option => {
+                        for (let j = 0; j < warehouse.length; j++) {
+                            const warehouse_selected = warehouse[j];
+                            if(warehouse_selected == sloc_option.warehouse_id){
+                                data.push(
+                                    {label: sloc_option.name, value: sloc_option.id}
+                                );
+                            }
+                        }
+                    });
+                    $("#sloc").multiselect('dataprovider', data);    
+                }
+            }
+        });
         $('#sloc').multiselect({
             includeSelectAllOption: true,
             buttonWidth: '100%',
@@ -217,38 +250,6 @@
                 }
             }
         });
-        $('#warehouse').multiselect({
-            includeSelectAllOption: true,
-            buttonWidth: '100%',
-            enableFiltering: true,
-            filterBehavior: 'text',
-            enableCaseInsensitiveFiltering: true,
-            maxHeight: 400,
-            onChange: function(element, checked) {
-                var sloc = $('#sloc').val();
-                var material = $('#material').val();
-                var warehouse = $('#warehouse').val();
-                if(sloc.length > 0 && material.length > 0 && warehouse.length > 0){
-                    document.getElementById("display").disabled = false;
-                }else{
-                    document.getElementById("display").disabled = true;
-                }
-                var data = [];
-                if(warehouse.length > 0){
-                    sloc_options.forEach(sloc_option => {
-                        for (let j = 0; j < warehouse.length; j++) {
-                            const warehouse_selected = warehouse[j];
-                            if(warehouse_selected == sloc_option.warehouse_id){
-                                data.push(
-                                    {label: sloc_option.name, value: sloc_option.id}
-                                );
-                            }
-                        }
-                    });
-                    $("#sloc").multiselect('dataprovider', data);    
-                }
-            }
-        })
 
         var snapshot_table = $('#snapshot-table').DataTable({
             'paging'      : true,
