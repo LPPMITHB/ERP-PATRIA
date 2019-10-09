@@ -38,7 +38,9 @@
                         <tr>
                             <th width="5%">No</th>
                             <th width="15%">Doc. Number</th>
-                            <th width="25%">WBS</th>
+                            @if($route == "/rap")
+                                <th width="25%">WBS</th>
+                            @endif
                             <th width="25%">BOM</th>
                             <th width="20%">Total Price</th>
                             <th width="10%"></th>
@@ -49,7 +51,9 @@
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $rap->number }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $rap->bom->wbs->number }} - {{ $rap->bom->wbs->description }}">{{ $rap->bom->wbs->number }} - {{ $rap->bom->wbs->description }}</td>
+                                @if($route == "/rap")
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $rap->bom->wbs->number }} - {{ $rap->bom->wbs->description }}">{{ $rap->bom->wbs->number }} - {{ $rap->bom->wbs->description }}</td>
+                                @endif
                                 <td>{{ $rap->bom->code }}</td>
                                 <td>Rp.{{ number_format($rap->total_price) }}</td>
                                 <td class="p-l-5 p-r-5" align="center">

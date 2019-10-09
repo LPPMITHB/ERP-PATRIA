@@ -367,6 +367,7 @@ class ProjectStandardController extends Controller
         try {
             foreach ($datas->deleted_id as $id) {
                 $materialStandard = MaterialStandard::find($id);
+                $materialStandard->partDetails()->delete();
                 $materialStandard->delete();
             }
             foreach ($datas->deleted_part_id as $id) {
