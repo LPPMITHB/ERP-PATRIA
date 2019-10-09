@@ -2144,6 +2144,7 @@ return array(
     'MstEstimatorWbsTableSeeder' => $baseDir . '/database/seeds/MstEstimatorWbsTableSeeder.php',
     'MstMaterialStandardTableSeeder' => $baseDir . '/database/seeds/MstMaterialStandardTableSeeder.php',
     'MstMaterialTableSeeder' => $baseDir . '/database/seeds/MstMaterialTableSeeder.php',
+    'MstPartDetailStandardTableSeeder' => $baseDir . '/database/seeds/MstPartDetailStandardTableSeeder.php',
     'MstProjectStandardTableSeeder' => $baseDir . '/database/seeds/MstProjectStandardTableSeeder.php',
     'MstResourceDetailTableSeeder' => $baseDir . '/database/seeds/MstResourceDetailTableSeeder.php',
     'MstResourceProfileTableSeeder' => $baseDir . '/database/seeds/MstResourceProfileTableSeeder.php',

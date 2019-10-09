@@ -16,6 +16,7 @@ class CreateProWbsMaterialTable extends Migration
         Schema::create('pro_wbs_material', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('wbs_id');
+            $table->text('part_description')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->integer('quantity')->nullable();
             $table->longText('dimensions_value')->nullable();
