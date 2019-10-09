@@ -124,12 +124,12 @@
                                             @endif
                                         </tr>
                                     @endforeach
-                                    {{-- <tr>
-                                        <td>14</td>
-                                        <td>Height</td>
-                                        <td>{{ number_format($material->height) }} {{$uoms->where('id',$material->dimension_uom_id)->first() != null ? $uoms->where('id',$material->dimension_uom_id)->first()->unit : ""}}</td>
-                                    </tr>
                                     <tr>
+                                        <td>{{++$index}}</td>
+                                        <td>Weight</td>
+                                        <td>{{ number_format($material->weight,2) }} {{$uoms->where('id',$material->weight_uom_id)->first() != null ? $uoms->where('id',$material->weight_uom_id)->first()->unit : ""}}</td>
+                                    </tr>
+                                    {{-- <tr>
                                         <td>15</td>
                                         <td>Length</td>
                                         <td>{{ number_format($material->length) }} {{$uoms->where('id',$material->dimension_uom_id)->first() != null ? $uoms->where('id',$material->dimension_uom_id)->first()->unit : ""}}</td>
