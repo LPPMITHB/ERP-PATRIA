@@ -98,7 +98,7 @@
                                         </td>
                                         <td v-else>-</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
                                             <a href="#" @click="removeRow(material)" class="btn btn-danger btn-xs">
