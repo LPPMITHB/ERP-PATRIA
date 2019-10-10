@@ -40,25 +40,6 @@
                             <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->project->customer->name}}"><b>: {{$modelBOM->project->customer->name}}</b></div>
                         </div>
         
-                        <div class="col-xs-12 col-md-4">
-                            <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                        
-                            <div class="col-xs-4 no-padding">Code</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->code}}"><b>: {{$modelBOM->wbs->code}}</b></div>
-                            
-                            <div class="col-xs-4 no-padding">Name</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->number}}"><b>: {{$modelBOM->wbs->number}}</b></div>
-        
-                            <div class="col-xs-4 no-padding">Description</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->description}}"><b>: {{$modelBOM->wbs->description}}</b></div>
-        
-                            <div class="col-xs-4 no-padding">Deliverable</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->deliverables}}"><b>: {{$modelBOM->wbs->deliverables}}</b></div>
-        
-                            <div class="col-xs-4 no-padding">Progress</div>
-                            <div class="col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$modelBOM->wbs->progress}}%"><b>: {{$modelBOM->wbs->progress}}%</b></div>
-                        </div>
-        
                         <div class="col-xs-12 col-md-3 p-b-10">
                             <div class="col-sm-12 no-padding"><b>BOM Information</b></div>
                     
@@ -89,8 +70,8 @@
                                     <td>{{ index+1 }}</td>
                                     <td class="tdEllipsis" v-if="rapd.material_id != null">Material</td>
                                     <td class="tdEllipsis" v-else-if="rapd.service_id != null">Service</td>
-                                    <td class="tdEllipsis" v-if="rapd.material_id != null">{{ rapd.material.code }} - {{ rapd.material.name }}</td>
-                                    <td class="tdEllipsis"v-else-if="rapd.service_id != null">{{ rapd.service.code }} - {{ rapd.service.name }}</td>
+                                    <td class="tdEllipsis" v-if="rapd.material_id != null">{{ rapd.material.code }} - {{ rapd.material.description }}</td>
+                                    <td class="tdEllipsis"v-else-if="rapd.service_id != null">{{ rapd.service.code }} - {{ rapd.service.description }}</td>
                                     <td class="">{{ rapd.quantity }}</td>
                                     <td class="no-padding">
                                         <input v-model="rapd.price" class="form-control width100">
