@@ -61,7 +61,7 @@ class ProjectController extends Controller
     public function listWBS($id, $menu){
         $project = Project::find($id);
         $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
-        $wbss = $project->wbss;
+        $wbss = WBS::where('project_id',$id)->orderBy('planned_start_date','asc')->get();
         $dataWbs = Collection::make();
         $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
         $dataWbs->push([
@@ -195,12 +195,12 @@ class ProjectController extends Controller
 
         $dataWbs = $dataWbs->toArray();
         // Asc sort
-        usort($dataWbs,function($first,$second){
-            if ((strpos($first['id'], 'WBS') !== false || strpos($second['id'], 'WBS') !== false) &&
-            (strpos($first['id'], 'ACT') !== false || strpos($second['id'], 'ACT') !== false)) {
-                return $first['start_date'] > $second['start_date'];
-            }
-        });
+        // usort($dataWbs,function($first,$second){
+        //     if ((strpos($first['id'], 'WBS') !== false || strpos($second['id'], 'WBS') !== false) &&
+        //     (strpos($first['id'], 'ACT') !== false || strpos($second['id'], 'ACT') !== false)) {
+        //         return $first['start_date'] > $second['start_date'];
+        //     }
+        // });
 
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
