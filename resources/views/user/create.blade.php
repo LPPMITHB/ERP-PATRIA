@@ -34,7 +34,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="name" class="col-sm-2 control-label">Name</label>
+                            <label for="name" class="col-sm-2 control-label">Name *</label>
             
                             <div class="col-sm-10">
                                 <input type="text" class="form-control" id="name" name="name" required autofocus value="{{ old('name') }}">
@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="email" class="col-sm-2 control-label">Email</label>
+                            <label for="email" class="col-sm-2 control-label">Email *</label>
             
                             <div class="col-sm-10">
                                 <input type="email" class="form-control" id="email" name="email" required value="{{ old('email') }}">
@@ -66,7 +66,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="role" class="col-sm-2 control-label">Role</label>
+                            <label for="role" class="col-sm-2 control-label">Role *</label>
             
                             <div class="col-sm-10">
                                 <select name="role" id="role" required placeholder="Select Role..">
@@ -79,7 +79,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="branch" class="col-sm-2 control-label">Branch</label>
+                            <label for="branch" class="col-sm-2 control-label">Branch *</label>
 
                             <div class="col-sm-10">
                                 <select name="branch" id="branch" required placeholder="Select Branch..">
