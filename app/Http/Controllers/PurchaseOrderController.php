@@ -707,7 +707,7 @@ class PurchaseOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $modelPO = PurchaseOrder::where('id', $id)->with('purchaseRequisition')->first();
-        $modelPOD = PurchaseOrderDetail::where('purchase_order_id', $id)->with('material', 'purchaseRequisitionDetail.wbs', 'purchaseRequisitionDetail.project', 'wbs', 'resource', 'material.uom', 'purchaseRequisitionDetail.purchaseRequisition', 'activityDetail', 'activityDetail.areaUom', 'activityDetail.serviceDetail', 'activityDetail.serviceDetail.service')->get();
+        $modelPOD = PurchaseOrderDetail::where('purchase_order_id', $id)->with('material', 'purchaseRequisitionDetail.wbs', 'purchaseRequisitionDetail.project', 'wbs', 'resource', 'material.uom', 'purchaseRequisitionDetail.purchaseRequisition')->get();
         foreach ($modelPOD as $POD) {
             $POD['old_price'] = $POD->total_price / $POD->quantity;
         }
