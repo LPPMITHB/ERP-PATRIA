@@ -7,8 +7,8 @@
             'title' => 'View Material Write Off » '.$modelMWO->number,
             'items' => [
                 'Dashboard' => route('index'),
-                'View All Material Write Off' => route('material_write_off.show',$modelMWO->id),
-                'View Material Write Off' => route('purchase_order.show',$modelMWO->id),
+                'View All Material Write Off' => route('material_write_off.index',$modelMWO->id),
+                'View Material Write Off' => route('material_write_off.show',$modelMWO->id),
             ]
         ]
     )
@@ -146,7 +146,7 @@
                 </div>
             </div>
             <div class="box-body">
-                <table class="table table-bordered showTable tableFixed" id="gi-table">
+                <table class="table table-bordered tableFixed" id="gi-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -159,7 +159,8 @@
                             @endif
                             <th width="8%">Write-Off Quantity</th>
                             <th width="5%">Unit</th>
-                            <th width=10%>Amount / Unit</th>
+                            <th width="10%">Amount / Unit</th>
+                            <th width="8%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -168,8 +169,8 @@
                             <td class="tdEllipsis">{{ $loop->iteration }}</td>
                             <td class="tdEllipsis">{{ $MWO->storageLocation->name }} </td>
                             <td class="tdEllipsis">{{ $MWO->storageLocation->warehouse->name }} </td>
-                            <td class="tdEllipsis">{{ $MWO->material->code }}</td>
-                            <td class="tdEllipsis">{{ $MWO->material->description }}</td>
+                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$MWO->material->code}}">{{ $MWO->material->code }}</td>
+                            <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$MWO->material->description}}">{{ $MWO->material->description }}</td>
                             @if($modelMWO->status == 1)
                                 <td class="tdEllipsis">
                                     {{ number_format($MWO->storageLocation->storageLocationDetails->where('material_id',$MWO->material_id)->sum('quantity'),2) }}
@@ -178,10 +179,38 @@
                             <td class="tdEllipsis">{{ number_format($MWO->quantity,2) }}</td>
                             <td class="tdEllipsis">{{ $MWO->material->uom->unit }}</td>
                             <td class="tdEllipsis">Rp.{{ number_format($MWO->amount) }}</td>
+                            <td class="textCenter">
+                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#show_remark" onClick="remark({{$MWO['id']}})">
+                                    REMARK
+                                </a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div class="modal fade" id="show_remark">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">View Remark</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="remark" class="control-label">Remark</label>
+                                        <textarea name="remark" textarea disabled="disabled" id="remark" rows="3" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 {{-- <div class="col-md-12 m-b-10 p-r-0 p-t-10">
                     @if($route == "/material_write_off")
                         <a class="col-xs-12 col-md-2 btn btn-primary pull-right" href="{{ route('goods_issue.print', ['id'=>$modelMWO->id]) }}">DOWNLOAD</a>
@@ -212,5 +241,20 @@
             }
         });
     });
+
+    var data = {
+        modelMWOD : @json($modelMWOD)
+    }
+
+    function remark(id){
+        var modelMWOD = this.data.modelMWOD;
+        var remark = ""
+        modelMWOD.forEach(MWOD =>{
+            if(MWOD.id == id){
+                remark = MWOD.remark;
+            }
+        })
+        document.getElementById("remark").value = remark;
+    }
 </script>
 @endpush

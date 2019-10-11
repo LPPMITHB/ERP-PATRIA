@@ -303,12 +303,12 @@
                                 <div class="row">
                                     <div class="col-sm-12">
                                         <label for="remark" class="control-label">Remark</label>
-                                        <textarea name="remark" id="remark" rows="3" class="form-control"></textarea>
+                                        <textarea name="remark" textarea disabled="disabled" id="remark" rows="3" class="form-control"></textarea>
                                     </div>
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal">CLOSE</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
                             </div>
                         </div>
                     </div>
