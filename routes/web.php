@@ -2202,3 +2202,73 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
 
     Route::delete('/{id}', 'CustomerPortalController@destroy')->name('destroy');
 });
+
+//  QC Type Repair Routes
+Route::name('qc_type_repair.')->prefix('qc_type_repair')->group(function () {
+
+    Route::get('/', 'QualityControlTypeController@index')->name('index');
+
+    Route::get('/create', 'QualityControlTypeController@create')->name('create');
+
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
+
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
+
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
+
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
+
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+
+    Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
+
+    Route::post('/', 'QualityControlTypeController@store')->name('store');
+
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+});
+
+//  QC Task Repair Routes
+Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
+
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
+    // ->middleware('can:list-qc-task');
+
+    Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
+
+    Route::get('/confirm/{id}', 'QualityControlTaskController@confirm')->name('confirm');
+
+    Route::get('/summaryReport/{id}', 'QualityControlTaskController@summaryReport')->name('summaryReport');
+
+    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+
+    Route::get('/selectProjectIndex', 'QualityControlTaskController@selectProjectIndex')->name('selectProjectIndex');
+
+    Route::get('/selectProjectConfirm', 'QualityControlTaskController@selectProjectConfirm')->name('selectProjectConfirm');
+
+    Route::get('/selectProjectSummary', 'QualityControlTaskController@selectProjectSummary')->name('selectProjectSummary');
+
+    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');
+
+    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
+
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
+    // ->middleware('can:show-qc-task');
+
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    // ->middleware('can:edit-qc-task');
+
+    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    // ->middleware('can:edit-qc-task');
+
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
+
+    Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');
+
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm');
+
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy');
+    // ->middleware('can:destroy-qc-task');
+
+});
