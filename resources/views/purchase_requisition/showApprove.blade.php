@@ -150,7 +150,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $PRD->project->number}}</td>
-                                        <td>{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}">{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}</td>
                                         <td>{{ $PRD->job_order}}</td>
                                     </tr>
                                 @endforeach
