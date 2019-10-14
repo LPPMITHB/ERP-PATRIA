@@ -571,7 +571,7 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
-    
+
     Route::post('/storeWbsMaterial', 'BOMController@storeWbsMaterial')->name('storeWbsMaterial')->middleware('can:manage-project-standard');
 
     Route::patch('/updateWbsMaterial', 'BOMController@updateWbsMaterial')->name('updateWbsMaterial')->middleware('can:manage-project-standard');
@@ -1018,8 +1018,6 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition');
 
-    Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
-
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
 
     Route::get('/indexApprove', 'PurchaseRequisitionController@indexApprove')->name('indexApprove')->middleware('can:approve-purchase-requisition');
@@ -1064,6 +1062,8 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
     Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
     Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
+
+    Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
 
@@ -1757,7 +1757,7 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
     Route::get('/selectWBS/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
 
     Route::get('/manageMaterial/{wbs_id}', 'ProjectStandardController@manageMaterial')->name('manageMaterial')->middleware('can:manage-project-standard');
-    
+
     Route::get('/manageResource/{wbs_id}', 'ProjectStandardController@manageResource')->name('manageResource')->middleware('can:manage-project-standard');
 
     Route::get('/showMaterialStandard/{wbs_id}', 'ProjectStandardController@showMaterialStandard')->name('showMaterialStandard')->middleware('can:manage-project-standard');

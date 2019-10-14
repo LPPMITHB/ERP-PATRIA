@@ -2004,7 +2004,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Repeat Order',
             'icon' => 'fa-file-text-o',
-            'route_name' => 'purchase_requisition.repeatOrder',
+            'route_name' => 'purchase_requisition_repair.repeatOrder',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id' => $purchaseRequisition,
