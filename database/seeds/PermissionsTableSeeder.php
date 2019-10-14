@@ -849,6 +849,7 @@ class PermissionsTableSeeder extends Seeder
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
         $mrRepair = Menu::where('name','Material Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+
         //Material Requisition Repair
         $createMRRepair = Menu::where('name','Create MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -2493,6 +2494,136 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Post Complaints',
             'menu_id' => $postComplaints,
             'middleware' => 'create-post',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //approval configuration
+        $approval_configuration = Menu::where('name','Approval Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Approval Configuration',
+            'menu_id' => $approval_configuration,
+            'middleware' => 'manage-approval-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //cost type configuration
+        $cost_type_configuration = Menu::where('name','Cost Type')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Cost Type Configuration',
+            'menu_id' => $cost_type_configuration,
+            'middleware' => 'manage-cost-type-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //appearance configuration
+        $appearance_configuration = Menu::where('name','Appearance')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Appearance Configuration',
+            'menu_id' => $appearance_configuration,
+            'middleware' => 'manage-appearance-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //currencies configuration
+        $currencies_configuration = Menu::where('name','Currencies')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Currencies Configuration',
+            'menu_id' => $currencies_configuration,
+            'middleware' => 'manage-currencies-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //material family configuration
+        $material_family_configuration = Menu::where('name','Material Family')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Material Family Configuration',
+            'menu_id' => $material_family_configuration,
+            'middleware' => 'manage-material-family-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //density configuration
+        $density_configuration = Menu::where('name','Density')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Density Configuration',
+            'menu_id' => $density_configuration,
+            'middleware' => 'manage-density-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //payment terms configuration
+        $payment_terms_configuration = Menu::where('name','Payment Terms')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Payment Terms',
+            'menu_id' => $payment_terms_configuration,
+            'middleware' => 'manage-payment-terms-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //delivery terms configuration
+        $delivery_terms_configuration = Menu::where('name','Delivery Terms')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Delivery Terms',
+            'menu_id' => $delivery_terms_configuration,
+            'middleware' => 'manage-delivery-terms-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //weather configuration
+        $weather_configuration = Menu::where('name','Weather Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Weather Configuration',
+            'menu_id' => $weather_configuration,
+            'middleware' => 'manage-weather-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //tidal configuration
+        $tidal_configuration = Menu::where('name','Tidal Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Tidal Configuration',
+            'menu_id' => $tidal_configuration,
+            'middleware' => 'manage-tidal-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //dimension type configuration
+        $dimension_type_configuration = Menu::where('name','Dimension Type Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Dimension Type Configuration',
+            'menu_id' => $dimension_type_configuration,
+            'middleware' => 'manage-dimension-type-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //daily info weather
+        $daily_weather = Menu::where('name','Weather')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Daily Weather',
+            'menu_id' => $daily_weather,
+            'middleware' => 'manage-weather',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //daily info tidal
+        $daily_tidal = Menu::where('name','Tidal')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Daily Tidal',
+            'menu_id' => $daily_tidal,
+            'middleware' => 'manage-tidal',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

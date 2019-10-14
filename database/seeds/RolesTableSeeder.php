@@ -79,6 +79,9 @@ class RolesTableSeeder extends Seeder
                 'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
                 'create-reverse-transaction' => true,'list-reverse-transaction' => true,'show-reverse-transaction' => true,'edit-reverse-transaction' => true,'approve-reverse-transaction' => true,
                 'create-qc-task' => true,'list-qc-task' => true,'show-qc-task' => true,'edit-qc-task' => true,  'approve-qc-task' => true,
+                'manage-approval-configuration' => true, 'manage-cost-type-configuration' => true, 'manage-appearance-configuration' => true, 'manage-currencies-configuration' => true, 'manage-material-family-configuration' => true, 'manage-density-configuration' => true, 'manage-payment-terms-configuration' => true, 'manage-delivery-terms-configuration' => true, 'manage-weather-configuration' => true, 'manage-tidal-configuration' => true, 'manage-dimension-type-configuration' => true, 
+                'manage-weather' => true, 'manage-tidal' => true,
+
                 ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -156,6 +159,11 @@ class RolesTableSeeder extends Seeder
                 'create-reverse-transaction' => true,'list-reverse-transaction' => true,'show-reverse-transaction' => true,'edit-reverse-transaction' => true,'approve-reverse-transaction' => true,
                 'create-qc-task' => true,'list-qc-task' => true,'show-qc-task' => true,'edit-qc-task' => true,  'approve-qc-task' => true,
                 'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
+                'manage-weather' => true,
+                'manage-approval-configuration' => true,
+                'manage-cost-type-configuration' => true,
+                'manage-appearance-configuration' => true,
+
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -227,6 +235,10 @@ class RolesTableSeeder extends Seeder
                 'create-pica' => true,'list-pica' => true,'show-pica' => true,'edit-pica' => true,'delete-pica' => true,
                 'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
                 'create-qc-task' => true,'list-qc-task' => true,'show-qc-task' => true,'edit-qc-task' => true,  'approve-qc-task' => true,
+                'manage-weather' => true,
+                'manage-approval-configuration' => true,
+                'manage-cost-type-configuration' => true,
+                'manage-appearance-configuration' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
