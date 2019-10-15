@@ -381,6 +381,16 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // approve other cost
+        $menu_approve_other_cost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Other Cost',
+            'menu_id' => $menu_approve_other_cost,
+            'middleware' => 'approve-other-cost',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         // create actual other cost
         $inputActualOtherCost = Menu::where('name','Input Actual Other Cost')->select('id')->first()->id;
         DB::table('permissions')->insert([

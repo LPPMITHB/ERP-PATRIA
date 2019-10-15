@@ -875,30 +875,24 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');
 
-    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost');
 
-    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
+    // Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost'); ->Ga Dipake
 
     //===============start approval project plan cost
-    Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:create-actual-other-cost');
+    Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:approve-other-cost');
 
-    Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost');
-
-    Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost');
-
-    Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
-
-    Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
-    // /rap/getCostsPlanned/
+    Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost')->middleware('can:approve-other-cost');
+    
+    Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost')->middleware('can:approve-other-cost');
+    
     //===============end approval project plan cost
 
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
 
-    Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');
+    Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');
 
-    Route::put('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
-
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
+    Route::put('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
 
@@ -907,6 +901,13 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
 
     Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap');
+
+    // INI TERMASUK API 
+    Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
+
+    Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
+
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 });
 
 //rap repair Routes
@@ -937,7 +938,7 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
     Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');
 
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap-repair');
 
