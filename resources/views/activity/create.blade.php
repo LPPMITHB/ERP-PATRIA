@@ -242,7 +242,7 @@
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-12">
                                         <selectize v-model="newActivity.predecessor" :settings="activitiesSettings">
-                                            <option v-for="(activity, index) in allActivities" v-if="activity.selected != true" :value="activity.id">{{ activity.name }}</option>
+                                            <option v-for="(activity, index) in allActivities" v-if="activity.selected != true" :value="activity.id">{{ activity.name }} [{{activity.wbs.number}} - {{activity.wbs.description}}]</option>
                                         </selectize>
                                     </div>
                                     <div class="p-l-0 form-group col-sm-12">
@@ -401,7 +401,7 @@
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <selectize v-model="editActivity.predecessor" :settings="activitiesSettings">
-                                            <option v-for="(activity, index) in allActivitiesEdit" v-if="activity.selected != true" :value="activity.id">{{ activity.name }}</option>
+                                            <option v-for="(activity, index) in allActivitiesEdit" v-if="activity.selected != true" :value="activity.id">{{ activity.name }} [{{activity.wbs.number}} - {{activity.wbs.description}}]</option>
                                         </selectize>
                                     </div>
                                     <div class="p-l-0 form-group col-sm-12">

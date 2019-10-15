@@ -1519,19 +1519,19 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $marketingSales =  Menu::where('name', 'Marketing & Sales')->where('menu_id', $repair)->select('id')->first()->id;
+        $marketingSalesRepair =  Menu::where('name', 'Marketing & Sales')->where('menu_id', $repair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Estimator Configuration',
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $marketingSales,
+            'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $configuration = Menu::where('name', 'Estimator Configuration')->where('menu_id', $marketingSales)->select('id')->first()->id;
+        $configuration = Menu::where('name', 'Estimator Configuration')->where('menu_id', $marketingSalesRepair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'WBS Cost Estimation',
@@ -1574,12 +1574,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $marketingSales,
+            'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $quotation = Menu::where('name', 'Quotation')->select('id')->first()->id;
+        $quotation_repair = Menu::where('name', 'Quotation')->where('menu_id', $marketingSalesRepair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Create Quotation',
@@ -1587,7 +1587,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'quotation_repair.create',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $quotation,
+            'menu_id' => $quotation_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1599,7 +1599,7 @@ class MenusTableSeeder extends Seeder
             'route_name' => 'quotation_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $quotation,
+            'menu_id' => $quotation_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1610,12 +1610,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $marketingSales,
+            'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
+        $sales_order_repair = Menu::where('name','Sales Order')->where('menu_id', $marketingSalesRepair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Create Sales Order',
@@ -1623,7 +1623,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'sales_order_repair.selectQT',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $sales_order,
+            'menu_id'=> $sales_order_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1635,7 +1635,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'sales_order_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $sales_order,
+            'menu_id'=> $sales_order_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1646,12 +1646,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $marketingSales,
+            'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $invoice = Menu::where('name','Invoice')->select('id')->first()->id;
+        $invoice_repair = Menu::where('name','Invoice')->where('menu_id', $marketingSalesRepair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Create Invoice',
@@ -1659,7 +1659,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'invoice_repair.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $invoice,
+            'menu_id'=> $invoice_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1671,7 +1671,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'invoice_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $invoice,
+            'menu_id'=> $invoice_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1682,12 +1682,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $marketingSales,
+            'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $payment = Menu::where('name','Payment Receipt')->select('id')->first()->id;
+        $payment_repair = Menu::where('name','Payment Receipt')->where('menu_id', $marketingSalesRepair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Manage Payment Receipt',
@@ -1695,7 +1695,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'payment_repair.selectInvoice',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $payment,
+            'menu_id'=> $payment_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1707,7 +1707,7 @@ class MenusTableSeeder extends Seeder
             'route_name'=> 'payment_repair.selectInvoiceView',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $payment,
+            'menu_id'=> $payment_repair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1719,7 +1719,7 @@ class MenusTableSeeder extends Seeder
             'is_active' => true,
             'route_name'=> 'sales_plan.index',
             'roles' => 'ADMIN,PAMI',
-            'menu_id' => $marketingSales,
+            'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

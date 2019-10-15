@@ -2112,7 +2112,6 @@ return array(
     'Monolog\\Utils' => $vendorDir . '/monolog/monolog/src/Monolog/Utils.php',
     'MstActivityConfigurationTableSeeder' => $baseDir . '/database/seeds/MstActivityConfigurationTableSeeder.php',
     'MstActivityProfileTableSeeder' => $baseDir . '/database/seeds/MstActivityProfileTableSeeder.php',
-    'MstActivityStandardTableSeeder' => $baseDir . '/database/seeds/MstActivityStandardTableSeeder.php',
     'MstBomDetailTableSeeder' => $baseDir . '/database/seeds/MstBomDetailTableSeeder.php',
     'MstBomPrepTableSeeder' => $baseDir . '/database/seeds/MstBomPrepTableSeeder.php',
     'MstBomProfileTableSeeder' => $baseDir . '/database/seeds/MstBomProfileTableSeeder.php',

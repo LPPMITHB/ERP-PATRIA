@@ -316,17 +316,28 @@ class RoleController extends Controller
     }
 
     public function getPermissionAPI($id){
-        $childs = Menu::where('menu_id',$id)->get();
+        $childs = Menu::where('menu_id',$id)->pluck('id')->toArray();
         $menu_id = array();
+
+        $temp_child = $childs;
         if(count($childs) > 1){
             foreach($childs as $child){
-                $menu_id[] = $child->id;
+                $has_child_again = Menu::where('menu_id',$child)->pluck('id')->toArray();
+                foreach ($has_child_again as $last_child) {
+                    array_push($temp_child, $last_child);
+                }
             }
-            $modelPermission = Permission::whereIn('menu_id',$menu_id)->get()->jsonSerialize();
+            $modelPermission = Permission::whereIn('menu_id',$temp_child)->get();
+            foreach ($modelPermission as $permission) {
+                if(!in_array($permission->menu_id, $childs)){
+                    $temp_menu = Menu::where('id', $permission->menu_id)->first()->menu_id;
+                    $permission->menu_id = $temp_menu;
+                }
+            }
         }else{
-            $modelPermission = Permission::where('menu_id',$id)->get()->jsonSerialize();
+            $modelPermission = Permission::where('menu_id',$id)->get();
         }
-        return response($modelPermission, Response::HTTP_OK);
+        return response($modelPermission->jsonSerialize(), Response::HTTP_OK);
     }
 
     public function getSubMenuAPI($id){
