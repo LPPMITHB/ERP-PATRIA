@@ -400,7 +400,7 @@ class EstimatorController extends Controller
         $profile = EstimatorProfile::where('id',$id)->with('estimatorProfileDetails','estimatorProfileDetails.estimatorCostStandard','estimatorProfileDetails.estimatorCostStandard.uom','estimatorProfileDetails.estimatorCostStandard.estimatorWbs')->first();
         $profile_code = '';
         
-        return view('estimator.create_profile', compact('modelShip','route','modelWbs','modelCostStandard','profile','profile_code','profileDetails'));
+        return view('estimator.create_profile', compact('modelShip','route','modelWbs','modelCostStandard','profile','profile_code'));
     }
     
     public function updateProfile(Request $request, $id)

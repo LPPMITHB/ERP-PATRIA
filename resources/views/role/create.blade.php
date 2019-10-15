@@ -246,6 +246,7 @@
             },
             getSubMenu(id_menu){
                 window.axios.get('/api/getSubMenu/'+id_menu).then(({ data }) => {
+                    console.log(data);
                     if(data.length > 0){
                         this.sub_menus = [];
                         this.sub_menus = data;
