@@ -61,7 +61,7 @@ class ProjectController extends Controller
     public function listWBS($id, $menu){
         $project = Project::find($id);
         $mainMenu = $project->business_unit_id == "1" ? "building" : "repair";
-        $wbss = $project->wbss;
+        $wbss = WBS::where('project_id',$id)->orderBy('planned_start_date','asc')->get();
         $dataWbs = Collection::make();
         $totalWeightProject = $project->wbss->where('wbs_id',null)->sum('weight');
         $dataWbs->push([
@@ -195,12 +195,12 @@ class ProjectController extends Controller
 
         $dataWbs = $dataWbs->toArray();
         // Asc sort
-        usort($dataWbs,function($first,$second){
-            if ((strpos($first['id'], 'WBS') !== false || strpos($second['id'], 'WBS') !== false) &&
-            (strpos($first['id'], 'ACT') !== false || strpos($second['id'], 'ACT') !== false)) {
-                return $first['start_date'] > $second['start_date'];
-            }
-        });
+        // usort($dataWbs,function($first,$second){
+        //     if ((strpos($first['id'], 'WBS') !== false || strpos($second['id'], 'WBS') !== false) &&
+        //     (strpos($first['id'], 'ACT') !== false || strpos($second['id'], 'ACT') !== false)) {
+        //         return $first['start_date'] > $second['start_date'];
+        //     }
+        // });
 
         return view('project.listWBS', compact('dataWbs','project','menu','menuTitle','mainMenu'));
     }
@@ -810,11 +810,24 @@ class ProjectController extends Controller
                     $materialStandards = MaterialStandard::where('wbs_standard_id', $wbs_standard->id)->get();
                     if(count($materialStandards) > 0){
                         foreach ($materialStandards as $materialStandard) {
-                            $wbs_material = new WbsMaterial;
-                            $wbs_material->wbs_id = $wbs->id;
-                            $wbs_material->material_id = $materialStandard->material_id;
-                            $wbs_material->quantity = $materialStandard->quantity;
-                            $wbs_material->save();
+                            if(count($materialStandard->partDetails) > 0){
+                                foreach ($materialStandard->partDetails as $part) {
+                                    $wbs_material = new WbsMaterial;
+                                    $wbs_material->wbs_id = $wbs->id;
+                                    $wbs_material->part_description = $part->description;
+                                    $wbs_material->material_id = $part->materialStandard->material_id;
+                                    $wbs_material->quantity = $part->quantity;
+                                    $wbs_material->dimensions_value = $part->dimensions_value;
+                                    $wbs_material->weight = $part->weight;
+                                    $wbs_material->save();
+                                }
+                            }else{
+                                $wbs_material = new WbsMaterial;
+                                $wbs_material->wbs_id = $wbs->id;
+                                $wbs_material->material_id = $materialStandard->material_id;
+                                $wbs_material->quantity = $materialStandard->quantity;
+                                $wbs_material->save();
+                            }
                         }
                     }
 
@@ -1421,7 +1434,7 @@ class ProjectController extends Controller
             $project->description = $request->description;
             $project->customer_id = $request->customer;
             $project->ship_id = $request->ship;
-            $project->budget_value = str_replace(",", "", $request->budget_value);
+            $project->budget_value = $request->budget_value != null ? str_replace(",", "", $request->budget_value) : null;
             $project->flag = $request->flag;
             $project->class_name = $request->class_name;
             $project->person_in_charge = $request->person_in_charge;

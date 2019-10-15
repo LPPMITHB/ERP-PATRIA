@@ -81,7 +81,7 @@
                                                     <th style="width: 5%">No</th>
                                                     <th style="width: 20%">Material Number</th>
                                                     <th style="width: 40%">Material Description</th>
-                                                    <th style="width: 15%">Avaiable Qty</th>
+                                                    <th style="width: 15%">Available Qty</th>
                                                     <th style="width: 5%">Unit</th>
                                                     <th style="width: 15%">Transfer Qty</th>
                                                 </tr>

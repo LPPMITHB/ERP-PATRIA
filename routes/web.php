@@ -134,15 +134,15 @@ Route::name('pica.')->prefix('pica')->group(function() {
 
 // Daily Man Hour Routes
 Route::name('daily_man_hour.')->prefix('daily_man_hour')->group(function() {
-    Route::get('/selectProject', 'DailyManHourController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'DailyManHourController@selectProject')->name('selectProject')->middleware('can:manage-daily-man-hour');
 
-    Route::get('/create/{id}', 'DailyManHourController@create')->name('create');
+    Route::get('/create/{id}', 'DailyManHourController@create')->name('create')->middleware('can:manage-daily-man-hour');
 
-    Route::put('/store', 'DailyManHourController@store')->name('store');
+    Route::put('/store', 'DailyManHourController@store')->name('store')->middleware('can:manage-daily-man-hour');
 
-    Route::put('/update', 'DailyManHourController@update')->name('update');
+    Route::put('/update', 'DailyManHourController@update')->name('update')->middleware('can:manage-daily-man-hour');
 
-    Route::delete('/delete/{id}', 'DailyManHourController@destroy')->name('delete');
+    Route::delete('/delete/{id}', 'DailyManHourController@destroy')->name('delete')->middleware('can:manage-daily-man-hour');
 });
 
 
@@ -571,7 +571,7 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom-repair');
 
     Route::post('/', 'BOMController@store')->name('store')->middleware('can:create-bom-repair');
-    
+
     Route::post('/storeWbsMaterial', 'BOMController@storeWbsMaterial')->name('storeWbsMaterial')->middleware('can:manage-project-standard');
 
     Route::patch('/updateWbsMaterial', 'BOMController@updateWbsMaterial')->name('updateWbsMaterial')->middleware('can:manage-project-standard');
@@ -875,30 +875,24 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::get('/viewPlannedCost/{id}', 'RAPController@viewPlannedCost')->name('viewPlannedCost')->middleware('can:view-planned-cost');
 
-    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost');
+    Route::get('/inputActualOtherCost/{id}', 'RAPController@inputActualOtherCost')->name('inputActualOtherCost')->middleware('can:create-actual-other-cost');
 
-    Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost');
+    // Route::get('/assignCost/{id}', 'RAPController@assignCost')->name('assignCost'); ->Ga Dipake
 
     //===============start approval project plan cost
-    Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:create-actual-other-cost');
+    Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:approve-other-cost');
 
-    Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost');
-
-    Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost');
-
-    Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
-
-    Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
-    // /rap/getCostsPlanned/
+    Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost')->middleware('can:approve-other-cost');
+    
+    Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost')->middleware('can:approve-other-cost');
+    
     //===============end approval project plan cost
 
-    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost');
+    Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
 
-    Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');
+    Route::put('updateCost/{id}', 'RAPController@updateCost')->name('updateCost')->middleware('can:create-other-cost');
 
-    Route::put('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
-
-    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
+    Route::put('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap');
 
@@ -907,6 +901,13 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::patch('/{id}', 'RAPController@update')->name('update')->middleware('can:edit-rap');
 
     Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap');
+
+    // INI TERMASUK API 
+    Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
+
+    Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
+
+    Route::get('/getCosts/{id}', 'RAPController@getCosts')->name('getCosts');
 });
 
 //rap repair Routes
@@ -937,7 +938,7 @@ Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
 
     Route::patch('updateCost/{id}', 'RAPController@updateCost')->name('updateCost');
 
-    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost');
+    Route::patch('/storeActualCost', 'RAPController@storeActualCost')->name('storeActualCost')->middleware('can:create-actual-other-cost-repair');
 
     Route::get('/{id}', 'RAPController@show')->name('show')->middleware('can:show-rap-repair');
 
@@ -1062,6 +1063,8 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
     Route::get('/indexConsolidation', 'PurchaseRequisitionController@indexConsolidation')->name('indexConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
     Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
+
+    Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
 
@@ -1755,7 +1758,7 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
     Route::get('/selectWBS/{action}/{id}', 'ProjectStandardController@selectWBS')->name('selectWBS')->middleware('can:manage-project-standard');
 
     Route::get('/manageMaterial/{wbs_id}', 'ProjectStandardController@manageMaterial')->name('manageMaterial')->middleware('can:manage-project-standard');
-    
+
     Route::get('/manageResource/{wbs_id}', 'ProjectStandardController@manageResource')->name('manageResource')->middleware('can:manage-project-standard');
 
     Route::get('/showMaterialStandard/{wbs_id}', 'ProjectStandardController@showMaterialStandard')->name('showMaterialStandard')->middleware('can:manage-project-standard');
@@ -1788,232 +1791,235 @@ Route::name('project_standard.')->prefix('project_standard')->group(function() {
 
 // Estimator Routes
 Route::name('estimator.')->prefix('estimator')->group(function() {
-    Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs');
+    //Estimator WBS
+    Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs')->middleware('can:list-estimator-wbs');
 
-    Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
+    Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs')->middleware('can:create-estimator-wbs');
+    
+    Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs')->middleware('can:create-estimator-wbs');
 
-    Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
+    Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs')->middleware('can:edit-estimator-wbs');
 
-    Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
+    Route::patch('/updateWbs/{id}', 'EstimatorController@updateWbs')->name('updateWbs')->middleware('can:edit-estimator-wbs');
 
-    Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
+    Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs')->middleware('can:delete-estimator-wbs');
 
-    Route::get('/createProfile', 'EstimatorController@createProfile')->name('createProfile');
+    //Cost Standard
+    Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard')->middleware('can:list-cost-standard');
 
-    Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs');
+    Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard')->middleware('can:create-cost-standard');
 
-    Route::post('/storeCostStandard', 'EstimatorController@storeCostStandard')->name('storeCostStandard');
+    Route::post('/storeCostStandard', 'EstimatorController@storeCostStandard')->name('storeCostStandard')->middleware('can:create-cost-standard');
 
-    Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile');
+    Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard')->middleware('can:show-cost-standard');
 
-    Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs');
+    Route::get('/editCostStandard/{id}', 'EstimatorController@editCostStandard')->name('editCostStandard')->middleware('can:edit-cost-standard');
 
-    Route::get('/editCostStandard/{id}', 'EstimatorController@editCostStandard')->name('editCostStandard');
+    Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard')->middleware('can:edit-cost-standard');
 
-    Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile');
+    Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard')->middleware('can:delete-cost-standard');
 
-    // Route::get('/showWbs/{id}', 'EstimatorController@showWbs')->name('showWbs');
+    //Estimator Profile
+    Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile')->middleware('can:list-estimator-profile');
 
-    Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard');
+    Route::get('/createProfile', 'EstimatorController@createProfile')->name('createProfile')->middleware('can:create-estimator-profile');
 
-    Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile');
+    Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile')->middleware('can:create-estimator-profile');
 
-    Route::patch('/updateWbs/{id}', 'EstimatorController@updateWbs')->name('updateWbs');
+    Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile')->middleware('can:edit-estimator-profile');
+    
+    Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile')->middleware('can:edit-estimator-profile');
 
-    Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard');
+    Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile')->middleware('can:show-estimator-profile');
 
-    Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile');
-
-    Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs');
-
-    Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard');
-
-    Route::get('/deleteProfile/{id}', 'EstimatorController@deleteProfile')->name('deleteProfile');
+    Route::get('/deleteProfile/{id}', 'EstimatorController@deleteProfile')->name('deleteProfile')->middleware('can:delete-estimator-profile');
 });
 
-//Estimator Repair
+// Estimator Repair Routes
 Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
-    Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs');
+    //Estimator WBS
+    Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs')->middleware('can:list-estimator-wbs-repair');
 
-    Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard');
+    Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs')->middleware('can:create-estimator-wbs-repair');
+    
+    Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs')->middleware('can:create-estimator-wbs-repair');
 
-    Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile');
+    Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs')->middleware('can:edit-estimator-wbs-repair');
 
-    Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs');
+    Route::patch('/updateWbs/{id}', 'EstimatorController@updateWbs')->name('updateWbs')->middleware('can:edit-estimator-wbs-repair');
 
-    Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard');
+    Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs')->middleware('can:delete-estimator-wbs-repair');
 
-    Route::get('/createProfile', 'EstimatorController@createProfile')->name('createProfile');
+    //Cost Standard
+    Route::get('/indexEstimatorCostStandard', 'EstimatorController@indexEstimatorCostStandard')->name('indexEstimatorCostStandard')->middleware('can:list-cost-standard-repair');
 
-    Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs');
+    Route::get('/createCostStandard', 'EstimatorController@createCostStandard')->name('createCostStandard')->middleware('can:create-cost-standard-repair');
 
-    Route::post('/storeCostStandard', 'EstimatorController@storeCostStandard')->name('storeCostStandard');
+    Route::post('/storeCostStandard', 'EstimatorController@storeCostStandard')->name('storeCostStandard')->middleware('can:create-cost-standard-repair');
 
-    Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile');
+    Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard')->middleware('can:show-cost-standard-repair');
 
-    Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs');
+    Route::get('/editCostStandard/{id}', 'EstimatorController@editCostStandard')->name('editCostStandard')->middleware('can:edit-cost-standard-repair');
 
-    Route::get('/editCostStandard/{id}', 'EstimatorController@editCostStandard')->name('editCostStandard');
+    Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard')->middleware('can:edit-cost-standard-repair');
 
-    Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile');
+    Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard')->middleware('can:delete-cost-standard-repair');
 
-    // Route::get('/showWbs/{id}', 'EstimatorController@showWbs')->name('showWbs');
+    //Estimator Profile
+    Route::get('/indexEstimatorProfile', 'EstimatorController@indexEstimatorProfile')->name('indexEstimatorProfile')->middleware('can:list-estimator-profile-repair');
 
-    Route::get('/showCostStandard/{id}', 'EstimatorController@showCostStandard')->name('showCostStandard');
+    Route::get('/createProfile', 'EstimatorController@createProfile')->name('createProfile')->middleware('can:create-estimator-profile-repair');
 
-    Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile');
+    Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile')->middleware('can:create-estimator-profile-repair');
 
-    Route::patch('/updateWbs/{id}', 'EstimatorController@updateWbs')->name('updateWbs');
+    Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile')->middleware('can:edit-estimator-profile-repair');
+    
+    Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile')->middleware('can:edit-estimator-profile-repair');
 
-    Route::patch('/updateCostStandard/{id}', 'EstimatorController@updateCostStandard')->name('updateCostStandard');
+    Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile')->middleware('can:show-estimator-profile-repair');
 
-    Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile');
-
-    Route::get('/deleteWbs/{id}', 'EstimatorController@deleteWbs')->name('deleteWbs');
-
-    Route::get('/deleteCostStandard/{id}', 'EstimatorController@deleteCostStandard')->name('deleteCostStandard');
-
-    Route::get('/deleteProfile/{id}', 'EstimatorController@deleteProfile')->name('deleteProfile');
+    Route::get('/deleteProfile/{id}', 'EstimatorController@deleteProfile')->name('deleteProfile')->middleware('can:delete-estimator-profile-repair');
 });
+
 
 // Quotation Routes
 Route::name('quotation.')->prefix('quotation')->group(function() {
-    Route::get('/create', 'QuotationController@create')->name('create');
+    Route::get('/create', 'QuotationController@create')->name('create')->middleware('can:create-quotation');
 
-    Route::get('/', 'QuotationController@index')->name('index');
+    Route::get('/', 'QuotationController@index')->name('index')->middleware('can:list-quotation');
 
-    Route::get('/{id}', 'QuotationController@show')->name('show');
+    Route::get('/{id}', 'QuotationController@show')->name('show')->middleware('can:show-quotation');
 
-    Route::get('/{id}/edit', 'QuotationController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QuotationController@edit')->name('edit')->middleware('can:edit-quotation');
 
-    Route::patch('/{id}', 'QuotationController@update')->name('update');
+    Route::patch('/{id}', 'QuotationController@update')->name('update')->middleware('can:edit-quotation');
 
-    Route::post('/', 'QuotationController@store')->name('store');
+    Route::post('/', 'QuotationController@store')->name('store')->middleware('can:create-quotation');
 });
 
 // Quotation Repair Routes
 Route::name('quotation_repair.')->prefix('quotation_repair')->group(function() {
-    Route::get('/create', 'QuotationController@create')->name('create');
+    Route::get('/create', 'QuotationController@create')->name('create')->middleware('can:create-quotation-repair');
 
-    Route::get('/', 'QuotationController@index')->name('index');
+    Route::get('/', 'QuotationController@index')->name('index')->middleware('can:list-quotation-repair');
 
-    Route::get('/{id}', 'QuotationController@show')->name('show');
+    Route::get('/{id}', 'QuotationController@show')->name('show')->middleware('can:show-quotation-repair');
 
-    Route::get('/{id}/edit', 'QuotationController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QuotationController@edit')->name('edit')->middleware('can:edit-quotation-repair');
 
-    Route::patch('/{id}', 'QuotationController@update')->name('update');
+    Route::patch('/{id}', 'QuotationController@update')->name('update')->middleware('can:edit-quotation-repair');
 
-    Route::post('/', 'QuotationController@store')->name('store');
+    Route::post('/', 'QuotationController@store')->name('store')->middleware('can:create-quotation-repair');
 });
 
 // Sales Order Routes
 Route::name('sales_order.')->prefix('sales_order')->group(function() {
-    Route::get('/selectQT', 'SalesOrderController@selectQT')->name('selectQT');
+    Route::get('/selectQT', 'SalesOrderController@selectQT')->name('selectQT')->middleware('can:create-sales-order');
 
-    Route::get('/create/{id}', 'SalesOrderController@create')->name('create');
+    Route::get('/create/{id}', 'SalesOrderController@create')->name('create')->middleware('can:create-sales-order');
 
-    Route::get('/', 'SalesOrderController@index')->name('index');
+    Route::get('/', 'SalesOrderController@index')->name('index')->middleware('can:list-sales-order');
 
-    Route::get('/{id}', 'SalesOrderController@show')->name('show');
+    Route::get('/{id}', 'SalesOrderController@show')->name('show')->middleware('can:show-sales-order');
 
-    Route::get('/{id}/edit', 'SalesOrderController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesOrderController@edit')->name('edit')->middleware('can:edit-sales-order');
 
-    Route::patch('/{id}', 'SalesOrderController@update')->name('update');
+    Route::patch('/{id}', 'SalesOrderController@update')->name('update')->middleware('can:edit-sales-order');
 
-    Route::post('/', 'SalesOrderController@store')->name('store');
+    Route::post('/', 'SalesOrderController@store')->name('store')->middleware('can:create-sales-order');
 });
 
 // Sales Order Repair Routes
 Route::name('sales_order_repair.')->prefix('sales_order_repair')->group(function() {
-    Route::get('/selectQT', 'SalesOrderController@selectQT')->name('selectQT');
+    Route::get('/selectQT', 'SalesOrderController@selectQT')->name('selectQT')->middleware('can:create-sales-order-repair');
 
-    Route::get('/create/{id}', 'SalesOrderController@create')->name('create');
+    Route::get('/create/{id}', 'SalesOrderController@create')->name('create')->middleware('can:create-sales-order-repair');
 
-    Route::get('/', 'SalesOrderController@index')->name('index');
+    Route::get('/', 'SalesOrderController@index')->name('index')->middleware('can:list-sales-order-repair');
 
-    Route::get('/{id}', 'SalesOrderController@show')->name('show');
+    Route::get('/{id}', 'SalesOrderController@show')->name('show')->middleware('can:show-sales-order-repair');
 
-    Route::get('/{id}/edit', 'SalesOrderController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesOrderController@edit')->name('edit')->middleware('can:edit-sales-order-repair');
 
-    Route::patch('/{id}', 'SalesOrderController@update')->name('update');
+    Route::patch('/{id}', 'SalesOrderController@update')->name('update')->middleware('can:edit-sales-order-repair');
 
-    Route::post('/', 'SalesOrderController@store')->name('store');
+    Route::post('/', 'SalesOrderController@store')->name('store')->middleware('can:create-sales-order-repair');
 });
 
 // Invoice Routes
 Route::name('invoice.')->prefix('invoice')->group(function() {
-    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject')->middleware('can:create-invoice');
 
-    Route::get('/create/{id}', 'InvoiceController@create')->name('create');
+    Route::get('/create/{id}', 'InvoiceController@create')->name('create')->middleware('can:create-invoice');
 
-    Route::get('/', 'InvoiceController@index')->name('index');
+    Route::get('/', 'InvoiceController@index')->name('index')->middleware('can:list-invoice');
 
-    Route::get('/{id}', 'InvoiceController@show')->name('show');
+    Route::get('/{id}', 'InvoiceController@show')->name('show')->middleware('can:show-invoice');
 
-    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit');
+    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit')->middleware('can:edit-invoice');
 
-    Route::patch('/{id}', 'InvoiceController@update')->name('update');
+    Route::patch('/{id}', 'InvoiceController@update')->name('update')->middleware('can:edit-invoice');
 
-    Route::post('/', 'InvoiceController@store')->name('store');
+    Route::post('/', 'InvoiceController@store')->name('store')->middleware('can:create-invoice');
 });
 
 // Invoice Repair Routes
 Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
-    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject')->middleware('can:create-invoice-repair');
 
-    Route::get('/create/{id}', 'InvoiceController@create')->name('create');
+    Route::get('/create/{id}', 'InvoiceController@create')->name('create')->middleware('can:create-invoice-repair');
 
-    Route::get('/', 'InvoiceController@index')->name('index');
+    Route::get('/', 'InvoiceController@index')->name('index')->middleware('can:list-invoice-repair');
 
-    Route::get('/{id}', 'InvoiceController@show')->name('show');
+    Route::get('/{id}', 'InvoiceController@show')->name('show')->middleware('can:show-invoice-repair');
 
-    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit');
+    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit')->middleware('can:edit-invoice-repair');
 
-    Route::patch('/{id}', 'InvoiceController@update')->name('update');
+    Route::patch('/{id}', 'InvoiceController@update')->name('update')->middleware('can:edit-invoice-repair');
 
-    Route::post('/', 'InvoiceController@store')->name('store');
+    Route::post('/', 'InvoiceController@store')->name('store')->middleware('can:create-invoice-repair');
 });
 
 // Payment Routes
 Route::name('payment.')->prefix('payment')->group(function() {
-    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice')->middleware('can:create-payment');
 
-    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView')->middleware('can:list-payment');
 
-    Route::get('/create/{id}', 'PaymentController@create')->name('create');
+    Route::get('/create/{id}', 'PaymentController@create')->name('create')->middleware('can:create-payment');
 
-    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage');
+    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage')->middleware('can:create-payment');
 
-    Route::get('/', 'PaymentController@index')->name('index');
+    Route::get('/', 'PaymentController@index')->name('index')->middleware('can:list-payment');
 
-    Route::get('/{id}', 'PaymentController@show')->name('show');
+    Route::get('/{id}', 'PaymentController@show')->name('show')->middleware('can:show-payment');
 
-    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit');
+    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit')->middleware('can:edit-payment');
 
-    Route::patch('/{id}', 'PaymentController@update')->name('update');
+    Route::patch('/{id}', 'PaymentController@update')->name('update')->middleware('can:edit-payment');
 
-    Route::post('/', 'PaymentController@store')->name('store');
+    Route::post('/', 'PaymentController@store')->name('store')->middleware('can:create-payment');
 });
 
 // Payment Repair Routes
 Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
-    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice')->middleware('can:create-payment-repair');
 
-    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView')->middleware('can:list-payment-repair');
 
-    Route::get('/create/{id}', 'PaymentController@create')->name('create');
+    Route::get('/create/{id}', 'PaymentController@create')->name('create')->middleware('can:create-payment-repair');
 
-    Route::get('/manage/{id}', 'PaymentController@manage')->name('manage');
+    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage')->middleware('can:create-payment-repair');
 
-    Route::get('/', 'PaymentController@index')->name('index');
+    Route::get('/', 'PaymentController@index')->name('index')->middleware('can:list-payment-repair');
 
-    Route::get('/{id}', 'PaymentController@show')->name('show');
+    Route::get('/{id}', 'PaymentController@show')->name('show')->middleware('can:show-payment-repair');
 
-    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit');
+    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit')->middleware('can:edit-payment-repair');
 
-    Route::patch('/{id}', 'PaymentController@update')->name('update');
+    Route::patch('/{id}', 'PaymentController@update')->name('update')->middleware('can:edit-payment-repair');
 
-    Route::post('/', 'PaymentController@store')->name('store');
+    Route::post('/', 'PaymentController@store')->name('store')->middleware('can:create-payment-repair');
 });
 
 //  QC Type Routes
@@ -2073,7 +2079,7 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::patch('/', 'QualityControlTaskController@update')->name('update');
     // ->middleware('can:edit-qc-task');
-    
+
     Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
 
     Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');
@@ -2199,4 +2205,74 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
     Route::patch('/{id}', 'CustomerPortalController@close')->name('close');
 
     Route::delete('/{id}', 'CustomerPortalController@destroy')->name('destroy');
+});
+
+//  QC Type Repair Routes
+Route::name('qc_type_repair.')->prefix('qc_type_repair')->group(function () {
+
+    Route::get('/', 'QualityControlTypeController@index')->name('index');
+
+    Route::get('/create', 'QualityControlTypeController@create')->name('create');
+
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
+
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
+
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
+
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
+
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+
+    Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
+
+    Route::post('/', 'QualityControlTypeController@store')->name('store');
+
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+});
+
+//  QC Task Repair Routes
+Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
+
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
+    // ->middleware('can:list-qc-task');
+
+    Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
+
+    Route::get('/confirm/{id}', 'QualityControlTaskController@confirm')->name('confirm');
+
+    Route::get('/summaryReport/{id}', 'QualityControlTaskController@summaryReport')->name('summaryReport');
+
+    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+
+    Route::get('/selectProjectIndex', 'QualityControlTaskController@selectProjectIndex')->name('selectProjectIndex');
+
+    Route::get('/selectProjectConfirm', 'QualityControlTaskController@selectProjectConfirm')->name('selectProjectConfirm');
+
+    Route::get('/selectProjectSummary', 'QualityControlTaskController@selectProjectSummary')->name('selectProjectSummary');
+
+    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');
+
+    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
+
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
+    // ->middleware('can:show-qc-task');
+
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    // ->middleware('can:edit-qc-task');
+
+    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    // ->middleware('can:edit-qc-task');
+
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
+
+    Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');
+
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm');
+
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+
+    Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy');
+    // ->middleware('can:destroy-qc-task');
+
 });

@@ -13,7 +13,6 @@ use Maatwebsite\Excel\Files\TemporaryFileFactory;
 use Laravel\Lumen\Application as LumenApplication;
 use Maatwebsite\Excel\Transactions\TransactionHandler;
 use Maatwebsite\Excel\Transactions\TransactionManager;
-use Maatwebsite\Excel\Sheet;
 
 class ExcelServiceProvider extends ServiceProvider
 {
@@ -31,9 +30,6 @@ class ExcelServiceProvider extends ServiceProvider
                 ], 'config');
             }
         }
-        Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
-            $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
-        });
     }
 
     /**

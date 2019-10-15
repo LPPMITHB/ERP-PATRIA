@@ -53,6 +53,7 @@ Route::get('/getAllWbss/{id}', 'RAPController@getAllWbssCostAPI')->name('api.bom
 Route::get('/getProjectPR/{id}', 'PurchaseRequisitionController@getProjectApi')->name('api.purchase_requisition.getProjectApi');
 Route::get('/getMaterialPR/{id}', 'PurchaseRequisitionController@getMaterialAPI')->name('api.purchase_requisition.getMaterialAPI');
 Route::get('/ProjectStandardPR/{id}', 'PurchaseRequisitionController@ProjectStandardAPI')->name('api.purchase_requisition.ProjectStandardAPI');
+Route::get('/getRepeatPR/{id}', 'PurchaseRequisitionController@getRepeatAPI')->name('api.purchase_requisition.getRepeatAPI');
 // Route::get('/getMaterials/{id}', 'PurchaseRequisitionController@getMaterialsAPI')->name('api.purchase_requisition.getMaterialsAPI');
 Route::get('/getWbsPR/{id}', 'PurchaseRequisitionController@getWbsAPI')->name('api.purchase_requisition.getWbsAPI');
 Route::get('/getModelWbsPR/{id}', 'PurchaseRequisitionController@getModelWbsAPI')->name('api.purchase_requisition.getModelWbsAPI');
@@ -81,6 +82,7 @@ Route::get('/getPRD/{id}', 'GoodsReceiptController@getGRDAPI')->name('api.goods_
 Route::get('/getVendor', 'PurchaseOrderController@getVendorAPI')->name('api.purchase_order.getVendorAPI');
 Route::get('/ProjectStandardPO/{id}', 'PurchaseOrderController@ProjectStandardAPI')->name('api.purchase_order.ProjectStandardAPI');
 Route::get('/getVendorList/{id}', 'PurchaseOrderController@getVendorListAPI')->name('api.purchase_order.getVendorListAPI');
+Route::get('/getVendorDetail/{id}', 'PurchaseOrderController@getVendorDetailAPI')->name('api.purchase_order.getVendorDetail');
 
 // stock management
 Route::get('/getSlocSM/{id}', 'StockManagementController@getSlocApi')->name('api.stock_management.getSlocApi');
@@ -236,3 +238,4 @@ Route::get('/getComments/{project_id}', 'CustomerPortalController@getCommentsAPI
 
 //Material Standard
 Route::get('/getMaterialProjectStandard/{id}', 'ProjectStandardController@getMaterialAPI')->name('api.project_standard.getMaterialAPI');
+Route::get('/getMaterialPartsPS/{id}', 'ProjectStandardController@getMaterialPartsPSAPI')->name('api.project_standard.getMaterialPartsPSAPI');

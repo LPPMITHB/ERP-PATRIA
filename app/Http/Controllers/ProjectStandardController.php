@@ -15,6 +15,7 @@ use App\Models\Resource;
 use App\Models\ResourceStandard;
 use App\Models\Configuration;
 use App\Models\Uom;
+use App\Models\PartDetailStandard;
 use DB;
 use Auth;
 use Illuminate\Support\Collection;
@@ -227,18 +228,45 @@ class ProjectStandardController extends Controller
         $wbs = WbsStandard::find($wbs_id);
         $project = ProjectStandard::where('id',$wbs->project_standard_id)->with('ship')->first();
         $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $densities = Configuration::get('density');
         $existing_data = [];
 
         $material_ids = [];
         $edit = false;
         if(count($wbs->materialStandards)>0){
             $edit = true;
-            $existing_data = MaterialStandard::where('wbs_standard_id', $wbs->id)->with('material.uom')->get();
+            $existing_data = MaterialStandard::where('wbs_standard_id', $wbs->id)->with('material.uom','material.weightUom','partDetails')->get();
             foreach ($existing_data as $material) {
                 array_push($material_ids,$material->material_id);
                 $material->material_code = $material->material->code;
                 $material->material_name = $material->material->description;
                 $material->unit = $material->material->uom->unit;
+
+                if($material->material->dimensions_value != null){
+                    $dimensions = json_decode($material->material->dimensions_value);
+                    foreach ($dimensions as $dimension) {
+                        $uom = Uom::find($dimension->uom_id);
+                        $dimension->uom = $uom;
+                    }
+                    $material->material->dimensions_value_obj = $dimensions;
+                    $material->material->dimensions_value = json_encode($dimensions);
+                }
+
+                $material->selected_material = $material->material;
+
+                foreach ($densities as $density) {
+                    if($density->id == $material->material->density_id){
+                        $material->material->density = $density;
+                    }
+                }
+
+                foreach ($material->partDetails as $part) {
+                    $part->edit = false;
+                    $part->dimensions_value_obj = json_decode($part->dimensions_value);
+                    foreach ($part->dimensions_value_obj as $dimension) {
+                        $dimension->uom = Uom::find($dimension->uom_id);
+                    }
+                }
             }
         }
         
@@ -280,6 +308,26 @@ class ProjectStandardController extends Controller
                 $materialStandard->material_id = $material->material_id;
                 $materialStandard->quantity = $material->quantity;
                 $materialStandard->save();
+
+                if(isset($material->part_details)){
+                    if(count($material->part_details) > 0){
+                        foreach ($material->part_details as $part_detail) {
+                            foreach ($part_detail->dimensions_value_obj as $dimension) {
+                                unset($dimension->value);
+                                unset($dimension->uom);
+                            }
+                            $temp_dimensions_value = json_encode($part_detail->dimensions_value_obj);
+
+                            $new_part = new PartDetailStandard;
+                            $new_part->description = $part_detail->description;
+                            $new_part->material_standard_id = $materialStandard->id;
+                            $new_part->dimensions_value = $temp_dimensions_value;
+                            $new_part->weight = $part_detail->weight;
+                            $new_part->quantity = $part_detail->quantity;
+                            $new_part->save();
+                        }
+                    }
+                }
             }
             DB::commit();
             return redirect()->route('project_standard.showMaterialStandard', ['id' => $datas->wbs_id])->with('success', 'Material Standard Created');
@@ -319,7 +367,12 @@ class ProjectStandardController extends Controller
         try {
             foreach ($datas->deleted_id as $id) {
                 $materialStandard = MaterialStandard::find($id);
+                $materialStandard->partDetails()->delete();
                 $materialStandard->delete();
+            }
+            foreach ($datas->deleted_part_id as $id) {
+                $partDetail = PartDetailStandard::find($id);
+                $partDetail->delete();
             }
             foreach($datas->materials as $material){
                 if(isset($material->id)){
@@ -334,6 +387,35 @@ class ProjectStandardController extends Controller
                     $materialStandard->material_id = $material->material_id;
                     $materialStandard->quantity = $material->quantity;
                     $materialStandard->save();
+                }
+                if(isset($material->part_details)){
+                    if(count($material->part_details) > 0){
+                        foreach ($material->part_details as $part_detail) {
+
+                            if(isset($part_detail->id)){
+                                $part = PartDetailStandard::find($part_detail->id);
+                            }else{
+                                $part = new PartDetailStandard;
+                            }
+                            foreach ($part_detail->dimensions_value_obj as $dimension) {
+                                unset($dimension->value);
+                                unset($dimension->uom);
+                            }
+                            $temp_dimensions_value = json_encode($part_detail->dimensions_value_obj);
+
+                            $part->description = $part_detail->description;
+                            $part->material_standard_id = $materialStandard->id;
+                            $part->dimensions_value = $temp_dimensions_value;
+                            $part->weight = $part_detail->weight;
+                            $part->quantity = $part_detail->quantity;
+
+                            if(isset($part_detail->id)){
+                                $part->update();
+                            }else{
+                                $part->save();
+                            }
+                        }
+                    }
                 }
             }
             DB::commit();
@@ -649,5 +731,31 @@ class ProjectStandardController extends Controller
             $material->dimensions_value = json_encode($dimensions);
         }
         return response($material->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getMaterialPartsPSAPI($id){
+        $material_standard = MaterialStandard::where('id',$id)->with('material.uom','material.weightUom','partDetails')->first();
+        $densities = Configuration::get('density');
+        foreach ($densities as $density) {
+            if($density->id == $material_standard->material->density_id){
+                $material_standard->material->density = $density;
+            }
+        }
+        if($material_standard->material->dimensions_value != null){
+            $dimensions = json_decode($material_standard->material->dimensions_value);
+            foreach ($dimensions as $dimension) {
+                $uom = Uom::find($dimension->uom_id);
+                $dimension->uom = $uom;
+            }
+            $material_standard->material->dimensions_value_obj = $dimensions;
+            $material_standard->material->dimensions_value = json_encode($dimensions);
+        }
+        foreach ($material_standard->partDetails as $part) {
+            $part->dimensions_value_obj = json_decode($part->dimensions_value);
+            foreach ($part->dimensions_value_obj as $dimension) {
+                $dimension->uom = Uom::find($dimension->uom_id);
+            }
+        }
+        return response($material_standard->jsonSerialize(), Response::HTTP_OK);
     }
 }

@@ -127,22 +127,28 @@ $vendor->name => route('vendor.show',$vendor->id),
 
                             <!-- START FORM PAJAK PERTAMBAHAN NILAI -->
                             <div class="form-group">
-                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label">PPn. (%)</label>
+                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label" >PPn. (%)*</label>
                             
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_pertambahan_nilai"
-                                        name="pajak_pertambahan_nilai">
+                                        name="pajak_pertambahan_nilai"
+                                        @if($vendor->pajak_pertambahan_nilai != null) value="{{ $vendor->pajak_pertambahan_nilai }}"
+                                    @else value="{{ old('pajak_pertambahan_nilai') }}"
+                                    @endif required>
                                 </div>
                             </div>
                             <!-- END FORM PAJAK PERTAMBAHAN NILAI -->
                             
                             <!-- START FORM PAJAK PENGHASILAN -->
                             <div class="form-group">
-                                <label for="pajak_penghasilan" class="col-sm-2 control-label">PPh. (%)</label>
+                                <label for="pajak_penghasilan" class="col-sm-2 control-label" >PPh. (%)*</label>
                             
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_penghasilan"
-                                        name="pajak_penghasilan">
+                                        name="pajak_penghasilan"
+                                        @if($vendor->pajak_penghasilan != null) value="{{ $vendor->pajak_penghasilan }}"
+                                    @else value="{{ old('pajak_penghasilan') }}"
+                                    @endif required>
                                 </div>
                             </div>
                             <!-- END FORM PAJAK PENGHASILAN -->
@@ -153,7 +159,19 @@ $vendor->name => route('vendor.show',$vendor->id),
                             
                                 <div class="col-sm-10">
                                     <select class="form-control" name="currencies" id="currencies">
+                                        
+                                        @if($vendor->currencies == null) 
                                         <option value="" selected>Select Currencies</option>
+                                        @else
+                                        <option value="" >Select Currencies</option>
+                                        <option value="{{$vendor->currencies}}" selected>
+                                            @foreach($currencies as $currencies_lists)
+                                            @if($currencies_lists->id == $vendor->currencies)
+                                                {{$currencies_lists->unit." - ". $currencies_lists->name }}
+                                            @endif
+                                            @endforeach
+                                        </option>
+                                        @endif
                                         @foreach($currencies as $currencies_lists)
                                         <option value="{{$currencies_lists->id}}">
                                             {{$currencies_lists->unit." - ". $currencies_lists->name }}</option>

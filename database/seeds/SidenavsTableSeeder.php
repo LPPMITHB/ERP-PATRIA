@@ -1773,18 +1773,31 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'qc_type.create',
         ]);
 
-        $viewQcType = Menu::where('route_name','qc_type.index')->select('id')->first()->id;
+        $viewQcTypePmp = Menu::where('route_name','qc_type.index')->select('id')->first()->id;
+        //Qc Type PMP
         DB::table('sidenav')->insert([
-            'menu_id' => $viewQcType,
+            'menu_id' => $viewQcTypePmp,
             'route_name' => 'qc_type.index',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $viewQcType,
+            'menu_id' => $viewQcTypePmp,
+            'route_name' => 'qc_type.edit',
+        ]);
+        $viewQcTypePami = Menu::where('route_name', 'qc_type.index')->select('id')->first()->id;
+        //Qc Type PAMI
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTypePami,
+            'route_name' => 'qc_type.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewQcTypePami,
             'route_name' => 'qc_type.edit',
         ]);
         
         $createQcTask = Menu::where('route_name','qc_task.selectProject')->select('id')->first()->id;
+        //Qc Task PMP
         DB::table('sidenav')->insert([
             'menu_id' => $createQcTask,
             'route_name' => 'qc_task.selectProject',
@@ -1794,7 +1807,7 @@ class SidenavsTableSeeder extends Seeder
             'menu_id' => $createQcTask,
             'route_name' => 'qc_task.selectWBS',
         ]);
-
+        //Qc Task PAMI
         DB::table('sidenav')->insert([
             'menu_id' => $createQcTask,
             'route_name' => 'qc_task.create',
@@ -2467,14 +2480,16 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'customer_portal.showProject',
         ]);
 
+        $postReply = Menu::where('route_name','customer_portal.selectProjectReply')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $postReply,
+            'route_name' => 'customer_portal.selectProjectReply',
+        ]);
+
         $postComplaints = Menu::where('route_name','customer_portal.selectProjectPost')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $postComplaints,
             'route_name' => 'customer_portal.selectProjectPost',
-        ]);
-        DB::table('sidenav')->insert([
-            'menu_id' => $postComplaints,
-            'route_name' => 'customer_portal.selectProjectReply',
         ]);
 
         DB::table('sidenav')->insert([

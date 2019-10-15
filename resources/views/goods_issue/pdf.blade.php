@@ -87,13 +87,21 @@
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">Job No</div>
                         <div class="p-l-5" style="font-size: 11px; margin-left: 100px; margin-top:-20px">
-                            : {{$modelGI->materialRequisition->project != null ? $modelGI->materialRequisition->project->number : "-"}}
+                            : @if($modelGI->material_requisition_id != null && $modelGI->materialRequisition->project != null)
+                            {{ $modelGI->materialRequisition->project->number}}
+                            @else 
+                            -
+                            @endif
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">MR Number  </div>
                         <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
-                            : {{$modelGI->materialRequisition->number}}
+                            : @if($modelGI->material_requisition_id != null)
+                            {{ $modelGI->materialRequisition->number}}
+                            @else
+                            -
+                            @endif
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
@@ -111,7 +119,13 @@
                     <div style="margin-left: 450px; ">
                         <div style="font-size: 11px;">Delivery Date  </div>
                         <div class="p-l-5" style="font-size: 11px;margin-left: 100px; margin-top:-20px">
+
                             : {{date("d-m-Y", strtotime($modelGI->materialRequisition->delivery_date))}}
+                            : @if($modelGI->material_requisition_id != null)
+                            {{date("d-m-Y", strtotime($modelGI->materialRequisition->delivery_date))}}
+                            @else
+                            -
+                            @endif
                         </div>
                     </div>
                     <div style="margin-left: 450px; ">
@@ -155,14 +169,14 @@
                             <div>
                                 <div style="margin-left: 0px; margin-top: 3px; font-size: 11px">Requested By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->materialRequisition->user->name}}</div>
-                                <div style="margin-left: 0px;margin-top: 0px;font-size: 11px">Date {{date("d-m-Y", strtotime($modelGI->materialRequisition->created_at))}}</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->material_requisition_id !=null ? $modelGI->materialRequisition->user->name : "-"}}</div>
+                                <div style="margin-left: 0px;margin-top: 0px;font-size: 11px">Date {{$modelGI->material_requisition_id !=null ? date("d-m-Y", strtotime($modelGI->materialRequisition->created_at )) : "-"}}</div>
                             </div>
                             <div style="margin-left: 230px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Approved By</div>
                                 <hr style="margin-left: 0px; margin-top: 45px; width:75px;height:0.5px;border:none;color:#333;background-color:#333;" />
-                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->materialRequisition->approvedBy->name}}</div>
-                                <div style="margin-top: 0px;font-size: 11px">Date {{date("d-m-Y", strtotime($modelGI->materialRequisition->approval_date))}}</div>
+                                <div style="margin-top: -20px; font-size: 12px">{{$modelGI->material_requisition_id !=null ? $modelGI->materialRequisition->approvedBy->name : "-"}}</div>
+                                <div style="margin-top: 0px;font-size: 11px">Date {{$modelGI->material_requisition_id !=null ? date("d-m-Y", strtotime($modelGI->materialRequisition->approval_date)) : "-"}}</div>
                             </div>
                             <div style="margin-left: 440px; margin-top:-150px">
                                 <div style="margin-top: 3px; font-size: 11px">Issued By</div>

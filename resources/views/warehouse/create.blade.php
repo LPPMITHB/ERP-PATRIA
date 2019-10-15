@@ -85,7 +85,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        {{-- <div class="form-group">
                             <label for="pic" class="col-sm-2 control-label">Person In-Charge</label>
                             <div class="col-sm-10">
                                 <select class="form-control" name="pic" id="pic">
@@ -94,7 +94,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                        </div>
+                        </div> --}}
 
                         <div class="form-group">
                             <label for="status" class="col-sm-2 control-label">Status *</label>

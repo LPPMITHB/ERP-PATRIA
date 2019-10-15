@@ -19,7 +19,7 @@
     <div class="col-xs-12">
         <div class="box">
             <div class="box-body">
-                <form id="edit-material" class="form-horizontal" method="POST" action="{{ route('material.update',['id'=>$material->id]) }}">
+                <form id="edit-material" class="form-horizontal" method="POST" action="{{ route('material.update',['id'=>$material->id]) }}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_method" value="PATCH">
                     <div class="box-body">
@@ -119,9 +119,9 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="dimension_type" class="col-sm-2 control-label">Dimension Type</label>
+                                <label for="dimension_type" class="col-sm-2 control-label">Dimension Type*</label>
                                 <div class="col-sm-10">
-                                    <selectize id="dimension_type" name="dimension_type" v-model="submittedForm.dimension_type_id" :settings="dimension_type_settings">
+                                    <selectize id="dimension_type" name="dimension_type" v-model="submittedForm.dimension_type_id" :settings="dimension_type_settings" required aria-required="required">
                                         <option v-for="(data, index) in dimension_types" :value="data.id">{{ data.name }}</option>
                                     </selectize>   
                                 </div>
@@ -132,11 +132,11 @@
                                     <label for="name" class="col-sm-2 control-label">{{dimension.name}}</label>
                     
                                     <div class="col-sm-8">
-                                        <input type="text" name="name" class="form-control" id="weight" v-model="dimension.value">
+                                        <input type="text" name="name" class="form-control" id="weight" v-model="dimension.value" required>
                                     </div>
     
                                     <div class="col-sm-2">
-                                        <selectize disabled id="uom" v-model="dimension.uom_id" :settings="weight_uom_settings">
+                                        <selectize disabled id="uom" v-model="dimension.uom_id" :settings="weight_uom_settings" >
                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
                                         </selectize>    
                                     </div>
@@ -169,6 +169,8 @@
                                         </div>
                                     </div>
                                 </div>
+
+    
 
                                 <div class="form-group">
                                     <label for="status" class="col-sm-2 control-label">Status *</label>
@@ -211,6 +213,23 @@
 
     $(document).ready(function(){
         $('div.overlay').hide();
+    });
+    $(document).on('change', ':file', function() {
+        var input = $(this),
+        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
+    $(document).ready(function() {
+        $(':file').on('fileselect', function(event, numFiles, label) {
+            var input = $(this).parents('.input-group').find(':text'),
+            log = numFiles > 1 ? numFiles + ' files selected' : label;
+            if (input.length) {
+                input.val(log);
+            } else {
+                if (log) alert(log);
+            }
+        });
     });
     Vue.filter('capitalize', function(value) {
             if (!value) return ''
@@ -303,29 +322,6 @@
                     isOk = true;
                 }
 
-                if(this.submittedForm.weight_uom_id != ""){
-                    if(this.submittedForm.weight == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.submittedForm.height_uom_id != ""){
-                    if(this.submittedForm.height == "" || this.submittedForm.density_id == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.submittedForm.length_uom_id != ""){
-                    if(this.submittedForm.lengths == "" || this.submittedForm.density_id == ""){
-                        isOk = true;
-                    }
-                }
-
-                if(this.submittedForm.width_uom_id != ""){
-                    if(this.submittedForm.width == "" || this.submittedForm.density_id == ""){
-                        isOk = true;
-                    }
-                }
                 return isOk;
             },
             weightOk :function(){
@@ -376,17 +372,14 @@
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
                 this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
-                this.selectedDimensionType.forEach(dimension => {
-                    dimension.value = (dimension.value+"").replace(/,/g , '');
-                });
+                if(this.selectedDimensionType != null){
+                    this.selectedDimensionType.forEach(dimension => {
+                        dimension.value = (dimension.value+"").replace(/,/g , '');
+                    });
+                }
                 this.submittedForm.selectedDimensionType = this.selectedDimensionType;
                 this.submittedForm.standard_price_config = (this.submittedForm.standard_price_config + "").replace(/,/g, '');
                 this.submittedForm.standard_price_config_range = (this.submittedForm.standard_price_config_range + "").replace(/,/g, '');
-                this.submittedForm.weight = this.submittedForm.weight.replace(/,/g , '');
-                this.submittedForm.height = this.submittedForm.height.replace(/,/g , '');
-                this.submittedForm.lengths = this.submittedForm.lengths.replace(/,/g , '');
-                this.submittedForm.width = this.submittedForm.width.replace(/,/g , '');
-                this.submittedForm.volume = this.submittedForm.volume.replace(/,/g , '');
 
                 if(parseInt(this.submittedForm.max) < parseInt(this.submittedForm.min)){
                     iziToast.error({
