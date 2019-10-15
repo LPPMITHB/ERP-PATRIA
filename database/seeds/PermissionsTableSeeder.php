@@ -141,6 +141,24 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Delete Project',
+            'menu_id' => $manageProject,
+            'middleware' => 'delete-project',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // WBS Images
+        $menu_manage_wbs_images = Menu::where('route_name','wbs.manageWbsImages')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Wbs Images',
+            'menu_id' => $menu_manage_wbs_images,
+            'middleware' => 'manage-wbs-images',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
         // WBS Profile
         $manageWbsProfile = Menu::where('name','Manage WBS Profile')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -208,6 +226,14 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Project',
             'menu_id' => $manageProjectRepair,
             'middleware' => 'edit-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'delete-project-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

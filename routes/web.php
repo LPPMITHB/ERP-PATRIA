@@ -679,16 +679,16 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::get('/show/{id}', 'WBSController@show')->name('show')->middleware('can:show-project');
 
-    Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs');
+    Route::delete('/deleteWbs/{id}', 'WBSController@destroyWbs')->name('destroyWbs')->middleware('can:delete-project');
 
-    Route::delete('/deleteWbsImage/{id}','WBSController@destroyWbsImage')->name('destroyWbsImage');
+    Route::delete('/deleteWbsImage/{id}','WBSController@destroyWbsImage')->name('destroyWbsImage')->middleware('can:delete-project');
 
+    Route::get('/manageWbsImages', 'WBSController@manageWbsImages')->name('manageWbsImages')->middleware('can:manage-wbs-images');
+    
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile');
 
     Route::get('/createSubWbsProfile/{id}', 'WBSController@createSubWbsProfile')->name('createSubWbsProfile')->middleware('can:manage-wbs-profile');
-
-    Route::get('/manageWbsImages', 'WBSController@manageWbsImages')->name('manageWbsImages');
 
     Route::post('/storeWbsProfile', 'WBSController@storeWbsProfile')->name('storeWbsProfile')->middleware('can:manage-wbs-profile');
 
@@ -803,7 +803,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
 
     Route::delete('/{id}', 'ActivityController@destroyActivityProfile')->name('destroyActivityProfile');
 
-    Route::delete('/deleteActivity/{id}', 'ActivityController@destroyActivity')->name('destroyActivity');
+    Route::delete('/deleteActivity/{id}', 'ActivityController@destroyActivity')->name('destroyActivity')->middleware('can:delete-project');
 
     //Network
     Route::put('updatePredecessor/{id}', 'ActivityController@updatePredecessor')->name('updatePredecessor')->middleware('can:edit-project');
@@ -833,7 +833,7 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
 
     Route::get('/show/{id}', 'ActivityController@show')->name('show')->middleware('can:show-project-repair');
 
-    Route::delete('/deleteActivity/{id}', 'ActivityController@destroyActivity')->name('destroyActivity');
+    Route::delete('/deleteActivity/{id}', 'ActivityController@destroyActivity')->name('destroyActivity')->middleware('can:delete-project-repair');
 
     //Activity Profile
     Route::get('/createActivityProfile/{id}', 'ActivityController@createActivityProfile')->name('createActivityProfile')->middleware('can:create-project-repair');
