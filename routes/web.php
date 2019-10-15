@@ -1713,9 +1713,9 @@ Route::name('production_order_repair.')->prefix('production_order_repair')->grou
 
 //Yard Plan Routes
 Route::name('yard_plan.')->prefix('yard_plan')->group(function() {
-    Route::get('/create', 'YardPlanController@create')->name('create');
+    Route::get('/create', 'YardPlanController@create')->name('create')->middleware('can:manage-yard-plan');
 
-    Route::get('/', 'YardPlanController@index')->name('index');
+    Route::get('/', 'YardPlanController@index')->name('index')->middleware('can:view-yard-plan');
 
     Route::get('/{id}', 'YardPlanController@show')->name('show');
 
@@ -1794,7 +1794,7 @@ Route::name('estimator.')->prefix('estimator')->group(function() {
     Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs')->middleware('can:list-estimator-wbs');
 
     Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs')->middleware('can:create-estimator-wbs');
-    
+
     Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs')->middleware('can:create-estimator-wbs');
 
     Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs')->middleware('can:edit-estimator-wbs');
@@ -1826,7 +1826,7 @@ Route::name('estimator.')->prefix('estimator')->group(function() {
     Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile')->middleware('can:create-estimator-profile');
 
     Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile')->middleware('can:edit-estimator-profile');
-    
+
     Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile')->middleware('can:edit-estimator-profile');
 
     Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile')->middleware('can:show-estimator-profile');
@@ -1840,7 +1840,7 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
     Route::get('/indexEstimatorWbs', 'EstimatorController@indexEstimatorWbs')->name('indexEstimatorWbs')->middleware('can:list-estimator-wbs-repair');
 
     Route::get('/createWbs', 'EstimatorController@createWbs')->name('createWbs')->middleware('can:create-estimator-wbs-repair');
-    
+
     Route::post('/storeWbs', 'EstimatorController@storeWbs')->name('storeWbs')->middleware('can:create-estimator-wbs-repair');
 
     Route::get('/editWbs/{id}', 'EstimatorController@editWbs')->name('editWbs')->middleware('can:edit-estimator-wbs-repair');
@@ -1872,7 +1872,7 @@ Route::name('estimator_repair.')->prefix('estimator_repair')->group(function() {
     Route::post('/storeProfile', 'EstimatorController@storeProfile')->name('storeProfile')->middleware('can:create-estimator-profile-repair');
 
     Route::get('/editProfile/{id}', 'EstimatorController@editProfile')->name('editProfile')->middleware('can:edit-estimator-profile-repair');
-    
+
     Route::patch('/updateProfile/{id}', 'EstimatorController@updateProfile')->name('updateProfile')->middleware('can:edit-estimator-profile-repair');
 
     Route::get('/showProfile/{id}', 'EstimatorController@showProfile')->name('showProfile')->middleware('can:show-estimator-profile-repair');
@@ -2181,9 +2181,9 @@ Route::name('close_project.')->prefix('close_project')->group(function() {
 Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
     Route::get('/selectProject', 'CustomerPortalController@selectProject')->name('selectProject');
 
-    Route::get('/selectProjectPost', 'CustomerPortalController@selectProjectPost')->name('selectProjectPost');
+    Route::get('/selectProjectPost', 'CustomerPortalController@selectProjectPost')->name('selectProjectPost')->middleware('can:create-post');
 
-    Route::get('/selectProjectReply', 'CustomerPortalController@selectProjectReply')->name('selectProjectReply');
+    Route::get('/selectProjectReply', 'CustomerPortalController@selectProjectReply')->name('selectProjectReply')->middleware('can:reply-post');
 
     Route::get('/', 'CustomerPortalController@index')->name('index');
 
@@ -2193,9 +2193,9 @@ Route::name('customer_portal.')->prefix('customer_portal')->group(function() {
 
     Route::get('/showPost/{id}', 'CustomerPortalController@showPost')->name('showPost');
 
-    Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost');
+    Route::get('/createPost/{id}', 'CustomerPortalController@createPost')->name('createPost')->middleware('can:create-post');
 
-    Route::get('/selectPost/{id}', 'CustomerPortalController@selectPost')->name('selectPost');
+    Route::get('/selectPost/{id}', 'CustomerPortalController@selectPost')->name('selectPost')->middleware('can:reply-post');
 
     Route::post('/storePost', 'CustomerPortalController@storePost')->name('storePost');
 
