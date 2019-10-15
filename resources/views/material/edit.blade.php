@@ -372,9 +372,11 @@
                 this.submittedForm.cost_standard_service = this.submittedForm.cost_standard_service.replace(/,/g , '');
                 this.submittedForm.min = (this.submittedForm.min+"").replace(/,/g , '');
                 this.submittedForm.max = (this.submittedForm.max+"").replace(/,/g , '');
-                this.selectedDimensionType.forEach(dimension => {
-                    dimension.value = (dimension.value+"").replace(/,/g , '');
-                });
+                if(this.selectedDimensionType != null){
+                    this.selectedDimensionType.forEach(dimension => {
+                        dimension.value = (dimension.value+"").replace(/,/g , '');
+                    });
+                }
                 this.submittedForm.selectedDimensionType = this.selectedDimensionType;
                 this.submittedForm.standard_price_config = (this.submittedForm.standard_price_config + "").replace(/,/g, '');
                 this.submittedForm.standard_price_config_range = (this.submittedForm.standard_price_config_range + "").replace(/,/g, '');

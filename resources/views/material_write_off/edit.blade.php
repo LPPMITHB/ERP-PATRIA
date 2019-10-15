@@ -2,9 +2,10 @@
 @section('content-header')
 @breadcrumb(
     [
-        'title' => 'Edit Material Write Off » '.$modelGI->number,
+        'title' => 'Edit Material Write Off » '.$modelMWO->number,
         'items' => [
             'Dashboard' => route('index'),
+            'View All Material Write Off' => route('material_write_off.index'),
             'Edit Material Write Off' => ""
         ]
     ]
@@ -18,9 +19,9 @@
         <div class="box">
             <div class="box-body">
                 @if($route == "/material_write_off")
-                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.update',['id'=>$modelGI->id]) }}">
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off.update',['id'=>$modelMWO->id]) }}">
                 @else
-                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.update',['id'=>$modelGI->id]) }}">
+                    <form id="create-mwo" class="form-horizontal" method="POST" action="{{ route('material_write_off_repair.update',['id'=>$modelMWO->id]) }}">
                 @endif
                 <input type="hidden" name="_method" value="PATCH">
                 @csrf
@@ -62,16 +63,57 @@
                                         <td class="tdEllipsis">{{ material.available }}</td>
                                         <td class="tdEllipsis">Rp.{{ material.amount }}</td>
                                         <td class="tdEllipsis">{{ material.quantity }}</td>
-                                        <td class="p-l-3 textCenter">
-                                            <a class="btn btn-primary btn-xs" @click="openEditModal(material,index)">
-                                                EDIT
-                                            </a>
-                                            <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                DELETE
-                                            </a>
+
+                                        <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                            <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" href="#edit_remark" @click="remarkModal(material,index)"
+                                                        data-toggle="modal">
+                                                        REMARK
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 p-l-5 p-r-5 p-b-0">
+                                                <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(material,index)" data-toggle="modal"
+                                                        href="#edit_item">
+                                                        EDIT
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                        DELETE
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
+                                <div class="modal fade" id="edit_remark">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title">Input Remark</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <label for="remark" class="control-label">Remark</label>
+                                                        <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark"
+                                                            class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                                    @click.prevent="updateRemark">SAVE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <tfoot>
                                     <td>{{ newIndex }}</td>
                                     <td class="p-l-0 textLeft no-padding">
@@ -186,11 +228,14 @@
     });
 
     var data = {
-        description: @json($modelGI -> description),
+        description: @json($modelMWO -> description),
         slocDetails: [],
         newIndex: "",
         slocs: [],
         warehouses: @json($warehouseLocations),
+        editRemark : {
+            remark : "",
+        },
         dataInput: {
             sloc_id: "",
             sloc_name: "",
@@ -233,7 +278,7 @@
         },
         dataMaterial: @json($materials),
         submittedForm: {},
-        gid_deleted: [],
+        mwod_deleted: [],
     };
 
     var vm = new Vue({
@@ -290,6 +335,7 @@
                         this.dataInput.material_name = "",
                         this.dataInput.material_code = "",
                         this.dataInput.quantity = "";
+                        this.dataInput.amount = "";
                         this.dataInput.sloc_id = "";
                         this.dataInput.sloc_name = "";
                         this.dataInput.warehouse_id = "";
@@ -361,9 +407,13 @@
                 })
             },
             submitForm() {
+                this.dataMaterial.forEach(data => {
+                    data.quantity = parseFloat(data.quantity.replace(/,/g , ''));
+                    data.amount = parseFloat(data.amount.replace(/,/g , ''));
+                });
                 this.submittedForm.description = this.description;
                 this.submittedForm.materials = this.dataMaterial;
-                this.submittedForm.gid_deleted = this.gid_deleted;
+                this.submittedForm.mwod_deleted = this.mwod_deleted;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -371,31 +421,42 @@
                 struturesElem.setAttribute('value', JSON.stringify(this.submittedForm));
                 form.appendChild(struturesElem);
                 form.submit();
-
             },
-            openEditModal(gid,index){
+
+            remarkModal(MWOD,index){
+                this.editRemark.remark = MWOD.remark;
+                this.editRemark.index = index;
+            },
+
+            updateRemark(){
+                var mwod = this.dataMaterial[this.editRemark.index];
+                mwod.remark = this.editRemark.remark;
+            },
+
+            openEditModal(mwod,index){
                 // mengambil sloc pada warehouse tersebut
-                window.axios.get('/api/getStorloc/'+gid.warehouse_id).then(({ data }) => {
+                window.axios.get('/api/getStorloc/'+mwod.warehouse_id).then(({ data }) => {
                     this.slocs = data;
 
-                    window.axios.get('/api/getMaterialMWO/' + gid.sloc_id).then(({ data }) => {
+                    window.axios.get('/api/getMaterialMWO/' + mwod.sloc_id).then(({ data }) => {
                         this.slocDetails = data;
 
-                        this.editInput.material_id = gid.material_id;
-                        this.editInput.old_material_id = gid.material_id;
-                        this.editInput.material_code = gid.material_code;
-                        this.editInput.material_name = gid.material_name;
-                        this.editInput.quantity = gid.quantity;
-                        this.editInput.available = gid.available;
-                        this.editInput.sloc_id = gid.sloc_id;
-                        this.editInput.old_sloc_id = gid.sloc_id;
-                        this.editInput.sloc_name = gid.sloc_name;
-                        this.editInput.old_warehouse_id = gid.warehouse_id;
-                        this.editInput.warehouse_id = gid.warehouse_id;
-                        this.editInput.warehouse_name = gid.warehouse_name;
-                        this.editInput.is_decimal = gid.is_decimal;
-                        this.editInput.unit = gid.unit;
-                        this.editInput.amount = gid.amount;
+                        this.editInput.material_id = mwod.material_id;
+                        this.editInput.old_material_id = mwod.material_id;
+                        this.editInput.material_code = mwod.material_code;
+                        this.editInput.material_name = mwod.material_name;
+                        this.editInput.quantity = mwod.quantity;
+                        this.editInput.available = mwod.available;
+                        this.editInput.sloc_id = mwod.sloc_id;
+                        this.editInput.old_sloc_id = mwod.sloc_id;
+                        this.editInput.sloc_name = mwod.sloc_name;
+                        this.editInput.remark = mwod.remark;                        
+                        this.editInput.old_warehouse_id = mwod.warehouse_id;
+                        this.editInput.warehouse_id = mwod.warehouse_id;
+                        this.editInput.warehouse_name = mwod.warehouse_name;
+                        this.editInput.is_decimal = mwod.is_decimal;
+                        this.editInput.unit = mwod.unit;
+                        this.editInput.amount = mwod.amount;
                         this.editInput.index = index;
 
                         $('#edit_item').modal('show');
@@ -423,7 +484,7 @@
                 })
             },
             removeRow(index) {
-                this.gid_deleted.push(this.dataMaterial[index].gid_id);
+                this.mwod_deleted.push(this.dataMaterial[index].mwod_id);
                 this.dataMaterial.splice(index, 1);
 
                 this.newIndex = this.dataMaterial.length + 1;

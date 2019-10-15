@@ -976,6 +976,22 @@
                         }
                     });
                 })
+
+                $('#part-table').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#part-table').DataTable({
+                        'paging' : true,
+                        'lengthChange': false,
+                        'ordering' : true,
+                        'info' : true,
+                        'autoWidth' : false,
+                        'bFilter' : true,
+                        'initComplete': function(){
+                        $('div.overlay').hide();
+                        document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+                        }
+                    });
+                })
             },
             update(old_material_id, new_material_id){
                 this.materialTable.forEach(material => {
@@ -1022,6 +1038,22 @@
                                     'initComplete': function(){
                                     $('div.overlay').hide();
                                     // document.getElementById("material-standard-table_wrapper").setAttribute("style", "margin-top: -30px");
+                                    }
+                                });
+                            })
+
+                            $('#part-table').DataTable().destroy();
+                            this.$nextTick(function() {
+                                $('#part-table').DataTable({
+                                    'paging' : true,
+                                    'lengthChange': false,
+                                    'ordering' : true,
+                                    'info' : true,
+                                    'autoWidth' : false,
+                                    'bFilter' : true,
+                                    'initComplete': function(){
+                                    $('div.overlay').hide();
+                                    document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
                                     }
                                 });
                             })

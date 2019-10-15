@@ -288,7 +288,7 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update">SAVE</button>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="update">SAVE</button>
                                         </div>
                                     </div>
                                 </div>
@@ -510,13 +510,13 @@ var URLTO = "{{ URL::to('/') }}";
                 }
                 return isOk;
             },
-            updateOk: function(){
-                let isOk = false;
-                    if(this.editRemark.remark == null || this.editRemark.remark == ""){
-                        isOk = true;
-                    }
-                return isOk;
-            },
+            // updateOk: function(){
+            //     let isOk = false;
+            //         if(this.editRemark.remark == null || this.editRemark.remark == ""){
+            //             isOk = true;
+            //         }
+            //     return isOk;
+            // },
             currencyOk : function(){
                 let isOk = false;
                 var currency_value = 1;

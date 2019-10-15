@@ -319,7 +319,7 @@ class MaterialController extends Controller
         $materialStandardPriceConfig = json_decode($material->cost_standard_price_config);
         $materialStandardPriceConfigID = $materialStandardPriceConfig->id;
         $materialStandardPriceConfigRange = $materialStandardPriceConfig->range;
-        $standard_prices_config = Configuration::get('standar-price');
+        $standard_prices_config = Configuration::get('standard-price');
         if ($material->family_id != null) {
             $dataFamily = json_decode($material->family_id);
         } else {

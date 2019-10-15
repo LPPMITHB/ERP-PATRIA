@@ -125,7 +125,7 @@
                 </div>
             </div>
             <div class="box-body p-t-0 p-b-0">
-                <table class="table table-bordered showTable tableFixed m-t-20" id="gi-table">
+                <table class="table table-bordered tableFixed m-t-20" id="gi-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -139,6 +139,7 @@
                             <th width="8%">Write-Off Quantity</th>
                             <th width="5%">Unit</th>
                             <th width=10%>Amount / Unit</th>
+                            <th width="8%"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -157,10 +158,38 @@
                             <td class="tdEllipsis">{{ number_format($MWO->quantity,2) }}</td>
                             <td class="tdEllipsis">{{ $MWO->material->uom->unit }}</td>
                             <td class="tdEllipsis">Rp.{{ number_format($MWO->amount) }}</td>
+                            <td class="textCenter">
+                                <a class="btn btn-primary btn-xs" data-toggle="modal" href="#show_remark" onClick="remark({{$MWO['id']}})">
+                                    REMARK
+                                </a>
+                            </td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <div class="modal fade" id="show_remark">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">×</span>
+                                </button>
+                                <h4 class="modal-title">View Remark</h4>
+                            </div>
+                            <div class="modal-body">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <label for="remark" class="control-label">Remark</label>
+                                        <textarea name="remark" textarea disabled="disabled" id="remark" rows="3" class="form-control"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 @verbatim
                 <div id="approval">
                     <div class="col-md-12 m-b-10 p-r-0 p-t-10" v-if="modelMWO.status == 1 || modelMWO.status == 4">
@@ -214,7 +243,19 @@
         $('div.overlay').hide();
     });
 
+    function remark(id){
+        var modelMWOD = this.data.modelMWOD;
+        var remark = ""
+        modelMWOD.forEach(MWOD =>{
+            if(MWOD.id == id){
+                remark = MWOD.remark;
+            }
+        })
+        document.getElementById("remark").value = remark;
+    }
+
     var data = {
+        modelMWOD : @json($modelMWOD),
         modelMWO : @json($modelMWO),
         dataSubmit : {
             mwo_id : @json($modelMWO->id),
