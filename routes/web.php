@@ -1947,36 +1947,36 @@ Route::name('sales_order_repair.')->prefix('sales_order_repair')->group(function
 
 // Invoice Routes
 Route::name('invoice.')->prefix('invoice')->group(function() {
-    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject')->middleware('can:create-invoice');
 
-    Route::get('/create/{id}', 'InvoiceController@create')->name('create');
+    Route::get('/create/{id}', 'InvoiceController@create')->name('create')->middleware('can:create-invoice');
 
-    Route::get('/', 'InvoiceController@index')->name('index');
+    Route::get('/', 'InvoiceController@index')->name('index')->middleware('can:list-invoice');
 
-    Route::get('/{id}', 'InvoiceController@show')->name('show');
+    Route::get('/{id}', 'InvoiceController@show')->name('show')->middleware('can:show-invoice');
 
-    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit');
+    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit')->middleware('can:edit-invoice');
 
-    Route::patch('/{id}', 'InvoiceController@update')->name('update');
+    Route::patch('/{id}', 'InvoiceController@update')->name('update')->middleware('can:edit-invoice');
 
-    Route::post('/', 'InvoiceController@store')->name('store');
+    Route::post('/', 'InvoiceController@store')->name('store')->middleware('can:create-invoice');
 });
 
 // Invoice Repair Routes
 Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
-    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'InvoiceController@selectProject')->name('selectProject')->middleware('can:create-invoice-repair');
 
-    Route::get('/create/{id}', 'InvoiceController@create')->name('create');
+    Route::get('/create/{id}', 'InvoiceController@create')->name('create')->middleware('can:create-invoice-repair');
 
-    Route::get('/', 'InvoiceController@index')->name('index');
+    Route::get('/', 'InvoiceController@index')->name('index')->middleware('can:list-invoice-repair');
 
-    Route::get('/{id}', 'InvoiceController@show')->name('show');
+    Route::get('/{id}', 'InvoiceController@show')->name('show')->middleware('can:show-invoice-repair');
 
-    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit');
+    Route::get('/{id}/edit', 'InvoiceController@edit')->name('edit')->middleware('can:edit-invoice-repair');
 
-    Route::patch('/{id}', 'InvoiceController@update')->name('update');
+    Route::patch('/{id}', 'InvoiceController@update')->name('update')->middleware('can:edit-invoice-repair');
 
-    Route::post('/', 'InvoiceController@store')->name('store');
+    Route::post('/', 'InvoiceController@store')->name('store')->middleware('can:create-invoice-repair');
 });
 
 // Payment Routes

@@ -1195,7 +1195,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Issue
-        $createGI = Menu::where('name','Create GI')->select('id')->first()->id;
+        $createGI = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Issue',
             'menu_id' => $createGI,
@@ -1204,7 +1204,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGI = Menu::where('name','View & Edit PO')->select('id')->first()->id;
+        $viewGI = Menu::where('route_name','goods_issue.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Issue',
             'menu_id' => $viewGI,
@@ -1230,8 +1230,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Issue Repair
-        $giRepair = Menu::where('name','Goods Issue')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createGI = Menu::where('name','Create GI')->where('menu_id',$giRepair)->select('id')->first()->id;
+        $createGI = Menu::where('route_name','goods_issue_repair.selectMR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Issue',
             'menu_id' => $createGI,
@@ -1240,7 +1239,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGIRepair = Menu::where('name','View GI')->where('menu_id',$giRepair)->select('id')->first()->id;
+        $viewGIRepair = Menu::where('route_name','goods_issue_repair.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Issue',
             'menu_id' => $viewGIRepair,
@@ -2879,6 +2878,76 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Sales Order Repair',
             'menu_id' => $menu_index_sales_order_repair,
             'middleware' => 'edit-sales-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Invoice
+        $menu_create_invoice = Menu::where('route_name','invoice.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Invoice',
+            'menu_id' => $menu_create_invoice,
+            'middleware' => 'create-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_invoice = Menu::where('route_name','invoice.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Invoice',
+            'menu_id' => $menu_index_invoice,
+            'middleware' => 'list-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Invoice',
+            'menu_id' => $menu_index_invoice,
+            'middleware' => 'show-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Invoice',
+            'menu_id' => $menu_index_invoice,
+            'middleware' => 'edit-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Invoice Repair
+        $menu_create_invoice_repair = Menu::where('route_name','invoice_repair.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Invoice Repair',
+            'menu_id' => $menu_create_invoice_repair,
+            'middleware' => 'create-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_invoice_repair = Menu::where('route_name','invoice_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Invoice Repair',
+            'menu_id' => $menu_index_invoice_repair,
+            'middleware' => 'list-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Invoice Repair',
+            'menu_id' => $menu_index_invoice_repair,
+            'middleware' => 'show-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Invoice Repair',
+            'menu_id' => $menu_index_invoice_repair,
+            'middleware' => 'edit-invoice-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
