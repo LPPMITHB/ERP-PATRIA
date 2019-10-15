@@ -16,101 +16,101 @@ Auth::routes();
 
 // Approval Routes
 Route::name('approval.')->prefix('approval')->group(function() {
-    Route::get('/', 'ConfigurationController@approvalIndex')->name('index');
+    Route::get('/', 'ConfigurationController@approvalIndex')->name('index')->middleware('can:manage-approval-configuration');
 
-    Route::put('/', 'ConfigurationController@approvalSave')->name('save');
+    Route::put('/', 'ConfigurationController@approvalSave')->name('save')->middleware('can:manage-approval-configuration');;
 });
 
 // Cost Type Routes
 Route::name('cost_type.')->prefix('cost_type')->group(function() {
-    Route::get('/', 'ConfigurationController@costTypeIndex')->name('index');
+    Route::get('/', 'ConfigurationController@costTypeIndex')->name('index')->middleware('can:manage-cost-type-configuration');
 
-    Route::post('/', 'ConfigurationController@acostTypeSave')->name('save');
+    Route::post('/', 'ConfigurationController@acostTypeSave')->name('save')->middleware('can:manage-cost-type-configuration');
 });
 
-// Configuration Routes
+// Appearances Configuration Routes
 Route::name('appearance.')->prefix('appearance')->group(function() {
-    Route::get('/', 'ConfigurationController@appearanceIndex')->name('index');
+    Route::get('/', 'ConfigurationController@appearanceIndex')->name('index')->middleware('can:manage-appearance-configuration');
 
-    Route::post('/', 'ConfigurationController@appearanceSave')->name('save');
+    Route::post('/', 'ConfigurationController@appearanceSave')->name('save')->middleware('can:manage-appearance-configuration');
 });
 
 // Currencies Routes
 Route::name('currencies.')->prefix('currencies')->group(function() {
-    Route::get('/', 'ConfigurationController@currenciesIndex')->name('index');
+    Route::get('/', 'ConfigurationController@currenciesIndex')->name('index')->middleware('can:manage-currencies-configuration');
 
-    Route::put('/add', 'ConfigurationController@currenciesAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@currenciesAdd')->name('add')->middleware('can:manage-currencies-configuration');
 });
 
 // Material Family Routes
 Route::name('material_family.')->prefix('material_family')->group(function() {
-    Route::get('/', 'ConfigurationController@materialFamilyIndex')->name('index');
+    Route::get('/', 'ConfigurationController@materialFamilyIndex')->name('index')->middleware('can:manage-material-family-configuration');
 
-    Route::put('/add', 'ConfigurationController@materialFamilyAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@materialFamilyAdd')->name('add')->middleware('can:manage-material-family-configuration');
 });
 
 // Density Routes
 Route::name('density.')->prefix('density')->group(function() {
-    Route::get('/', 'ConfigurationController@densityIndex')->name('index');
+    Route::get('/', 'ConfigurationController@densityIndex')->name('index')->middleware('can:manage-density-configuration');
 
-    Route::put('/add', 'ConfigurationController@densityAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@densityAdd')->name('add')->middleware('can:manage-density-configuration');
 });
 
 // Payment Terms Routes
 Route::name('payment_terms.')->prefix('payment_terms')->group(function() {
-    Route::get('/', 'ConfigurationController@paymentTermsIndex')->name('index');
+    Route::get('/', 'ConfigurationController@paymentTermsIndex')->name('index')->middleware('can:manage-payment-terms-configuration');
 
-    Route::put('/add', 'ConfigurationController@paymentTermsAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@paymentTermsAdd')->name('add')->middleware('can:manage-payment-terms-configuration');
 });
 
 // Delivery Terms Routes
 Route::name('delivery_terms.')->prefix('delivery_terms')->group(function() {
-    Route::get('/', 'ConfigurationController@deliveryTermsIndex')->name('index');
+    Route::get('/', 'ConfigurationController@deliveryTermsIndex')->name('index')->middleware('can:manage-delivery-terms-configuration');
 
-    Route::put('/add', 'ConfigurationController@deliveryTermsAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@deliveryTermsAdd')->name('add')->middleware('can:manage-delivery-terms-configuration');
 });
 
 // Weather Routes
 Route::name('weather.')->prefix('weather')->group(function() {
-    Route::get('/', 'ConfigurationController@weatherIndex')->name('index');
+    Route::get('/', 'ConfigurationController@weatherIndex')->name('index')->middleware('can:manage-weather-configuration');
 
-    Route::put('/add', 'ConfigurationController@weatherAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@weatherAdd')->name('add')->middleware('can:manage-weather-configuration');
 });
 
 // Tidal Routes
 Route::name('tidal.')->prefix('tidal')->group(function() {
-    Route::get('/', 'ConfigurationController@tidalIndex')->name('index');
+    Route::get('/', 'ConfigurationController@tidalIndex')->name('index')->middleware('can:manage-tidal-configuration');
 
-    Route::put('/add', 'ConfigurationController@tidalAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@tidalAdd')->name('add')->middleware('can:manage-tidal-configuration');
 });
 
 // Dimension Type Routes
 Route::name('dimension_type.')->prefix('dimension_type')->group(function() {
-    Route::get('/', 'ConfigurationController@dimensionTypeIndex')->name('index');
+    Route::get('/', 'ConfigurationController@dimensionTypeIndex')->name('index')->middleware('can:manage-dimension-type-configuration');
 
-    Route::put('/add', 'ConfigurationController@dimensionTypeAdd')->name('add');
+    Route::put('/add', 'ConfigurationController@dimensionTypeAdd')->name('add')->middleware('can:manage-dimension-type-configuration');
 });
 
 // Daily Weather Routes
 Route::name('daily_weather.')->prefix('daily_weather')->group(function() {
-    Route::get('/', 'WeatherController@index')->name('index');
+    Route::get('/', 'WeatherController@index')->name('index')->middleware('can:manage-weather');
 
-    Route::put('/store', 'WeatherController@store')->name('store');
+    Route::put('/store', 'WeatherController@store')->name('store')->middleware('can:manage-weather');
 
-    Route::put('/update', 'WeatherController@update')->name('update');
+    Route::put('/update', 'WeatherController@update')->name('update')->middleware('can:manage-weather');
 
-    Route::delete('/delete/{id}', 'WeatherController@destroy')->name('delete');
+    Route::delete('/delete/{id}', 'WeatherController@destroy')->name('delete')->middleware('can:manage-weather');
 });
 
-// Tidal Routes
+// Daily Tidal Routes
 Route::name('daily_tidal.')->prefix('daily_tidal')->group(function() {
-    Route::get('/', 'TidalController@index')->name('index');
+    Route::get('/', 'TidalController@index')->name('index')->middleware('can:manage-tidal');
 
-    Route::put('/store', 'TidalController@store')->name('store');
+    Route::put('/store', 'TidalController@store')->name('store')->middleware('can:manage-tidal');
 
-    Route::put('/update', 'TidalController@update')->name('update');
+    Route::put('/update', 'TidalController@update')->name('update')->middleware('can:manage-tidal');
 
-    Route::delete('/delete/{id}', 'TidalController@destroy')->name('delete');
+    Route::delete('/delete/{id}', 'TidalController@destroy')->name('delete')->middleware('can:manage-tidal');
 });
 
 // General PICA Routes
@@ -909,7 +909,7 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap');
 });
 
-//rap Routes
+//rap repair Routes
 Route::name('rap_repair.')->prefix('rap_repair')->group(function() {
     Route::get('/selectProject', 'RAPController@selectProject')->name('selectProject')->middleware('can:list-rap');
 
@@ -1433,7 +1433,7 @@ Route::name('stock_management.')->prefix('stock_management')->group(function() {
     Route::get('/', 'StockManagementController@index')->name('index');
 });
 
-//Stock Management Routes
+//Stock Management Repair Routes
 Route::name('stock_management_repair.')->prefix('stock_management_repair')->group(function() {
     Route::get('/', 'StockManagementController@index')->name('index');
 });
@@ -1981,44 +1981,44 @@ Route::name('invoice_repair.')->prefix('invoice_repair')->group(function() {
 
 // Payment Routes
 Route::name('payment.')->prefix('payment')->group(function() {
-    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice')->middleware('can:create-payment');
 
-    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView')->middleware('can:list-payment');
 
-    Route::get('/create/{id}', 'PaymentController@create')->name('create');
+    Route::get('/create/{id}', 'PaymentController@create')->name('create')->middleware('can:create-payment');
 
-    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage');
+    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage')->middleware('can:create-payment');
 
-    Route::get('/', 'PaymentController@index')->name('index');
+    Route::get('/', 'PaymentController@index')->name('index')->middleware('can:list-payment');
 
-    Route::get('/{id}', 'PaymentController@show')->name('show');
+    Route::get('/{id}', 'PaymentController@show')->name('show')->middleware('can:show-payment');
 
-    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit');
+    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit')->middleware('can:edit-payment');
 
-    Route::patch('/{id}', 'PaymentController@update')->name('update');
+    Route::patch('/{id}', 'PaymentController@update')->name('update')->middleware('can:edit-payment');
 
-    Route::post('/', 'PaymentController@store')->name('store');
+    Route::post('/', 'PaymentController@store')->name('store')->middleware('can:create-payment');
 });
 
 // Payment Repair Routes
 Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
-    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice');
+    Route::get('/selectInvoice', 'PaymentController@selectInvoice')->name('selectInvoice')->middleware('can:create-payment-repair');
 
-    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView');
+    Route::get('/selectInvoiceView', 'PaymentController@selectInvoiceView')->name('selectInvoiceView')->middleware('can:list-payment-repair');
 
-    Route::get('/create/{id}', 'PaymentController@create')->name('create');
+    Route::get('/create/{id}', 'PaymentController@create')->name('create')->middleware('can:create-payment-repair');
 
-    Route::get('/manage/{id}', 'PaymentController@manage')->name('manage');
+    Route::get('/manage/{id}/{menu}', 'PaymentController@manage')->name('manage')->middleware('can:create-payment-repair');
 
-    Route::get('/', 'PaymentController@index')->name('index');
+    Route::get('/', 'PaymentController@index')->name('index')->middleware('can:list-payment-repair');
 
-    Route::get('/{id}', 'PaymentController@show')->name('show');
+    Route::get('/{id}', 'PaymentController@show')->name('show')->middleware('can:show-payment-repair');
 
-    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit');
+    Route::get('/{id}/edit', 'PaymentController@edit')->name('edit')->middleware('can:edit-payment-repair');
 
-    Route::patch('/{id}', 'PaymentController@update')->name('update');
+    Route::patch('/{id}', 'PaymentController@update')->name('update')->middleware('can:edit-payment-repair');
 
-    Route::post('/', 'PaymentController@store')->name('store');
+    Route::post('/', 'PaymentController@store')->name('store')->middleware('can:create-payment-repair');
 });
 
 //  QC Type Routes
