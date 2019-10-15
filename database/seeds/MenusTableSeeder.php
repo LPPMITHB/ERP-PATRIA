@@ -110,7 +110,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Quotation',
             'icon' => 'fa-wrench',
-            'route_name'=> 'quotation.create',
+            'route_name' => 'quotation.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $quotation,
@@ -141,15 +141,15 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $sales_order = Menu::where('name','Sales Order')->select('id')->first()->id;
+        $sales_order = Menu::where('name', 'Sales Order')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Create Sales Order',
             'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order.selectQT',
+            'route_name' => 'sales_order.selectQT',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $sales_order,
+            'menu_id' => $sales_order,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -158,10 +158,10 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'View & Edit Sales Order',
             'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order.index',
+            'route_name' => 'sales_order.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $sales_order,
+            'menu_id' => $sales_order,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -177,15 +177,15 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $invoice = Menu::where('name','Invoice')->select('id')->first()->id;
+        $invoice = Menu::where('name', 'Invoice')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Create Invoice',
             'icon' => 'fa-wrench',
-            'route_name'=> 'invoice.selectProject',
+            'route_name' => 'invoice.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $invoice,
+            'menu_id' => $invoice,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -194,10 +194,10 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'View Invoice',
             'icon' => 'fa-wrench',
-            'route_name'=> 'invoice.index',
+            'route_name' => 'invoice.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $invoice,
+            'menu_id' => $invoice,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -213,15 +213,15 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $payment = Menu::where('name','Payment Receipt')->select('id')->first()->id;
+        $payment = Menu::where('name', 'Payment Receipt')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Manage Payment Receipt',
             'icon' => 'fa-wrench',
-            'route_name'=> 'payment.selectInvoice',
+            'route_name' => 'payment.selectInvoice',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $payment,
+            'menu_id' => $payment,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -230,10 +230,10 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'View Payment Receipt',
             'icon' => 'fa-wrench',
-            'route_name'=> 'payment.selectInvoiceView',
+            'route_name' => 'payment.selectInvoiceView',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id'=> $payment,
+            'menu_id' => $payment,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -243,7 +243,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Sales Plan',
             'icon' => 'fa-wrench',
             'is_active' => true,
-            'route_name'=> 'sales_plan.index',
+            'route_name' => 'sales_plan.index',
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $marketingSales,
             'created_at' => date('Y-m-d'),
@@ -255,7 +255,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Customer Call / Visit',
             'icon' => 'fa-wrench',
             'is_active' => true,
-            'route_name'=> 'customer_visit.index',
+            'route_name' => 'customer_visit.index',
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $marketingSales,
             'created_at' => date('Y-m-d'),
@@ -1340,7 +1340,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
+        //Start Qc Menu Building
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Quality Control',
@@ -1352,19 +1352,20 @@ class MenusTableSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        $qc = Menu::where('name', 'Quality Control')->select('id')->first()->id;
+
+        $qcBuilding = Menu::where('name', 'Quality Control')->where('menu_id', $building)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'QC Type',
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qc,
+            'menu_id' => $qcBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $qcType =  Menu::where('name', 'QC Type')->select('id')->first()->id;
+        $qcTypeBuilding =  Menu::where('name', 'QC Type')->where('menu_id', $qcBuilding)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create QC Type',
@@ -1372,7 +1373,7 @@ class MenusTableSeeder extends Seeder
             'route_name' => 'qc_type.create',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qcType,
+            'menu_id' => $qcTypeBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1384,7 +1385,7 @@ class MenusTableSeeder extends Seeder
             'route_name' => 'qc_type.index',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qcType,
+            'menu_id' => $qcTypeBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1395,12 +1396,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qc,
+            'menu_id' => $qcBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $qcTask =  Menu::where('name', 'QC Task')->select('id')->first()->id;
+        $qcTaskBuilding =  Menu::where('name', 'QC Task')->where('menu_id', $qcBuilding)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 3,
             'name' => 'Create QC Task',
@@ -1408,7 +1409,7 @@ class MenusTableSeeder extends Seeder
             'route_name' => 'qc_task.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qcTask,
+            'menu_id' => $qcTaskBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1420,7 +1421,7 @@ class MenusTableSeeder extends Seeder
             'route_name' => 'qc_task.selectProjectIndex',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qcTask,
+            'menu_id' => $qcTaskBuilding,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1431,7 +1432,7 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qc,
+            'menu_id' => $qcBuilding,
             'route_name' => 'qc_task.selectProjectConfirm',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
@@ -1443,11 +1444,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-wrench',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
-            'menu_id' => $qc,
+            'menu_id' => $qcBuilding,
             'route_name' => 'qc_task.selectProjectSummary',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+        //End Qc Menu Building
 
         DB::table('menus')->insert([
             'level' => 2,
@@ -1506,7 +1508,7 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-
+        //Repair Area
         $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 2,
@@ -1584,7 +1586,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Quotation',
             'icon' => 'fa-wrench',
-            'route_name'=> 'quotation_repair.create',
+            'route_name' => 'quotation_repair.create',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id' => $quotation_repair,
@@ -1620,7 +1622,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Sales Order',
             'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order_repair.selectQT',
+            'route_name' => 'sales_order_repair.selectQT',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $sales_order_repair,
@@ -1632,7 +1634,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'View & Edit Sales Order',
             'icon' => 'fa-wrench',
-            'route_name'=> 'sales_order_repair.index',
+            'route_name' => 'sales_order_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $sales_order_repair,
@@ -1656,7 +1658,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Create Invoice',
             'icon' => 'fa-wrench',
-            'route_name'=> 'invoice_repair.selectProject',
+            'route_name' => 'invoice_repair.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $invoice_repair,
@@ -1668,7 +1670,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'View Invoice',
             'icon' => 'fa-wrench',
-            'route_name'=> 'invoice_repair.index',
+            'route_name' => 'invoice_repair.index',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $invoice_repair,
@@ -1692,7 +1694,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Manage Payment Receipt',
             'icon' => 'fa-wrench',
-            'route_name'=> 'payment_repair.selectInvoice',
+            'route_name' => 'payment_repair.selectInvoice',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $payment_repair,
@@ -1704,7 +1706,7 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'View Payment Receipt',
             'icon' => 'fa-wrench',
-            'route_name'=> 'payment_repair.selectInvoiceView',
+            'route_name' => 'payment_repair.selectInvoiceView',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
             'menu_id'=> $payment_repair,
@@ -1717,7 +1719,7 @@ class MenusTableSeeder extends Seeder
             'name' => 'Sales Plan',
             'icon' => 'fa-wrench',
             'is_active' => true,
-            'route_name'=> 'sales_plan.index',
+            'route_name' => 'sales_plan.index',
             'roles' => 'ADMIN,PAMI',
             'menu_id' => $marketingSalesRepair,
             'created_at' => date('Y-m-d'),
@@ -1766,12 +1768,12 @@ class MenusTableSeeder extends Seeder
             'icon' => 'fa-briefcase',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectManagementRepair,
+            'menu_id' => $projectManagementRepair,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
 
-        $projectStandard =  Menu::where('name','Project Standard')->where('menu_id', $projectManagementRepair)->select('id')->first()->id;
+        $projectStandard =  Menu::where('name', 'Project Standard')->where('menu_id', $projectManagementRepair)->select('id')->first()->id;
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'Manage Project Standard',
@@ -1779,7 +1781,7 @@ class MenusTableSeeder extends Seeder
             'route_name' => 'project_standard.createProjectStandard',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectStandard,
+            'menu_id' => $projectStandard,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1788,10 +1790,10 @@ class MenusTableSeeder extends Seeder
             'level' => 4,
             'name' => 'Manage Material Standard',
             'icon' => 'fa-briefcase',
-            'route_name'=> 'project_standard.selectProjectMaterial',
+            'route_name' => 'project_standard.selectProjectMaterial',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectStandard,
+            'menu_id' => $projectStandard,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -1800,10 +1802,10 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Manage Resource Standard',
             'icon' => 'fa-briefcase',
-            'route_name'=> 'project_standard.selectProjectResource',
+            'route_name' => 'project_standard.selectProjectResource',
             'is_active' => true,
             'roles' => 'ADMIN,PAMI',
-            'menu_id'=> $projectStandard,
+            'menu_id' => $projectStandard,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
@@ -3183,5 +3185,115 @@ class MenusTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+        //Start Qc Menu Repair
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Quality Control',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+
+        $qcRepair = Menu::where('name', 'Quality Control')->where('menu_id', $repair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Type',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $qcTypeRepair =  Menu::where('name', 'QC Type')->where('menu_id', $qcRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create QC Type',
+            'icon' => 'fa-wrench',
+            'route_name' => 'qc_type_repair.create',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcTypeRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit QC Type',
+            'icon' => 'fa-wrench',
+            'route_name' => 'qc_type_repair.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcTypeRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Task',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $qcTaskRepair =  Menu::where('name', 'QC Task')->where('menu_id', $qcRepair)->select('id')->first()->id;
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Create QC Task',
+            'icon' => 'fa-wrench',
+            'route_name' => 'qc_task_repair.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcTaskRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View & Edit QC Task',
+            'icon' => 'fa-wrench',
+            'route_name' => 'qc_task_repair.selectProjectIndex',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcTaskRepair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Task Confirmation',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcRepair,
+            'route_name' => 'qc_task_repair.selectProjectConfirm',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Summary Report',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PAMI',
+            'menu_id' => $qcRepair,
+            'route_name' => 'qc_task_repair.selectProjectSummary',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+        //End Qc Menu Repair
     }
 }
