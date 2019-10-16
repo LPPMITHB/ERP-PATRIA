@@ -2404,6 +2404,28 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // Yard Plan
+        $manageYardPlan = Menu::where('name','Manage Yard Plan')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Yard Plan',
+            'menu_id' => $manageYardPlan,
+            'middleware' => 'manage-yard-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewYardPlan = Menu::where('name','View Yard Plan')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Viwe Yard Plan',
+            'menu_id' => $viewYardPlan,
+            'middleware' => 'view-yard-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Yard Plan Repair
+        // TBD
+
         //Resource Management
         $resourceManagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
         $resourceRepair = Menu::where('name','Manage Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
@@ -2514,7 +2536,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
          // Customer Portal View Project Progress
-        $projectProgress = Menu::where('name','View Project Progress')->select('id')->first()->id;
+        $projectProgress = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Project Progress',
             'menu_id' => $projectProgress,
@@ -2529,6 +2551,16 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Post Complaints',
             'menu_id' => $postComplaints,
             'middleware' => 'create-post',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Customer Portal Reply post
+        $postReply = Menu::where('name','Reply Complaints')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Reply Complaints',
+            'menu_id' => $postReply,
+            'middleware' => 'reply-post',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
