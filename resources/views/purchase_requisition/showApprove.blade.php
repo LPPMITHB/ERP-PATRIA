@@ -93,7 +93,7 @@
             </div>
             <div class="box-body p-t-0 p-b-0">
                 @if($modelPR->type != 3)
-                    <table class="table table-bordered showTable" id="pr-table">
+                    <table class="table table-bordered showTable tableFixed" id="pr-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -116,11 +116,11 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     @if($modelPR->type == 1)
-                                        <td class="tdEllipsis">{{ $PRD->material->code }}</td>
-                                        <td class="tdEllipsis">{{ $PRD->material->description }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PRD->material->code }}">{{ $PRD->material->code }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PRD->material->description }}">{{ $PRD->material->description }}</td>
                                     @else
-                                        <td class="tdEllipsis">{{ $PRD->resource->code }}</td>
-                                        <td class="tdEllipsis">{{ $PRD->resource->name }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PRD->resource->code }}">{{ $PRD->resource->code }}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PRD->resource->name }}">{{ $PRD->resource->name }}</td>
                                     @endif
                                     <td>{{ number_format((float)$PRD->quantity,2) }}</td>
                                     @if($modelPR->type == 1)
@@ -150,7 +150,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $PRD->project->number}}</td>
-                                        <td>{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}</td>
+                                        <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}">{{ $PRD->wbs->number}} - {{ $PRD->wbs->description}}</td>
                                         <td>{{ $PRD->job_order}}</td>
                                     </tr>
                                 @endforeach
