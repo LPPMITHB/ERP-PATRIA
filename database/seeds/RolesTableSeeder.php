@@ -178,6 +178,18 @@ class RolesTableSeeder extends Seeder
                 'create-estimator-profile' => true,'list-estimator-profile' => true,'edit-estimator-profile' => true,  'show-estimator-profile' => true, 'delete-estimator-profile' => true,
                 'create-quotation' => true,'list-quotation' => true,'edit-quotation' => true,  'show-quotation' => true,
                 'create-sales-order' => true,'list-sales-order' => true,'edit-sales-order' => true,  'show-sales-order' => true,
+<<<<<<<<< Temporary merge branch 1
+                'reply-post' => true,
+=========
+                'create-invoice' => true,'list-invoice' => true,'edit-invoice' => true,  'show-invoice' => true,
+                'manage-weather' => true,
+                'manage-approval-configuration' => true,
+                'manage-cost-type-configuration' => true,
+                'manage-appearance-configuration' => true,
+                'create-payment' => true,'list-payment' => true,'edit-payment' => true, 'show-payment' => true,
+                'manage-wbs-images' => true,
+
+>>>>>>>>> Temporary merge branch 2
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -255,6 +267,16 @@ class RolesTableSeeder extends Seeder
                 'create-estimator-profile-repair' => true,'list-estimator-profile-repair' => true,'edit-estimator-profile-repair' => true,  'show-estimator-profile-repair' => true, 'delete-estimator-profile-repair' => true,
                 'create-quotation-repair' => true,'list-quotation-repair' => true,'edit-quotation-repair' => true,  'show-quotation-repair' => true,
                 'create-sales-order-repair' => true,'list-sales-order-repair' => true,'edit-sales-order-repair' => true,  'show-sales-order-repair' => true,
+<<<<<<<<< Temporary merge branch 1
+                'reply-post' => true,
+=========
+                'create-invoice-repair' => true,'list-invoice-repair' => true,'edit-invoice-repair' => true,  'show-invoice-repair' => true,
+                'create-invoice' => true,'list-invoice' => true,'edit-invoice' => true,  'show-invoice' => true,
+                'manage-weather' => true,
+                'manage-approval-configuration' => true,
+                'manage-cost-type-configuration' => true,
+                'manage-appearance-configuration' => true,
+>>>>>>>>> Temporary merge branch 2
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
