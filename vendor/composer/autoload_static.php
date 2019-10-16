@@ -2595,7 +2595,6 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'Monolog\\Utils' => __DIR__ . '/..' . '/monolog/monolog/src/Monolog/Utils.php',
         'MstActivityConfigurationTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstActivityConfigurationTableSeeder.php',
         'MstActivityProfileTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstActivityProfileTableSeeder.php',
-        'MstActivityStandardTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstActivityStandardTableSeeder.php',
         'MstBomDetailTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstBomDetailTableSeeder.php',
         'MstBomPrepTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstBomPrepTableSeeder.php',
         'MstBomProfileTableSeeder' => __DIR__ . '/../..' . '/database/seeds/MstBomProfileTableSeeder.php',
