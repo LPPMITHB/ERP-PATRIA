@@ -95,7 +95,6 @@ class RolesTableSeeder extends Seeder
                 'manage-weather' => true, 'manage-tidal' => true,
                 'manage-wbs-images' => true,
                 'reply-post' => true,
-                ]),
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
