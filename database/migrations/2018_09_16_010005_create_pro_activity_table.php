@@ -18,10 +18,10 @@ class CreateProActivityTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->text('description');
+            $table->string('type')->nullable();
             $table->integer('status')->default(1);
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('service_detail_id')->nullable();
-            $table->unsignedInteger('activity_standard_id')->nullable();
             $table->unsignedInteger('wbs_material_id')->nullable();
             $table->integer('planned_duration');
             $table->date('planned_start_date')->nullable();
@@ -36,7 +36,6 @@ class CreateProActivityTable extends Migration
             $table->unsignedInteger('branch_id');  
             $table->timestamps();
 
-            $table->foreign('activity_standard_id')->references('id')->on('mst_activity_standard');
             $table->foreign('service_detail_id')->references('id')->on('mst_service_detail');
             $table->foreign('wbs_material_id')->references('id')->on('pro_wbs_material');
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');
