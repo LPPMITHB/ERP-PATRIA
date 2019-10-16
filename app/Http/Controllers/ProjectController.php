@@ -277,7 +277,7 @@ class ProjectController extends Controller
         $mainMenu = $newProject->business_unit_id == "1" ? "building" : "repair";
         $wbss = $projectStandard->wbss;
         $dataWbs = Collection::make();
-
+        
         $totalWeightProject = $projectStandard->wbss->where('wbs_id',null)->sum('weight');
         $dataWbs->push([
             "id" => "PRO".$projectStandard->id,
@@ -288,40 +288,40 @@ class ProjectController extends Controller
 
         foreach($wbss as $wbs){
             if($wbs->wbs){
-                if(count($wbs->activities)>0){
+                // if(count($wbs->activities)>0){
+                //     $dataWbs->push([
+                //         "id" => "WBS".$wbs->id,
+                //         "parent" => "WBS".$wbs->wbs->id,
+                //         "text" => $wbs->number." - ".$wbs->description,
+                //         "icon" => "fa fa-suitcase",
+                //     ]);
+                //     // foreach($wbs->activities as $activity){
+                //     //     $dataWbs->push([
+                //     //         "id" => "ACT".$activity->id,
+                //     //         "parent" => "WBS".$activity->wbs->id,
+                //     //         "text" => $activity->name,
+                //     //         "icon" => "fa fa-clock-o",
+                //     //     ]);
+                //     // }
+                // }else{
                     $dataWbs->push([
                         "id" => "WBS".$wbs->id,
                         "parent" => "WBS".$wbs->wbs->id,
                         "text" => $wbs->number." - ".$wbs->description,
                         "icon" => "fa fa-suitcase",
                     ]);
-                    foreach($wbs->activities as $activity){
-                        $dataWbs->push([
-                            "id" => "ACT".$activity->id,
-                            "parent" => "WBS".$activity->wbs->id,
-                            "text" => $activity->name,
-                            "icon" => "fa fa-clock-o",
-                        ]);
-                    }
-                }else{
-                    $dataWbs->push([
-                        "id" => "WBS".$wbs->id,
-                        "parent" => "WBS".$wbs->wbs->id,
-                        "text" => $wbs->number." - ".$wbs->description,
-                        "icon" => "fa fa-suitcase",
-                    ]);
-                }
+                // }
             }else{
-                if(count($wbs->activities)>0){
-                    foreach($wbs->activities as $activity){
-                        $dataWbs->push([
-                            "id" => "ACT".$activity->id,
-                            "parent" => "WBS".$activity->wbs->id,
-                            "text" => $activity->name,
-                            "icon" => "fa fa-clock-o",
-                        ]);
-                    }
-                }
+                // if(count($wbs->activities)>0){
+                //     foreach($wbs->activities as $activity){
+                //         $dataWbs->push([
+                //             "id" => "ACT".$activity->id,
+                //             "parent" => "WBS".$activity->wbs->id,
+                //             "text" => $activity->name,
+                //             "icon" => "fa fa-clock-o",
+                //         ]);
+                //     }
+                // }
 
                 $dataWbs->push([
                     "id" => "WBS".$wbs->id,
@@ -844,23 +844,24 @@ class ProjectController extends Controller
                             $resource_input->save();
                         }
                     }
-                }elseif(strpos($dataTree, 'ACT') !== false){
-                    $act_standard_id = str_replace("ACT", "", $dataTree);
-                    $act_standard = ActivityStandard::find($act_standard_id);
-                    $act = new Activity;
-                    $act->name = $act_standard->name;
-                    $act->description = $act_standard->description;
-                    $act->planned_duration = $act_standard->duration;
-                    $act->activity_standard_id = $act_standard_id;
-
-                    if(isset($wbsIdConverter[$act_standard->wbs_id])){
-                        $act->code = self::generateActivityCode($wbsIdConverter[$act_standard->wbs_id]);
-                        $act->wbs_id = $wbsIdConverter[$act_standard->wbs_id];
-                    }
-                    $act->user_id = Auth::user()->id;
-                    $act->branch_id = Auth::user()->branch->id;
-                    $act->save();
                 }
+                // elseif(strpos($dataTree, 'ACT') !== false){
+                //     $act_standard_id = str_replace("ACT", "", $dataTree);
+                //     $act_standard = ActivityStandard::find($act_standard_id);
+                //     $act = new Activity;
+                //     $act->name = $act_standard->name;
+                //     $act->description = $act_standard->description;
+                //     $act->planned_duration = $act_standard->duration;
+                //     $act->activity_standard_id = $act_standard_id;
+
+                //     if(isset($wbsIdConverter[$act_standard->wbs_id])){
+                //         $act->code = self::generateActivityCode($wbsIdConverter[$act_standard->wbs_id]);
+                //         $act->wbs_id = $wbsIdConverter[$act_standard->wbs_id];
+                //     }
+                //     $act->user_id = Auth::user()->id;
+                //     $act->branch_id = Auth::user()->branch->id;
+                //     $act->save();
+                // }
             }
             DB::commit();
 

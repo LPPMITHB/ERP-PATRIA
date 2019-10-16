@@ -1191,6 +1191,7 @@ class BOMController extends Controller
             self::checkStock($modelBom,$route);
 
             DB::commit();
+
             return response(json_encode($modelBom),Response::HTTP_OK);
 
         } catch (\Exception $e) {
@@ -1546,7 +1547,7 @@ class BOMController extends Controller
             $rap_detail = new RapDetail;
             $rap_detail->rap_id = $rap_id;
             $rap_detail->material_id = $bomDetail->material_id;
-            $rap_detail->service_id = $bomDetail->service_id;
+            // $rap_detail->service_id = $bomDetail->service_id;
             $rap_detail->quantity = $bomDetail->quantity;
             if($bomDetail->material_id != null){
                 if($bomDetail->source == 'WIP'){
