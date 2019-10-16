@@ -20,10 +20,13 @@ class CreateMstPartDetailStandardTable extends Migration
             $table->longText('dimensions_value')->nullable();
             $table->float('weight', 15, 2)->nullable();
             $table->integer('quantity')->nullable();
-            
+            $table->unsignedInteger('service_id')->nullable();
+            $table->unsignedInteger('service_detail_id')->nullable();
 
             $table->timestamps();
             $table->foreign('material_standard_id')->references('id')->on('mst_material_standard');
+            $table->foreign('service_id')->references('id')->on('mst_service');
+            $table->foreign('service_detail_id')->references('id')->on('mst_service_detail');
 
         });
     }
