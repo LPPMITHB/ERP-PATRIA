@@ -653,6 +653,8 @@ class PurchaseRequisitionController extends Controller
             $status = 'CONSOLIDATED';
         } elseif ($modelPR->status == 9) {
             $status = 'APPROVED PARTIALLY';
+        } elseif ($modelPR->status == 8) {
+            $status = 'CANCELED';
         }
 
         return view('purchase_requisition.showApprove', compact('modelPR', 'route', 'status'));

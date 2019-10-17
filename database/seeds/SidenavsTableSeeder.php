@@ -644,12 +644,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.selectWBS',
         ]);
 
-        
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageBom,
-            'route_name' => 'bom.index',
-        ]);
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
@@ -662,6 +656,11 @@ class SidenavsTableSeeder extends Seeder
         ]);
 
         $viewBom = Menu::where('route_name','bom.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewBom,
+            'route_name' => 'bom.index',
+        ]);
+
         DB::table('sidenav')->insert([
             'menu_id' => $viewBom,
             'route_name' => 'bom.selectProject',
@@ -692,6 +691,22 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $manageWbsMaterial,
             'route_name' => 'bom_repair.manageWbsMaterial',
+        ]);
+
+        // bom building material requirement summary
+        $summaryMaterial = Menu::where('route_name','bom.selectProjectSum')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $summaryMaterial,
+            'route_name' => 'bom.selectProjectSum',
+        ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $summaryMaterial,
+            'route_name' => 'bom.selectWBSSum',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $summaryMaterial,
+            'route_name' => 'bom.materialSummaryBuilding',
         ]);
 
         // bom repair material requirement summary

@@ -37,9 +37,15 @@
                                 <td class="tdEllipsis">{{ $project->customer->name }}</td>
                                 <td class="tdEllipsis">{{ $project->name }}</td>
                                 <td class="tdEllipsis">{{ $project->ship->type }}</td>
-                                <td align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.materialSummary', ['id'=>$project->id]) }}">SELECT</a>
-                                </td>
+                                @if ($route == "/bom")
+                                    <td align="center">
+                                        <a class="btn btn-primary btn-xs" href="{{ route('bom.selectWBSSum', ['id'=>$project->id]) }}">SELECT</a>
+                                    </td>
+                                    @elseif($route == "/bom_repair")
+                                    <td align="center">
+                                        <a class="btn btn-primary btn-xs" href="{{ route('bom_repair.materialSummary', ['id'=>$project->id]) }}">SELECT</a>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </tbody>
