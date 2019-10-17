@@ -2695,8 +2695,7 @@ class PermissionsTableSeeder extends Seeder
             'middleware' => 'create-cost-standard',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-        ]);
-        
+        ]); 
 
         DB::table('permissions')->insert([
             'name' => 'Show Cost Standard',
@@ -3132,7 +3131,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        
         //daily info weather
         $daily_weather = Menu::where('name','Weather')->select('id')->first()->id;
         DB::table('permissions')->insert([

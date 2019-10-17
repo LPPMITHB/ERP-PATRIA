@@ -14,6 +14,9 @@ use App\Models\MaterialStandard;
 use App\Models\Resource;
 use App\Models\ResourceStandard;
 use App\Models\Configuration;
+use App\Models\Service;
+use App\Models\ServiceDetail;
+use App\Models\Wbs;
 use App\Models\Uom;
 use App\Models\PartDetailStandard;
 use DB;
@@ -229,6 +232,7 @@ class ProjectStandardController extends Controller
         $project = ProjectStandard::where('id',$wbs->project_standard_id)->with('ship')->first();
         $materials = Material::orderBy('code')->get()->jsonSerialize();
         $densities = Configuration::get('density');
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->projectStandard->ship_id)->with('serviceDetails','ship')->get();
         $existing_data = [];
 
         $material_ids = [];
@@ -262,6 +266,14 @@ class ProjectStandardController extends Controller
 
                 foreach ($material->partDetails as $part) {
                     $part->edit = false;
+                    if($part->service_id != ''){
+                        $part->service_code = Service::where('id',$part->service_id)->first()->code;
+                        $part->service_name = Service::where('id',$part->service_id)->first()->name;
+                    }
+                    if($part->service_detail_id != ''){
+                        $part->service_detail_name = ServiceDetail::where('id',$part->service_detail_id)->first()->name;
+                        $part->service_detail_description = ServiceDetail::where('id',$part->service_detail_id)->first()->description;
+                    }
                     $part->dimensions_value_obj = json_decode($part->dimensions_value);
                     foreach ($part->dimensions_value_obj as $dimension) {
                         $dimension->uom = Uom::find($dimension->uom_id);
@@ -270,7 +282,7 @@ class ProjectStandardController extends Controller
             }
         }
         
-        return view('project_standard.manageMaterial', compact('project','materials','wbs','edit','existing_data','material_ids'));
+        return view('project_standard.manageMaterial', compact('project','materials','wbs','edit','existing_data','material_ids','services'));
     }
 
     public function manageResource($wbs_id, Request $request)
@@ -324,6 +336,8 @@ class ProjectStandardController extends Controller
                             $new_part->dimensions_value = $temp_dimensions_value;
                             $new_part->weight = $part_detail->weight;
                             $new_part->quantity = $part_detail->quantity;
+                            $new_part->service_id = $part_detail->service_id;
+                            $new_part->service_detail_id = $part_detail->service_detail_id;
                             $new_part->save();
                         }
                     }
@@ -408,6 +422,8 @@ class ProjectStandardController extends Controller
                             $part->dimensions_value = $temp_dimensions_value;
                             $part->weight = $part_detail->weight;
                             $part->quantity = $part_detail->quantity;
+                            $part->service_id = $part_detail->service_id;
+                            $part->service_detail_id = $part_detail->service_detail_id;
 
                             if(isset($part_detail->id)){
                                 $part->update();
@@ -713,6 +729,17 @@ class ProjectStandardController extends Controller
 
         return response(Resource::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
     }
+
+    public function getServiceStandardAPI($id){
+
+        return response(Service::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getServiceDetailStandardAPI($id){
+
+        return response(ServiceDetail::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
 
     public function getMaterialAPI($id){
         $material = Material::where('id',$id)->with('uom','weightUom')->first();
