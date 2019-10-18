@@ -127,7 +127,7 @@
             </div> <!-- /.box-body -->
 
             <div class="box-body p-t-0 p-b-5">
-                <h4>Material</h4>
+                <h4>Top WBS Material</h4>
                 <table class="table table-bordered showTable tableFixed" id="material-table">
                     <thead>
                         <tr>

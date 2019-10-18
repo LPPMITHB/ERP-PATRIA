@@ -83,6 +83,7 @@ class ActivityController extends Controller
             $activity = new Activity;
             $activity->code = self::generateActivityCode($data['wbs_id']);
             $activity->name = $data['name'];
+            $activity->type = $data['type'];
             $activity->description = $data['description'];
             $activity->wbs_id = $data['wbs_id'];
             $activity->planned_duration = $data['planned_duration'];
@@ -236,6 +237,7 @@ class ActivityController extends Controller
         try {
             $activity = new ActivityProfile;
             $activity->name = $data['name'];
+            $activity->type = $data['type'];
             $activity->description = $data['description'];
             $activity->wbs_id = $data['wbs_id'];
             $activity->duration = $data['duration'];
@@ -263,6 +265,7 @@ class ActivityController extends Controller
         try {
             $activity = Activity::find($id);
             $activity->name = $data['name'];
+            $activity->type = $data['type'];
             $activity->description = $data['description'];
             $activity->planned_duration = $data['planned_duration'];
 
@@ -469,6 +472,7 @@ class ActivityController extends Controller
         try {
             $activity = ActivityProfile::find($id);
             $activity->name = $data['name'];
+            $activity->type = $data['type'];
             $activity->description = $data['description'];
             $activity->duration = $data['duration'];
 

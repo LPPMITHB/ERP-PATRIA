@@ -386,13 +386,6 @@
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
-                }else if(this.dataInput.role_id_1 == this.dataInput.role_id_2){
-                    iziToast.warning({
-                        title: 'Role 1 and Role 2 must be different!',
-                        position: 'topRight',
-                        displayMode: 'replace'
-                    });
-                    $('div.overlay').hide();
                 }else{
                     var data = JSON.stringify(this.dataInput);
                     if(this.approvals.length > 0){

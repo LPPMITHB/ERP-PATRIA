@@ -178,18 +178,13 @@ class RolesTableSeeder extends Seeder
                 'create-estimator-profile' => true,'list-estimator-profile' => true,'edit-estimator-profile' => true,  'show-estimator-profile' => true, 'delete-estimator-profile' => true,
                 'create-quotation' => true,'list-quotation' => true,'edit-quotation' => true,  'show-quotation' => true,
                 'create-sales-order' => true,'list-sales-order' => true,'edit-sales-order' => true,  'show-sales-order' => true,
-<<<<<<<<< Temporary merge branch 1
-                'reply-post' => true,
-=========
-                'create-invoice' => true,'list-invoice' => true,'edit-invoice' => true,  'show-invoice' => true,
-                'manage-weather' => true,
-                'manage-approval-configuration' => true,
-                'manage-cost-type-configuration' => true,
-                'manage-appearance-configuration' => true,
                 'create-payment' => true,'list-payment' => true,'edit-payment' => true, 'show-payment' => true,
                 'manage-wbs-images' => true,
+                'reply-post' => true,
+                'create-invoice' => true,'list-invoice' => true,'edit-invoice' => true,  'show-invoice' => true,
+                'manage-approval-configuration' => true, 'manage-cost-type-configuration' => true, 'manage-appearance-configuration' => true, 'manage-currencies-configuration' => true, 'manage-material-family-configuration' => true, 'manage-density-configuration' => true, 'manage-payment-terms-configuration' => true, 'manage-delivery-terms-configuration' => true, 'manage-weather-configuration' => true, 'manage-tidal-configuration' => true, 'manage-dimension-type-configuration' => true, 
+                'manage-weather' => true, 'manage-tidal' => true,
 
->>>>>>>>> Temporary merge branch 2
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -276,7 +271,9 @@ class RolesTableSeeder extends Seeder
                 'manage-approval-configuration' => true,
                 'manage-cost-type-configuration' => true,
                 'manage-appearance-configuration' => true,
->>>>>>>>> Temporary merge branch 2
+                'reply-post' => true,
+                'manage-approval-configuration' => true, 'manage-cost-type-configuration' => true, 'manage-appearance-configuration' => true, 'manage-currencies-configuration' => true, 'manage-material-family-configuration' => true, 'manage-density-configuration' => true, 'manage-payment-terms-configuration' => true, 'manage-delivery-terms-configuration' => true, 'manage-weather-configuration' => true, 'manage-tidal-configuration' => true, 'manage-dimension-type-configuration' => true, 
+                'manage-weather' => true, 'manage-tidal' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

@@ -17,6 +17,7 @@ class CreateMstBomPrepTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('project_id')->nullable();
+            $table->unsignedInteger('wbs_id')->nullable();
             $table->float('weight',15,2)->nullable();
             $table->float('quantity',15,2)->nullable();
             $table->integer('status')->default(1);
@@ -25,6 +26,7 @@ class CreateMstBomPrepTable extends Migration
 
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('project_id')->references('id')->on('pro_project');
+            $table->foreign('wbs_id')->references('id')->on('pro_wbs');
         });
     }
 

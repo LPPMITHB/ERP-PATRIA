@@ -508,9 +508,17 @@ Route::name('yard.')->prefix('yard')->group(function() {
 
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
-    Route::get('/selectProjectSumBuilding', 'BOMController@selectProjectSumBuilding')->name('selectProjectSumBuilding')->middleware('can:create-bom');
+    //MRS
+    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom');
+
+    Route::get('/selectWBSSum/{id}', 'BOMController@selectWBSSum')->name('selectWBSSum')->middleware('can:create-bom');
 
     Route::get('/materialSummaryBuilding/{id}', 'BOMController@materialSummaryBuilding')->name('materialSummaryBuilding')->middleware('can:create-bom');
+
+    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
+    
+    //
+    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:create-bom');
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom');
 
@@ -523,8 +531,6 @@ Route::name('bom.')->prefix('bom')->group(function() {
     Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:create-bom');
 
     Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:list-bom');
-
-    Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:list-bom');
 
     Route::get('/indexBom/{id}', 'BOMController@indexBom')->name('indexBom')->middleware('can:edit-bom');
 

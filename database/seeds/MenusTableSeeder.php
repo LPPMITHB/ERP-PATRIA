@@ -350,7 +350,7 @@ class MenusTableSeeder extends Seeder
             'level' => 3,
             'name' => 'Material Requirement Summary',
             'icon' => 'fa-file-text-o',
-            'route_name' => 'bom.selectProjectSumBuilding',
+            'route_name' => 'bom.selectProjectSum',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $bom,
