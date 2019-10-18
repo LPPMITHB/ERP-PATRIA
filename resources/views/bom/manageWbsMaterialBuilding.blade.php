@@ -2,7 +2,7 @@
 @section('content-header')
     @breadcrumb(
         [
-            'title' => 'Manage WBS\'s Materials and Services',
+            'title' => 'Manage WBS\'s Materials',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
