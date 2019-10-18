@@ -516,7 +516,7 @@ Route::name('bom.')->prefix('bom')->group(function() {
     Route::get('/materialSummaryBuilding/{id}', 'BOMController@materialSummaryBuilding')->name('materialSummaryBuilding')->middleware('can:create-bom');
 
     Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
-    
+
     //
     Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:create-bom');
 
@@ -528,6 +528,8 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
 
+    Route::get('/manageWbsMaterialBuilding/{id}','BOMController@manageWbsMaterialBuilding')->name('manageWbsMaterialBuilding')->middleware('can:create-bom');
+
     Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:create-bom');
 
     Route::get('/selectProject', 'BOMController@selectProject')->name('selectProject')->middleware('can:list-bom');
@@ -537,6 +539,10 @@ Route::name('bom.')->prefix('bom')->group(function() {
     Route::get('/{id}', 'BOMController@show')->name('show')->middleware('can:show-bom');
 
     Route::get('/{id}/edit', 'BOMController@edit')->name('edit')->middleware('can:edit-bom');
+
+    Route::post('/storeWbsMaterial', 'BOMController@storeWbsMaterialBuilding')->name('storeWbsMaterial')->middleware('can:create-bom');
+
+    Route::patch('/updateWbsMaterial', 'BOMController@updateWbsMaterialBuilding')->name('updateWbsMaterial')->middleware('can:create-bom');
 
     Route::put('/updateDesc', 'BOMController@updateDesc')->name('updateDesc')->middleware('can:edit-bom');
 
@@ -694,7 +700,7 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
     Route::delete('/deleteWbsImage/{id}','WBSController@destroyWbsImage')->name('destroyWbsImage')->middleware('can:delete-project');
 
     Route::get('/manageWbsImages', 'WBSController@manageWbsImages')->name('manageWbsImages')->middleware('can:manage-wbs-images');
-    
+
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile');
 
@@ -893,9 +899,9 @@ Route::name('rap.')->prefix('rap')->group(function() {
     Route::get('/selectProjectPlanOtherCost', 'RAPController@selectProjectPlanOtherCost')->name('selectProjectPlanOtherCost')->middleware('can:approve-other-cost');
 
     Route::get('/inputApprovalProjectPlanOtherCost/{id}', 'RAPController@inputApprovalProjectPlanOtherCost')->name('inputApprovalProjectPlanOtherCost')->middleware('can:approve-other-cost');
-    
+
     Route::put('/updateApprovalProjectPlanOtherCost', 'RAPController@updateApprovalProjectPlanOtherCost')->name('updateApprovalProjectPlanOtherCost')->middleware('can:approve-other-cost');
-    
+
     //===============end approval project plan cost
 
     Route::post('/storeCost', 'RAPController@storeCost')->name('storeCost')->middleware('can:create-other-cost');
@@ -912,7 +918,7 @@ Route::name('rap.')->prefix('rap')->group(function() {
 
     Route::delete('/deleteOtherCost/{id}','RAPController@deleteOtherCost')->name('deleteOtherCost')->middleware('can:edit-rap');
 
-    // INI TERMASUK API 
+    // INI TERMASUK API
     Route::get('/getCostsPlanned/{id}', 'RAPController@getCostsPlanned')->name('getCostsPlanned');
 
     Route::get('/getCostsApproved/{id}', 'RAPController@getCostsApproved')->name('getCostsApproved');
