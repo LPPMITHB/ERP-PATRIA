@@ -466,7 +466,13 @@ class ProductionOrderController extends Controller
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
         $POU = ProductionOrderUpload::where('production_order_id',$modelPrO->id)->with('user')->get();
-        $materials = Collection::make();
+        // $materials = Collection::make();
+        $modelSloc = StorageLocation::all();
+
+        $materials = Material::all();
+        foreach ($materials as $material) {
+            $material['selected'] = false;
+        }
         foreach($modelPrOD as $prod){
             $modelMRD = MaterialRequisitionDetail::where('wbs_id',$prod->productionOrder->wbs_id)->select('material_requisition_id')->get();
             $modelGI = GoodsIssue::whereIn('material_requisition_id',$modelMRD)->get();
@@ -478,29 +484,26 @@ class ProductionOrderController extends Controller
                         $actual += $gid->quantity;
                     }
                 }
-                $modelGRT = GoodsReturn::where('goods_issue_id',$gi->id)->get();
-                if($modelGRT){
-                    foreach($modelGRT as $grt){
-                        if($grt->status == 2){
-                            foreach($grt->goodsReturnDetails as $grd){
-                                if($grd->material_id == $prod->material_id){
-                                    $return += $grd->quantity;
-                                }
-                            }
-                        }
-                    }
-                }
             }
-            $materials->push([
-               "material_code" => $prod->material->code,
-               "material_description" => $prod->material->description,
-               "quantity" => $prod->quantity,
-               "actual" => $actual - $return,
-               "remaining" => $prod->quantity - $actual + $return,
-               "unit" => $prod->material->uom->unit
-            ]);
+            $prod->actual = $actual;
+            // $materials->push([
+            //    "material_code" => $prod->material->code,
+            //    "material_description" => $prod->material->description,
+            //    "quantity" => $prod->quantity,
+            //    "actual" => $actual - $return,
+            //    "remaining" => $prod->quantity - $actual + $return,
+            //    "unit" => $prod->material->uom->unit
+            // ]);
+
+            $temp_returned_material = [];
+            foreach ($prod->goodsReceiptDetails as $returned_material) {
+                $returned_material['material_name'] = $returned_material->material->code." - ".$returned_material->material->description;
+                $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
+            }
+            $prod['returned_materials'] = $prod->goodsReceiptDetails;
+            $prod['deleted_returned_material'] = [];
         }
-        return view('production_order.confirm', compact('modelPrO','project','modelPrOD','route','uoms','POU','materials'));
+        return view('production_order.confirm', compact('modelSloc','modelPrO','project','modelPrOD','route','uoms','POU','materials'));
     }
 
     public function confirmRepair(Request $request,$id){

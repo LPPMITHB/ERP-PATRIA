@@ -166,9 +166,9 @@
                 </div>
             </form>
             @if($route == "/production_order")
-                <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order.storeConfirm') }}">
+                <form id="confirm-pro" class="form-horizontal" method="POST" action="{{ route('production_order.storeConfirm') }}">
             @elseif($route == "/production_order_repair")
-                <form id="confirm-wo" class="form-horizontal" method="POST" action="{{ route('production_order_repair.storeConfirm') }}">
+                <form id="confirm-pro" class="form-horizontal" method="POST" action="{{ route('production_order_repair.storeConfirm') }}">
             @endif
             <input type="hidden" name="_method" value="PATCH">
             @csrf
@@ -356,27 +356,43 @@
                     <div class="row">
                         <div class="col-sm-12">
                             <h4 class="box-title m-t-0">Material</h4>
-                            <table id="material-table" class="table table-bordered tableFixed showTable">
+                            <table id="material-table" class="table table-bordered tableFixed">
                                 <thead>
                                     <tr>
                                         <th width="4%">No</th>
-                                        <th width="30%">Material Number</th>
-                                        <th width="28%">Material Description</th>
+                                        <th width="20%">Material Number</th>
+                                        <th width="30%">Material Description</th>
                                         <th width="8%">Quantity</th>
                                         <th width="8%">Actual</th>
-                                        <th width="8%">Remaining</th>
                                         <th width="8%">Unit</th>
+                                        <th width="15%">Returned Materials</th>
+                                        <th width="12%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <tr v-for="(data,index) in materials">
                                         <td>{{ index + 1 }}</td>
-                                        <td class="tdEllipsis">{{ data.material_code }}</td>
-                                        <td class="tdEllipsis">{{ data.material_description }}</td>
+                                        <td class="tdEllipsis">{{ data.material.code }}</td>
+                                        <td class="tdEllipsis">{{ data.material.description }}</td>
                                         <td class="tdEllipsis">{{ data.quantity }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
-                                        <td class="tdEllipsis">{{ data.remaining }}</td>
-                                        <td class="tdEllipsis">{{ data.unit }}</td>
+                                        <td class="tdEllipsis">{{ data.material.uom.unit }}</td>
+                                        <td class="tdEllipsis">
+                                            <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <button type="button" class="btn btn-primary btn-xs col-xs-12" @click.prevent="">RETURNED
+                                                        MATERIAL</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="tdEllipsis">
+                                            <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <button type="button" class="btn btn-primary btn-xs col-xs-12"
+                                                        @click.prevent="returnOffcut(data)">RETURN CUTOFF</button>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -620,7 +636,120 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="modal fade" id="material_return">
+                        <div class="modal-dialog modalPredecessor">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Return Material (Material Offcut)</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-12 border-right-modal">
+                                            <div class="form-group">
+                                                <label for="length" class="col-sm-12">Material</label>
+                        
+                                                <div class="col-sm-12">
+                                                    <selectize id="material" name="material_id" v-model="return_material.material_id"
+                                                        :settings="material_settings">
+                                                        <option v-if="material.selected==false" v-for="(material, index) in all_materials"
+                                                            :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    </selectize>
+                                                </div>
+                                            </div>
+                        
+                                            <div class="form-group">
+                                                <label for="length" class="col-sm-12">Storage Location</label>
+                        
+                                                <div class="col-sm-12">
+                                                    <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id"
+                                                        :settings="sloc_settings">
+                                                        <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} -
+                                                            {{ sloc.description }}</option>
+                                                    </selectize>
+                                                </div>
+                                            </div>
+                        
+                                            <div class="form-group">
+                                                <label for="quantity" class="col-sm-12">Quantity</label>
+                        
+                                                <div class="col-sm-12">
+                                                    <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
+                                                        placeholder="Quantity">
+                                                </div>
+                                            </div>
+                        
+                                            <div class="form-group">
+                                                <label for="quantity" class="col-sm-12">Received Date</label>
+                        
+                                                <div class="col-sm-12">
+                                                    <input v-model="return_material.received_date" autocomplete="off" type="text"
+                                                        class="form-control datepicker" name="received_date" id="received_date"
+                                                        placeholder="Received Date">
+                                                </div>
+                                            </div>
+                        
+                                            <div class="form-group">
+                                                <div class="m-t-10 col-sm-2">
+                                                    <button :disabled="addMaterialOk" type="button" class="btn btn-primary"
+                                                        @click="addMaterial">ADD</button>
+                                                </div>
+                                            </div>
+                        
+                                            <div class="form-group">
+                                                <div class="m-t-10 col-sm-12">
+                                                    <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="p-l-5" style="width: 3%">No</th>
+                                                                <th style="width: 20%">Material</th>
+                                                                <th style="width: 20%">Storage Location</th>
+                                                                <th style="width: 10%">Quantity</th>
+                                                                <th style="width: 10%">Received Date</th>
+                                                                <th style="width: 10%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(data,index) in data_return_material">
+                                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.material_name)">{{ data.material_name }}
+                                                                </td>
+                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.sloc_name)">{{ data.sloc_name }}</td>
+                                                                <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                                <td class="p-b-15 p-t-15">{{ data.received_date }}</td>
+                                                                <td>
+                                                                    <div class="col-sm-12 col-xs-12 no-padding p-r-2">
+                                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)"
+                                                                            data-toggle="modal">
+                                                                            DELETE
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button :disabled="createOk" type="button" class="btn btn-primary" data-dismiss="modal"
+                                        @click.prevent="save">NEXT</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+
                     <div class="col-md-12 p-t-10 p-r-0">
+                        <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">CONFIRM</button>
                     </div>
                 </div>
             </div>
@@ -633,7 +762,7 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#confirm-wo');
+    const form = document.querySelector('form#confirm-pro');
     const formUpload = document.querySelector('form#upload');
     
     function overlay(){
@@ -675,12 +804,14 @@
 
     var data = {
         today : "",
+        modelSloc : @json($modelSloc),
         route : @json($route),
         menu : @json($route),
         uoms : @json($uoms),
+        modelPrO : @json($modelPrO),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
-        // materials : [],
+        materials : [],
         resources : [],
         services : [],
         wbs_id: @json($modelPrO->wbs->id),
@@ -718,7 +849,30 @@
             prod_id :@json($modelPrO->id)
         },
         pou : @json($POU),
-        materials : @json($materials)
+        // materials : @json($materials),
+        material_settings : {
+            placeholder: 'Material'
+        },
+        sloc_settings : {
+            placeholder: 'Storage Location'
+        },
+        all_materials : @json($materials),
+        return_material : {
+            id : null,
+            material_id : "",
+            material_name : "",
+            sloc_id : "",
+            sloc_name : "",
+            quantity : "",
+            received_date : "",
+        },
+        data_return_material : [],
+        data_return_material_show : [],
+        deleted_returned_material : [],
+        data_confirmed_material_show : [],
+        active_prod_id : "",
+        active_material : "",
+        data_changed : false,
     };
 
     var vm = new Vue({
@@ -757,6 +911,11 @@
                     }
                 }
             );
+            $("#received_date").datepicker().on(
+                "changeDate", () => {
+                    this.return_material.received_date = $('#received_date').val();
+                }
+            );
         },
         computed : {
             addMoraleOk: function(){
@@ -774,6 +933,18 @@
             selectOk: function(){
                 let isOk = false;
                 
+                return isOk;
+            },
+            addMaterialOk: function(){
+                let isOk = false;
+                
+                if(this.return_material.material_id == "" ||
+                this.return_material.quantity == "" ||
+                this.return_material.quantity == 0 ||
+                this.return_material.received_date == ""
+                ){
+                    isOk = true;
+                }
                 return isOk;
             }
         },
@@ -1116,7 +1287,71 @@
                     console.log(error);
                 })
 
-            }
+            },
+            returnOffcut(data){
+                this.all_materials.forEach(material => {
+                    data.returned_materials.forEach(material_return => {
+                        if(material.id == material_return.material_id){
+                            material.selected = true;
+                        }
+                    });
+                });
+                this.data_return_material = data.returned_materials;
+                this.active_prod_id = data.id;
+                $('#material_return').modal();
+            },
+            addMaterial(){
+                var temp = this.return_material;
+                temp = JSON.stringify(temp);
+                temp = JSON.parse(temp);
+                this.all_materials.forEach(material => {
+                    if(material.id == temp.material_id){
+                        material.selected = true;
+                    }
+                });
+                this.data_return_material.push(temp);
+
+                this.return_material.material_id = "";
+                this.return_material.sloc_id = "";
+                this.return_material.quantity = "";
+                this.return_material.received_date = "";
+
+                this.data_changed = true;
+            },
+            save(){
+                var temp_returned = this.data_return_material;
+                temp_returned = JSON.stringify(temp_returned);
+                temp_returned = JSON.parse(temp_returned);
+
+                var temp_deleted = this.deleted_returned_material;
+                temp_deleted = JSON.stringify(temp_deleted);
+                temp_deleted = JSON.parse(temp_deleted);
+
+                this.materials.forEach(prod => {
+                    if(prod.id == this.active_prod_id){
+                        prod.returned_materials = temp_returned;
+                        prod.deleted_returned_material = temp_deleted;
+                        prod.editable = false;
+                    }
+                });
+                this.all_materials.forEach(material => {
+                    temp_returned.forEach(material_return => {
+                        if(material.id == material_return.material_id){
+                            material.selected = false;
+                        }
+                    });
+                });
+
+                this.data_return_material = [];
+                this.deleted_returned_material = [];
+                iziToast.success({
+                    displayMode: 'replace',
+                    title: 'Material information saved!',
+                    position: 'topRight',
+                });
+
+                this.data_changed = true;
+            },
         },
         watch : {
             confirmActivity:{
@@ -1183,7 +1418,43 @@
             },
             'editInput.usage' : function(newValue){
                 this.editInput.usage = (this.editInput.usage+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-            }
+            },
+            'return_material.material_id': function(newValue) {
+                if(newValue != ""){
+                    this.all_materials.forEach(material => {
+                        if(material.id == newValue){
+                            this.return_material.material_name = material.code+" - "+material.description;
+                        }
+                    });
+                }else{
+                    this.return_material.material_name = "";
+                }
+
+            },
+            'return_material.sloc_id': function(newValue) {
+                if(newValue != ""){
+                    this.modelSloc.forEach(sloc => {
+                        if(sloc.id == newValue){
+                            this.return_material.sloc_name = sloc.code+" - "+sloc.description;
+                        }
+                    });
+                }else{
+                    this.return_material.sloc_name = "";
+                }
+            },
+            'return_material.quantity': function(newValue) {
+                var decimal = newValue.replace(/,/g, '').split('.');
+                if(decimal[1] != undefined){
+                    var maxDecimal = 2;
+                    if((decimal[1]+"").length > maxDecimal){
+                        this.return_material.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                    }else{
+                        this.return_material.quantity = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                    }
+                }else{
+                    this.return_material.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                }
+            },
         },
         created: function() {
             this.getActivities();
@@ -1232,6 +1503,7 @@
                     material.remaining = (material.remaining+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             })
+
             this.modelPrOD.forEach(POD => {
                 if(POD.material_id != null){
                     if(POD.actual == null){
@@ -1251,27 +1523,29 @@
                     POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    // this.materials.push(POD);
-                }else if(POD.service_id != null){
-                    if(POD.actual == null){
-                        POD.actual = 0;
-                    }
-                    POD.sugQuantity = POD.quantity-POD.actual;
-                    let used = POD.quantity-POD.actual;
-                    POD.used = POD.quantity;
-                    POD.quantity = used;
-                    if(POD.sugQuantity < 0){
-                        POD.sugQuantity = 0;
-                    }
-                    if(POD.used < 0){
-                        POD.quantity = 0;
-                    }
-                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
-                    this.services.push(POD);
-                }else if(POD.resource_id != null){
+                    this.materials.push(POD);
+                }
+                // else if(POD.service_id != null){
+                //     if(POD.actual == null){
+                //         POD.actual = 0;
+                //     }
+                //     POD.sugQuantity = POD.quantity-POD.actual;
+                //     let used = POD.quantity-POD.actual;
+                //     POD.used = POD.quantity;
+                //     POD.quantity = used;
+                //     if(POD.sugQuantity < 0){
+                //         POD.sugQuantity = 0;
+                //     }
+                //     if(POD.used < 0){
+                //         POD.quantity = 0;
+                //     }
+                //     POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     this.services.push(POD);
+                // }
+                else if(POD.resource_id != null){
                     if(POD.morale != null){
                         POD.morale = JSON.parse(POD.morale);
                     }else{
