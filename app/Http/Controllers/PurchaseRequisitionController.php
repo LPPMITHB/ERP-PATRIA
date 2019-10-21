@@ -653,6 +653,8 @@ class PurchaseRequisitionController extends Controller
             $status = 'CONSOLIDATED';
         } elseif ($modelPR->status == 9) {
             $status = 'APPROVED PARTIALLY';
+        } elseif ($modelPR->status == 8) {
+            $status = 'CANCELED';
         }
 
         return view('purchase_requisition.showApprove', compact('modelPR', 'route', 'status'));
@@ -930,7 +932,15 @@ class PurchaseRequisitionController extends Controller
                 ]);
             }
 
-            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails, $datas->pr_type);
+            $type = "";
+            if($PR->type == 1){
+                $type = "Material";                
+            }elseif($PR->type == 2){
+                $type = "Resource";
+            }elseif($PR->type == 3){
+                $type = "Subcon";
+            }
+            $pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails, $type);
 
             $approval_config = Configuration::get('approval-pr')[0];
             foreach ($approval_config->value as $pr_config) {

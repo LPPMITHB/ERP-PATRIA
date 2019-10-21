@@ -141,6 +141,24 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Delete Project',
+            'menu_id' => $manageProject,
+            'middleware' => 'delete-project',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // WBS Images
+        $menu_manage_wbs_images = Menu::where('route_name','wbs.manageWbsImages')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Wbs Images',
+            'menu_id' => $menu_manage_wbs_images,
+            'middleware' => 'manage-wbs-images',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
         // WBS Profile
         $manageWbsProfile = Menu::where('name','Manage WBS Profile')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -208,6 +226,14 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Project',
             'menu_id' => $manageProjectRepair,
             'middleware' => 'edit-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'delete-project-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -377,6 +403,16 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Create Other Cost',
             'menu_id' => $createOtherCost,
             'middleware' => 'create-other-cost',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // approve other cost
+        $menu_approve_other_cost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Other Cost',
+            'menu_id' => $menu_approve_other_cost,
+            'middleware' => 'approve-other-cost',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -849,6 +885,7 @@ class PermissionsTableSeeder extends Seeder
         $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
         $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
         $mrRepair = Menu::where('name','Material Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+
         //Material Requisition Repair
         $createMRRepair = Menu::where('name','Create MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -1195,7 +1232,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Issue
-        $createGI = Menu::where('name','Create GI')->select('id')->first()->id;
+        $createGI = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Issue',
             'menu_id' => $createGI,
@@ -1204,7 +1241,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGI = Menu::where('name','View & Edit PO')->select('id')->first()->id;
+        $viewGI = Menu::where('route_name','goods_issue.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Issue',
             'menu_id' => $viewGI,
@@ -1230,8 +1267,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Issue Repair
-        $giRepair = Menu::where('name','Goods Issue')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createGI = Menu::where('name','Create GI')->where('menu_id',$giRepair)->select('id')->first()->id;
+        $createGI = Menu::where('route_name','goods_issue_repair.selectMR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Issue',
             'menu_id' => $createGI,
@@ -1240,7 +1276,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGIRepair = Menu::where('name','View GI')->where('menu_id',$giRepair)->select('id')->first()->id;
+        $viewGIRepair = Menu::where('route_name','goods_issue_repair.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Issue',
             'menu_id' => $viewGIRepair,
@@ -2368,6 +2404,28 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // Yard Plan
+        $manageYardPlan = Menu::where('name','Manage Yard Plan')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Yard Plan',
+            'menu_id' => $manageYardPlan,
+            'middleware' => 'manage-yard-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewYardPlan = Menu::where('name','View Yard Plan')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Viwe Yard Plan',
+            'menu_id' => $viewYardPlan,
+            'middleware' => 'view-yard-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Yard Plan Repair
+        // TBD
+
         //Resource Management
         $resourceManagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
         $resourceRepair = Menu::where('name','Manage Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
@@ -2476,9 +2534,10 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+        
 
          // Customer Portal View Project Progress
-        $projectProgress = Menu::where('name','View Project Progress')->select('id')->first()->id;
+        $projectProgress = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Project Progress',
             'menu_id' => $projectProgress,
@@ -2496,5 +2555,682 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        // Customer Portal Reply post
+        $postReply = Menu::where('name','Reply Complaints')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Reply Complaints',
+            'menu_id' => $postReply,
+            'middleware' => 'reply-post',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Daily Man Hour
+        $daily_man_hour = Menu::where('name','Daily Man Hour')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Daily Man Hour',
+            'menu_id' => $daily_man_hour,
+            'middleware' => 'manage-daily-man-hour',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //approval configuration
+        $approval_configuration = Menu::where('name','Approval Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Approval Configuration',
+            'menu_id' => $approval_configuration,
+            'middleware' => 'manage-approval-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Estimator WBS
+        $menu_estimator_wbs = Menu::where('route_name','estimator.indexEstimatorWbs')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Estimator WBS',
+            'menu_id' => $menu_estimator_wbs,
+            'middleware' => 'list-estimator-wbs',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Estimator WBS',
+            'menu_id' => $menu_estimator_wbs,
+            'middleware' => 'create-estimator-wbs',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Estimator WBS',
+            'menu_id' => $menu_estimator_wbs,
+            'middleware' => 'edit-estimator-wbs',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Estimator WBS',
+            'menu_id' => $menu_estimator_wbs,
+            'middleware' => 'delete-estimator-wbs',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //cost type configuration
+        $cost_type_configuration = Menu::where('name','Cost Type')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Cost Type Configuration',
+            'menu_id' => $cost_type_configuration,
+            'middleware' => 'manage-cost-type-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //appearance configuration
+        $appearance_configuration = Menu::where('name','Appearance')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Appearance Configuration',
+            'menu_id' => $appearance_configuration,
+            'middleware' => 'manage-appearance-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //currencies configuration
+        $currencies_configuration = Menu::where('name','Currencies')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Currencies Configuration',
+            'menu_id' => $currencies_configuration,
+            'middleware' => 'manage-currencies-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //material family configuration
+        $material_family_configuration = Menu::where('name','Material Family')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Material Family Configuration',
+            'menu_id' => $material_family_configuration,
+            'middleware' => 'manage-material-family-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //payment terms configuration
+        $payment_terms_configuration = Menu::where('name','Payment Terms')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Payment Terms',
+            'menu_id' => $payment_terms_configuration,
+            'middleware' => 'manage-payment-terms-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //density configuration
+        $density_configuration = Menu::where('name','Density')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Density Configuration',
+            'menu_id' => $density_configuration,
+            'middleware' => 'manage-density-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+         //Cost Standard
+        $menu_cost_standard = Menu::where('route_name','estimator.indexEstimatorCostStandard')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Cost Standard',
+            'menu_id' => $menu_cost_standard,
+            'middleware' => 'list-cost-standard',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Cost Standard',
+            'menu_id' => $menu_cost_standard,
+            'middleware' => 'create-cost-standard',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]); 
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Cost Standard',
+            'menu_id' => $menu_cost_standard,
+            'middleware' => 'show-cost-standard',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Cost Standard',
+            'menu_id' => $menu_cost_standard,
+            'middleware' => 'edit-cost-standard',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Cost Standard',
+            'menu_id' => $menu_cost_standard,
+            'middleware' => 'delete-cost-standard',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Estimator Profile
+        $menu_estimator_profile = Menu::where('route_name','estimator.indexEstimatorProfile')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Estimator Profile',
+            'menu_id' => $menu_estimator_profile,
+            'middleware' => 'list-estimator-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Estimator Profile',
+            'menu_id' => $menu_estimator_profile,
+            'middleware' => 'create-estimator-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Estimator Profile',
+            'menu_id' => $menu_estimator_profile,
+            'middleware' => 'show-estimator-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Estimator Profile',
+            'menu_id' => $menu_estimator_profile,
+            'middleware' => 'edit-estimator-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Estimator Profile',
+            'menu_id' => $menu_estimator_profile,
+            'middleware' => 'delete-estimator-profile',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Estimator WBS Repair
+        $menu_estimator_wbs_repair = Menu::where('route_name','estimator_repair.indexEstimatorWbs')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Estimator WBS Repair',
+            'menu_id' => $menu_estimator_wbs_repair,
+            'middleware' => 'list-estimator-wbs-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Estimator WBS Repair',
+            'menu_id' => $menu_estimator_wbs_repair,
+            'middleware' => 'create-estimator-wbs-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Estimator WBS Repair',
+            'menu_id' => $menu_estimator_wbs_repair,
+            'middleware' => 'edit-estimator-wbs-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Estimator WBS Repair',
+            'menu_id' => $menu_estimator_wbs_repair,
+            'middleware' => 'delete-estimator-wbs-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Cost Standard Repair
+        $menu_cost_standard_repair = Menu::where('route_name','estimator_repair.indexEstimatorCostStandard')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Cost Standard Repair',
+            'menu_id' => $menu_cost_standard_repair,
+            'middleware' => 'list-cost-standard-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Cost Standard Repair',
+            'menu_id' => $menu_cost_standard_repair,
+            'middleware' => 'create-cost-standard-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Cost Standard Repair',
+            'menu_id' => $menu_cost_standard_repair,
+            'middleware' => 'show-cost-standard-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Cost Standard Repair',
+            'menu_id' => $menu_cost_standard_repair,
+            'middleware' => 'edit-cost-standard-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Cost Standard Repair',
+            'menu_id' => $menu_cost_standard_repair,
+            'middleware' => 'delete-cost-standard-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Estimator Profile Repair
+        $menu_estimator_profile_repair = Menu::where('route_name','estimator_repair.indexEstimatorProfile')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Estimator Profile Repair',
+            'menu_id' => $menu_estimator_profile_repair,
+            'middleware' => 'list-estimator-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Estimator Profile Repair',
+            'menu_id' => $menu_estimator_profile_repair,
+            'middleware' => 'create-estimator-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Estimator Profile Repair',
+            'menu_id' => $menu_estimator_profile_repair,
+            'middleware' => 'show-estimator-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Estimator Profile Repair',
+            'menu_id' => $menu_estimator_profile_repair,
+            'middleware' => 'edit-estimator-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Estimator Profile Repair',
+            'menu_id' => $menu_estimator_profile_repair,
+            'middleware' => 'delete-estimator-profile-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Quatation
+        $menu_create_quotation = Menu::where('route_name','quotation.create')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Quotation',
+            'menu_id' => $menu_create_quotation,
+            'middleware' => 'create-quotation',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_quotation = Menu::where('route_name','quotation.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Quotation',
+            'menu_id' => $menu_index_quotation,
+            'middleware' => 'list-quotation',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Quotation',
+            'menu_id' => $menu_index_quotation,
+            'middleware' => 'show-quotation',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Quotation',
+            'menu_id' => $menu_index_quotation,
+            'middleware' => 'edit-quotation',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Quatation Repair
+        $menu_create_quotation_repair = Menu::where('route_name','quotation_repair.create')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Quotation Repair',
+            'menu_id' => $menu_create_quotation_repair,
+            'middleware' => 'create-quotation-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_quotation_repair = Menu::where('route_name','quotation_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Quotation Repair',
+            'menu_id' => $menu_index_quotation_repair,
+            'middleware' => 'list-quotation-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Quotation Repair',
+            'menu_id' => $menu_index_quotation_repair,
+            'middleware' => 'show-quotation-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Quotation Repair',
+            'menu_id' => $menu_index_quotation_repair,
+            'middleware' => 'edit-quotation-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Sales Order
+        $menu_create_sales_order = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Sales Order',
+            'menu_id' => $menu_create_sales_order,
+            'middleware' => 'create-sales-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_sales_order = Menu::where('route_name','sales_order.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Sales Order',
+            'menu_id' => $menu_index_sales_order,
+            'middleware' => 'list-sales-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Sales Order',
+            'menu_id' => $menu_index_sales_order,
+            'middleware' => 'show-sales-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Sales Order',
+            'menu_id' => $menu_index_sales_order,
+            'middleware' => 'edit-sales-order',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Sales Order Repair
+        $menu_create_sales_order_repair = Menu::where('route_name','sales_order_repair.selectQT')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Sales Order Repair',
+            'menu_id' => $menu_create_sales_order_repair,
+            'middleware' => 'create-sales-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_sales_order_repair = Menu::where('route_name','sales_order_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Sales Order Repair',
+            'menu_id' => $menu_index_sales_order_repair,
+            'middleware' => 'list-sales-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Sales Order Repair',
+            'menu_id' => $menu_index_sales_order_repair,
+            'middleware' => 'show-sales-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Sales Order Repair',
+            'menu_id' => $menu_index_sales_order_repair,
+            'middleware' => 'edit-sales-order-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Invoice
+        $menu_create_invoice = Menu::where('route_name','invoice.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Invoice',
+            'menu_id' => $menu_create_invoice,
+            'middleware' => 'create-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_index_invoice = Menu::where('route_name','invoice.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Invoice',
+            'menu_id' => $menu_index_invoice,
+            'middleware' => 'list-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Invoice',
+            'menu_id' => $menu_index_invoice,
+            'middleware' => 'show-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Invoice',
+            'menu_id' => $menu_index_invoice,
+            'middleware' => 'edit-invoice',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Invoice Repair
+        $menu_create_invoice_repair = Menu::where('route_name','invoice_repair.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Invoice Repair',
+            'menu_id' => $menu_create_invoice_repair,
+            'middleware' => 'create-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        $menu_index_invoice_repair = Menu::where('route_name','invoice_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Invoice Repair',
+            'menu_id' => $menu_index_invoice_repair,
+            'middleware' => 'list-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);        
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Invoice Repair',
+            'menu_id' => $menu_index_invoice_repair,
+            'middleware' => 'edit-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Invoice Repair',
+            'menu_id' => $menu_index_invoice_repair,
+            'middleware' => 'show-invoice-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //delivery terms configuration
+        $delivery_terms_configuration = Menu::where('name','Delivery Terms')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Delivery Terms',
+            'menu_id' => $delivery_terms_configuration,
+            'middleware' => 'manage-delivery-terms-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //weather configuration
+        $weather_configuration = Menu::where('name','Weather Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Weather Configuration',
+            'menu_id' => $weather_configuration,
+            'middleware' => 'manage-weather-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //tidal configuration
+        $tidal_configuration = Menu::where('name','Tidal Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Tidal Configuration',
+            'menu_id' => $tidal_configuration,
+            'middleware' => 'manage-tidal-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //dimension type configuration
+        $dimension_type_configuration = Menu::where('name','Dimension Type Configuration')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Dimension Type Configuration',
+            'menu_id' => $dimension_type_configuration,
+            'middleware' => 'manage-dimension-type-configuration',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //daily info weather
+        $daily_weather = Menu::where('name','Weather')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Daily Weather',
+            'menu_id' => $daily_weather,
+            'middleware' => 'manage-weather',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        //daily info tidal
+        $daily_tidal = Menu::where('name','Tidal')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Daily Tidal',
+            'menu_id' => $daily_tidal,
+            'middleware' => 'manage-tidal',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Payment
+        $menu_create_payment = Menu::where('route_name','payment.selectInvoice')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Payment',
+            'menu_id' => $menu_create_payment,
+            'middleware' => 'create-payment',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        $menu_index_payment = Menu::where('route_name','payment.selectInvoiceView')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Payment',
+            'menu_id' => $menu_index_payment,
+            'middleware' => 'list-payment',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);        
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Payment',
+            'menu_id' => $menu_index_payment,
+            'middleware' => 'edit-payment',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Payment',
+            'menu_id' => $menu_index_payment,
+            'middleware' => 'show-payment',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Payment Repair
+        $menu_create_payment_repair = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Payment Repair',
+            'menu_id' => $menu_create_payment_repair,
+            'middleware' => 'create-payment-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
+        $menu_index_payment_repair = Menu::where('route_name','payment_repair.selectInvoiceView')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Payment Repair',
+            'menu_id' => $menu_index_payment_repair,
+            'middleware' => 'list-payment-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);        
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit Payment Repair',
+            'menu_id' => $menu_index_payment_repair,
+            'middleware' => 'edit-payment-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Payment Repair',
+            'menu_id' => $menu_index_payment_repair,
+            'middleware' => 'show-payment-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Quality Control Task Repair
+        $menu_index_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index QC Task Repair',
+            'menu_id' => $menu_index_qc_task_repair,
+            'middleware' => 'list-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        //Quality Control Task Building
     }
 }

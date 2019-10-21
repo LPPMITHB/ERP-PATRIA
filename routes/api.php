@@ -214,6 +214,9 @@ Route::get('/getSubWbsStandard/{id}', 'ProjectStandardController@getSubWbsStanda
 Route::get('/getActivityStandard/{id}', 'ProjectStandardController@getActivityStandardAPI')->name('api.activity.getActivityStandardAPI');
 Route::get('/getResourceProjectStandard/{id}', 'ProjectStandardController@getResourceAPI')->name('api.bom.getResourceProjectStandardAPI');
 Route::get('/getResourcesProjectStandard/{id}', 'ProjectStandardController@getResourcesAPI')->name('api.bom.getResourcesProjectStandardAPI');
+Route::get('/getServiceStandard/{id}', 'ProjectStandardController@getServiceStandardAPI')->name('api.bom.getServiceStandardAPI');
+Route::get('/getServiceDetailStandard/{id}', 'ProjectStandardController@getServiceDetailStandardAPI')->name('api.bom.getServiceDetailStandardAPI');
+
 
 // Payment Receipt
 Route::get('/getInvoicesPReceipt/{id}', 'PaymentController@getInvoiceAPI')->name('api.payment.getInvoiceAPI');

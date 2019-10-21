@@ -588,7 +588,7 @@ class ConfigurationsTableSeeder extends Seeder
 
 
 
-        $standar_price = array(
+        $standard_price = array(
             0 => array(
                 'id' => 1,
                 'value' => 'fixed price',
@@ -608,9 +608,9 @@ class ConfigurationsTableSeeder extends Seeder
             ),
         );
         DB::table('mst_configuration')->insert([
-            'slug' => 'standar-price',
-            'title' => 'Standar Price',
-            'value' =>  json_encode($standar_price),
+            'slug' => 'standard-price',
+            'title' => 'Standard Price',
+            'value' =>  json_encode($standard_price),
             'is_active' => true,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

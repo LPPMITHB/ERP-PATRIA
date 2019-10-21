@@ -244,10 +244,10 @@
             },
             editBom(id){
                 var url = "";
-                if(this.route == "/bom"){
-                    url = "/bom/"+id+"/edit";
+                if (this.bom.status == 1){
+                    url = "/bom/materialSummaryBuilding/"+this.bom.wbs_id;
                 }else{
-                    url = "/bom_repair/"+id+"/edit";
+                    url = "/bom/"+this.bom.id+"/edit";
                 }
                 return url;
             },
@@ -267,6 +267,7 @@
                 window.axios.put(url,this.bom.id).then((response)=>{
                     window.axios.get('/api/getBomHeader/'+this.bom.id).then(({ data }) => {
                         this.bom = data;
+                        this.status = data.status;
                         $('div.overlay').hide();
                     })
                     .catch((error) => {

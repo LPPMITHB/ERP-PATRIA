@@ -94,6 +94,7 @@ class MaterialWriteOffController extends Controller
                 $MWOD->material_write_off_id = $MWO->id;
                 $MWOD->quantity = $data->quantity;
                 $MWOD->amount = $data->amount;
+                $MWOD->remark = $data->remark;
                 $MWOD->material_id = $data->material_id;
                 $MWOD->storage_location_id = $data->sloc_id;
                 $MWOD->save();
@@ -148,33 +149,35 @@ class MaterialWriteOffController extends Controller
     public function edit($id, Request $request)
     {
         $route = $request->route()->getPrefix();    
-        $modelGI = MaterialWriteOff::findOrFail($id);
-        $modelGID = $modelGI->MaterialWriteOffDetails;   
+        $modelMWO = MaterialWriteOff::findOrFail($id);
+        $modelMWOD = $modelMWO->MaterialWriteOffDetails;   
 
         $materials = Material::with('uom')->get();
         $warehouseLocations = Warehouse::where('branch_id',1/*Auth::user()->branch->id*/)->with('storageLocations')->get();
         $storageLocations = StorageLocation::where('status',1)->with('storageLocationDetails.material.uom')->get();
 
         $materials = Collection::make();
-        foreach($modelGID as $gid){
+        foreach($modelMWOD as $mwod){
             $materials->push([
-                "gid_id" =>$gid->id,
-                "warehouse_name"=>$gid->storageLocation->warehouse->name,
-                "warehouse_id"=>$gid->storageLocation->warehouse->id,
-                "sloc_id" =>$gid->storage_location_id,
-                "sloc_name" => $gid->storageLocation->name,
-                "material_id" => $gid->material_id,
-                "material_code" => $gid->material->code,
-                "material_name" => $gid->material->description,
-                "unit" => $gid->material->uom->unit,
-                "is_decimal" => $gid->material->uom->is_decimal,
-                "quantity" => $gid->quantity."",
-                "amount" => $gid->amount."",
-                "available" => $gid->storageLocation->storageLocationDetails->where('material_id',$gid->material_id)->first()->quantity,
+                "mwod_id" =>$mwod->id,
+                "warehouse_name"=>$mwod->storageLocation->warehouse->name,
+                "warehouse_id"=>$mwod->storageLocation->warehouse->id,
+                "sloc_id" =>$mwod->storage_location_id,
+                "sloc_name" => $mwod->storageLocation->name,
+                "remark" => $mwod->remark,
+                "material_id" => $mwod->material_id,
+                "material_code" => $mwod->material->code,
+                "material_name" => $mwod->material->description,
+                "unit" => $mwod->material->uom->unit,
+                "is_decimal" => $mwod->material->uom->is_decimal,
+                "quantity" => $mwod->quantity."",
+                "amount" => $mwod->amount."",
+                "available" => $mwod->storageLocation->storageLocationDetails->where('material_id',$mwod->material_id)->first()->quantity,
             ]);
         }
 
-        return view('material_write_off.edit', compact('modelGI','materials','materials','storageLocations','route','warehouseLocations'));
+
+        return view('material_write_off.edit', compact('modelMWO','modelMWOD','materials','materials','storageLocations','route','warehouseLocations'));
     }
 
     /**
@@ -199,23 +202,26 @@ class MaterialWriteOffController extends Controller
             }
             $MWO->update();
 
-            if(count($datas->gid_deleted)>0){
-                foreach($datas->gid_deleted as $gid_id){
-                    $gid = MaterialWriteOffDetail::find($gid_id);
-                    $gid->delete();
+            if(count($datas->mwod_deleted)>0){
+                foreach($datas->mwod_deleted as $mwod_id){
+                    $mwod = MaterialWriteOffDetail::find($mwod_id);
+                    $mwod->delete();
                 }
             }
             foreach($datas->materials as $data){
-                if(isset($data->gid_id)){
-                    $MWOD = MaterialWriteOffDetail::find($data->gid_id);
+                if(isset($data->mwod_id)){
+                    $MWOD = MaterialWriteOffDetail::find($data->mwod_id);
                     $MWOD->material_id = $data->material_id;
                     $MWOD->quantity = $data->quantity;
+                    $MWOD->amount = $data->amount;
+                    $MWOD->remark = $data->remark;
                     $MWOD->storage_location_id = $data->sloc_id;
                     $MWOD->update();
                 }else{
                     $MWOD = new MaterialWriteOffDetail;
                     $MWOD->material_write_off_id = $MWO->id;
                     // $MWOD->goods_issue_id = $MWO->id;
+                    $MWOD->amount = $data->amount;
                     $MWOD->quantity = $data->quantity;
                     $MWOD->material_id = $data->material_id;
                     $MWOD->storage_location_id = $data->sloc_id;

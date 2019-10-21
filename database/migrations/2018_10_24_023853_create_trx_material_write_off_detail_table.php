@@ -18,6 +18,7 @@ class CreateTrxMaterialWriteOffDetailTable extends Migration
             $table->unsignedInteger('material_write_off_id');
             $table->float('quantity',15,2);
             $table->double('amount');
+            $table->text('remark')->nullable();
             $table->unsignedInteger('material_id')->nullable();
             $table->unsignedInteger('storage_location_id')->nullable();
             $table->timestamps();

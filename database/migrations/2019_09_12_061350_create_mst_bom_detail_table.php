@@ -22,6 +22,7 @@ class CreateMstBomDetailTable extends Migration
             $table->float('quantity',15,2);
             $table->string('source')->default('Stock');
             $table->float('pr_quantity')->nullable();
+            $table->string('type')->default('Planned');
             $table->timestamps();
 
             $table->foreign('bom_prep_id')->references('id')->on('mst_bom_prep');

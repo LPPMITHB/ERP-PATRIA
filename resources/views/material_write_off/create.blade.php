@@ -46,7 +46,7 @@
                                         <th style="width: 5%">Unit</th>
                                         <th style="width: 12%">Amount / Unit</th>
                                         <th style="width: 8%">Write-Off Quantity</th>
-                                        <th style="width: 10%"></th>
+                                        <th style="width: 12%"></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -60,16 +60,55 @@
                                         <td class="tdEllipsis">{{ material.unit }}</td>
                                         <td class="tdEllipsis">Rp.{{ material.amount }}</td>
                                         <td class="tdEllipsis">{{ material.quantity }}</td>
-                                        <td class="p-l-3 textCenter">
-                                            <a class="btn btn-primary btn-xs" @click="openEditModal(material,index)">
-                                                EDIT
-                                            </a>
-                                            <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                DELETE
-                                            </a>
+                                        <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                            <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                                <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" href="#edit_remark" @click="remarkModal(material,index)" data-toggle="modal">
+                                                        REMARK
+                                                    </a>
+                                                </div>
+                                            </div>
+                                            <div class="col-sm-12 p-l-5 p-r-5 p-b-0">
+                                                <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(material,index)" data-toggle="modal"
+                                                        href="#edit_item">
+                                                        EDIT
+                                                    </a>
+                                                </div>
+                                                <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                        DELETE
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </td>
                                     </tr>
                                 </tbody>
+                                <div class="modal fade" id="edit_remark">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">×</span>
+                                                </button>
+                                                <h4 class="modal-title">Input Remark</h4>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <label for="remark" class="control-label">Remark</label>
+                                                        <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark"
+                                                            class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                                    @click.prevent="updateRemark">SAVE</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <tfoot>
                                     <td>{{ newIndex }}</td>
                                     <td class="p-l-0 textLeft no-padding">
@@ -190,6 +229,9 @@
         newIndex : "",
         slocs : [],
         warehouses : @json($warehouseLocations),
+        editRemark : {
+            remark : "",
+        },
         dataInput : {
             sloc_id :"",
             sloc_name : "",
@@ -203,6 +245,7 @@
             unit : "",
             is_decimal : "",
             amount : "",
+            remark : "",
         },
         editInput :{
             old_sloc_id : "",
@@ -219,6 +262,8 @@
             unit : "",
             old_material_id : "",
             is_decimal : "",
+            amount : "",
+            remark : "",
         },
         warehouseSettings: {
             placeholder: 'Please Select Warehouse'
@@ -255,6 +300,7 @@ var vm = new Vue({
 
             return isOk;
         },
+        
         updateOk: function(){
             let isOk = false;
 
@@ -270,6 +316,7 @@ var vm = new Vue({
             var material_id = this.dataInput.material_id;
             var sloc_id = this.dataInput.sloc_id;
             var warehouse_id = this.dataInput.warehouse_id;
+            var remark = this.dataInput.remark;
             $('div.overlay').show();
                 window.axios.get('/api/getMaterialsMWO/'+material_id).then(({ data }) => {
 
@@ -322,6 +369,7 @@ var vm = new Vue({
             material.warehouse_id = this.editInput.warehouse_id;
             material.sloc_id = this.editInput.sloc_id;
             material.quantity = this.editInput.quantity;
+            material.remark = this.editInput.remark;
             material.material_id = this.editInput.material_id;
             material.available = this.editInput.available;
             material.unit = this.editInput.unit;
@@ -372,29 +420,41 @@ var vm = new Vue({
             form.appendChild(struturesElem);
             form.submit();
         },
-        openEditModal(gid,index){
+
+        remarkModal(MWOD,index){
+            this.editRemark.remark = MWOD.remark;
+            this.editRemark.index = index;
+        },
+
+        updateRemark(){
+                var mwod = this.dataMaterial[this.editRemark.index];
+                mwod.remark = this.editRemark.remark;
+        },
+
+        openEditModal(mwod,index){
             // mengambil sloc pada warehouse tersebut
-            window.axios.get('/api/getStorloc/'+gid.warehouse_id).then(({ data }) => {
+            window.axios.get('/api/getStorloc/'+mwod.warehouse_id).then(({ data }) => {
                 this.slocs = data;
 
-                window.axios.get('/api/getMaterialMWO/' + gid.sloc_id).then(({ data }) => {
+                window.axios.get('/api/getMaterialMWO/' + mwod.sloc_id).then(({ data }) => {
                     this.slocDetails = data;
 
-                    this.editInput.material_id = gid.material_id;
-                    this.editInput.old_material_id = gid.material_id;
-                    this.editInput.material_code = gid.material_code;
-                    this.editInput.material_name = gid.material_name;
-                    this.editInput.quantity = gid.quantity;
-                    this.editInput.available = gid.available;
-                    this.editInput.sloc_id = gid.sloc_id;
-                    this.editInput.old_sloc_id = gid.sloc_id;
-                    this.editInput.sloc_name = gid.sloc_name;
-                    this.editInput.old_warehouse_id = gid.warehouse_id;
-                    this.editInput.warehouse_id = gid.warehouse_id;
-                    this.editInput.warehouse_name = gid.warehouse_name;
-                    this.editInput.is_decimal = gid.is_decimal;
-                    this.editInput.unit = gid.unit;
-                    this.editInput.amount = gid.amount;
+                    this.editInput.material_id = mwod.material_id;
+                    this.editInput.old_material_id = mwod.material_id;
+                    this.editInput.material_code = mwod.material_code;
+                    this.editInput.material_name = mwod.material_name;
+                    this.editInput.quantity = mwod.quantity;
+                    this.editInput.available = mwod.available;
+                    this.editInput.sloc_id = mwod.sloc_id;
+                    this.editInput.old_sloc_id = mwod.sloc_id;
+                    this.editInput.sloc_name = mwod.sloc_name;
+                    this.editInput.remark = mwod.remark;
+                    this.editInput.old_warehouse_id = mwod.warehouse_id;
+                    this.editInput.warehouse_id = mwod.warehouse_id;
+                    this.editInput.warehouse_name = mwod.warehouse_name;
+                    this.editInput.is_decimal = mwod.is_decimal;
+                    this.editInput.unit = mwod.unit;
+                    this.editInput.amount = mwod.amount;
                     this.editInput.index = index;
 
                     $('#edit_item').modal('show');
