@@ -383,6 +383,19 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        // Building - Bill of Material - Material Requirement Summary
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Material Requirement Summary',
+            'icon' => 'fa-file-text-o',
+            'route_name' => 'bom.selectProjectSum',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $bill_of_material,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
         // Building - Bill of Material - View BOM
         DB::table('menus')->insert([
             'level' => 3,

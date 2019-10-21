@@ -1775,7 +1775,7 @@
                 if(is_decimal == 0){
                     this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
