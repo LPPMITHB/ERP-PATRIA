@@ -45,6 +45,11 @@ class BillOfMaterialMenuSeeder extends Seeder
             'route_name' => 'bom.edit',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $manage_billofmaterial_building,
+            'route_name' => 'bom.manageWbsMaterialBuilding',
+        ]);
+
         $view_billofmaterial_building = Menu::where('route_name', 'bom.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $view_billofmaterial_building,
