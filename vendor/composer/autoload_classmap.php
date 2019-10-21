@@ -127,6 +127,7 @@ return array(
     'App\\Models\\PostComment' => $baseDir . '/app/Models/PostComment.php',
     'App\\Models\\ProductionOrder' => $baseDir . '/app/Models/ProductionOrder.php',
     'App\\Models\\ProductionOrderDetail' => $baseDir . '/app/Models/ProductionOrderDetail.php',
+    'App\\Models\\ProductionOrderReturn' => $baseDir . '/app/Models/ProductionOrderReturn.php',
     'App\\Models\\ProductionOrderUpload' => $baseDir . '/app/Models/ProductionOrderUpload.php',
     'App\\Models\\Project' => $baseDir . '/app/Models/Project.php',
     'App\\Models\\ProjectInventory' => $baseDir . '/app/Models/ProjectInventory.php',

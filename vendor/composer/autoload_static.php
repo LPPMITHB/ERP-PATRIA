@@ -610,6 +610,7 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'App\\Models\\PostComment' => __DIR__ . '/../..' . '/app/Models/PostComment.php',
         'App\\Models\\ProductionOrder' => __DIR__ . '/../..' . '/app/Models/ProductionOrder.php',
         'App\\Models\\ProductionOrderDetail' => __DIR__ . '/../..' . '/app/Models/ProductionOrderDetail.php',
+        'App\\Models\\ProductionOrderReturn' => __DIR__ . '/../..' . '/app/Models/ProductionOrderReturn.php',
         'App\\Models\\ProductionOrderUpload' => __DIR__ . '/../..' . '/app/Models/ProductionOrderUpload.php',
         'App\\Models\\Project' => __DIR__ . '/../..' . '/app/Models/Project.php',
         'App\\Models\\ProjectInventory' => __DIR__ . '/../..' . '/app/Models/ProjectInventory.php',

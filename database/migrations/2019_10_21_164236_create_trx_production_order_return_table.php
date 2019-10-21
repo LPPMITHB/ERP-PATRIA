@@ -20,11 +20,13 @@ class CreateTrxProductionOrderReturnTable extends Migration
             $table->unsignedInteger('production_order_detail_id');
             $table->unsignedInteger('material_id');
             $table->unsignedInteger('storage_location_id');
+            $table->unsignedInteger('goods_receipt_detail_id');
             $table->float('quantity',15,2)->nullable();
             $table->timestamps();
 
             $table->foreign('bom_detail_id')->references('id')->on('mst_bom_detail');
             $table->foreign('production_order_detail_id')->references('id')->on('trx_production_order_detail');
+            $table->foreign('goods_receipt_detail_id')->references('id')->on('trx_goods_receipt_detail');
             $table->foreign('material_id')->references('id')->on('mst_material');
             $table->foreign('storage_location_id')->references('id')->on('mst_storage_location');
         });
