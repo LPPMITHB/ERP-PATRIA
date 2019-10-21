@@ -644,7 +644,6 @@ class SidenavsTableSeeder extends Seeder
             'route_name' => 'bom.selectWBS',
         ]);
 
-
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
             'route_name' => 'bom.create',
@@ -653,6 +652,11 @@ class SidenavsTableSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $manageBom,
             'route_name' => 'bom.edit',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageBom,
+            'route_name' => 'bom.manageWbsMaterialBuilding',
         ]);
 
         $viewBom = Menu::where('route_name','bom.selectProject')->select('id')->first()->id;

@@ -118,7 +118,7 @@ class BOMController extends Controller
 
     public function materialSummaryBuilding($id){
         $wbs = WBS::where('id',$id)->first();
-        $project = Project::where('id', $wbs->id)->with('ship','customer')->first();
+        $project = Project::where('id', $wbs->project_id)->with('ship','customer')->first();
         $bomPreps = BomPrep::where('wbs_id', $id)->where('status', 1)->with('bomDetails','material')->get();
 
         if(count($bomPreps)>0){
@@ -712,6 +712,7 @@ class BOMController extends Controller
                     foreach ($material->part_details as $part) {
                         $wbsMaterial = new WbsMaterial;
                         $wbsMaterial->wbs_id = $datas->wbs_id;
+                        $wbsMaterial->part_description = $part->description;
                         $wbsMaterial->material_id = $material->material_id;
                         $wbsMaterial->quantity = $part->quantity;
                         if($part->dimensions_value_obj != null){
@@ -1951,6 +1952,7 @@ class BOMController extends Controller
                             $bom_detail_input->material_id = $bom_detail->material_id;
                             $bom_detail_input->quantity = $bom_detail->prepared;
                             $bom_detail_input->source = $bom_prep_model->source;
+                            $bom_detail_input->type = "Planned";
 
                             $stock = Stock::where('material_id', $bom_detail->material_id)->first();
                             if($stock == null){
