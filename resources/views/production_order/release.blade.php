@@ -126,18 +126,49 @@
                 </div>
 
                 <div class="box-body p-t-0 p-b-5">
-                    <h4>Material</h4>
+                    <h4>WBS Material</h4>
+                    <table id="material-table" class="table table-bordered tableFixed showTable">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="15%">Number</th>
+                                <th width="20%">Material Description</th>
+                                <th width="20%">Part Description</th>
+                                <th width="15%">Dimensions</th>
+                                <th width="8%">Quantity</th>
+                                <th width="8%">Estimated Quantity</th>
+                                <th width="7%">Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(data,index) in wbsMaterials">
+                                <td>{{ index + 1 }}</td>
+                                <td class="tdEllipsis">{{ data.material.code }}</td>
+                                <td class="tdEllipsis">{{ data.material.description }}</td>
+                                <td class="tdEllipsis">{{ data.part_description }}</td>
+                                <td class="tdEllipsis">{{ data.dimensions_string }}</td>
+                                <td class="tdEllipsis">{{ data.quantity }}</td>
+                                <td class="tdEllipsis">{{ data.estimated_quantity }}</td>
+                                <td class="tdEllipsis">{{ data.source }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Top WBS Material</h4>
                     <table id="material-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
-                                <th width="30%">Material Number</th>
-                                <th width="28%">Material Description</th>
+                                <th width="15%">Number</th>
+                                <th width="28%">Description</th>
                                 <th width="8%">Quantity</th>
+                                <th width="8%">Allocated</th>
                                 <th width="8%">Available</th>
                                 <th width="7%">Unit</th>
                                 <th width="7%">Source</th>
-                                <th width="7%">Status</th>
+                                <th width="5%">Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -146,13 +177,16 @@
                                 <td class="tdEllipsis">{{ data.material.code }}</td>
                                 <td class="tdEllipsis">{{ data.material.description }}</td>
                                 <td class="tdEllipsis">{{ data.sugQuantity }}</td>
+                                <td class="no-padding">
+                                    <input class="form-control" v-model="data.allocated" placeholder="Allocated">
+                                </td>
                                 <td class="tdEllipsis">{{ data.quantity }}</td>
                                 <td class="tdEllipsis">{{ data.material.unit }}</td>
                                 <td class="tdEllipsis">{{ data.material.source }}</td>
-                                <td class="tdEllipsis" v-if="data.status == 'ok'">
+                                <td class="tdEllipsis text-center" v-if="data.status == 'ok'">
                                     <i class="fa fa-check text-success"></i>
                                 </td>
-                                <td class="tdEllipsis" v-else>
+                                <td class="tdEllipsis text-center" v-else>
                                     <i class="fa fa-times text-danger"></i>
                                 </td>
                             </tr>
@@ -281,6 +315,7 @@
 
     var data = {
         route : @json($route),
+        wbsMaterials : @json($wbsMaterials),
         modelPrOD : @json($modelPrOD),
         materials : @json($materials),
         services : @json($services),
@@ -437,6 +472,10 @@
                 })
             },
             submitForm() {
+                this.materials.forEach(material => {
+                    material.allocated = (material.allocated+"").replace(/,/g , '');
+                });
+                this.submittedForm.materials = this.materials;
                 this.submittedForm.modelPrOD = this.modelPrOD;
                 this.submittedForm.resources = this.resources;
 

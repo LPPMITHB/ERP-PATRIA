@@ -285,12 +285,12 @@ class PurchaseOrderController extends Controller
             $business_ids = Auth::user()->business_unit_id;
             //input untuk user pami dan mengabaikan untuk user pmp
             if (in_array("2", json_decode($business_ids))) {
-                $PO->pajak_pertambahan_nilai = $datas->pajak_pertambahan_nilai;
-                $PO->pajak_penghasilan = $datas->pajak_penghasilan;
+                $PO->ppn = $datas->ppn;
+                $PO->pph = $datas->pph;
                 $PO->tax = "0";
             } else {
-                $PO->pajak_pertambahan_nilai = "0";
-                $PO->pajak_penghasilan = "0";
+                $PO->ppn = "0";
+                $PO->pph = "0";
                 if ($datas->tax == "") {
                     $PO->tax = 0;
                 } else {

@@ -27,40 +27,40 @@
                         <div class="box-header p-b-0">
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Project Number</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.number)"><b>: {{project.number}}</b></div>
-                                
+
                                 <div class="col-xs-4 no-padding">Ship Name</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.name)"><b>: {{project.name}}</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Ship Type</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.ship.type)"><b>: {{project.ship.type}}</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Customer</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.customer.name)"><b>: {{project.customer.name}}</b></div>
                             </div>
-                            
+
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                                
+
                                 <div class="col-xs-4 no-padding">Number</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Description</div>
                                 <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: {{wbs.description}}</b></div>
                                 <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: -</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Deliverable</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Progress</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.progress)"><b>: {{wbs.progress}}%</b></div>
                             </div>
                             <div class="col-xs-12 col-md-4">
                                 <div class="col-xs-12 no-padding"><b>BOM Description</b></div>
                                 <div class="col-xs-12 no-padding">
-                                    <textarea class="form-control" rows="3" v-model="submittedForm.description"></textarea>  
+                                    <textarea class="form-control" rows="3" v-model="submittedForm.description"></textarea>
                                 </div>
                             </div>
                         </div> <!-- /.box-header -->
@@ -101,14 +101,14 @@
                                         <td colspan="2" class="no-padding">
                                             <selectize class="selectizeFull" id="material" v-model="input.material_id" :settings="materialSettings">
                                                 <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                            </selectize>    
+                                            </selectize>
                                         </td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.quantity" :disabled="materialOk"></td>
                                         <td class="no-padding"><input class="form-control" type="text" v-model="input.unit" disabled></td>
                                         <td class="no-padding">
                                             <selectize v-model="input.source" :settings="sourceSettings">
                                                 <option v-for="(source, index) in sources" :value="source">{{ source }}</option>
-                                            </selectize>    
+                                            </selectize>
                                         </td>
                                         <td class="p-l-0" align="center"><a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
                                             <div class="btn-group">
@@ -186,7 +186,7 @@
         project : @json($project),
         materials : @json($materials),
         wbs : @json($wbs),
-        newIndex : 0, 
+        newIndex : 0,
         submittedForm :{
             project_id : @json($project->id),
             wbs_id : @json($wbs->id),
@@ -229,7 +229,7 @@
         $(el).tooltip({
             title: binding.value,
             placement: binding.arg,
-            trigger: 'hover'             
+            trigger: 'hover'
         })
     })
 
@@ -289,14 +289,14 @@
                         $(el).tooltip({
                             title: el.id,
                             placement: binding.arg,
-                            trigger: 'hover'             
+                            trigger: 'hover'
                         })
                     }else if(el.id == description){
                         $(el).tooltip('destroy');
                         $(el).tooltip({
                             title: el.id,
                             placement: binding.arg,
-                            trigger: 'hover'             
+                            trigger: 'hover'
                         })
                     }
                 })
@@ -352,7 +352,7 @@
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
-                
+
                 this.material_id_modal = material_id;
                 this.material_id_modal.forEach(id => {
                     if(id == data.material_id){
@@ -388,9 +388,9 @@
                     this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
 
                     var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
+                    this.getNewMaterials(jsonMaterialId);
 
-                    this.newIndex = this.materialTable.length + 1;  
+                    this.newIndex = this.materialTable.length + 1;
 
                     // refresh tooltip
                     let datas = [];
@@ -418,7 +418,7 @@
                         index_materialId = this.material_id.indexOf(id);
                     }
                 });
-                for (var i in this.materialTable) { 
+                for (var i in this.materialTable) {
                     if(this.materialTable[i].material_id == materialId){
                         index_materialTable = i;
                     }
@@ -521,7 +521,7 @@
             'input.quantity': function(newValue){
                 var is_decimal = this.input.is_decimal;
                 if(is_decimal == 0){
-                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -539,7 +539,7 @@
             'editInput.quantity': function(newValue){
                 var is_decimal = this.editInput.is_decimal;
                 if(is_decimal == 0){
-                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -552,13 +552,13 @@
                     }else{
                         this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }  
+                }
             },
         },
         created: function() {
             this.newIndex = this.materialTable.length + 1;
         }
     });
-       
+
 </script>
 @endpush

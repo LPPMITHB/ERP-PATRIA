@@ -76,5 +76,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ProWbsMaterialTableSeeder::class);
         $this->call(TrxResourceTableSeeder::class);
         $this->call(MstPartDetailStandardTableSeeder::class);
+
+        //test
+        // $this->call(SidenavsV3TableSeeder::class);
     }
 }
