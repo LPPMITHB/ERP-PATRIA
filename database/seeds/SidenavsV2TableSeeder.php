@@ -12,23 +12,23 @@ class SidenavsV2TableSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(Sidenav/BillOfMaterialMenuSeeder::class);
-        $this->call(Sidenav/ConfigurationMenuSeeder::class);
-        $this->call(Sidenav/CostPlanMenuSeeder::class);
-        $this->call(Sidenav/ProjectDeliveryMenuSeeder::class);
-        $this->call(Sidenav/ProjectManagementMenuSeeder::class);
-        $this->call(Sidenav/CustomerPortalMenuSeeder::class);
-        $this->call(Sidenav/ImputDailyInformationMenuSeeder::class);
-        $this->call(Sidenav/MarketingSalesMenuSeeder::class);
-        $this->call(Sidenav/MasterDataMenuSeeder::class);
-        $this->call(Sidenav/MaterialManagementMenuSeeder::class);
-        $this->call(Sidenav/PermissionManagementMenuSeeder::class);
-        $this->call(Sidenav/PicaMenuSeeder::class);
-        $this->call(Sidenav/ProductionPlanningMenuSeeder::class);
-        $this->call(Sidenav/QualityControlMenuSeeder::class);
-        $this->call(Sidenav/ResourceManagementMenuSeeder::class);
-        $this->call(Sidenav/RoleManagementMenuSeeder::class);
-        $this->call(Sidenav/UserManagementMenuSeeder::class);
-        $this->call(Sidenav/WipMenuSeeder::class);
+        // $this->call(Sidenav/BillOfMaterialSidenavSeeder::class);
+        // $this->call(Sidenav/ConfigurationSidenavSeeder::class);
+        // $this->call(Sidenav/CostPlanSidenavSeeder::class);
+        // $this->call(Sidenav/ProjectDeliverySidenavSeeder::class);
+        // $this->call(Sidenav/ProjectManagementSidenavSeeder::class);
+        // $this->call(Sidenav/CustomerPortalSidenavSeeder::class);
+        // $this->call(Sidenav/ImputDailyInformationSidenavSeeder::class);
+        // $this->call(Sidenav/MarketingSalesSidenavSeeder::class);
+        // $this->call(Sidenav/MasterDataSidenavSeeder::class);
+        // $this->call(Sidenav/MaterialManagementSidenavSeeder::class);
+        // $this->call(Sidenav/PermissionManagementSidenavSeeder::class);
+        // $this->call(Sidenav/PicaSidenavSeeder::class);
+        // $this->call(Sidenav/ProductionPlanningSidenavSeeder::class);
+        // $this->call(Sidenav/QualityControlSidenavSeeder::class);
+        // $this->call(Sidenav/ResourceManagementSidenavSeeder::class);
+        // $this->call(Sidenav/RoleManagementSidenavSeeder::class);
+        // $this->call(Sidenav/UserManagementSidenavSeeder::class);
+        // $this->call(Sidenav/WipSidenavSeeder::class);
     }
 }

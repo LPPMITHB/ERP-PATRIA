@@ -33,6 +33,7 @@ use App\Models\StorageLocation;
 use App\Models\StorageLocationDetail;
 use App\Models\BomPrep;
 use App\Models\ProductionOrderUpload;
+use App\Models\ProductionOrderReturn;
 use App\Models\WbsMaterial;
 use App\Models\BomDetail;
 use Auth;
@@ -1050,6 +1051,16 @@ class ProductionOrderController extends Controller
                         }
                         
                         foreach($material->returned_materials as $data){
+                            if($data->bom_id != ""){
+                                $bom_ref = Bom::find($data->bom_id);
+                                $bom_detail_input = new BomDetail;
+                                $bom_detail_input->bom_id = $bom_ref->id;
+                                $bom_detail_input->material_id = $data->material_id;
+                                $bom_detail_input->quantity = $data->quantity;
+                                $bom_detail_input->source = "Stock";
+                                $bom_detail_input->type = "Offcut";
+                            }
+
                             if($data->id == null){
                                 if($data->quantity >0 && $data->sloc_id != ""){
                                     $GRD = new GoodsReceiptDetail;
@@ -1064,20 +1075,24 @@ class ProductionOrderController extends Controller
                                     $GRD->storage_location_id = $data->sloc_id;
                                     $GRD->item_OK = 1;
                                     $GRD->save();
+
+                                    $prod_return = new ProductionOrderReturn;
+                                    $prod_return->type = "Storage";
+                                    if($data->bom_id != ''){
+                                        $prod_return->type = "Other BOM";
+                                        $prod_return->bom_detail_id = $bom_detail_input->id;
+                                    }
+                                    $prod_return->production_order_detail_id = $prod->id;
+                                    $prod_return->material_id = $data->material_id;
+                                    $prod_return->storage_location_id = $data->sloc_id;
+                                    $prod_return->quantity = $data->quantity; 
+                                    $prod_return->goods_receipt_detail_id = $GRD->id; 
+                                    $prod_return->save();
+                                    
                                     
                                     $this->updateStock($data->material_id, $data->quantity);
                                     $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
                                 }
-                            }
-
-                            if($data->bom_id != ""){
-                                $bom_ref = Bom::find($data->bom_id);
-                                $bom_detail_input = new BomDetail;
-                                $bom_detail_input->bom_id = $bom_ref->id;
-                                $bom_detail_input->material_id = $data->material_id;
-                                $bom_detail_input->quantity = $data->quantity;
-                                $bom_detail_input->source = "Stock";
-                                $bom_detail_input->type = "Offcut";
                             }
                         }
                     }

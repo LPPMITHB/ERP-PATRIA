@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder\Sidenav;
+use Illuminate\Database\Seeder\Sidenav\Sidenav;
 use Illuminate\Database\Seeder;
 use App\Models\Menu; 
 
-class RoleManagementMenuSeeder extends Seeder
+class UserManagementSidenavSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -31,20 +31,25 @@ class RoleManagementMenuSeeder extends Seeder
          * =                                ALL STAGE
          * ========================================================================
          */
-        $role = Menu::where('route_name', 'role.index')->select('id')->first()->id;
+        $user = Menu::where('route_name', 'user.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $role,
-            'route_name' => 'role.index',
+            'menu_id' => $user,
+            'route_name' => 'user.index',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $role,
-            'route_name' => 'role.create',
+            'menu_id' => $user,
+            'route_name' => 'user.create',
         ]);
 
         DB::table('sidenav')->insert([
-            'menu_id' => $role,
-            'route_name' => 'role.edit',
+            'menu_id' => $user,
+            'route_name' => 'user.edit',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $user,
+            'route_name' => 'user.change_password',
         ]);
     }
 }

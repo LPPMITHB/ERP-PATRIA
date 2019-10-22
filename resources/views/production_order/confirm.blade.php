@@ -1470,6 +1470,23 @@
                 this.data_return_material_show = data.returned_materials;
                 $('#show_material_return').modal();
             },
+            removeMaterial(data){
+                for (let x = 0; x < this.data_return_material.length; x++) {
+                    if(this.data_return_material[x].material_id == data.material_id){
+                        if(this.data_return_material[x].id != null){
+                            this.deleted_returned_material.push(this.data_return_material[x].id);
+                        }
+                        this.data_return_material.splice(x,1);
+                    }
+                }
+                this.all_materials.forEach(material => {
+                    if(material.id == data.material_id){
+                        material.selected = false;
+                    }
+                });
+
+                this.data_changed = true;
+            },
         },
         watch : {
             "return_material.type" : function(newValue){
