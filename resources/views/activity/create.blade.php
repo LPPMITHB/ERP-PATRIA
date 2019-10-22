@@ -196,7 +196,7 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot v-if="menu == 'building'">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
@@ -981,10 +981,9 @@ var vm = new Vue({
                         .catch((error) => {
                             iziToast.warning({
                                 displayMode: 'replace',
-                                title: "Please try again.. ",
+                                title: "Error: "+error.response.data.message,
                                 position: 'topRight',
                             });
-                            console.log(error);
                             $('div.overlay').hide();
                         })
 

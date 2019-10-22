@@ -91,20 +91,20 @@
                                         <h3 class="box-title">{{ sub_menu.name }}</h3>
                                     </div>
                                     <div class="box-body">
-                                        <div class="col-md-6">
-                                            <template v-for="permission in permissionsLeft">
-                                                <template v-if="permission.menu_id == sub_menu.id">
+                                        <template v-for="permission in permissionsLeft">
+                                            <template v-if="permission.menu_id == sub_menu.id">
+                                                <div class="col-md-6">
                                                     <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck="" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
-                                                </template>
+                                                </div>
                                             </template>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <template v-for="permission in permissionsRight">
-                                                <template v-if="permission.menu_id == sub_menu.id">
+                                        </template>
+                                        <template v-for="permission in permissionsRight">
+                                            <template v-if="permission.menu_id == sub_menu.id">
+                                                <div class="col-md-6">
                                                     <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck="" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
-                                                </template>
+                                                </div>
                                             </template>
-                                        </div>
+                                        </template>
                                     </div>
                                 </div>
                             </template>
