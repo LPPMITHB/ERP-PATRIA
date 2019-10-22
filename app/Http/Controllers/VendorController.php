@@ -96,12 +96,12 @@ class VendorController extends Controller
             $business_ids = Auth::user()->business_unit_id;
             //input untuk user pami dan mengabaikan untuk user pmp
             if (in_array("2", json_decode($business_ids))) {
-                $vendor->pajak_pertambahan_nilai = $request->input('pajak_pertambahan_nilai');
-                $vendor->pajak_penghasilan = $request->input('pajak_penghasilan');
+                $vendor->ppn = $request->input('ppn');
+                $vendor->pph = $request->input('pph');
                 $vendor->currencies = $request->input('currencies');
             } else {
-                $vendor->pajak_pertambahan_nilai = "0";
-                $vendor->pajak_penghasilan = "0";
+                $vendor->ppn = "0";
+                $vendor->pph = "0";
                 $vendor->currencies = "1";
             }
             $vendor->save();
@@ -218,12 +218,12 @@ class VendorController extends Controller
             $business_ids = Auth::user()->business_unit_id;
             //input untuk user pami dan mengabaikan untuk user pmp
             if (in_array("2", json_decode($business_ids))) {
-                $vendor->pajak_pertambahan_nilai = $request->input('pajak_pertambahan_nilai');
-                $vendor->pajak_penghasilan = $request->input('pajak_penghasilan');
+                $vendor->ppn = $request->input('ppn');
+                $vendor->pph = $request->input('pph');
                 $vendor->currencies = $request->input('currencies');
             } else {
-                $vendor->pajak_pertambahan_nilai = "0";
-                $vendor->pajak_penghasilan = "0";
+                $vendor->ppn = "0";
+                $vendor->pph = "0";
                 $vendor->currencies = "1";
             }
             $vendor->update();

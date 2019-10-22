@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder\Sidenav;
+
 use Illuminate\Database\Seeder;
 use App\Models\Menu; 
 
-class ImputDailyInformationMenuSeeder extends Seeder
+class RoleManagementSidenavSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -31,27 +31,20 @@ class ImputDailyInformationMenuSeeder extends Seeder
          * =                                ALL STAGE
          * ========================================================================
          */
-
-        $dailyManHour = Menu::where('route_name', 'daily_man_hour.selectProject')->select('id')->first()->id;
+        $role = Menu::where('route_name', 'role.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $dailyManHour,
-            'route_name' => 'daily_man_hour.selectProject',
-        ]);
-        DB::table('sidenav')->insert([
-            'menu_id' => $dailyManHour,
-            'route_name' => 'daily_man_hour.create',
+            'menu_id' => $role,
+            'route_name' => 'role.index',
         ]);
 
-        $daily_weather = Menu::where('route_name', 'daily_weather.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $daily_weather,
-            'route_name' => 'daily_weather.index',
+            'menu_id' => $role,
+            'route_name' => 'role.create',
         ]);
 
-        $daily_tidal = Menu::where('route_name', 'daily_tidal.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $daily_tidal,
-            'route_name' => 'daily_tidal.index',
+            'menu_id' => $role,
+            'route_name' => 'role.edit',
         ]);
     }
 }

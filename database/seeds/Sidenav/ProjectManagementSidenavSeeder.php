@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder\Sidenav;
+
 use Illuminate\Database\Seeder;
 use App\Models\Menu; 
 
-class ProjectManagementMenuSeeder extends Seeder
+class ProjectManagementSidenavSeeder extends Seeder
 {
     /**
      * Run the database seeds.

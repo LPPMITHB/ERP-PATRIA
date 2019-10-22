@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Database\Seeder\Sidenav;
+
 use Illuminate\Database\Seeder;
 use App\Models\Menu; 
 
-class PermissionManagementMenuSeeder extends Seeder
+class DailyInformationSidenavSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -26,26 +26,32 @@ class PermissionManagementMenuSeeder extends Seeder
          * ========================================================================
          */
 
-
         /**
          * ========================================================================
          * =                                ALL STAGE
          * ========================================================================
          */
-        $permission = Menu::where('route_name', 'permission.index')->select('id')->first()->id;
+
+        $dailyManHour = Menu::where('route_name', 'daily_man_hour.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $permission,
-            'route_name' => 'permission.index',
+            'menu_id' => $dailyManHour,
+            'route_name' => 'daily_man_hour.selectProject',
+        ]);
+        DB::table('sidenav')->insert([
+            'menu_id' => $dailyManHour,
+            'route_name' => 'daily_man_hour.create',
         ]);
 
+        $daily_weather = Menu::where('route_name', 'daily_weather.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $permission,
-            'route_name' => 'permission.create',
+            'menu_id' => $daily_weather,
+            'route_name' => 'daily_weather.index',
         ]);
 
+        $daily_tidal = Menu::where('route_name', 'daily_tidal.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
-            'menu_id' => $permission,
-            'route_name' => 'permission.edit',
+            'menu_id' => $daily_tidal,
+            'route_name' => 'daily_tidal.index',
         ]);
     }
 }

@@ -3328,6 +3328,6 @@ class MenusTableSeeder extends Seeder
         $this->call(DailyInformationMenuSeeder::class);
         $this->call(MasterDataMenuSeeder::class);
         
-        $this->call(RestricManagementMenuSeeder::class);
+        $this->call(UserManagementMenuSeeder::class);
     }
 }
