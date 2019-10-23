@@ -6,7 +6,7 @@
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
-                $wbs->number => route('bom_repair.selectWBSManage', $wbs->project_id),
+                $wbs->number => route('bom.selectWBS', $wbs->project_id),
                 'Manage WBS\'s Materials and Services' => '',
             ]
         ]

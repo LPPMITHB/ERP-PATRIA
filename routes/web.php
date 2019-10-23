@@ -528,6 +528,8 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::get('/create/{id}', 'BOMController@create')->name('create')->middleware('can:create-bom');
 
+    Route::get('/selectWBSManage/{id}', 'BOMController@selectWBSManage')->name('selectWBSManage')->middleware('can:list-bom');
+
     Route::get('/manageWbsMaterialBuilding/{id}','BOMController@manageWbsMaterialBuilding')->name('manageWbsMaterialBuilding')->middleware('can:create-bom');
 
     Route::get('/indexProject', 'BOMController@indexProject')->name('indexProject')->middleware('can:create-bom');
