@@ -522,7 +522,7 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
+    // Route::post('/storeBomWhenConfirm', 'BOMController@storeBomWhenConfirm')->name('storeBomWhenConfirm')->middleware('can:create-bom');
 
     Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
@@ -563,6 +563,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
 
     Route::post('/storeBom', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
+
+    // Route::post('/storeBomRepairWhenConfirm', 'BOMController@storeBomRepairWhenConfirm')->name('storeBomRepairWhenConfirm')->middleware('can:create-bom');
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom-repair');
 
