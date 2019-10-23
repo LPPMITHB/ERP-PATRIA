@@ -371,7 +371,7 @@
                                             <div class=" col-sm-4">
                                                 <label for="duration" class=" control-label">Actual Duration (Days)</label>
                                                 <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
-                                                    type="number" class="form-control" id="actual_duration" placeholder="Duration">
+                                                    type="number" :disabled="checkFile" class="form-control" id="actual_duration" placeholder="Duration">
                                             </div>
                                         </div>
                                         <div class="row">
@@ -990,34 +990,39 @@
         $('#upload_modal').modal('hide');
     }
 
+    $(document).on('change', ':file', function() {
+        var input = $(this),
+            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+            input.trigger('fileselect', [numFiles, label]);
+        
+
+        if(input.get(0).id == "add_document"){
+            vm.confirmActivity.file = input.get(0).files[0];
+        }else{
+            if(input.get(0).files != null){
+                // vm.confirmActivity.file = input.get(0).files[0];
+            }
+        }
+    });
+
+
+    $(':file').on('fileselect', function(event, numFiles, label) {
+        var input = $(this).parents('.input-group').find(':text'),
+        log = numFiles > 1 ? numFiles + ' files selected' : label;
+        if( input.length ) {
+        input.val(log);
+        } else {
+        if( log ) alert(log);
+        }
+    });
+
     $(document).ready(function(){
         $('div.overlay').hide();
 
-        $(document).on('change', ':file', function() {
-            var input = $(this),
-                numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            var input = $(this).parents('.input-group').find(':text'),
-                log = numFiles > 1 ? numFiles + ' files selected' : label;
-            if( input.length ) {
-                input.val(log);
-            } else {
-                if( log ) alert(log);
-            }
-            if(input.get(0).id == "add_document"){
-                vm.confirmActivity.file = input.get(0).files[0];
-            }else{
-                if(input.get(0).files != null){
-                    vm.confirmActivity.file = input.get(0).files[0];
-                }
-            }
-        });
-
-
-        // $(':file').on('fileselect', function(event, numFiles, label) {
-            
-        // });
+        $('#confirm_activity_modal').on('hidden.bs.modal', function (e) {
+            vm.confirmActivity.file = null;
+        })
     });
 
     Vue.directive('tooltip', function(el, binding){
@@ -1159,6 +1164,14 @@
             );
         },
         computed : {
+            checkFile: function(){
+                let isOk = false;
+                if(this.confirmActivity.file == null){
+                    isOk = true;
+                }
+
+                return isOk;
+            },
             addMoraleOk: function(){
                 let isOk = false;
                 if(this.moraleNotes.subject == ""){
@@ -1419,6 +1432,7 @@
             },
             openConfirmModal(data){
                 this.confirmActivity.type = data.type;
+                
                 this.predecessorTableView = [];
                 if(data.predecessor != null){
                     this.havePredecessor = true;
@@ -1434,7 +1448,6 @@
                                     document.getElementById("actual_duration").disabled = true;
                                     document.getElementById("btnSave").disabled = true;
                                     if(this.confirmActivity.type == "General"){
-                            console.log(document.getElementById("current_progress")," method");
                                         document.getElementById("current_progress").disabled = true;
                                     }
                                 }else{
@@ -1637,6 +1650,13 @@
             },
         },
         watch : {
+            "confirmActivity.file" : function(newValue){
+                if(newValue != null){
+                    document.getElementById("file_name_readonly").value = newValue.name;                    
+                }else{
+                    document.getElementById("file_name_readonly").value = "";
+                }
+            },
             "return_material.type" : function(newValue){
                 if(newValue != "Other BOM"){
                     this.return_material.bom_id = "";
@@ -1659,21 +1679,18 @@
             },
             confirmActivity:{
                 handler: function(newValue) {
-                    console.log(this.confirmActivity.type);
                     if(this.confirmActivity.actual_start_date == ""){
                         document.getElementById("actual_end_date").disabled = true;
                         document.getElementById("actual_duration").disabled = true;
                         document.getElementById("btnSave").disabled = true;
-                        if(this.confirmActivity.type == "General"){
-                            console.log(document.getElementById("current_progress"));
+                        if(this.confirmActivity.type == "General" && document.getElementById("current_progress") != null){
                             document.getElementById("current_progress").disabled = true;
                         }
                     }else{
                         document.getElementById("actual_end_date").disabled = false;
                         document.getElementById("actual_duration").disabled = false;
                         document.getElementById("btnSave").disabled = false;
-                        if(this.confirmActivity.type == "General"){
-                            console.log(document.getElementById("current_progress"));
+                        if(this.confirmActivity.type == "General" && document.getElementById("current_progress") != null){
                             document.getElementById("current_progress").disabled = false;
                         }
                     }     
@@ -1707,6 +1724,7 @@
                             }else{
                                 document.getElementById("btnSave").disabled = false;
                             }
+                            console.log(document.getElementById("btnSave").disabled);
                         }  
                     }
                 },
