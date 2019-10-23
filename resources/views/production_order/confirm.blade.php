@@ -234,13 +234,13 @@
                                 </template>
                                 </td>
                                 <td class="textCenter">
-                                    <div v-if="data.type == 'General'">
+                                    <div v-show="data.type == 'General'">
                                         <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal" @click.prevent="openConfirmModal(data)">CONFIRM</button>
                                     </div>
-                                    <div v-if="data.type == 'Document Number'">
-                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal_docnum" @click.prevent="openConfirmModal(data)">CONFIRM</button>
+                                    <div v-show="data.type == 'Document Number'">
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal_docnum" @click.prevent="openConfirmModalDocnum(data)">CONFIRM</button>
                                     </div>
-                                    <div v-if="data.type == 'Upload'">
+                                    <div v-show="data.type == 'Upload'">
                                     <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal_upload"
                                             @click.prevent="openConfirmModalUpload(data)">CONFIRM</button>
                                     </div>
@@ -249,116 +249,6 @@
                         </tbody>
                     </table>
                     
-                    <div class="modal fade" id="confirm_activity_modal">
-                        <div class="modal-dialog">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                    <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
-                                </div>
-                                <div class="modal-body">
-                                    <table>
-                                        <thead>
-                                            <th colspan="2">Activity Details</th>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>Planned Start Date</td>
-                                                <td>:</td>
-                                                <td>&nbsp;<b id="planned_start_date"></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Planned End Date</td>
-                                                <td>:</td>
-                                                <td>&nbsp;<b id="planned_end_date"></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Planned Duration</td>
-                                                <td>:</td>
-                                                <td>&nbsp;<b id="planned_duration"></b></td>
-                                            </tr>
-                                            <tr>
-                                                <td>Predecessor</td>
-                                                <td>:</td>
-                                                <td>&nbsp;<template v-if="havePredecessor == false">-</template></td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                    <template v-if="havePredecessor == false"><br></template>
-                                    <template v-if="havePredecessor == true">
-                                        <table class="table table-bordered tableFixed">
-                                            <thead>
-                                                <tr>
-                                                    <th class="p-l-5" style="width: 5%">No</th>
-                                                    <th style="width: 15%">Code</th>
-                                                    <th style="width: 29%">Name</th>
-                                                    <th style="width: 29%">Description</th>
-                                                    <th style="width: 15%">WBS Number</th>
-                                                    <th style="width: 12%">Status</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(data,index) in predecessorActivities">
-                                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
-                                                    <td class="textCenter">
-                                                        <template v-if="data.status == 0">
-                                                            <i class="fa fa-check text-success"></i>
-                                                        </template>
-                                                        <template v-else>
-                                                            <i class='fa fa-times text-danger'></i>
-                                                        </template>    
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </template>
-                                        <div class="row">
-                                            <div class=" col-sm-6">
-                                                <label for="actual_start_date" class=" control-label">Actual Start Date</label>
-                                                <div class="input-group date">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </div>
-                                                    <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
-                                                </div>
-                                            </div>
-                                                    
-                                            <div class=" col-sm-6">
-                                                <label for="actual_end_date" class=" control-label">Actual End Date</label>
-                                                <div class="input-group date">
-                                                    <div class="input-group-addon">
-                                                        <i class="fa fa-calendar"></i>
-                                                    </div>
-                                                    <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
-                                                </div>
-                                            </div>
-                                            
-                                        </div>
-                                        <div class="row">
-                                            <div class=" col-sm-6">
-                                                <label for="duration" class=" control-label">Actual Duration (Days)</label>
-                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
-                                            </div> 
-                                            <div class=" col-sm-6">
-                                                <label for="duration" class=" control-label">Current Progress (%)</label>
-                                                <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
-                                            </div> 
-                                        </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
-                                </div>
-                            </div>
-                            <!-- /.modal-content -->
-                        </div>
-                        <!-- /.modal-dialog -->
-                    </div>
                     
                     <div class="modal fade" id="confirm_activity_modal_docnum">
                         <div class="modal-dialog">
@@ -443,7 +333,7 @@
                                                 </div>
                                                 <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker"
                                                 id="actual_start_date" placeholder="Start Date">
-                                                </div>
+                                            </div>
                                             </div>
                                             
                                             <div class=" col-sm-6">
@@ -456,7 +346,7 @@
                                                     id="actual_end_date" placeholder="End Date">
                                                 </div>
                                             </div>
-                                    
+                                            
                                         </div>
                                         <div class="row">
                                             <div class=" col-sm-6">
@@ -472,16 +362,126 @@
                                         </div>
                                         
                                     </div>
-                                <div class="modal-footer">
-                                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal"
-                                    @click.prevent="confirm">SAVE</button>
+                                    <div class="modal-footer">
+                                        <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal"
+                                        @click.prevent="confirm">SAVE</button>
+                                    </div>
                                 </div>
+                                <!-- /.modal-content -->
                             </div>
-                            <!-- /.modal-content -->
+                            <!-- /.modal-dialog -->
                         </div>
-                        <!-- /.modal-dialog -->
-                    </div>
-                    
+                        
+                        <div class="modal fade" id="confirm_activity_modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table>
+                                            <thead>
+                                                <th colspan="2">Activity Details</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Planned Start Date</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<b id="planned_start_date"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Planned End Date</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<b id="planned_end_date"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Planned Duration</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<b id="planned_duration"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Predecessor</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<template v-if="havePredecessor == false">-</template></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <template v-if="havePredecessor == false"><br></template>
+                                        <template v-if="havePredecessor == true">
+                                            <table class="table table-bordered tableFixed">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="p-l-5" style="width: 5%">No</th>
+                                                        <th style="width: 15%">Code</th>
+                                                        <th style="width: 29%">Name</th>
+                                                        <th style="width: 29%">Description</th>
+                                                        <th style="width: 15%">WBS Number</th>
+                                                        <th style="width: 12%">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(data,index) in predecessorActivities">
+                                                        <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
+                                                        <td class="textCenter">
+                                                            <template v-if="data.status == 0">
+                                                                <i class="fa fa-check text-success"></i>
+                                                            </template>
+                                                            <template v-else>
+                                                                <i class='fa fa-times text-danger'></i>
+                                                            </template>    
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </template>
+                                            <div class="row">
+                                                <div class=" col-sm-6">
+                                                    <label for="actual_start_date" class=" control-label">Actual Start Date</label>
+                                                    <div class="input-group date">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </div>
+                                                        <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
+                                                    </div>
+                                                </div>
+                                                        
+                                                <div class=" col-sm-6">
+                                                    <label for="actual_end_date" class=" control-label">Actual End Date</label>
+                                                    <div class="input-group date">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </div>
+                                                        <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="row">
+                                                <div class=" col-sm-6">
+                                                    <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                                                    <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
+                                                </div> 
+                                                <div class=" col-sm-6">
+                                                    <label for="duration" class=" control-label">Current Progress (%)</label>
+                                                    <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
+                                                </div> 
+                                            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
 
                     <div class="modal fade" id="confirm_activity_modal_upload">
                         <div class="modal-dialog">
@@ -1600,6 +1600,7 @@
                 
                 this.confirmActivity.current_progress = data.progress;
                 if(this.confirmActivity.current_progress != 100){
+                    console.log('a');
                     document.getElementById("actual_end_date").disabled = true;
                     document.getElementById("actual_duration").disabled = true;
                     this.confirmActivity.actual_end_date = "";
@@ -1620,9 +1621,50 @@
 
             },
 
-            openConfirmModalUpload(){
-                console.log('a');
-                document.getElementById("actual_start_date").disabled = true;
+            openConfirmModalDocnum(data){
+                this.predecessorTableView = [];
+                if(data.predecessor != null){
+                    this.havePredecessor = true;
+                    window.axios.get('/api/getPredecessor/'+data.id).then(({ data }) => {
+                        this.predecessorActivities = data;
+                        if(this.predecessorActivities.length>0){
+                            this.predecessorActivities.forEach(activity => {
+                                if(activity.status == 1){
+                                    $('#actual_start_date').datepicker('setDate', null);
+                                    document.getElementById("actual_start_date").disabled = true;
+                                    document.getElementById("actual_start_date").value = null;
+                                    document.getElementById("actual_end_date").disabled = true;
+                                    document.getElementById("actual_duration").disabled = true;
+                                    document.getElementById("btnSave").disabled = true;
+                                    document.getElementById("current_progress").disabled = true;
+                                }else{
+                                    document.getElementById("actual_start_date").disabled = false;
+                                    document.getElementById("actual_end_date").disabled = false;
+                                    document.getElementById("actual_duration").disabled = false;
+                                }
+                            });
+                        }else{
+                            document.getElementById("actual_start_date").disabled = false;
+
+                        }
+                    });
+                }else{
+                    document.getElementById("actual_start_date").disabled = false;
+                    this.havePredecessor = false;
+                    this.predecessorActivities = [];
+                }
+                
+                this.confirmActivity.current_progress = data.progress;
+                document.getElementById("confirm_activity_code").innerHTML= data.code;
+                document.getElementById("planned_start_date").innerHTML= data.planned_start_date.split("-").reverse().join("-");
+                document.getElementById("planned_end_date").innerHTML= data.planned_end_date.split("-").reverse().join("-");
+                document.getElementById("planned_duration").innerHTML= data.planned_duration+" Day(s)";
+                
+                
+                this.confirmActivity.activity_id = data.id;
+                $('#actual_start_date').datepicker('setDate', (data.actual_start_date != null ? new Date(data.actual_start_date):new
+                Date(data.planned_start_date)));
+                $('#actual_end_date').datepicker('setDate', (data.actual_end_date != null ? new Date(data.actual_end_date):null));
             },
 
             setEndDateEdit(){
