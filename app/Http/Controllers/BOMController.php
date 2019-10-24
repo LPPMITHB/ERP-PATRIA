@@ -159,7 +159,8 @@ class BOMController extends Controller
     public function selectWBSSum(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $project = Project::find($id);
+        $wbs = WBS::find($id);
+        $project = Project::find($wbs->project_id);
         $wbss = $project->wbss->where('wbs_id',null);
         $data = Collection::make();
 
