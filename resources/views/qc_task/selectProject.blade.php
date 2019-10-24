@@ -39,8 +39,12 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('qc_task.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
-                                </td>
+                                    @if(Route::currentRouteName() == 'qc_task.selectProject')
+                                        <a class="btn btn-primary btn-xs" href="{{ route('qc_task.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                    @elseif(Route::currentRouteName() == 'qc_task_repair.selectProject')
+                                        <a class="btn btn-primary btn-xs" href="{{ route('qc_task_repair.selectWBS', ['id'=>$project->id]) }}">SELECT</a>
+                                    @endif
+                                    </td>
                             </tr>
                         @endforeach
                     </tbody>

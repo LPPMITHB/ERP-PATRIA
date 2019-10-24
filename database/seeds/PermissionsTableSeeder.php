@@ -2534,6 +2534,7 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+        
 
          // Customer Portal View Project Progress
         $projectProgress = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
@@ -3220,5 +3221,16 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        //Quality Control Task Repair
+        $menu_index_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Index QC Task Repair',
+            'menu_id' => $menu_index_qc_task_repair,
+            'middleware' => 'list-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        //Quality Control Task Building
     }
 }
