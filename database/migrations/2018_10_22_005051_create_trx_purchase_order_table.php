@@ -24,8 +24,8 @@ class CreateTrxPurchaseOrderTable extends Migration
             $table->text('revision_description')->nullable();
             $table->integer('status')->default(1);
             $table->float('tax')->default(0);
-            $table->float('pajak_pertambahan_nilai')->default(0);
-            $table->float('pajak_penghasilan')->default(0);
+            $table->float('ppn')->default(0);
+            $table->float('pph')->default(0);
             $table->float('estimated_freight',15,2)->default(0);
             $table->unsignedInteger('delivery_term')->nullable();
             $table->unsignedInteger('payment_term')->nullable();

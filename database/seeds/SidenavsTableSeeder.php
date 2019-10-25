@@ -2028,6 +2028,7 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // DB::table('sidenav')->insert([
+<<<<<<< HEAD
         //     'menu_id' => $yard,
         //     'route_name' => 'yard.edit',
         // ]);
@@ -4391,6 +4392,8 @@ class SidenavsTableSeeder extends Seeder
         // ]);
 
         // DB::table('sidenav')->insert([
+=======
+>>>>>>> origin/BJ-BenedictJeremiah
         //     'menu_id' => $yard,
         //     'route_name' => 'yard.edit',
         // ]);
@@ -4769,6 +4772,7 @@ class SidenavsTableSeeder extends Seeder
 
         //  // Sales Plan
         //  $manageSalesPlan = Menu::where('route_name','sales_plan.index')->select('id')->first()->id;
+<<<<<<< HEAD
         //  DB::table('sidenav')->insert([
         //      'menu_id' => $manageSalesPlan,
         //      'route_name' => 'sales_plan.index',
@@ -4776,6 +4780,8 @@ class SidenavsTableSeeder extends Seeder
 
         //  // Sales Plan Repair
         //  $manageSalesPlanRepair = Menu::where('route_name','sales_plan_repair.index')->select('id')->first()->id;
+=======
+>>>>>>> origin/BJ-BenedictJeremiah
         //  DB::table('sidenav')->insert([
         //      'menu_id' => $manageSalesPlan,
         //      'route_name' => 'sales_plan.index',
@@ -4876,23 +4882,23 @@ class SidenavsTableSeeder extends Seeder
         //     'menu_id' => $postComplaints,
         //     'route_name' => 'customer_portal.showPost',
         // ]);
-        $this->call(BillOfMaterialMenuSeeder::class);
-        $this->call(ConfigurationMenuSeeder::class);
-        $this->call(CostPlanMenuSeeder::class);
-        $this->call(ProjectDeliveryMenuSeeder::class);
-        $this->call(ProjectManagementMenuSeeder::class);
-        $this->call(CustomerPortalMenuSeeder::class);
-        $this->call(ImputDailyInformationMenuSeeder::class);
-        $this->call(MarketingSalesMenuSeeder::class);
-        $this->call(MasterDataMenuSeeder::class);
-        $this->call(MaterialManagementMenuSeeder::class);
-        $this->call(PermissionManagementMenuSeeder::class);
-        $this->call(PicaMenuSeeder::class);
-        $this->call(ProductionPlanningMenuSeeder::class);
-        $this->call(QualityControlMenuSeeder::class);
-        $this->call(ResourceManagementMenuSeeder::class);
-        $this->call(RoleManagementMenuSeeder::class);
-        $this->call(UserManagementMenuSeeder::class);
-        $this->call(WipMenuSeeder::class);
+        $this->call(BillOfMaterialSidenavSeeder::class);
+        $this->call(ConfigurationSidenavSeeder::class);
+        $this->call(CostPlanSidenavSeeder::class);
+        $this->call(ProjectDeliverySidenavSeeder::class);
+        $this->call(ProjectManagementSidenavSeeder::class);
+        $this->call(CustomerPortalSidenavSeeder::class);
+        $this->call(DailyInformationSidenavSeeder::class);
+        $this->call(MarketingSalesSidenavSeeder::class);
+        $this->call(MasterDataSidenavSeeder::class);
+        $this->call(MaterialManagementSidenavSeeder::class);
+        $this->call(PermissionManagementSidenavSeeder::class);
+        $this->call(PicaSidenavSeeder::class);
+        $this->call(ProductionPlanningSidenavSeeder::class);
+        $this->call(QualityControlSidenavSeeder::class);
+        $this->call(ResourceManagementSidenavSeeder::class);
+        $this->call(RoleManagementSidenavSeeder::class);
+        $this->call(UserManagementSidenavSeeder::class);
+        $this->call(WipSidenavSeeder::class);
     }
 }

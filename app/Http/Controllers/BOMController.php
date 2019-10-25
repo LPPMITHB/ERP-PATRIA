@@ -118,7 +118,7 @@ class BOMController extends Controller
 
     public function materialSummaryBuilding($id){
         $wbs = WBS::where('id',$id)->first();
-        $project = Project::where('id', $wbs->id)->with('ship','customer')->first();
+        $project = Project::where('id', $wbs->project_id)->with('ship','customer')->first();
         $bomPreps = BomPrep::where('wbs_id', $id)->where('status', 1)->with('bomDetails','material')->get();
 
         if(count($bomPreps)>0){
@@ -127,29 +127,27 @@ class BOMController extends Controller
             $existing_bom = $wbs->bom;
 
             foreach ($bomPreps as $bomPrep) {
+                $temp_total = 0;
                 if($bomPrep->weight != null){
-                    $bomPrep['quantity'] = ceil($bomPrep->weight/$bomPrep->material->weight);
-                    if(count($bomPrep->bomDetails) > 0){
-                        $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
-                        foreach ($bomPrep->bomDetails as $bomDetail) {
-                            $bomDetail['prepared'] = $bomDetail->quantity;
-                        }
-                    }else{
-                        $bomPrep['bom_details'] = [];
-                        $bomPrep['already_prepared'] = 0;
+                    $temp_total = ceil($bomPrep->weight/$bomPrep->material->weight);
+                    if($bomPrep->quantity != null){
+                        $temp_total += $bomPrep->quantity;
                     }
-                }elseif($bomPrep->quantity != null){
-                    $bomPrep['quantity'] = $bomPrep->quantity;
-                    if(count($bomPrep->bomDetails) > 0){
-                        $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
-                        foreach ($bomPrep->bomDetails as $bomDetail) {
-                            $bomDetail['prepared'] = $bomDetail->quantity;
-                        }
-                    }else{
-                        $bomPrep['bom_details'] = [];
-                        $bomPrep['already_prepared'] = 0;
-                    }
+                }else{
+                    $temp_total = $bomPrep->quantity;
                 }
+                $bomPrep['quantity'] = $temp_total;
+
+                if(count($bomPrep->bomDetails) > 0){
+                    $bomPrep['already_prepared'] = $bomPrep->bomDetails->sum('quantity');
+                    foreach ($bomPrep->bomDetails as $bomDetail) {
+                        $bomDetail['prepared'] = $bomDetail->quantity;
+                    }
+                }else{
+                    $bomPrep['bom_details'] = [];
+                    $bomPrep['already_prepared'] = 0;
+                }
+                
             }
         }else{
             return redirect()->route('bom.selectWBSSum',$wbs->id)->with('error', 'There are no materials accumulation for the selected WBS!');
@@ -161,7 +159,8 @@ class BOMController extends Controller
     public function selectWBSSum(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $project = Project::find($id);
+        $wbs = WBS::find($id);
+        $project = Project::find($wbs->project_id);
         $wbss = $project->wbss->where('wbs_id',null);
         $data = Collection::make();
 
@@ -712,6 +711,7 @@ class BOMController extends Controller
                     foreach ($material->part_details as $part) {
                         $wbsMaterial = new WbsMaterial;
                         $wbsMaterial->wbs_id = $datas->wbs_id;
+                        $wbsMaterial->part_description = $part->description;
                         $wbsMaterial->material_id = $material->material_id;
                         $wbsMaterial->quantity = $part->quantity;
                         if($part->dimensions_value_obj != null){
@@ -788,6 +788,7 @@ class BOMController extends Controller
                         }
                     }
                 }else{
+
                     $wbsMaterial = new WbsMaterial;
                     $wbsMaterial->wbs_id = $datas->wbs_id;
                     $wbsMaterial->material_id = $material->material_id;
@@ -805,7 +806,9 @@ class BOMController extends Controller
                         $weight = 0;
                     }
 
+
                     $modelBomPrep = BomPrep::where('wbs_id', $top_wbs->id)->where('material_id', $material->material_id)->where('source', $old_material_source)->get();
+                    
                     if(count($modelBomPrep) > 0){
                         $not_found_bom_prep = false;
                         $not_added = true;
@@ -846,9 +849,9 @@ class BOMController extends Controller
                             $wbsMaterial->update();
                         }
                     }else{
-                        $bomPrep = new BomPrep;
+                        $bomPrep = new BomPrep;                        
                         $bomPrep->project_id = $datas->project_id;
-                        $bomPerp->wbs_id = $top_wbs->id;
+                        $bomPrep->wbs_id = $top_wbs->id;
                         $bomPrep->material_id = $material->material_id;
                         if($weight == 0){
                             $bomPrep->quantity = $material->quantity;
@@ -1655,7 +1658,6 @@ class BOMController extends Controller
     {
         $datas = json_decode($request->datas);
         $bom_code = self::generateBomCode($datas->project_id);
-
         DB::beginTransaction();
         try {
             $bom = null;
@@ -1696,6 +1698,8 @@ class BOMController extends Controller
             return redirect()->route('bom.materialSummaryBuilding',['id' => $datas->wbs_id])->with('error', $e->getMessage());
         }
     }
+
+
 
     public function show(Request $request, $id)
     {
@@ -1938,7 +1942,7 @@ class BOMController extends Controller
         }
     }
 
-    private function saveBomDetailBuilding($bom, $bom_preps, $materials){
+    private function saveBomDetailBuilding($bom, $bom_preps, $rap){
         foreach($bom_preps as $bom_prep){
             $bom_prep_model = BomPrep::find($bom_prep->id);
             if(count($bom_prep->bom_details) > 0){
@@ -1951,6 +1955,7 @@ class BOMController extends Controller
                             $bom_detail_input->material_id = $bom_detail->material_id;
                             $bom_detail_input->quantity = $bom_detail->prepared;
                             $bom_detail_input->source = $bom_prep_model->source;
+                            $bom_detail_input->type = "Planned";
 
                             $stock = Stock::where('material_id', $bom_detail->material_id)->first();
                             if($stock == null){
@@ -1980,6 +1985,28 @@ class BOMController extends Controller
                             }
 
                             $bom_detail_input->save();
+
+                            if($rap != null){
+                                $rap_details = $rap->rapDetails;
+                                $material_not_found = true;
+                                foreach ($rap_details as $rap_detail) {
+                                    if($rap_detail->material_id == $bom_detail->material_id){
+                                        $rap_detail->quantity += $bom_detail->prepared;
+                                        $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                        $rap_detail->update();
+                                        $material_not_found = false;
+                                    }
+                                }
+
+                                if($material_not_found){
+                                    $rap_detail = new RapDetail;
+                                    $rap_detail->rap_id = $rap->id;
+                                    $rap_detail->material_id = $bom_detail->material_id;
+                                    $rap_detail->quantity = $bom_detail->prepared;
+                                    $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                    $rap_detail->save();
+                                }
+                            }
                         }else{
                             $bom_detail_update = BomDetail::find($bom_detail->id);
                             $temp_quantity = $bom_detail_update->quantity;
@@ -2011,10 +2038,39 @@ class BOMController extends Controller
                                 $stock->update();
                             }
                             $bom_detail_update->update();
+
+                            if($rap != null){
+                                $rap_details = $rap->rapDetails;
+                                $material_not_found = true;
+                                foreach ($rap_details as $rap_detail) {
+                                    if($rap_detail->material_id == $bom_detail->material_id){
+                                        $rap_detail->quantity += $bom_detail->prepared - $temp_quantity;
+                                        $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                        $rap_detail->update();
+                                        $material_not_found = false;
+                                    }
+                                }
+
+                                if($material_not_found){
+                                    $rap_detail = new RapDetail;
+                                    $rap_detail->rap_id = $rap->id;
+                                    $rap_detail->material_id = $bom_detail->material_id;
+                                    $rap_detail->quantity = $bom_detail->prepared;
+                                    $rap_detail->price = $rap_detail->quantity * $rap_detail->material->cost_standard_price;
+                                    $rap_detail->save();
+                                }
+                            }
                         }
                     }
                 }
             }
+        }
+
+        if($rap != null){
+            $total_price = self::calculateTotalPrice($rap->id);
+
+            $rap->total_price = $total_price;
+            $rap->update();
         }
     }
 
@@ -2217,6 +2273,7 @@ class BOMController extends Controller
             }else{
                 $rap_detail->price = $bomDetail->quantity * $bomDetail->service->cost_standard_price;
             }
+            $rap_detail->source = $bomDetail->source;
             $rap_detail->save();
         }
     }

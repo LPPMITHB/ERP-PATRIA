@@ -3,7 +3,7 @@
 use Illuminate\Database\Seeder;
 use App\Models\Menu;
 
-class RestricManagementMenuSeeder extends Seeder
+class UserManagementMenuSeeder extends Seeder
 {
     /**
      * Run the database seeds.

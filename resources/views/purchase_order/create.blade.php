@@ -79,7 +79,7 @@
                                         <label for="">PPN (%)</label>
                                     </div>
                                     <div class="col-sm-7 p-t-13 p-l-0">
-                                        <input class="form-control" v-model="pajak_pertambahan_nilai" placeholder="PPn">
+                                        <input class="form-control" v-model="ppn" placeholder="PPn">
                                     </div>
                                     <!-- END LABEL PPN -->
                                     <!-- PPH PAMI ONLY -->
@@ -87,7 +87,7 @@
                                         <label for="">PPH (%)</label>
                                     </div>
                                     <div class="col-sm-7 p-t-13 p-l-0">
-                                        <input class="form-control" v-model="pajak_penghasilan" placeholder="PPh">
+                                        <input class="form-control" v-model="pph" placeholder="PPh">
                                     </div>
                                     <!-- END PPH -->
                                     <div v-if ="!isPami" class="col-sm-5 no-padding p-t-15">
@@ -434,8 +434,8 @@ var URLTO = "{{ URL::to('/') }}";
         project_id : null,
         currencies : @json($currencies),
         isPami :@json($isPami),
-        pajak_pertambahan_nilai:"",
-        pajak_penghasilan:"",
+        ppn:"",
+        pph:"",
         modelVendor : [],
         vendorSettings: {
             placeholder: 'Please Select Vendor'
@@ -618,8 +618,8 @@ var URLTO = "{{ URL::to('/') }}";
                 this.submittedForm.payment_term = this.payment_term;
                 this.submittedForm.project_id = this.project_id;
                 this.submittedForm.delivery_date_subcon = this.delivery_date_subcon;
-                this.submittedForm.pajak_penghasilan = this.pajak_penghasilan;
-                this.submittedForm.pajak_pertambahan_nilai = this.pajak_pertambahan_nilai;
+                this.submittedForm.pph = this.pph;
+                this.submittedForm.ppn = this.ppn;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
@@ -874,8 +874,8 @@ var URLTO = "{{ URL::to('/') }}";
                 console.log(newValue);
                 if(newValue != ""){
                     window.axios.get('/api/getVendorDetail/'+newValue).then(({ data }) => {
-                        this.pajak_penghasilan = data.pajak_penghasilan;
-                        this.pajak_pertambahan_nilai = data.pajak_pertambahan_nilai;
+                        this.pph = data.pph;
+                        this.ppn = data.ppn;
                     })
                     .catch((error) => {
                         iziToast.warning({

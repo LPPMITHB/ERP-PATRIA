@@ -4,7 +4,7 @@
 @if($route == "/production_order")
     @breadcrumb(
         [   
-            'title' => 'Release Production Order » '.$modelProject->name.' » Select Production Order',
+            'title' => 'Confirm Production Order » '.$modelProject->name.' » Select Production Order',
             'items' => [
                 'Dashboard' => route('index'),
                 'View all Projects' => route('production_order.selectProjectRelease'),
@@ -16,7 +16,7 @@
 @elseif($route == "/production_order_repair")
     @breadcrumb(
         [   
-            'title' => 'Release Production Order » '.$modelProject->name.' » Select Production Order',
+            'title' => 'Confirm Production Order » '.$modelProject->name.' » Select Production Order',
             'items' => [
                 'Dashboard' => route('index'),
                 'View all Projects' => route('production_order_repair.selectProjectRelease'),

@@ -1,14 +1,14 @@
 @extends('layouts.main')
 @section('content-header')
 @breadcrumb(
-    [
-        'title' => 'Edit Role',
-        'items' => [
-            'Dashboard' => route('index'),
-            'View All Roles' => route('role.index'),
-            'Edit Role' => route('role.edit',$role->id),
-        ]
-    ]
+[
+'title' => 'Edit Role',
+'items' => [
+'Dashboard' => route('index'),
+'View All Roles' => route('role.index'),
+'Edit Role' => route('role.edit',$role->id),
+]
+]
 )
 @endbreadcrumb
 @endsection
@@ -19,47 +19,52 @@
         <div class="box">
             <div class="box-body">
                 @if ($errors->any())
-                    <div class="alert alert-danger alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-ban"></i> Alert!</h4>
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
+                <div class="alert alert-danger alert-dismissible">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
                 @endif
-                <form id="update-role" class="form-horizontal" method="POST" action="{{ route('role.update',['id'=>$role->id]) }}">
-                <input type="hidden" name="_method" value="PATCH">
-                @csrf
+                <form id="update-role" class="form-horizontal" method="POST"
+                    action="{{ route('role.update',['id'=>$role->id]) }}">
+                    <input type="hidden" name="_method" value="PATCH">
+                    @csrf
                     @verbatim
                     <div id="role">
                         <div class="box-body">
                             <div class="form-group">
                                 <label for="name" class="col-sm-2 control-label">Name</label>
                                 <div class="col-sm-10">
-                                    <input v-model="role.name" type="text" class="form-control" id="name" name="name" required>
+                                    <input v-model="role.name" type="text" class="form-control" id="name" name="name"
+                                        required>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="description" class="col-sm-2 control-label">Description</label>
                                 <div class="col-sm-10">
-                                    <input v-model="role.description" type="text" class="form-control" id="description" name="description" required>
+                                    <input v-model="role.description" type="text" class="form-control" id="description"
+                                        name="description" required>
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="business_unit" class="col-sm-2 control-label">Business Unit</label>
                                 <div class="col-sm-10">
-                                    <selectize id="business_unit" v-model="business_unit" :settings="businessUnitSettings">
-                                        <option v-for="main_menu in main_menus" :value="main_menu.id">{{ main_menu.name }}</option>
-                                    </selectize>  
+                                    <selectize id="business_unit" v-model="business_unit"
+                                        :settings="businessUnitSettings">
+                                        <option v-for="main_menu in main_menus" :value="main_menu.id">
+                                            {{ main_menu.name }}</option>
+                                    </selectize>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div v-for ="menu in menus">
+                            <div v-for="menu in menus">
                                 <a href="" @click.prevent="getMenu(menu)">
                                     <div class="box box-solid no-margin m-b-10 ">
                                         <div class="box-header with-border" :id="menu.id">
@@ -71,7 +76,7 @@
                                     </div>
                                 </a>
                             </div>
-                            <div v-for ="menu in optionalMenus">
+                            <div v-for="menu in optionalMenus">
                                 <a href="" @click.prevent="getMenu(menu)">
                                     <div class="box box-solid no-margin m-b-10 ">
                                         <div class="box-header with-border " :id="menu.id">
@@ -84,7 +89,7 @@
                                 </a>
                             </div>
                         </div>
-        
+
                         <div class="col-md-9">
                             <template v-for="sub_menu in sub_menus">
                                 <div class="box box-primary">
@@ -92,27 +97,32 @@
                                         <h3 class="box-title">{{ sub_menu.name }}</h3>
                                     </div>
                                     <div class="box-body">
-                                        <div class="col-md-6">
-                                            <template v-for="permission in permissionsLeft">
-                                                <template v-if="permission.menu_id == sub_menu.id">
-                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck="" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
-                                                </template>
+                                        <template v-for="permission in permissionsLeft">
+                                            <template v-if="permission.menu_id == sub_menu.id">
+                                                <div class="col-md-6">
+                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck=""
+                                                            v-model="checkedPermissions" :value="permission.middleware">
+                                                        <span>{{ permission.name }}</span></div>
+                                                </div>
                                             </template>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <template v-for="permission in permissionsRight">
-                                                <template v-if="permission.menu_id == sub_menu.id">
-                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck="" v-model="checkedPermissions" :value="permission.middleware"> <span>{{ permission.name }}</span></div>
-                                                </template>
+                                        </template>
+                                        <template v-for="permission in permissionsRight">
+                                            <template v-if="permission.menu_id == sub_menu.id">
+                                                <div class="col-md-6">
+                                                    <div class="p-t-10 p-l-10"><input type="checkbox" v-icheck=""
+                                                            v-model="checkedPermissions" :value="permission.middleware">
+                                                        <span>{{ permission.name }}</span></div>
+                                                </div>
                                             </template>
-                                        </div>
+                                        </template>
                                     </div>
                                 </div>
                             </template>
                         </div>
                         <div class="row">
                             <div class="col-md-12 p-t-30">
-                                <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
+                                <button @click.prevent="submitForm" class="btn btn-primary pull-right"
+                                    :disabled="createOk">SAVE</button>
                             </div>
                         </div>
                     </div>

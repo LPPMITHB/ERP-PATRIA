@@ -243,12 +243,7 @@
                 return url;
             },
             editBom(id){
-                var url = "";
-                if (this.bom.status == 1){
-                    url = "/bom/materialSummaryBuilding/"+this.bom.wbs_id;
-                }else{
-                    url = "/bom/"+this.bom.id+"/edit";
-                }
+                var url = "/bom/materialSummaryBuilding/"+this.bom.wbs_id;
                 return url;
             },
             editBomRepair(id){

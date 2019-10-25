@@ -181,6 +181,7 @@
                         <thead>
                             <tr>
                                 <th style="width: 4%">No</th>
+                                <th style="width: 13%">Type</th>
                                 <th style="width: 25%">Activity Name</th>
                                 <th style="width: 30%">Description</th>
                                 <th style="width: 8%">Progress</th>
@@ -192,6 +193,7 @@
                         <tbody>
                             <tr v-for="(data,index) in activities" >
                                 <td>{{ index + 1 }}</td>
+                                <td class="tdEllipsis" data-container="body">{{ data.type }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.progress }} %</td>
@@ -232,13 +234,23 @@
                                 </template>
                                 </td>
                                 <td class="textCenter">
-                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal"  @click.prevent="openConfirmModal(data)">CONFIRM</button>
+                                    <div v-show="data.type == 'General'">
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal" @click.prevent="openConfirmModal(data)">CONFIRM</button>
+                                    </div>
+                                    <div v-show="data.type == 'Document Number'">
+                                        <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal_docnum" @click.prevent="openConfirmModalDocnum(data)">CONFIRM</button>
+                                    </div>
+                                    <div v-show="data.type == 'Upload'">
+                                    <button type="button" class="btn btn-primary btn-xs" data-toggle="modal" data-target="#confirm_activity_modal_upload"
+                                            @click.prevent="openConfirmModalUpload(data)">CONFIRM</button>
+                                    </div>
                                 </td>
                             </tr>
                         </tbody>
                     </table>
-
-                    <div class="modal fade" id="confirm_activity_modal">
+                    
+                    
+                    <div class="modal fade" id="confirm_activity_modal_docnum">
                         <div class="modal-dialog">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -291,22 +303,27 @@
                                             <tbody>
                                                 <tr v-for="(data,index) in predecessorActivities">
                                                     <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                    v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                    v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                    v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                    v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
                                                     <td class="textCenter">
                                                         <template v-if="data.status == 0">
                                                             <i class="fa fa-check text-success"></i>
                                                         </template>
                                                         <template v-else>
                                                             <i class='fa fa-times text-danger'></i>
-                                                        </template>    
+                                                        </template>
                                                     </td>
                                                 </tr>
                                             </tbody>
                                         </table>
                                     </template>
+                                    
                                     <div class="row">
                                         <div class=" col-sm-6">
                                             <label for="actual_start_date" class=" control-label">Actual Start Date</label>
@@ -314,42 +331,306 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-calendar"></i>
                                                 </div>
-                                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
+                                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker"
+                                                id="actual_start_date" placeholder="Start Date">
                                             </div>
-                                        </div>
-                                                
-                                        <div class=" col-sm-6">
-                                            <label for="actual_end_date" class=" control-label">Actual End Date</label>
-                                            <div class="input-group date">
-                                                <div class="input-group-addon">
-                                                    <i class="fa fa-calendar"></i>
+                                            </div>
+                                            
+                                            <div class=" col-sm-6">
+                                                <label for="actual_end_date" class=" control-label">Actual End Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker"
+                                                    id="actual_end_date" placeholder="End Date">
                                                 </div>
-                                                <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="row">
+                                            <div class=" col-sm-6">
+                                                <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
+                                                type="number" class="form-control" id="actual_duration" placeholder="Duration">
+                                            </div>
+                                            <div class=" col-sm-6">
+                                                <label for="document_number" class=" control-label">Document Number</label>
+                                                <input v-model="confirmActivity.document_number" type="text" class="form-control" id="document_number"
+                                                placeholder="Document Number">
                                             </div>
                                         </div>
                                         
-                                        
                                     </div>
-                                    <div class="row">
-                                        <div class=" col-sm-6">
-                                            <label for="duration" class=" control-label">Actual Duration (Days)</label>
-                                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
-                                        </div> 
-                                        <div class=" col-sm-6">
-                                            <label for="duration" class=" control-label">Current Progress (%)</label>
-                                            <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
-                                        </div> 
+                                    <div class="modal-footer">
+                                        <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal"
+                                        @click.prevent="confirm">SAVE</button>
                                     </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+                        
+                        <div class="modal fade" id="confirm_activity_modal">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <table>
+                                            <thead>
+                                                <th colspan="2">Activity Details</th>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Planned Start Date</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<b id="planned_start_date"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Planned End Date</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<b id="planned_end_date"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Planned Duration</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<b id="planned_duration"></b></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Predecessor</td>
+                                                    <td>:</td>
+                                                    <td>&nbsp;<template v-if="havePredecessor == false">-</template></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <template v-if="havePredecessor == false"><br></template>
+                                        <template v-if="havePredecessor == true">
+                                            <table class="table table-bordered tableFixed">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="p-l-5" style="width: 5%">No</th>
+                                                        <th style="width: 15%">Code</th>
+                                                        <th style="width: 29%">Name</th>
+                                                        <th style="width: 29%">Description</th>
+                                                        <th style="width: 15%">WBS Number</th>
+                                                        <th style="width: 12%">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(data,index) in predecessorActivities">
+                                                        <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                        <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
+                                                        <td class="textCenter">
+                                                            <template v-if="data.status == 0">
+                                                                <i class="fa fa-check text-success"></i>
+                                                            </template>
+                                                            <template v-else>
+                                                                <i class='fa fa-times text-danger'></i>
+                                                            </template>    
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </template>
+                                            <div class="row">
+                                                <div class=" col-sm-6">
+                                                    <label for="actual_start_date" class=" control-label">Actual Start Date</label>
+                                                    <div class="input-group date">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </div>
+                                                        <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">                                             
+                                                    </div>
+                                                </div>
+                                                        
+                                                <div class=" col-sm-6">
+                                                    <label for="actual_end_date" class=" control-label">Actual End Date</label>
+                                                    <div class="input-group date">
+                                                        <div class="input-group-addon">
+                                                            <i class="fa fa-calendar"></i>
+                                                        </div>
+                                                        <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">                                                                                            
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            <div class="row">
+                                                <div class=" col-sm-6">
+                                                    <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                                                    <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >                                        
+                                                </div> 
+                                                <div class=" col-sm-6">
+                                                    <label for="duration" class=" control-label">Current Progress (%)</label>
+                                                    <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >                                        
+                                                </div> 
+                                            </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                                    </div>
+                                </div>
+                                <!-- /.modal-content -->
+                            </div>
+                            <!-- /.modal-dialog -->
+                        </div>
+
+                    <div class="modal fade" id="confirm_activity_modal_upload">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
+                                </div>
+                                <div class="modal-body">
+                                    <table>
+                                        <thead>
+                                            <th colspan="2">Activity Details</th>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>Planned Start Date</td>
+                                                <td>:</td>
+                                                <td>&nbsp;<b id="planned_start_date"></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Planned End Date</td>
+                                                <td>:</td>
+                                                <td>&nbsp;<b id="planned_end_date"></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Planned Duration</td>
+                                                <td>:</td>
+                                                <td>&nbsp;<b id="planned_duration"></b></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Predecessor</td>
+                                                <td>:</td>
+                                                <td>&nbsp;<template v-if="havePredecessor == false">-</template></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <template v-if="havePredecessor == false"><br></template>
+                                    <template v-if="havePredecessor == true">
+                                        <table class="table table-bordered tableFixed">
+                                            <thead>
+                                                <tr>
+                                                    <th class="p-l-5" style="width: 5%">No</th>
+                                                    <th style="width: 15%">Code</th>
+                                                    <th style="width: 29%">Name</th>
+                                                    <th style="width: 29%">Description</th>
+                                                    <th style="width: 15%">WBS Number</th>
+                                                    <th style="width: 12%">Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr v-for="(data,index) in predecessorActivities">
+                                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                        v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                        v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                        v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                        v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
+                                                    <td class="textCenter">
+                                                        <template v-if="data.status == 0">
+                                                            <i class="fa fa-check text-success"></i>
+                                                        </template>
+                                                        <template v-else>
+                                                            <i class='fa fa-times text-danger'></i>
+                                                        </template>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </template>
+                    
+                                        <div class="row">
+                                            <div class=" col-sm-4">
+                                                <label for="actual_start_date" class=" control-label">Actual Start Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker"
+                                                        id="actual_start_date" placeholder="Start Date">
+                                                </div>
+                                            </div>
                                     
+                                            <div class=" col-sm-4">
+                                                <label for="actual_end_date" class=" control-label">Actual End Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker"
+                                                        id="actual_end_date" placeholder="End Date">
+                                                </div>
+                                            </div>
+                                    
+                                            <div class=" col-sm-4">
+                                                <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
+                                                    type="number" class="form-control" id="actual_duration" placeholder="Duration">
+                                            </div>
+                                    
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="upload" class="control-label">Upload Image</label>
+                                            </div>
+                                            <div class="modal-body p-t-0">
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <input type="hidden" name="prod_id" id="prod_id" v-model="upload.prod_id">
+                                                        <div class="col-sm-12 p-t-10 p-l-0">
+                                                            <div class="input-group">
+                                                                <label class="input-group-btn">
+                                                                    <span class="btn btn-primary">
+                                                                        Browse&hellip; <input type="file" style="display: none;" multiple id="drawing"
+                                                                            name="drawing">
+                                                                    </span>
+                                                                </label>
+                                                                <input type="text" class="form-control" readonly>
+                                                            </div>
+                                                        </div>
+                                                        <div class="progress">
+                                                            <div class="bar"></div>
+                                                            <div class="percent">0%</div>
+                                                        </div>
+                                                        <div class="col-sm-12 p-l-0">
+                                                            <label for="type" class="control-label p-b-10">Description</label>
+                                                            <textarea rows="3" class="form-control" placeholder="Please Input Description" id="description"
+                                                                name="description"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                    
                                 </div>
                                 <div class="modal-footer">
-                                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal"
+                                        @click.prevent="confirm">SAVE</button>
                                 </div>
                             </div>
                             <!-- /.modal-content -->
                         </div>
                         <!-- /.modal-dialog -->
                     </div>
+
                 </div>
 
                 <div class="box-body">
@@ -380,7 +661,7 @@
                                         <td class="tdEllipsis">
                                             <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                                 <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
-                                                    <button type="button" class="btn btn-primary btn-xs col-xs-12" @click.prevent="">RETURNED
+                                                    <button type="button" class="btn btn-primary btn-xs col-xs-12" @click.prevent="openModalLeftover(data)">RETURNED
                                                         MATERIAL</button>
                                                 </div>
                                             </div>
@@ -638,7 +919,7 @@
                     </div>
 
                     <div class="modal fade" id="material_return">
-                        <div class="modal-dialog modalPredecessor">
+                        <div class="modal-dialog modalFull">
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -648,54 +929,82 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="row">
-                                        <div class="col-sm-12 border-right-modal">
+                                        <div class="col-sm-12">
                                             <div class="form-group">
-                                                <label for="length" class="col-sm-12">Material</label>
-                        
+                                                <label for="length" class="col-sm-12">Return to</label>
+                                            
                                                 <div class="col-sm-12">
-                                                    <selectize id="material" name="material_id" v-model="return_material.material_id"
-                                                        :settings="material_settings">
-                                                        <option v-if="material.selected==false" v-for="(material, index) in all_materials"
-                                                            :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <selectize id="return_type" name="return_type" v-model="return_material.type" :settings="return_type_settings">
+                                                        <option value="Storage">Storage</option>
+                                                        <option value="Other BOM">Other BOM</option>
                                                     </selectize>
                                                 </div>
                                             </div>
-                        
-                                            <div class="form-group">
-                                                <label for="length" class="col-sm-12">Storage Location</label>
-                        
+
+                                            <div v-if="return_material.type == 'Other BOM'" class="form-group">
+                                                <label for="length" class="col-sm-12">BOM</label>
+                                            
                                                 <div class="col-sm-12">
-                                                    <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id"
-                                                        :settings="sloc_settings">
-                                                        <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} -
-                                                            {{ sloc.description }}</option>
+                                                    <selectize id="bom" name="bom_id" v-model="return_material.bom_id" :settings="bom_settings">
+                                                        <option v-for="(bom, index) in boms" :value="bom.id">{{ bom.code }} -
+                                                            {{ bom.description }} [{{bom.wbs.number}} - {{bom.wbs.description}}]</option>
                                                     </selectize>
                                                 </div>
                                             </div>
-                        
-                                            <div class="form-group">
-                                                <label for="quantity" class="col-sm-12">Quantity</label>
-                        
-                                                <div class="col-sm-12">
-                                                    <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
-                                                        placeholder="Quantity">
+
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="length" class="col-sm-12">Material</label>
+                                                    
+                                                        <div class="col-sm-12">
+                                                            <selectize class="selectizeFull" id="material" name="material_id" v-model="return_material.material_id" :settings="material_settings">
+                                                                <option v-for="(material, index) in all_materials" :value="material.id">
+                                                                    {{ material.code }} - {{ material.description }}</option>
+                                                            </selectize>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="length" class="col-sm-12">Storage Location</label>
+                                                    
+                                                        <div class="col-sm-12">
+                                                            <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id" :settings="sloc_settings">
+                                                                <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} -
+                                                                    {{ sloc.description }}</option>
+                                                            </selectize>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                        
-                                            <div class="form-group">
-                                                <label for="quantity" class="col-sm-12">Received Date</label>
-                        
-                                                <div class="col-sm-12">
-                                                    <input v-model="return_material.received_date" autocomplete="off" type="text"
-                                                        class="form-control datepicker" name="received_date" id="received_date"
-                                                        placeholder="Received Date">
+                                            
+                                            <div class="row">
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="quantity" class="col-sm-12">Quantity</label>
+                                                    
+                                                        <div class="col-sm-12">
+                                                            <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
+                                                                placeholder="Quantity">
+                                                        </div>
+                                                    </div>
                                                 </div>
-                                            </div>
-                        
+                                                <div class="col-sm-6">
+                                                    <div class="form-group">
+                                                        <label for="quantity" class="col-sm-12">Received Date</label>
+                                                    
+                                                        <div class="col-sm-12">
+                                                            <input v-model="return_material.received_date" autocomplete="off" type="text" class="form-control datepicker"
+                                                                name="received_date" id="received_date" placeholder="Received Date">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>  
+                                            
                                             <div class="form-group">
                                                 <div class="m-t-10 col-sm-2">
-                                                    <button :disabled="addMaterialOk" type="button" class="btn btn-primary"
-                                                        @click="addMaterial">ADD</button>
+                                                    <button :disabled="addMaterialOk" type="button" class="btn btn-primary" @click="addMaterial">ADD</button>
                                                 </div>
                                             </div>
                         
@@ -705,16 +1014,23 @@
                                                         <thead>
                                                             <tr>
                                                                 <th class="p-l-5" style="width: 3%">No</th>
-                                                                <th style="width: 20%">Material</th>
+                                                                <th style="width: 15%">Return To</th>
+                                                                <th style="width: 25%">Material</th>
                                                                 <th style="width: 20%">Storage Location</th>
                                                                 <th style="width: 10%">Quantity</th>
                                                                 <th style="width: 10%">Received Date</th>
-                                                                <th style="width: 10%"></th>
+                                                                <th style="width: 5%"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr v-for="(data,index) in data_return_material">
                                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                                <td v-if="data.type == 'Other BOM'" class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.type+ '['+data.bom_code+' - '+data.bom_description+']')">{{ data.type }} [{{data.bom_code}} - {{data.bom_description}}]
+                                                                </td>
+                                                                <td v-else-if="data.type == 'Storage'" class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.type)">{{ data.type }}
+                                                                </td>
                                                                 <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
                                                                     v-tooltip:top="tooltipText(data.material_name)">{{ data.material_name }}
                                                                 </td>
@@ -741,6 +1057,69 @@
                                 <div class="modal-footer">
                                     <button :disabled="createOk" type="button" class="btn btn-primary" data-dismiss="modal"
                                         @click.prevent="save">NEXT</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
+
+                    <div class="modal fade" id="show_material_return">
+                        <div class="modal-dialog modalPredecessor">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">Return Material (Material Offcut)</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-12 border-right-modal">
+                                            <div class="form-group">
+                                                <div class="m-t-10 col-sm-12">
+                                                    <table class="table table-bordered"
+                                                        style="border-collapse:collapse; table-layout:fixed;">
+                                                        <thead>
+                                                            <tr>
+                                                                <th class="p-l-5" style="width: 3%">No</th>
+                                                                <th style="width: 15%">Return To</th>
+                                                                <th style="width: 25%">Material</th>
+                                                                <th style="width: 25%">Storage Location</th>
+                                                                <th style="width: 10%">Quantity</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody v-if="data_return_material_show.length > 0">
+                                                            <tr v-for="(data,index) in data_return_material_show">
+                                                                <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
+                                                                <td v-if="data.type == 'Other BOM'" class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.type+ '['+data.bom_code+' - '+data.bom_description+']')">{{ data.type }}
+                                                                    [{{data.bom_code}} - {{data.bom_description}}]
+                                                                </td>
+                                                                <td v-else-if="data.type == 'Storage'" class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.type)">{{ data.type }}
+                                                                </td>
+                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.material_name)">{{ data.material_name }}
+                                                                </td>
+                                                                <td class="tdEllipsis p-b-15 p-t-15" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.sloc_name)">{{ data.sloc_name }}</td>
+                                                                <td class="p-b-15 p-t-15">{{ data.quantity }}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                        <tbody v-else>
+                                                            <tr>
+                                                                <td colspan="4" class="p-b-15 p-t-15 text-center"><b>EMPTY</b></td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
                                 </div>
                             </div>
                             <!-- /.modal-content -->
@@ -808,6 +1187,7 @@
         route : @json($route),
         menu : @json($route),
         uoms : @json($uoms),
+        boms : @json($boms),
         modelPrO : @json($modelPrO),
         modelPrOD : @json($modelPrOD),
         activities : @json($modelPrO->wbs->activities),
@@ -822,6 +1202,7 @@
             actual_start_date : "",
             actual_end_date : "",
             actual_duration : "",
+            document_number: "",
             current_progress : 0,
         },
         havePredecessor : false,
@@ -856,15 +1237,25 @@
         sloc_settings : {
             placeholder: 'Storage Location'
         },
+        return_type_settings :{
+            placeholder: 'Return Type'
+        },
+        bom_settings:{
+            placeholder: 'BOM',
+        },
         all_materials : @json($materials),
         return_material : {
             id : null,
+            type : "",
             material_id : "",
             material_name : "",
             sloc_id : "",
             sloc_name : "",
             quantity : "",
             received_date : "",
+            bom_id : "",
+            bom_code : "",
+            bom_description : "",
         },
         data_return_material : [],
         data_return_material_show : [],
@@ -911,6 +1302,7 @@
                     }
                 }
             );
+
             $("#received_date").datepicker().on(
                 "changeDate", () => {
                     this.return_material.received_date = $('#received_date').val();
@@ -1138,6 +1530,7 @@
                         this.submittedForm.materials = this.materials;
                         this.submittedForm.services = this.services;
                         this.submittedForm.resources = this.resources;
+                        this.submittedForm.data_changed = this.data_changed;
 
                         let struturesElem = document.createElement('input');
                         struturesElem.setAttribute('type', 'hidden');
@@ -1165,6 +1558,7 @@
                     this.submittedForm.materials = this.materials;
                     this.submittedForm.services = this.services;
                     this.submittedForm.resources = this.resources;
+                    this.submittedForm.data_changed = this.data_changed;
 
                     let struturesElem = document.createElement('input');
                     struturesElem.setAttribute('type', 'hidden');
@@ -1206,6 +1600,7 @@
                 
                 this.confirmActivity.current_progress = data.progress;
                 if(this.confirmActivity.current_progress != 100){
+                    console.log('a');
                     document.getElementById("actual_end_date").disabled = true;
                     document.getElementById("actual_duration").disabled = true;
                     this.confirmActivity.actual_end_date = "";
@@ -1225,6 +1620,53 @@
                 $('#actual_end_date').datepicker('setDate', (data.actual_end_date != null ? new Date(data.actual_end_date):null));
 
             },
+
+            openConfirmModalDocnum(data){
+                this.predecessorTableView = [];
+                if(data.predecessor != null){
+                    this.havePredecessor = true;
+                    window.axios.get('/api/getPredecessor/'+data.id).then(({ data }) => {
+                        this.predecessorActivities = data;
+                        if(this.predecessorActivities.length>0){
+                            this.predecessorActivities.forEach(activity => {
+                                if(activity.status == 1){
+                                    $('#actual_start_date').datepicker('setDate', null);
+                                    document.getElementById("actual_start_date").disabled = true;
+                                    document.getElementById("actual_start_date").value = null;
+                                    document.getElementById("actual_end_date").disabled = true;
+                                    document.getElementById("actual_duration").disabled = true;
+                                    document.getElementById("btnSave").disabled = true;
+                                    document.getElementById("current_progress").disabled = true;
+                                }else{
+                                    document.getElementById("actual_start_date").disabled = false;
+                                    document.getElementById("actual_end_date").disabled = false;
+                                    document.getElementById("actual_duration").disabled = false;
+                                }
+                            });
+                        }else{
+                            document.getElementById("actual_start_date").disabled = false;
+
+                        }
+                    });
+                }else{
+                    document.getElementById("actual_start_date").disabled = false;
+                    this.havePredecessor = false;
+                    this.predecessorActivities = [];
+                }
+                
+                this.confirmActivity.current_progress = data.progress;
+                document.getElementById("confirm_activity_code").innerHTML= data.code;
+                document.getElementById("planned_start_date").innerHTML= data.planned_start_date.split("-").reverse().join("-");
+                document.getElementById("planned_end_date").innerHTML= data.planned_end_date.split("-").reverse().join("-");
+                document.getElementById("planned_duration").innerHTML= data.planned_duration+" Day(s)";
+                
+                
+                this.confirmActivity.activity_id = data.id;
+                $('#actual_start_date').datepicker('setDate', (data.actual_start_date != null ? new Date(data.actual_start_date):new
+                Date(data.planned_start_date)));
+                $('#actual_end_date').datepicker('setDate', (data.actual_end_date != null ? new Date(data.actual_end_date):null));
+            },
+
             setEndDateEdit(){
                 if(this.confirmActivity.actual_duration != "" && this.confirmActivity.actual_start_date != ""){
                     var actual_duration = parseInt(this.confirmActivity.actual_duration);
@@ -1312,6 +1754,8 @@
                 this.data_return_material.push(temp);
 
                 this.return_material.material_id = "";
+                this.return_material.type = "";
+                this.return_material.bom_id = "";
                 this.return_material.sloc_id = "";
                 this.return_material.quantity = "";
                 this.return_material.received_date = "";
@@ -1352,8 +1796,49 @@
 
                 this.data_changed = true;
             },
+            openModalLeftover(data){
+                this.data_return_material_show = data.returned_materials;
+                $('#show_material_return').modal();
+            },
+            removeMaterial(data){
+                for (let x = 0; x < this.data_return_material.length; x++) {
+                    if(this.data_return_material[x].material_id == data.material_id){
+                        if(this.data_return_material[x].id != null){
+                            this.deleted_returned_material.push(this.data_return_material[x].id);
+                        }
+                        this.data_return_material.splice(x,1);
+                    }
+                }
+                this.all_materials.forEach(material => {
+                    if(material.id == data.material_id){
+                        material.selected = false;
+                    }
+                });
+
+                this.data_changed = true;
+            },
         },
         watch : {
+            "return_material.type" : function(newValue){
+                if(newValue != "Other BOM"){
+                    this.return_material.bom_id = "";
+                    this.return_material.bom_code = "";
+                    this.return_material.bom_description = "";  
+                }
+            },
+            "return_material.bom_id" : function(newValue){
+                if(newValue != ""){
+                    this.boms.forEach(bom => {
+                        if(bom.id == newValue){
+                            this.return_material.bom_code = bom.code;
+                            this.return_material.bom_description = bom.description;
+                        }
+                    });
+                }else{
+                    this.return_material.bom_code = "";
+                    this.return_material.bom_description = "";
+                }
+            },
             confirmActivity:{
                 handler: function(newValue) {
                     if(this.confirmActivity.actual_start_date == ""){

@@ -358,6 +358,13 @@
                                 </div>
                                 <div class="modal-body">
                                     <div class="p-l-0 form-group col-sm-12">
+                                        <label for="type" class="control-label">Type</label>
+                                        <selectize v-model="editActivity.type">
+                                            <option v-for="(type, index) in types" :value="type">{{ type }}</option>
+                                        </selectize>
+                                    </div>
+
+                                    <div class="p-l-0 form-group col-sm-12">
                                         <label for="name" class="control-label">Name</label>
                                         <textarea id="name" v-model="editActivity.name" class="form-control" rows="2" placeholder="Insert Name Here..."></textarea>
                                     </div>
@@ -489,6 +496,7 @@ var data = {
     wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
     activities :[],
+    types :['Upload','Document Number','General'],
     newIndex : "",
     allActivities : [],
     allActivitiesEdit : [],
@@ -611,7 +619,7 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editActivity.name == ""
-                || this.newActivity.type == ""
+                || this.editActivity.type == ""
                 || this.editActivity.weight == ""
                 || this.editActivity.planned_duration == "")
                 {

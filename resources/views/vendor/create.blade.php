@@ -127,13 +127,13 @@ $vendor->name => route('vendor.show',$vendor->id),
 
                             <!-- START FORM PAJAK PERTAMBAHAN NILAI -->
                             <div class="form-group">
-                                <label for="pajak_pertambahan_nilai" class="col-sm-2 control-label" >PPn. (%)*</label>
+                                <label for="ppn" class="col-sm-2 control-label" >PPn. (%)*</label>
                             
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_pertambahan_nilai"
-                                        name="pajak_pertambahan_nilai"
-                                        @if($vendor->pajak_pertambahan_nilai != null) value="{{ $vendor->pajak_pertambahan_nilai }}"
-                                    @else value="{{ old('pajak_pertambahan_nilai') }}"
+                                    <input type="text" class="form-control" onkeypress="validate(event)" id="ppn"
+                                        name="ppn"
+                                        @if($vendor->ppn != null) value="{{ $vendor->ppn }}"
+                                    @else value="{{ old('ppn') }}"
                                     @endif required>
                                 </div>
                             </div>
@@ -141,13 +141,13 @@ $vendor->name => route('vendor.show',$vendor->id),
                             
                             <!-- START FORM PAJAK PENGHASILAN -->
                             <div class="form-group">
-                                <label for="pajak_penghasilan" class="col-sm-2 control-label" >PPh. (%)*</label>
+                                <label for="pph" class="col-sm-2 control-label" >PPh. (%)*</label>
                             
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pajak_penghasilan"
-                                        name="pajak_penghasilan"
-                                        @if($vendor->pajak_penghasilan != null) value="{{ $vendor->pajak_penghasilan }}"
-                                    @else value="{{ old('pajak_penghasilan') }}"
+                                    <input type="text" class="form-control" onkeypress="validate(event)" id="pph"
+                                        name="pph"
+                                        @if($vendor->pph != null) value="{{ $vendor->pph }}"
+                                    @else value="{{ old('pph') }}"
                                     @endif required>
                                 </div>
                             </div>

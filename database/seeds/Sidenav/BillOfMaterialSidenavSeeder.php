@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Database\Seeder\Sidenav;
 use Illuminate\Database\Seeder;
 use App\Models\Menu; 
 
-class BillOfMaterialMenuSeeder extends Seeder
+class BillOfMaterialSidenavSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -45,6 +44,27 @@ class BillOfMaterialMenuSeeder extends Seeder
             'route_name' => 'bom.edit',
         ]);
 
+        DB::table('sidenav')->insert([
+            'menu_id' => $manage_billofmaterial_building,
+            'route_name' => 'bom.manageWbsMaterialBuilding',
+        ]);
+
+        $menu_material_requirement_sum = Menu::where('route_name', 'bom.selectProjectSum')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $menu_material_requirement_sum,
+            'route_name' => 'bom.selectProjectSum',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $menu_material_requirement_sum,
+            'route_name' => 'bom.selectWBSSum',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $menu_material_requirement_sum,
+            'route_name' => 'bom.materialSummaryBuilding',
+        ]);
+        
         $view_billofmaterial_building = Menu::where('route_name', 'bom.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $view_billofmaterial_building,
