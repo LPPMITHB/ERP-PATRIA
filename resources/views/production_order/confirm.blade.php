@@ -519,7 +519,7 @@
                                             <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                                 <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
                                                     <button type="button" class="btn btn-primary btn-xs col-xs-12"
-                                                        @click.prevent="returnOffcut(data)">RETURN CUTOFF</button>
+                                                        @click.prevent="returnOffcut(data)">RETURN OFFCUT</button>
                                                 </div>
                                             </div>
                                         </td>
@@ -790,66 +790,100 @@
                                                 </div>
                                             </div>
 
-                                            <div v-if="return_material.type == 'Other BOM'" class="form-group">
-                                                <label for="length" class="col-sm-12">BOM</label>
-                                            
-                                                <div class="col-sm-12">
-                                                    <selectize id="bom" name="bom_id" v-model="return_material.bom_id" :settings="bom_settings">
-                                                        <option v-for="(bom, index) in boms" :value="bom.id">{{ bom.code }} -
-                                                            {{ bom.description }} [{{bom.wbs.number}} - {{bom.wbs.description}}]</option>
-                                                    </selectize>
-                                                </div>
-                                            </div>
+                                            <template v-if="return_material.type == 'Other BOM'" >
+                                                <div class="row">
+                                                    <div class="col-sm-12">
+                                                        <div class="form-group">
+                                                            <label for="length" class="col-sm-12">BOM</label>      
 
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="length" class="col-sm-12">Material</label>
-                                                    
-                                                        <div class="col-sm-12">
-                                                            <selectize class="selectizeFull" id="material" name="material_id" v-model="return_material.material_id" :settings="material_settings">
-                                                                <option v-for="(material, index) in all_materials" :value="material.id">
-                                                                    {{ material.code }} - {{ material.description }}</option>
-                                                            </selectize>
+                                                            <div class="col-sm-12">
+                                                                <selectize id="bom" name="bom_id" v-model="return_material.bom_id" :settings="bom_settings">
+                                                                    <option v-for="(bom, index) in boms" :value="bom.id">{{ bom.code }} -
+                                                                        {{ bom.description }} [{{bom.wbs.number}} - {{bom.wbs.description}}]</option>
+                                                                </selectize>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="length" class="col-sm-12">Storage Location</label>
+
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="length" class="col-sm-12">Material</label>
+                                                
+                                                            <div class="col-sm-12">
+                                                                <selectize class="selectizeFull" id="material" name="material_id" v-model="return_material.material_id"
+                                                                    :settings="material_settings">
+                                                                    <option v-for="(material, index) in all_materials" :value="material.id">
+                                                                        {{ material.code }} - {{ material.description }}</option>
+                                                                </selectize>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="quantity" class="col-sm-12">Quantity</label>
                                                     
-                                                        <div class="col-sm-12">
-                                                            <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id" :settings="sloc_settings">
-                                                                <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} -
-                                                                    {{ sloc.description }}</option>
-                                                            </selectize>
+                                                            <div class="col-sm-12">
+                                                                <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
+                                                                    placeholder="Quantity">
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            
-                                            <div class="row">
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="quantity" class="col-sm-12">Quantity</label>
-                                                    
-                                                        <div class="col-sm-12">
-                                                            <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
-                                                                placeholder="Quantity">
+                                            </template>
+
+                                            <template v-if="return_material.type == 'Storage'">
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="length" class="col-sm-12">Material</label>
+                                                        
+                                                            <div class="col-sm-12">
+                                                                <selectize class="selectizeFull" id="material" name="material_id" v-model="return_material.material_id" :settings="material_settings">
+                                                                    <option v-for="(material, index) in all_materials" :value="material.id">
+                                                                        {{ material.code }} - {{ material.description }}</option>
+                                                                </selectize>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="length" class="col-sm-12">Storage Location</label>
+                                                        
+                                                            <div class="col-sm-12">
+                                                                <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id" :settings="sloc_settings">
+                                                                    <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} -
+                                                                        {{ sloc.description }}</option>
+                                                                </selectize>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-sm-6">
-                                                    <div class="form-group">
-                                                        <label for="quantity" class="col-sm-12">Received Date</label>
-                                                    
-                                                        <div class="col-sm-12">
-                                                            <input v-model="return_material.received_date" autocomplete="off" type="text" class="form-control datepicker"
-                                                                name="received_date" id="received_date" placeholder="Received Date">
+                                                
+                                                <div class="row">
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="quantity" class="col-sm-12">Quantity</label>
+                                                        
+                                                            <div class="col-sm-12">
+                                                                <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
+                                                                    placeholder="Quantity">
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>  
+                                                    <div class="col-sm-6">
+                                                        <div class="form-group">
+                                                            <label for="quantity" class="col-sm-12">Received Date</label>
+                                                        
+                                                            <div class="col-sm-12">
+                                                                <input v-model="return_material.received_date" autocomplete="off" type="text" class="form-control datepicker"
+                                                                    name="received_date" id="received_date" placeholder="Received Date">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div> 
+                                            </template> 
                                             
                                             <div class="form-group">
                                                 <div class="m-t-10 col-sm-2">
@@ -889,7 +923,7 @@
                                                                 <td class="p-b-15 p-t-15">{{ data.received_date }}</td>
                                                                 <td>
                                                                     <div class="col-sm-12 col-xs-12 no-padding p-r-2">
-                                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(data)"
+                                                                        <a class="btn btn-danger btn-xs col-xs-12" @click="removeMaterial(index)"
                                                                             data-toggle="modal">
                                                                             DELETE
                                                                         </a>
@@ -942,7 +976,7 @@
                                                             <tr v-for="(data,index) in data_return_material_show">
                                                                 <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
                                                                 <td v-if="data.type == 'Other BOM'" class="tdEllipsis p-b-15 p-t-15" data-container="body"
-                                                                    v-tooltip:top="tooltipText(data.type+ '['+data.bom_code+' - '+data.bom_description+']')">{{ data.type }}
+                                                                    v-tooltip:top="tooltipText(data.type+ ' ['+data.bom_code+' - '+data.bom_description+']')">{{ data.type }}
                                                                     [{{data.bom_code}} - {{data.bom_description}}]
                                                                 </td>
                                                                 <td v-else-if="data.type == 'Storage'" class="tdEllipsis p-b-15 p-t-15" data-container="body"
@@ -958,7 +992,7 @@
                                                         </tbody>
                                                         <tbody v-else>
                                                             <tr>
-                                                                <td colspan="4" class="p-b-15 p-t-15 text-center"><b>EMPTY</b></td>
+                                                                <td colspan="5" class="p-b-15 p-t-15 text-center"><b>EMPTY</b></td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
@@ -1089,6 +1123,7 @@
             bom_id : "",
             bom_code : "",
             bom_description : "",
+            new : true,
         },
         data_return_material : [],
         data_return_material_show : [],
@@ -1133,12 +1168,6 @@
                     }else{
                         this.confirmActivity.actual_duration ="";
                     }
-                }
-            );
-
-            $("#received_date").datepicker().on(
-                "changeDate", () => {
-                    this.return_material.received_date = $('#received_date').val();
                 }
             );
         },
@@ -1186,12 +1215,23 @@
             },
             addMaterialOk: function(){
                 let isOk = false;
-                
-                if(this.return_material.material_id == "" ||
-                this.return_material.quantity == "" ||
-                this.return_material.quantity == 0 ||
-                this.return_material.received_date == ""
-                ){
+                if(this.return_material.type == "Storage"){
+                    if(this.return_material.material_id == "" ||
+                    this.return_material.quantity == "" ||
+                    this.return_material.quantity == 0 ||
+                    this.return_material.received_date == ""
+                    ){
+                        isOk = true;
+                    }
+                }else if(this.return_material.type == "Other BOM"){
+                    if(this.return_material.bom_id == "" ||
+                    this.return_material.quantity == "" ||
+                    this.return_material.quantity == 0 ||
+                    this.return_material.material_id == ""
+                    ){
+                    isOk = true;
+                    }
+                }else{
                     isOk = true;
                 }
                 return isOk;
@@ -1599,6 +1639,10 @@
                         material.selected = true;
                     }
                 });
+                if(temp.type == "Other BOM"){
+                    temp.sloc_name = "-";
+                    temp.received_date = "-";
+                }
                 this.data_return_material.push(temp);
 
                 this.return_material.material_id = "";
@@ -1648,21 +1692,13 @@
                 this.data_return_material_show = data.returned_materials;
                 $('#show_material_return').modal();
             },
-            removeMaterial(data){
-                for (let x = 0; x < this.data_return_material.length; x++) {
-                    if(this.data_return_material[x].material_id == data.material_id){
-                        if(this.data_return_material[x].id != null){
-                            this.deleted_returned_material.push(this.data_return_material[x].id);
-                        }
-                        this.data_return_material.splice(x,1);
-                    }
+            removeMaterial(index){
+                var data = this.data_return_material[index];
+                if(!data.new){
+                    this.deleted_returned_material.push(this.data_return_material[index].id);
                 }
-                this.all_materials.forEach(material => {
-                    if(material.id == data.material_id){
-                        material.selected = false;
-                    }
-                });
-
+                this.data_return_material.splice(index,1);
+               
                 this.data_changed = true;
             },
         },
@@ -1935,6 +1971,16 @@
             if(this.confirmActivity.type == 'Upload'){
                 document.getElementById("file_name_readonly").value = this.confirmActivity.file_name;
             }
+
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#received_date").datepicker().on(
+                "changeDate", () => {
+                this.return_material.received_date = $('#received_date').val();
+                }
+            );
         },
     });
     function parseDate(str) {
