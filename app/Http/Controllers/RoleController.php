@@ -135,7 +135,9 @@ class RoleController extends Controller
         $menus = array();
         foreach($datas->checkedPermissions as $checkedPermission){
             $permission = Permission::where('middleware',$checkedPermission)->select('menu_id')->first();
-            $menus[] = $permission;
+            if($permission != null){
+                $menus[] = $permission;
+            }
         }
         $menus = array_unique($menus);
 

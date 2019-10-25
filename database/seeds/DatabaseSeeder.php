@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstCustomerTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ConfigurationsTableSeeder::class);
-        $this->call(SidenavsTableSeeder::class);
+        // $this->call(SidenavsTableSeeder::class);
         $this->call(UOMTableSeeder::class);
         $this->call(MstMaterialTableSeeder::class);
         $this->call(ShipsTableSeeder::class);
