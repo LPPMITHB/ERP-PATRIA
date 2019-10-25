@@ -1673,6 +1673,16 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Assign Resource
+        $menu_assign_resource = Menu::where('route_name','resource.assignResource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Assign Resource',
+            'menu_id' => $menu_assign_resource,
+            'middleware' => 'assign-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Receive Resource
         $receiveResource = Menu::where('name', 'Receive Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -2425,7 +2435,7 @@ class PermissionsTableSeeder extends Seeder
 
         $viewYardPlan = Menu::where('name', 'View Yard Plan')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Viwe Yard Plan',
+            'name' => 'View Yard Plan',
             'menu_id' => $viewYardPlan,
             'middleware' => 'view-yard-plan',
             'created_at' => date('Y-m-d'),
@@ -2466,6 +2476,16 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Resource Repair',
             'menu_id' => $resource,
             'middleware' => 'edit-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Assign Resource Repair
+        $menu_assign_resource_repair = Menu::where('route_name','resource_repair.assignResource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Assign Resource Repair',
+            'menu_id' => $menu_assign_resource_repair,
+            'middleware' => 'assign-resource-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -2535,16 +2555,67 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Quality Control Task
-        $qcTask = Menu::where('name', 'Create QC Task')->select('id')->first()->id;
+        $menu_create_qc_task = Menu::where('route_name', 'qc_task.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create QC Task',
-            'menu_id' => $qcTask,
+            'menu_id' => $menu_create_qc_task,
             'middleware' => 'create-qc-task',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
-        // Quality Control Task
+        $menu_view_qc_task = Menu::where('route_name', 'qc_task.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Task',
+            'menu_id' => $menu_view_qc_task,
+            'middleware' => 'list-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'View QC Task',
+            'menu_id' => $menu_view_qc_task,
+            'middleware' => 'show-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit QC Task',
+            'menu_id' => $menu_view_qc_task,
+            'middleware' => 'edit-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_confirm_qc_task = Menu::where('route_name', 'qc_task.selectProjectConfirm')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Confirm QC Task',
+            'menu_id' => $menu_confirm_qc_task,
+            'middleware' => 'confirm-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Finish QC Task',
+            'menu_id' => $menu_confirm_qc_task,
+            'middleware' => 'cancel-finish-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_summary_report_qc_task = Menu::where('route_name', 'qc_task.selectProjectSummary')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Summary Report QC Task',
+            'menu_id' => $menu_summary_report_qc_task,
+            'middleware' => 'summary-report-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Quality Control Type
         $qcType = Menu::where('name', 'Create QC Type')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create QC Type',
@@ -3273,16 +3344,67 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        //Quality Control Task Repair
-        $menu_index_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
+        // Quality Control Task Repair
+        $menu_create_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index QC Task Repair',
-            'menu_id' => $menu_index_qc_task_repair,
+            'name' => 'Create QC Task',
+            'menu_id' => $menu_create_qc_task_repair,
+            'middleware' => 'create-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+
+        $menu_view_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Task Repair',
+            'menu_id' => $menu_view_qc_task_repair,
             'middleware' => 'list-qc-task-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        //Quality Control Task Building
+
+        DB::table('permissions')->insert([
+            'name' => 'View QC Task Repair',
+            'menu_id' => $menu_view_qc_task_repair,
+            'middleware' => 'show-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit QC Task Repair',
+            'menu_id' => $menu_view_qc_task_repair,
+            'middleware' => 'edit-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_confirm_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProjectConfirm')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Confirm QC Task Repair',
+            'menu_id' => $menu_confirm_qc_task_repair,
+            'middleware' => 'confirm-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Finish QC Task Repair',
+            'menu_id' => $menu_confirm_qc_task_repair,
+            'middleware' => 'cancel-finish-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_summary_report_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProjectSummary')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Summary Report QC Task Repair',
+            'menu_id' => $menu_summary_report_qc_task_repair,
+            'middleware' => 'summary-report-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
 
         //Sales Plan
         $menu_sales_plan = Menu::where('route_name','sales_plan.index')->select('id')->first()->id;
@@ -3300,6 +3422,63 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Manage Sales Plan Repair',
             'menu_id' => $menu_sales_plan_repair,
             'middleware' => 'manage-sales-plan-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Customer Visit
+        $menu_customer_visit = Menu::where('route_name','customer_visit.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Customer Visit',
+            'menu_id' => $menu_customer_visit,
+            'middleware' => 'manage-customer-visit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Customer Visit
+        $menu_customer_visit_repair = Menu::where('route_name','customer_visit_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Customer Visit Repair',
+            'menu_id' => $menu_customer_visit_repair,
+            'middleware' => 'manage-customer-visit-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Delivery Document
+        $menu_manage_delivery_document = Menu::where('route_name', 'delivery_document.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Delivery Document',
+            'menu_id' => $menu_manage_delivery_document,
+            'middleware' => 'manage-delivery-document',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_view_delivery_document = Menu::where('route_name', 'delivery_document.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Delivery Document',
+            'menu_id' => $menu_view_delivery_document,
+            'middleware' => 'list-delivery-document',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Delivery Document',
+            'menu_id' => $menu_view_delivery_document,
+            'middleware' => 'show-delivery-document',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Close Project
+        $menu_close_project = Menu::where('route_name', 'close_project.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Close Project',
+            'menu_id' => $menu_close_project,
+            'middleware' => 'close-project',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);

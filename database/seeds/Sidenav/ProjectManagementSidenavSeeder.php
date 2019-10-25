@@ -307,21 +307,22 @@ class ProjectManagementSidenavSeeder extends Seeder
             'route_name' => 'project_standard.showResourceStandard',
         ]);
 
-        $projectConfig = Menu::where('route_name', 'project.selectProjectConfig')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $projectConfig,
-            'route_name' => 'project.selectProjectConfig',
-        ]);
+        //UNUSED
+        // $projectConfig = Menu::where('route_name', 'project.selectProjectConfig')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $projectConfig,
+        //     'route_name' => 'project.selectProjectConfig',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $projectConfig,
-            'route_name' => 'project.selectProjectConfig',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $projectConfig,
+        //     'route_name' => 'project.selectProjectConfig',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $projectConfig,
-            'route_name' => 'project.configWbsEstimator',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $projectConfig,
+        //     'route_name' => 'project.configWbsEstimator',
+        // ]);
 
         
 

@@ -78,16 +78,17 @@ class ProductionPlanningSidenavSeeder extends Seeder
             'route_name' => 'production_order.showConfirm',
         ]);
 
-        $reportProductionOrder = Menu::where('route_name', 'production_order.selectProjectReport')->select('id')->first()->id;
-        DB::table('sidenav')->insert([
-            'menu_id' => $reportProductionOrder,
-            'route_name' => 'production_order.selectProjectReport',
-        ]);
+        // Unused
+        // $reportProductionOrder = Menu::where('route_name', 'production_order.selectProjectReport')->select('id')->first()->id;
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $reportProductionOrder,
+        //     'route_name' => 'production_order.selectProjectReport',
+        // ]);
 
-        DB::table('sidenav')->insert([
-            'menu_id' => $reportProductionOrder,
-            'route_name' => 'production_order.selectWOReport',
-        ]);
+        // DB::table('sidenav')->insert([
+        //     'menu_id' => $reportProductionOrder,
+        //     'route_name' => 'production_order.selectWOReport',
+        // ]);
 
         $indexProductionOrder = Menu::where('route_name', 'production_order.selectProjectIndex')->select('id')->first()->id;
         DB::table('sidenav')->insert([

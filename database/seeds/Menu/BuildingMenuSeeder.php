@@ -343,18 +343,19 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+        //UNUSED
         // Building - Project Management - WBS & Estimator Configuration
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'WBS & Estimator Configuration',
-            'icon' => 'fa-clock-o',
-            'route_name' => 'project.selectProjectConfig',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id' => $project_management,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'WBS & Estimator Configuration',
+        //     'icon' => 'fa-clock-o',
+        //     'route_name' => 'project.selectProjectConfig',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id' => $project_management,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         // Building - Bill of Material
         DB::table('menus')->insert([
@@ -1416,18 +1417,19 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // Building - Production Planning & Execution - Production Order Actual Cost Report
-        DB::table('menus')->insert([
-            'level' => 3,
-            'name' => 'Production Order Actual Cost Report',
-            'icon' => 'fa-wrench',
-            'route_name' => 'production_order.selectProjectReport',
-            'is_active' => true,
-            'roles' => 'ADMIN',
-            'menu_id' => $ppe,
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d')
-        ]);
+        // UNUSED
+        // // Building - Production Planning & Execution - Production Order Actual Cost Report
+        // DB::table('menus')->insert([
+        //     'level' => 3,
+        //     'name' => 'Production Order Actual Cost Report',
+        //     'icon' => 'fa-wrench',
+        //     'route_name' => 'production_order.selectProjectReport',
+        //     'is_active' => true,
+        //     'roles' => 'ADMIN',
+        //     'menu_id' => $ppe,
+        //     'created_at' => date('Y-m-d'),
+        //     'updated_at' => date('Y-m-d')
+        // ]);
 
         // Building - Production Planning & Execution - View Production Order
         DB::table('menus')->insert([
