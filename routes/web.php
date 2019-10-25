@@ -2067,33 +2067,32 @@ Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
 //  QC Type Routes
 Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
-    Route::get('/', 'QualityControlTypeController@index')->name('index');
+    Route::get('/', 'QualityControlTypeController@index')->name('index')->middleware('can:list-qc-type');
 
-    Route::get('/create', 'QualityControlTypeController@create')->name('create');
+    Route::get('/create', 'QualityControlTypeController@create')->name('create')->middleware('can:create-qc-type');
 
-    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show')->middleware('can:show-qc-type');
 
-    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit')->middleware('can:edit-qc-type');
 
-    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update')->middleware('can:edit-qc-type');
 
-    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster')->middleware('can:edit-qc-type');
 
-    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail')->middleware('can:edit-qc-type');
 
     Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
 
-    Route::post('/', 'QualityControlTypeController@store')->name('store');
+    Route::post('/', 'QualityControlTypeController@store')->name('store')->middleware('can:create-qc-type');
 
-    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy')->middleware('can:destroy-qc-type');
 
 });
 
 //  QC Task Routes
 Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
-    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
-    // ->middleware('can:list-qc-task');
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
 
     Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
 
@@ -2113,13 +2112,12 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
 
-    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
-    // ->middleware('can:show-qc-task');
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
 
-    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
     // ->middleware('can:edit-qc-task');
 
-    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
     // ->middleware('can:edit-qc-task');
 
     Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
