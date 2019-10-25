@@ -27,4 +27,9 @@ class ProductionOrderReturn extends Model
     {
         return $this->belongsTo('App\Models\StorageLocation');
     }
+
+    public function goodsReceiptDetail()
+    {
+        return $this->belongsTo('App\Models\GoodsReceiptDetail');
+    }
 }

@@ -33,6 +33,11 @@ class ProductionOrderDetail extends Model
         return $this->hasMany('App\Models\ProductionOrderDetail');
     }
 
+    public function productionOrderReturns()
+    {
+        return $this->hasMany('App\Models\ProductionOrderReturn');
+    }
+
     public function goodsReceiptDetails()
     {
         return $this->hasMany('App\Models\GoodsReceiptDetail');

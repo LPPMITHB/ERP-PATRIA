@@ -301,7 +301,7 @@ Route::name('resource.')->prefix('resource')->group(function() {
 
     Route::put('/updateDetail', 'ResourceController@updateDetail')->name('updateDetail')->middleware('can:show-resource');
 
-    Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:list-resource');
+    Route::get('/assignResource', 'ResourceController@assignResource')->name('assignResource')->middleware('can:assign-resource');
 
     Route::get('/selectPO', 'ResourceController@selectPO')->name('selectPO')->middleware('can:create-receive-resource');
 
@@ -509,13 +509,13 @@ Route::name('yard.')->prefix('yard')->group(function() {
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
     //MRS
-    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom');
+    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:manage-material-requirement-summary');
 
-    Route::get('/selectWBSSum/{id}', 'BOMController@selectWBSSum')->name('selectWBSSum')->middleware('can:create-bom');
+    Route::get('/selectWBSSum/{id}', 'BOMController@selectWBSSum')->name('selectWBSSum')->middleware('can:manage-material-requirement-summary');
 
-    Route::get('/materialSummaryBuilding/{id}', 'BOMController@materialSummaryBuilding')->name('materialSummaryBuilding')->middleware('can:create-bom');
+    Route::get('/materialSummaryBuilding/{id}', 'BOMController@materialSummaryBuilding')->name('materialSummaryBuilding')->middleware('can:manage-material-requirement-summary');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
+    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:manage-material-requirement-summary');
 
     //
     Route::get('/selectWBS/{id}', 'BOMController@selectWBS')->name('selectWBS')->middleware('can:create-bom');
@@ -802,7 +802,7 @@ Route::name('activity.')->prefix('activity')->group(function() {
 
     Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project');
 
-    Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');
+    Route::post('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project');
 
     //Activity
     Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project');
@@ -2067,66 +2067,64 @@ Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
 //  QC Type Routes
 Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
-    Route::get('/', 'QualityControlTypeController@index')->name('index');
+    Route::get('/', 'QualityControlTypeController@index')->name('index')->middleware('can:list-qc-type');
 
-    Route::get('/create', 'QualityControlTypeController@create')->name('create');
+    Route::get('/create', 'QualityControlTypeController@create')->name('create')->middleware('can:create-qc-type');
 
-    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show')->middleware('can:show-qc-type');
 
-    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit')->middleware('can:edit-qc-type');
 
-    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update')->middleware('can:edit-qc-type');
 
-    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster')->middleware('can:edit-qc-type');
 
-    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail')->middleware('can:edit-qc-type');
 
     Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
 
-    Route::post('/', 'QualityControlTypeController@store')->name('store');
+    Route::post('/', 'QualityControlTypeController@store')->name('store')->middleware('can:create-qc-type');
 
-    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy')->middleware('can:destroy-qc-type');
 
 });
 
 //  QC Task Routes
 Route::name('qc_task.')->prefix('qc_task')->group(function() {
+    
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
 
-    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
-    // ->middleware('can:list-qc-task');
+    Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask')->middleware('can:confirm-qc-task');
 
-    Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
+    Route::get('/confirm/{id}', 'QualityControlTaskController@confirm')->name('confirm')->middleware('can:confirm-qc-task');
 
-    Route::get('/confirm/{id}', 'QualityControlTaskController@confirm')->name('confirm');
+    Route::get('/summaryReport/{id}', 'QualityControlTaskController@summaryReport')->name('summaryReport')->middleware('can:summary-report-qc-task');
 
-    Route::get('/summaryReport/{id}', 'QualityControlTaskController@summaryReport')->name('summaryReport');
+    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject')->middleware('can:create-qc-task');
 
-    Route::get('/selectProject', 'QualityControlTaskController@selectProject')->name('selectProject');
+    Route::get('/selectProjectIndex', 'QualityControlTaskController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-qc-task');
 
-    Route::get('/selectProjectIndex', 'QualityControlTaskController@selectProjectIndex')->name('selectProjectIndex');
+    Route::get('/selectProjectConfirm', 'QualityControlTaskController@selectProjectConfirm')->name('selectProjectConfirm')->middleware('can:confirm-qc-task');
 
-    Route::get('/selectProjectConfirm', 'QualityControlTaskController@selectProjectConfirm')->name('selectProjectConfirm');
+    Route::get('/selectProjectSummary', 'QualityControlTaskController@selectProjectSummary')->name('selectProjectSummary')->middleware('can:summary-report-qc-task');
 
-    Route::get('/selectProjectSummary', 'QualityControlTaskController@selectProjectSummary')->name('selectProjectSummary');
-
-    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');
+    Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS')->middleware('can:create-qc-task');
 
     Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
 
-    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
-    // ->middleware('can:show-qc-task');
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
 
-    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
     // ->middleware('can:edit-qc-task');
 
-    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
     // ->middleware('can:edit-qc-task');
 
-    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish')->middleware('can:confirm-qc-task');
 
-    Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish');
+    Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish')->middleware('can:cancel-finish-qc-task');
 
-    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm');
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-qc-task');
 
     Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
 
@@ -2137,85 +2135,85 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
 // Sales Plan Routes
 Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
-    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan');
 
-    Route::get('/', 'SalesPlanController@index')->name('index');
+    Route::get('/', 'SalesPlanController@index')->name('index')->middleware('can:manage-sales-plan');
 
-    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+    Route::get('/{id}', 'SalesPlanController@show')->name('show')->middleware('can:manage-sales-plan');
 
-    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit')->middleware('can:manage-sales-plan');
 
-    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update')->middleware('can:manage-sales-plan');
 
-    Route::post('/', 'SalesPlanController@store')->name('store');
+    Route::post('/', 'SalesPlanController@store')->name('store')->middleware('can:manage-sales-plan');
 
 });
 
 // Sales Plan Repair Routes
 Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function() {
-    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/', 'SalesPlanController@index')->name('index');
+    Route::get('/', 'SalesPlanController@index')->name('index')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+    Route::get('/{id}', 'SalesPlanController@show')->name('show')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit')->middleware('can:manage-sales-plan-repair');
 
-    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update')->middleware('can:manage-sales-plan-repair');
 
-    Route::post('/', 'SalesPlanController@store')->name('store');
+    Route::post('/', 'SalesPlanController@store')->name('store')->middleware('can:manage-sales-plan-repair');
 });
 
 // Customer Visit Routes
 Route::name('customer_visit.')->prefix('customer_visit')->group(function() {
-    Route::get('/', 'CustomerVisitController@index')->name('index');
+    Route::get('/', 'CustomerVisitController@index')->name('index')->middleware('can:manage-customer-visit');
 
-    Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
+    Route::patch('/{id}', 'CustomerVisitController@update')->name('update')->middleware('can:manage-customer-visit');
 
-    Route::post('/', 'CustomerVisitController@store')->name('store');
+    Route::post('/', 'CustomerVisitController@store')->name('store')->middleware('can:manage-customer-visit');
 
-    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
+    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy')->middleware('can:manage-customer-visit');
 });
 
 // Customer Visit Repair Routes
 Route::name('customer_visit_repair.')->prefix('customer_visit_repair')->group(function() {
-    Route::get('/', 'CustomerVisitController@index')->name('index');
+    Route::get('/', 'CustomerVisitController@index')->name('index')->middleware('can:manage-customer-visit-repair');
 
-    Route::patch('/{id}', 'CustomerVisitController@update')->name('update');
+    Route::patch('/{id}', 'CustomerVisitController@update')->name('update')->middleware('can:manage-customer-visit-repair');
 
-    Route::post('/', 'CustomerVisitController@store')->name('store');
+    Route::post('/', 'CustomerVisitController@store')->name('store')->middleware('can:manage-customer-visit-repair');
 
-    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy');
+    Route::delete('/{id}', 'CustomerVisitController@destroy')->name('destroy')->middleware('can:manage-customer-visit-repair');
 });
 
 // Delivery Document Routes
 Route::name('delivery_document.')->prefix('delivery_document')->group(function() {
-    Route::get('/selectProject', 'DeliveryDocumentController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'DeliveryDocumentController@selectProject')->name('selectProject')->middleware('can:manage-delivery-document');
 
-    Route::get('/selectProjectIndex', 'DeliveryDocumentController@selectProjectIndex')->name('selectProjectIndex');
+    Route::get('/selectProjectIndex', 'DeliveryDocumentController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-delivery-document');
 
-    Route::get('/manage/{id}', 'DeliveryDocumentController@manage')->name('manage');
+    Route::get('/manage/{id}', 'DeliveryDocumentController@manage')->name('manage')->middleware('can:manage-delivery-document');
 
-    Route::get('/{id}', 'DeliveryDocumentController@show')->name('show');
+    Route::get('/{id}', 'DeliveryDocumentController@show')->name('show')->middleware('can:show-delivery-document');
 
-    Route::get('/{id}/edit', 'DeliveryDocumentController@edit')->name('edit');
+    Route::get('/{id}/edit', 'DeliveryDocumentController@edit')->name('edit')->middleware('can:manage-delivery-document');
 
-    Route::post('/{id}', 'DeliveryDocumentController@update')->name('update');
+    Route::post('/{id}', 'DeliveryDocumentController@update')->name('update')->middleware('can:manage-delivery-document');
 
-    Route::post('/', 'DeliveryDocumentController@store')->name('store');
+    Route::post('/', 'DeliveryDocumentController@store')->name('store')->middleware('can:manage-delivery-document');
 
-    Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy');
+    Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy')->middleware('can:manage-delivery-document');
 });
 
 // Project Close Routes
 Route::name('close_project.')->prefix('close_project')->group(function() {
-    Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject');
+    Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject')->middleware('can:close-project');
 
-    Route::get('/', 'CloseProjectController@index')->name('index');
+    // Route::get('/', 'CloseProjectController@index')->name('index');
 
-    Route::get('/{id}', 'CloseProjectController@show')->name('show');
+    Route::get('/{id}', 'CloseProjectController@show')->name('show')->middleware('can:close-project');
 
-    Route::patch('/{id}', 'CloseProjectController@close')->name('close');
+    Route::patch('/{id}', 'CloseProjectController@close')->name('close')->middleware('can:close-project');
 
     Route::delete('/{id}', 'CloseProjectController@destroy')->name('destroy');
 });

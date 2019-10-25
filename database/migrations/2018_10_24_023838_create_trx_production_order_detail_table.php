@@ -36,6 +36,7 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->longText('morale')->nullable();
             $table->integer('usage')->nullable();
             $table->string('status')->nullable();
+            $table->string('material_type')->nullable();
             $table->timestamps();
 
             $table->foreign('production_order_id')->references('id')->on('trx_production_order');

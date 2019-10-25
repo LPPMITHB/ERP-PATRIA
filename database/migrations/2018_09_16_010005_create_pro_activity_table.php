@@ -20,7 +20,7 @@ class CreateProActivityTable extends Migration
             $table->text('description');
             $table->string('type')->nullable();
             $table->integer('status')->default(1);
-            $table->integer('document_number')->nullable();
+            $table->string('document_number')->nullable();
             $table->string('drawing')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
             $table->unsignedInteger('service_detail_id')->nullable();
