@@ -119,12 +119,8 @@ class RolesTableSeeder extends Seeder
                 'delete-qc-task' => true,
                 'confirm-qc-task' => true,
                 'confirm-finish-qc-task' => true,
-<<<<<<< HEAD
                 'cancel-finish-qc-task' => true,
                 'manage-wbs-images' => true,
-=======
-                'cancel-finish-qc-task' => true
->>>>>>> origin/BJ-BenedictJeremiah
                 ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -221,16 +217,12 @@ class RolesTableSeeder extends Seeder
                 'delete-qc-task' => true,
                 'confirm-qc-task' => true,
                 'confirm-finish-qc-task' => true,
-<<<<<<< HEAD
                 'cancel-finish-qc-task' => true,
                 'manage-wbs-images' => true,
                 'reply-post' => true,
                 'create-invoice' => true,'list-invoice' => true,'edit-invoice' => true,  'show-invoice' => true,
                 'manage-approval-configuration' => true, 'manage-cost-type-configuration' => true, 'manage-appearance-configuration' => true, 'manage-currencies-configuration' => true, 'manage-material-family-configuration' => true, 'manage-density-configuration' => true, 'manage-payment-terms-configuration' => true, 'manage-delivery-terms-configuration' => true, 'manage-weather-configuration' => true, 'manage-tidal-configuration' => true, 'manage-dimension-type-configuration' => true,
                 'manage-weather' => true, 'manage-tidal' => true,
-=======
-                'cancel-finish-qc-task' => true
->>>>>>> origin/BJ-BenedictJeremiah
 
             ]),
             'created_at' => date('Y-m-d'),
@@ -328,13 +320,9 @@ class RolesTableSeeder extends Seeder
                 'delete-qc-task-repair' => true,
                 'confirm-qc-task-repair' => true,
                 'confirm-finish-qc-task-repair' => true,
-<<<<<<< HEAD
                 'cancel-finish-qc-task-repair' => true,
                 'manage-approval-configuration' => true, 'manage-cost-type-configuration' => true, 'manage-appearance-configuration' => true, 'manage-currencies-configuration' => true, 'manage-material-family-configuration' => true, 'manage-density-configuration' => true, 'manage-payment-terms-configuration' => true, 'manage-delivery-terms-configuration' => true, 'manage-weather-configuration' => true, 'manage-tidal-configuration' => true, 'manage-dimension-type-configuration' => true,
                 'manage-weather' => true, 'manage-tidal' => true,
-=======
-                'cancel-finish-qc-task-repair' => true
->>>>>>> origin/BJ-BenedictJeremiah
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
