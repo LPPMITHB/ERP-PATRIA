@@ -509,7 +509,7 @@ Route::name('yard.')->prefix('yard')->group(function() {
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
     //MRS
-    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom');
+    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:manage-material-requirement-summary');
 
     Route::get('/selectWBSSum/{id}', 'BOMController@selectWBSSum')->name('selectWBSSum')->middleware('can:create-bom');
 
@@ -522,7 +522,7 @@ Route::name('bom.')->prefix('bom')->group(function() {
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom');
 
-    Route::post('/storeBom', 'BOMController@storeBom')->name('storeBom')->middleware('can:create-bom');
+    // Route::post('/storeBomWhenConfirm', 'BOMController@storeBomWhenConfirm')->name('storeBomWhenConfirm')->middleware('can:create-bom');
 
     Route::put('/', 'BOMController@update')->name('update')->middleware('can:edit-bom');
 
@@ -563,6 +563,8 @@ Route::name('bom_repair.')->prefix('bom_repair')->group(function() {
     Route::get('/materialSummary/{id}', 'BOMController@materialSummary')->name('materialSummary')->middleware('can:create-bom-repair');
 
     Route::post('/storeBom', 'BOMController@storeBomRepair')->name('storeBomRepair')->middleware('can:create-bom-repair');
+
+    // Route::post('/storeBomRepairWhenConfirm', 'BOMController@storeBomRepairWhenConfirm')->name('storeBomRepairWhenConfirm')->middleware('can:create-bom');
 
     Route::put('/confirmBom', 'BOMController@confirm')->name('confirmBom')->middleware('can:confirm-bom-repair');
 
@@ -2065,33 +2067,32 @@ Route::name('payment_repair.')->prefix('payment_repair')->group(function() {
 //  QC Type Routes
 Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
-    Route::get('/', 'QualityControlTypeController@index')->name('index');
+    Route::get('/', 'QualityControlTypeController@index')->name('index')->middleware('can:list-qc-type');
 
-    Route::get('/create', 'QualityControlTypeController@create')->name('create');
+    Route::get('/create', 'QualityControlTypeController@create')->name('create')->middleware('can:create-qc-type');
 
-    Route::get('/{id}', 'QualityControlTypeController@show')->name('show');
+    Route::get('/{id}', 'QualityControlTypeController@show')->name('show')->middleware('can:show-qc-type');
 
-    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QualityControlTypeController@edit')->name('edit')->middleware('can:edit-qc-type');
 
-    Route::patch('/update', 'QualityControlTypeController@update')->name('update');
+    Route::patch('/update', 'QualityControlTypeController@update')->name('update')->middleware('can:edit-qc-type');
 
-    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster');
+    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster')->middleware('can:edit-qc-type');
 
-    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail');
+    Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail')->middleware('can:edit-qc-type');
 
     Route::delete('/deletedetail/{id}', 'QualityControlTypeController@deleteDetail')->name('deletedetail');
 
-    Route::post('/', 'QualityControlTypeController@store')->name('store');
+    Route::post('/', 'QualityControlTypeController@store')->name('store')->middleware('can:create-qc-type');
 
-    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy');
+    Route::post('/destroy/{id}', 'QualityControlTypeController@destroy')->name('destroy')->middleware('can:destroy-qc-type');
 
 });
 
 //  QC Task Routes
 Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
-    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index');
-    // ->middleware('can:list-qc-task');
+    Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
 
     Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask');
 
@@ -2111,13 +2112,12 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
     Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');
 
-    Route::get('/{id}', 'QualityControlTaskController@show')->name('show');
-    // ->middleware('can:show-qc-task');
+    Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task');
 
-    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit');
+    Route::get('/{id}/edit', 'QualityControlTaskController@edit')->name('edit')->middleware('can:edit-qc-task');
     // ->middleware('can:edit-qc-task');
 
-    Route::patch('/', 'QualityControlTaskController@update')->name('update');
+    Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task');
     // ->middleware('can:edit-qc-task');
 
     Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish');
@@ -2135,33 +2135,33 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
 // Sales Plan Routes
 Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
-    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan');
 
-    Route::get('/', 'SalesPlanController@index')->name('index');
+    Route::get('/', 'SalesPlanController@index')->name('index')->middleware('can:manage-sales-plan');
 
-    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+    Route::get('/{id}', 'SalesPlanController@show')->name('show')->middleware('can:manage-sales-plan');
 
-    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit')->middleware('can:manage-sales-plan');
 
-    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update')->middleware('can:manage-sales-plan');
 
-    Route::post('/', 'SalesPlanController@store')->name('store');
+    Route::post('/', 'SalesPlanController@store')->name('store')->middleware('can:manage-sales-plan');
 
 });
 
 // Sales Plan Repair Routes
 Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function() {
-    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/', 'SalesPlanController@index')->name('index');
+    Route::get('/', 'SalesPlanController@index')->name('index')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+    Route::get('/{id}', 'SalesPlanController@show')->name('show')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit')->middleware('can:manage-sales-plan-repair');
 
-    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update')->middleware('can:manage-sales-plan-repair');
 
-    Route::post('/', 'SalesPlanController@store')->name('store');
+    Route::post('/', 'SalesPlanController@store')->name('store')->middleware('can:manage-sales-plan-repair');
 });
 
 // Customer Visit Routes
