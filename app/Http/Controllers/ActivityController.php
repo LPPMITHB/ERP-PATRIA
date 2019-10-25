@@ -26,6 +26,7 @@ use App\Models\BomPrep;
 use DB;
 use DateTime;
 use Auth;
+use File;
 
 class ActivityController extends Controller
 {
@@ -592,23 +593,47 @@ class ActivityController extends Controller
 
     public function updateActualActivity(Request $request, $id)
     {
-        $data = $request->json()->all();
+        // $data = $request->json()->all();
+        $dataActivity = json_decode($request->dataConfirmActivity);
+        $dataFile = $request->file;
         DB::beginTransaction();
         try {
             $activity = Activity::find($id);
-            if($data['actual_end_date'] == ""){
+            if($dataActivity->actual_end_date == ""){
                 $activity->status = 1;
-                $activity->progress = $data['current_progress'];
+                $activity->progress = $dataActivity->current_progress;
                 $activity->actual_end_date = null;
                 $activity->actual_duration = null;
             }else{
                 $activity->status = 0;
                 $activity->progress = 100;
-                $actualEndDate = DateTime::createFromFormat('d-m-Y', $data['actual_end_date']);
+                $actualEndDate = DateTime::createFromFormat('d-m-Y', $dataActivity->actual_end_date);
                 $activity->actual_end_date = $actualEndDate->format('Y-m-d');
-                $activity->actual_duration = $data['actual_duration'];
+                $activity->actual_duration = $dataActivity->actual_duration;
             }
-            $actualStartDate = DateTime::createFromFormat('d-m-Y', $data['actual_start_date']);
+            $activity->document_number = $dataActivity->document_number;
+            if($dataActivity->type == 'Upload'){
+                if($request->hasFile('file')){
+                    // Get filename with the extension
+                    $fileNameWithExt = $request->file('file')->getClientOriginalName();
+                    // Get just file name
+                    $fileName = pathinfo($fileNameWithExt, PATHINFO_FILENAME);
+                    // Get just ext
+                    $extension = $request->file('file')->getClientOriginalExtension();
+                    // File name to store
+                    $fileNameToStore = $fileName.'_'.time().'.'.$extension;
+                    // Upload image
+                    $path = $request->file('file')->storeAs('documents/activity',$fileNameToStore);
+                    if($activity->drawing != $fileNameToStore){
+                        $image_path = public_path("app/documents/activity/".$activity->drawing); 
+                        if(File::exists($image_path)) {
+                            File::delete($image_path);
+                        }
+                    }
+                    $activity->drawing = $fileNameToStore;
+                }
+            }
+            $actualStartDate = DateTime::createFromFormat('d-m-Y', $dataActivity->actual_start_date);
             $activity->actual_start_date = $actualStartDate->format('Y-m-d');
             $activity->save();
 

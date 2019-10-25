@@ -404,11 +404,11 @@
                 if(this.input.material_id != "" && this.input.source != "" && this.input.quantity != ""){
                     var newMaterial = this.input;
                     newMaterial = JSON.stringify(newMaterial);
-
+                    
                     if(this.menu == "building"){
-                        var url = "{{ route('bom.storeBom') }}";
+                        var url = "{{ route('bom.storeBomWhenConfirm') }}";
                     }else{
-                        var url = "{{ route('bom_repair.storeBomRepair') }}";
+                        var url = "{{ route('bom_repair.storeBomRepairWhenConfirm') }}";
                     }
 
                     window.axios.post(url,newMaterial).then((response) => {

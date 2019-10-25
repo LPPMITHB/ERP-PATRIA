@@ -346,21 +346,27 @@ class ProductionOrderController extends Controller
         $wbs = WBS::findOrFail($modelPrO->wbs_id);
         $wbsMaterials = WbsMaterial::where('wbs_id',$wbs->id)->with('material')->get();
         foreach ($wbsMaterials as $wbsMaterial) {
-            $estimated_quantity = ceil($wbsMaterial->weight / $wbsMaterial->material->weight);
-            $temp_dimensions_value = json_decode($wbsMaterial->dimensions_value);
-
-            $dimensions_string = "";
-            foreach ($temp_dimensions_value as $dimension) {
-                $dimension->uom = Uom::find($dimension->uom_id);
-                if($dimensions_string == ""){
-                    $dimensions_string .= $dimension->value_input." ".$dimension->uom->unit;
-                }else{
-                    $dimensions_string .= " x ".$dimension->value_input." ".$dimension->uom->unit;
-                }   
+            if($wbsMaterial->dimensions_value != null){
+                $estimated_quantity = ceil($wbsMaterial->weight / $wbsMaterial->material->weight);
+                $temp_dimensions_value = json_decode($wbsMaterial->dimensions_value);
+    
+                $dimensions_string = "";
+                foreach ($temp_dimensions_value as $dimension) {
+                    $dimension->uom = Uom::find($dimension->uom_id);
+                    if($dimensions_string == ""){
+                        $dimensions_string .= $dimension->value_input." ".$dimension->uom->unit;
+                    }else{
+                        $dimensions_string .= " x ".$dimension->value_input." ".$dimension->uom->unit;
+                    }   
+                }
+                $wbsMaterial->estimated_quantity = $estimated_quantity;
+                $wbsMaterial->dimensions_string = $dimensions_string;
+                $wbsMaterial->dimensions_value_obj = $temp_dimensions_value;
+            }else{
+                $wbsMaterial->estimated_quantity = $wbsMaterial->quantity;
+                $wbsMaterial->part_description = "-";
+                $wbsMaterial->dimensions_string = "-";
             }
-            $wbsMaterial->estimated_quantity = $estimated_quantity;
-            $wbsMaterial->dimensions_string = $dimensions_string;
-            $wbsMaterial->dimensions_value_obj = $temp_dimensions_value;
         }
         $activities = $wbs->activities;
         $materials = Collection::make();
@@ -381,6 +387,7 @@ class ProductionOrderController extends Controller
                         "quantity" => $prOD->quantity,
                         "quantityFloat" => $prOD->quantity,
                         "material_id" => $prOD->material_id,
+                        "material_type" => $prOD->material_type,
                         'allocated' => "",
                     ]);
                 }elseif($prOD->resource_id != ""){
@@ -468,7 +475,7 @@ class ProductionOrderController extends Controller
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
 
-        $wbs = WBS::find($id);
+        $wbs = WBS::find($modelPrO->wbs_id);
         $boms = Bom::where('project_id', $wbs->project_id)->with('wbs')->get();
         $POU = ProductionOrderUpload::where('production_order_id',$modelPrO->id)->with('user')->get();
         // $materials = Collection::make();
@@ -500,12 +507,24 @@ class ProductionOrderController extends Controller
             //    "unit" => $prod->material->uom->unit
             // ]);
 
-            $temp_returned_material = [];
-            foreach ($prod->goodsReceiptDetails as $returned_material) {
+            foreach ($prod->productionOrderReturns as $returned_material) {
+                if($returned_material->type == "Other BOM"){
+                    $bom_ref = $returned_material->bomDetail->bom;
+                    $returned_material['bom_code'] = $bom_ref->code;
+                    $returned_material['bom_description'] = $bom_ref->description;
+                    $returned_material['sloc_name'] = "-";
+                    $returned_material['received_date'] = "-";
+
+                }elseif($returned_material->type == "Storage"){
+                    $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
+                    $grd_ref = $returned_material->goodsReceiptDetail;
+                    $returned_material['received_date'] = date("d-m-Y", strtotime($grd_ref->received_date));;
+                }
                 $returned_material['material_name'] = $returned_material->material->code." - ".$returned_material->material->description;
-                $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
+                $returned_material['new'] = false;
             }
-            $prod['returned_materials'] = $prod->goodsReceiptDetails;
+
+            $prod['returned_materials'] = $prod->productionOrderReturns;
             $prod['deleted_returned_material'] = [];
         }
         return view('production_order.confirm', compact('boms','modelSloc','modelPrO','project','modelPrOD','route','uoms','POU','materials'));
@@ -791,13 +810,13 @@ class ProductionOrderController extends Controller
             }elseif($route == "/production_order"){
                 if(count($datas->materials) > 0){
                     foreach($datas->materials as $material){
-
                         if($material->material_id != ""){
                             $PrOD = new ProductionOrderDetail;
                             $PrOD->production_order_id = $PrO->id;
                             $PrOD->material_id = $material->material_id;
                             $PrOD->quantity = $material->quantity;
                             $PrOD->source = $material->source;
+                            $PrOD->material_type = $material->type;
                             $PrOD->save();
                         }
                     }
@@ -890,13 +909,15 @@ class ProductionOrderController extends Controller
                             }else{
                                 $prod->quantity = $material->allocated;
                                 $prod->update();
-                                array_push($mr_object,$prod);
+                                if($material->material_type == "Planned"){
+                                    array_push($mr_object,$prod);
+                                }
                             }
                         }
                     }
                 }
-
             }
+
             $modelPrO->status = 2;
             $modelPrO->update();
 
@@ -1023,14 +1044,22 @@ class ProductionOrderController extends Controller
                     $prod = ProductionOrderDetail::find($material->id);
 
                     if(count($material->deleted_returned_material)>0){
-                        foreach ($material->deleted_returned_material as $GRD_id) {
-                            $GRD = GoodsReceiptDetail::find($GRD_id);
-                            $GR = $GRD->goodsReceipt;
-                            $this->reduceStock($GRD->material_id, $GRD->quantity);
-                            $this->reduceSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->quantity);
-                            $GRD->delete();
-                            if(count($GR->goodsReceiptDetails)==0){
-                                $GR->delete();
+                        foreach ($material->deleted_returned_material as $prod_return) {
+                            $prod_return_ref = ProductionOrderReturn::find($prod_return);
+                            if($prod_return_ref->type == "Other BOM"){
+                                $bom_detail_ref = $prod_return_ref->bomDetail;
+                                $prod_return_ref->delete();
+                                $bom_detail_ref->delete();
+                            }else if($prod_return_ref->type == "Storage"){
+                                $GRD = GoodsReceiptDetail::find($prod_return_ref->goods_receipt_detail_id);
+                                $prod_return_ref->delete();
+                                $GR = $GRD->goodsReceipt;
+                                $this->reduceStock($GRD->material_id, $GRD->quantity);
+                                $this->reduceSlocDetail($GRD->material_id, $GRD->storage_location_id,$GRD->quantity);
+                                $GRD->delete();
+                                if(count($GR->goodsReceiptDetails)==0){
+                                    $GR->delete();
+                                }
                             }
                         }
                     }
@@ -1051,31 +1080,37 @@ class ProductionOrderController extends Controller
                         }
                         
                         foreach($material->returned_materials as $data){
-                            if($data->bom_id != ""){
-                                $bom_ref = Bom::find($data->bom_id);
-                                $bom_detail_input = new BomDetail;
-                                $bom_detail_input->bom_id = $bom_ref->id;
-                                $bom_detail_input->material_id = $data->material_id;
-                                $bom_detail_input->quantity = $data->quantity;
-                                $bom_detail_input->source = "Stock";
-                                $bom_detail_input->type = "Offcut";
-                            }
-
-                            if($data->id == null){
-                                if($data->quantity >0 && $data->sloc_id != ""){
-                                    $GRD = new GoodsReceiptDetail;
-                                    $GRD->goods_receipt_id = $GR->id;
-                                    $GRD->production_order_detail_id = $prod->id;
-                                    if($data->received_date != ""){
-                                        $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
-                                        $GRD->received_date = $received_date->format('Y-m-d');
+                            if($data->new){
+                                if($data->bom_id != ""){
+                                    $bom_ref = Bom::find($data->bom_id);
+                                    $bom_detail_input = new BomDetail;
+                                    $bom_detail_input->bom_id = $bom_ref->id;
+                                    $bom_detail_input->material_id = $data->material_id;
+                                    $bom_detail_input->quantity = $data->quantity;
+                                    $bom_detail_input->source = "Stock";
+                                    $bom_detail_input->type = "Offcut";
+                                    $bom_detail_input->save();
+                                }
+    
+                                if($data->id == null){
+                                    if($data->quantity >0 && $data->sloc_id != ""){
+                                        $GRD = new GoodsReceiptDetail;
+                                        $GRD->goods_receipt_id = $GR->id;
+                                        $GRD->production_order_detail_id = $prod->id;
+                                        if($data->received_date != ""){
+                                            $received_date = DateTime::createFromFormat('d-m-Y', $data->received_date);
+                                            $GRD->received_date = $received_date->format('Y-m-d');
+                                        }
+                                        $GRD->quantity = $data->quantity; 
+                                        $GRD->material_id = $data->material_id;
+                                        $GRD->storage_location_id = $data->sloc_id;
+                                        $GRD->item_OK = 1;
+                                        $GRD->save();
+                                        
+                                        $this->updateStock($data->material_id, $data->quantity);
+                                        $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
                                     }
-                                    $GRD->quantity = $data->quantity; 
-                                    $GRD->material_id = $data->material_id;
-                                    $GRD->storage_location_id = $data->sloc_id;
-                                    $GRD->item_OK = 1;
-                                    $GRD->save();
-
+                                    
                                     $prod_return = new ProductionOrderReturn;
                                     $prod_return->type = "Storage";
                                     if($data->bom_id != ''){
@@ -1084,14 +1119,10 @@ class ProductionOrderController extends Controller
                                     }
                                     $prod_return->production_order_detail_id = $prod->id;
                                     $prod_return->material_id = $data->material_id;
-                                    $prod_return->storage_location_id = $data->sloc_id;
+                                    $prod_return->storage_location_id = $data->sloc_id != "" ? $data->sloc_id : null;
                                     $prod_return->quantity = $data->quantity; 
-                                    $prod_return->goods_receipt_detail_id = $GRD->id; 
+                                    $prod_return->goods_receipt_detail_id = isset($GRD) ? $GRD->id : null; 
                                     $prod_return->save();
-                                    
-                                    
-                                    $this->updateStock($data->material_id, $data->quantity);
-                                    $this->updateSlocDetail($data->material_id, $data->sloc_id,$data->quantity);
                                 }
                             }
                         }

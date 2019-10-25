@@ -13,7 +13,7 @@ class PermissionsTableSeeder extends Seeder
     public function run()
     {
         //PICA
-        $managePica = Menu::where('name','PICA')->select('id')->first()->id;
+        $managePica = Menu::where('name', 'PICA')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Pica',
             'menu_id' => $managePica,
@@ -55,7 +55,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Reverse Transaction
-        $reverseTransaction = Menu::where('name','Reverse Transaction')->select('id')->first()->id;
+        $reverseTransaction = Menu::where('name', 'Reverse Transaction')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Reverse Transaction',
             'menu_id' => $reverseTransaction,
@@ -98,7 +98,7 @@ class PermissionsTableSeeder extends Seeder
 
 
         //Dashboard
-        $dashboard = Menu::where('name','Dashboard')->select('id')->first()->id;
+        $dashboard = Menu::where('name', 'Dashboard')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Show Dashboard',
             'menu_id' => $dashboard,
@@ -108,7 +108,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Project
-        $manageProject = Menu::where('name','Manage Projects')->select('id')->first()->id;
+        $manageProject = Menu::where('name', 'Manage Projects')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Project',
             'menu_id' => $manageProject,
@@ -150,7 +150,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // WBS Images
-        $menu_manage_wbs_images = Menu::where('route_name','wbs.manageWbsImages')->select('id')->first()->id;
+        $menu_manage_wbs_images = Menu::where('route_name', 'wbs.manageWbsImages')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Wbs Images',
             'menu_id' => $menu_manage_wbs_images,
@@ -158,9 +158,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         // WBS Profile
-        $manageWbsProfile = Menu::where('name','Manage WBS Profile')->select('id')->first()->id;
+        $manageWbsProfile = Menu::where('name', 'Manage WBS Profile')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Wbs Profile',
             'menu_id' => $manageWbsProfile,
@@ -194,9 +194,9 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Project Repair
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $projectManagementRepair =  Menu::where('name','Project Management')->where('menu_id',$repair)->select('id')->first()->id;
-        $manageProjectRepair = Menu::where('name','Manage Projects')->where('menu_id',$projectManagementRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $projectManagementRepair =  Menu::where('name', 'Project Management')->where('menu_id', $repair)->select('id')->first()->id;
+        $manageProjectRepair = Menu::where('name', 'Manage Projects')->where('menu_id', $projectManagementRepair)->select('id')->first()->id;
 
         DB::table('permissions')->insert([
             'name' => 'List Project',
@@ -273,7 +273,7 @@ class PermissionsTableSeeder extends Seeder
         // ]);
 
         // Project Standard Repair
-        $manageProjectStandard = Menu::where('name','Manage Project Standard')->select('id')->first()->id;
+        $manageProjectStandard = Menu::where('name', 'Manage Project Standard')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Project Standard',
             'menu_id' => $manageProjectStandard,
@@ -283,7 +283,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //BOM
-        $viewBOM = Menu::where('name','View BOM')->select('id')->first()->id;
+        $viewBOM = Menu::where('route_name','bom.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Bom',
             'menu_id' => $viewBOM,
@@ -292,23 +292,23 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
-        DB::table('permissions')->insert([
-            'name' => 'Manage Bom',
-            'menu_id' => $manageBOM,
-            'middleware' => 'create-bom',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         DB::table('permissions')->insert([
             'name' => 'Show Bom',
-            'menu_id' => $manageBOM,
+            'menu_id' => $viewBOM,
             'middleware' => 'show-bom',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $manageBOM = Menu::where('route_name','bom.indexProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Bom',
+            'menu_id' => $manageBOM,
+            'middleware' => 'create-bom',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
         DB::table('permissions')->insert([
             'name' => 'Edit Bom',
             'menu_id' => $manageBOM,
@@ -325,11 +325,20 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $menu_material_requirement_summmary = Menu::where('route_name','bom.selectProjectSum')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Material Requirement Summary',
+            'menu_id' => $menu_material_requirement_summmary,
+            'middleware' => 'manage-material-requirement-summary',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //BOM Repair
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $bomRepair =  Menu::where('name','Bill of Material')->where('menu_id',$repair)->select('id')->first()->id;
-        $manageBOMRepair = Menu::where('name','Manage BOM / BOS')->where('menu_id',$bomRepair)->select('id')->first()->id;
-        $viewBOMRepair = Menu::where('name','View BOM')->where('menu_id',$bomRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $bomRepair =  Menu::where('name', 'Bill of Material')->where('menu_id', $repair)->select('id')->first()->id;
+        $manageBOMRepair = Menu::where('name', 'Manage BOM / BOS')->where('menu_id', $bomRepair)->select('id')->first()->id;
+        $viewBOMRepair = Menu::where('name', 'View BOM')->where('menu_id', $bomRepair)->select('id')->first()->id;
 
         DB::table('permissions')->insert([
             'name' => 'List Bom Repair',
@@ -372,7 +381,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //RAP
-        $viewRAP = Menu::where('name','Manage RAP')->select('id')->first()->id;
+        $viewRAP = Menu::where('name', 'Manage RAP')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Rap',
             'menu_id' => $viewRAP,
@@ -398,7 +407,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // create other cost
-        $createOtherCost = Menu::where('name','Create Other Cost')->select('id')->first()->id;
+        $createOtherCost = Menu::where('name', 'Create Other Cost')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Other Cost',
             'menu_id' => $createOtherCost,
@@ -408,7 +417,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // approve other cost
-        $menu_approve_other_cost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        $menu_approve_other_cost = Menu::where('route_name', 'rap.selectProjectPlanOtherCost')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Other Cost',
             'menu_id' => $menu_approve_other_cost,
@@ -418,7 +427,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // create actual other cost
-        $inputActualOtherCost = Menu::where('name','Input Actual Other Cost')->select('id')->first()->id;
+        $inputActualOtherCost = Menu::where('name', 'Input Actual Other Cost')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Input Actual Other Cost',
             'menu_id' => $inputActualOtherCost,
@@ -428,7 +437,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // view planned cost
-        $viewPlannedCost = Menu::where('name','View Planned Cost')->select('id')->first()->id;
+        $viewPlannedCost = Menu::where('name', 'View Planned Cost')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Planned Cost',
             'menu_id' => $viewPlannedCost,
@@ -438,7 +447,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // view material remaining
-        $viewRemainingMaterial = Menu::where('name','View Remaining Material')->select('id')->first()->id;
+        $viewRemainingMaterial = Menu::where('name', 'View Remaining Material')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Remaining Material',
             'menu_id' => $viewRemainingMaterial,
@@ -447,10 +456,10 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $costPlanRepair =  Menu::where('name','Cost Plan')->where('menu_id',$repair)->select('id')->first()->id;
-         //RAP repair
-        $manageRAPRepair = Menu::where('name','Manage RAP')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $costPlanRepair =  Menu::where('name', 'Cost Plan')->where('menu_id', $repair)->select('id')->first()->id;
+        //RAP repair
+        $manageRAPRepair = Menu::where('name', 'Manage RAP')->where('menu_id', $costPlanRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Rap Repair',
             'menu_id' => $manageRAPRepair,
@@ -475,8 +484,8 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-         // create other cost repair
-        $createOtherCost = Menu::where('name','Create Other Cost')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        // create other cost repair
+        $createOtherCost = Menu::where('name', 'Create Other Cost')->where('menu_id', $costPlanRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Other Cost Repair',
             'menu_id' => $createOtherCost,
@@ -486,7 +495,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // create actual other cost repair
-        $inputActualOtherCost = Menu::where('name','Input Actual Other Cost')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        $inputActualOtherCost = Menu::where('name', 'Input Actual Other Cost')->where('menu_id', $costPlanRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Input Actual Other Cost Repair',
             'menu_id' => $inputActualOtherCost,
@@ -496,7 +505,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // view planned cost repair
-        $viewPlannedCost = Menu::where('name','View Planned Cost')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        $viewPlannedCost = Menu::where('name', 'View Planned Cost')->where('menu_id', $costPlanRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Planned Cost Repair',
             'menu_id' => $viewPlannedCost,
@@ -506,7 +515,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // view material remaining repair
-        $viewRemainingMaterial = Menu::where('name','View Remaining Material')->where('menu_id',$costPlanRepair)->select('id')->first()->id;
+        $viewRemainingMaterial = Menu::where('name', 'View Remaining Material')->where('menu_id', $costPlanRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Remaining Material Repair',
             'menu_id' => $viewRemainingMaterial,
@@ -516,7 +525,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Work Request
-        $createWR = Menu::where('name','Create WR')->select('id')->first()->id;
+        $createWR = Menu::where('name', 'Create WR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Work Request',
             'menu_id' => $createWR,
@@ -525,7 +534,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveWR = Menu::where('name','View & Edit WR')->select('id')->first()->id;
+        $approveWR = Menu::where('name', 'View & Edit WR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Work Request',
             'menu_id' => $approveWR,
@@ -534,7 +543,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewWR = Menu::where('name','View & Edit WR')->select('id')->first()->id;
+        $viewWR = Menu::where('name', 'View & Edit WR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Work Request',
             'menu_id' => $viewWR,
@@ -560,7 +569,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Work Order
-        $createWO = Menu::where('name','Create WO')->select('id')->first()->id;
+        $createWO = Menu::where('name', 'Create WO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Work Order',
             'menu_id' => $createWO,
@@ -569,7 +578,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveWO = Menu::where('name','View & Edit WO')->select('id')->first()->id;
+        $approveWO = Menu::where('name', 'View & Edit WO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Work Order',
             'menu_id' => $approveWO,
@@ -578,7 +587,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewWO = Menu::where('name','View & Edit WO')->select('id')->first()->id;
+        $viewWO = Menu::where('name', 'View & Edit WO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Work Order',
             'menu_id' => $viewWO,
@@ -604,9 +613,9 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Work Order Repair
-        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
-        $woRepair = Menu::where('name','Work Order')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        $createWO = Menu::where('name','Create WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        $wipRepair =  Menu::where('name', 'WIP')->where('menu_id', $repair)->select('id')->first()->id;
+        $woRepair = Menu::where('name', 'Work Order')->where('menu_id', $wipRepair)->select('id')->first()->id;
+        $createWO = Menu::where('name', 'Create WO')->where('menu_id', $woRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Work Order',
             'menu_id' => $createWO,
@@ -615,7 +624,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        $approveWO = Menu::where('name', 'View & Edit WO')->where('menu_id', $woRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Work Order',
             'menu_id' => $approveWO,
@@ -624,7 +633,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewWO = Menu::where('name','View & Edit WO')->where('menu_id',$woRepair)->select('id')->first()->id;
+        $viewWO = Menu::where('name', 'View & Edit WO')->where('menu_id', $woRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Work Order',
             'menu_id' => $viewWO,
@@ -650,10 +659,10 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Work Request Repair
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $wipRepair =  Menu::where('name','WIP')->where('menu_id',$repair)->select('id')->first()->id;
-        $wrRepair = Menu::where('name','Work Request')->where('menu_id',$wipRepair)->select('id')->first()->id;
-        $createWRRepair = Menu::where('name','Create WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $wipRepair =  Menu::where('name', 'WIP')->where('menu_id', $repair)->select('id')->first()->id;
+        $wrRepair = Menu::where('name', 'Work Request')->where('menu_id', $wipRepair)->select('id')->first()->id;
+        $createWRRepair = Menu::where('name', 'Create WR')->where('menu_id', $wrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Work Request',
             'menu_id' => $createWRRepair,
@@ -662,7 +671,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveWRRepair = Menu::where('name','Approve WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        $approveWRRepair = Menu::where('name', 'Approve WR')->where('menu_id', $wrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Work Request',
             'menu_id' => $approveWRRepair,
@@ -671,7 +680,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewWRRepair = Menu::where('name','View & Edit WR')->where('menu_id',$wrRepair)->select('id')->first()->id;
+        $viewWRRepair = Menu::where('name', 'View & Edit WR')->where('menu_id', $wrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Work Request',
             'menu_id' => $viewWRRepair,
@@ -698,7 +707,7 @@ class PermissionsTableSeeder extends Seeder
 
 
         //Purchase Requisition
-        $createPR = Menu::where('name','Create PR')->select('id')->first()->id;
+        $createPR = Menu::where('name', 'Create PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Purchase Requisition',
             'menu_id' => $createPR,
@@ -707,7 +716,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPR = Menu::where('name','View & Edit PR')->select('id')->first()->id;
+        $viewPR = Menu::where('name', 'View & Edit PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Requisition',
             'menu_id' => $viewPR,
@@ -748,7 +757,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approvePR = Menu::where('name','Approve PR')->select('id')->first()->id;
+        $approvePR = Menu::where('name', 'Approve PR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Requisition',
             'menu_id' => $approvePR,
@@ -757,7 +766,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $consolidationPR = Menu::where('name','PR Consolidation')->select('id')->first()->id;
+        $consolidationPR = Menu::where('name', 'PR Consolidation')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Consolidation Purchase Requisition',
             'menu_id' => $consolidationPR,
@@ -767,10 +776,10 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Purchase Requisition Repair
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
-        $prRepair = Menu::where('name','Purchase Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createPrRepair = Menu::where('name','Create PR')->where('menu_id',$prRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name', 'Material Management')->where('menu_id', $repair)->select('id')->first()->id;
+        $prRepair = Menu::where('name', 'Purchase Requisition')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $createPrRepair = Menu::where('name', 'Create PR')->where('menu_id', $prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Purchase Requisition Repair',
             'menu_id' => $createPrRepair,
@@ -779,7 +788,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPrRepair = Menu::where('name','View & Edit PR')->where('menu_id',$prRepair)->select('id')->first()->id;
+        $viewPrRepair = Menu::where('name', 'View & Edit PR')->where('menu_id', $prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Requisition Repair',
             'menu_id' => $viewPrRepair,
@@ -820,7 +829,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approvePrRepair = Menu::where('name','Approve PR')->where('menu_id',$prRepair)->select('id')->first()->id;
+        $approvePrRepair = Menu::where('name', 'Approve PR')->where('menu_id', $prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Requisition Repair',
             'menu_id' => $approvePrRepair,
@@ -829,7 +838,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $consolidationPrRepair = Menu::where('name','PR Consolidation')->where('menu_id',$prRepair)->select('id')->first()->id;
+        $consolidationPrRepair = Menu::where('name', 'PR Consolidation')->where('menu_id', $prRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Consolidation Purchase Requisition Repair',
             'menu_id' => $consolidationPrRepair,
@@ -839,7 +848,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Material Requisition
-        $createMR = Menu::where('name','Create MR')->select('id')->first()->id;
+        $createMR = Menu::where('name', 'Create MR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Material Requisition',
             'menu_id' => $createMR,
@@ -848,7 +857,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveMR = Menu::where('name','Approve MR')->select('id')->first()->id;
+        $approveMR = Menu::where('name', 'Approve MR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Material Requisition',
             'menu_id' => $approveMR,
@@ -857,7 +866,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewMR = Menu::where('name','View & Edit MR')->select('id')->first()->id;
+        $viewMR = Menu::where('name', 'View & Edit MR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Material Requisition',
             'menu_id' => $viewMR,
@@ -882,12 +891,12 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
-        $mrRepair = Menu::where('name','Material Requisition')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name', 'Material Management')->where('menu_id', $repair)->select('id')->first()->id;
+        $mrRepair = Menu::where('name', 'Material Requisition')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
 
         //Material Requisition Repair
-        $createMRRepair = Menu::where('name','Create MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
+        $createMRRepair = Menu::where('name', 'Create MR')->where('menu_id', $mrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Material Requisition',
             'menu_id' => $createMRRepair,
@@ -896,7 +905,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveMRRepair = Menu::where('name','Approve MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
+        $approveMRRepair = Menu::where('name', 'Approve MR')->where('menu_id', $mrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Material Requisition',
             'menu_id' => $approveMRRepair,
@@ -905,7 +914,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewMRRepair = Menu::where('name','View & Edit MR')->where('menu_id',$mrRepair)->select('id')->first()->id;
+        $viewMRRepair = Menu::where('name', 'View & Edit MR')->where('menu_id', $mrRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Material Requisition',
             'menu_id' => $viewMRRepair,
@@ -931,7 +940,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Purchase Order
-        $createPO = Menu::where('name','Create PO')->select('id')->first()->id;
+        $createPO = Menu::where('name', 'Create PO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Purchase Order',
             'menu_id' => $createPO,
@@ -940,7 +949,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPO = Menu::where('name','View & Edit PO')->select('id')->first()->id;
+        $viewPO = Menu::where('name', 'View & Edit PO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Order',
             'menu_id' => $viewPO,
@@ -981,7 +990,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approvePO = Menu::where('name','Approve PO')->select('id')->first()->id;
+        $approvePO = Menu::where('name', 'Approve PO')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Order',
             'menu_id' => $approvePO,
@@ -991,8 +1000,8 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Purchase Order Repair
-        $poRepair = Menu::where('name','Purchase Order')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createPO = Menu::where('name','Create PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        $poRepair = Menu::where('name', 'Purchase Order')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $createPO = Menu::where('name', 'Create PO')->where('menu_id', $poRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Purchase Order Repair',
             'menu_id' => $createPO,
@@ -1001,7 +1010,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewPO = Menu::where('name','View & Edit PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        $viewPO = Menu::where('name', 'View & Edit PO')->where('menu_id', $poRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Purchase Order Repair',
             'menu_id' => $viewPO,
@@ -1042,7 +1051,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approvePO = Menu::where('name','Approve PO')->where('menu_id',$poRepair)->select('id')->first()->id;
+        $approvePO = Menu::where('name', 'Approve PO')->where('menu_id', $poRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Purchase Order Repair',
             'menu_id' => $approvePO,
@@ -1052,7 +1061,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Receipt
-        $createGR = Menu::where('name','Create GR')->select('id')->first()->id;
+        $createGR = Menu::where('name', 'Create GR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Receipt',
             'menu_id' => $createGR,
@@ -1061,7 +1070,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $createGRWOR = Menu::where('name','Create GR without reference')->select('id')->first()->id;
+        $createGRWOR = Menu::where('name', 'Create GR without reference')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Receipt Without Ref',
             'menu_id' => $createGRWOR,
@@ -1070,7 +1079,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGR = Menu::where('name','View GR')->select('id')->first()->id;
+        $viewGR = Menu::where('name', 'View GR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Receipt',
             'menu_id' => $viewGR,
@@ -1088,8 +1097,8 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Receipt Repair
-        $GRRepair = Menu::where('name','Goods Receipt')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createGRRepair = Menu::where('name','Create GR')->where('menu_id',$GRRepair)->select('id')->first()->id;
+        $GRRepair = Menu::where('name', 'Goods Receipt')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $createGRRepair = Menu::where('name', 'Create GR')->where('menu_id', $GRRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Receipt Repair',
             'menu_id' => $createGRRepair,
@@ -1098,7 +1107,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $createGRWORRepair = Menu::where('name','Create GR without reference')->where('menu_id',$GRRepair)->select('id')->first()->id;
+        $createGRWORRepair = Menu::where('name', 'Create GR without reference')->where('menu_id', $GRRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Receipt Without Ref Repair',
             'menu_id' => $createGRWORRepair,
@@ -1107,7 +1116,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGRRepair = Menu::where('name','View GR')->where('menu_id',$GRRepair)->select('id')->first()->id;
+        $viewGRRepair = Menu::where('name', 'View GR')->where('menu_id', $GRRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Receipt Repair',
             'menu_id' => $viewGRRepair,
@@ -1125,7 +1134,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Physical Inventory
-        $createSnapshot = Menu::where('name','Create Stock Take')->select('id')->first()->id;
+        $createSnapshot = Menu::where('name', 'Create Stock Take')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Stock Take',
             'menu_id' => $createSnapshot,
@@ -1142,7 +1151,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $countStock = Menu::where('name','Count Stock')->select('id')->first()->id;
+        $countStock = Menu::where('name', 'Count Stock')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Count Stock',
             'menu_id' => $countStock,
@@ -1151,7 +1160,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $adjustStock = Menu::where('name','Adjust Stock')->select('id')->first()->id;
+        $adjustStock = Menu::where('name', 'Adjust Stock')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Adjust Stock',
             'menu_id' => $adjustStock,
@@ -1160,7 +1169,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewAdjustmentHistory = Menu::where('name','View Adjustment History')->select('id')->first()->id;
+        $viewAdjustmentHistory = Menu::where('name', 'View Adjustment History')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Adjustment History',
             'menu_id' => $viewAdjustmentHistory,
@@ -1178,8 +1187,8 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Physical Inventory Repair
-        $piRepair = Menu::where('name','Stock Taking')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createSnapshot = Menu::where('name','Create Stock Take')->where('menu_id',$piRepair)->select('id')->first()->id;
+        $piRepair = Menu::where('name', 'Stock Taking')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $createSnapshot = Menu::where('name', 'Create Stock Take')->where('menu_id', $piRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Stock Take',
             'menu_id' => $createSnapshot,
@@ -1196,7 +1205,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $countStock = Menu::where('name','Count Stock')->where('menu_id',$piRepair)->select('id')->first()->id;
+        $countStock = Menu::where('name', 'Count Stock')->where('menu_id', $piRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Count Stock',
             'menu_id' => $countStock,
@@ -1205,7 +1214,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $adjustStock = Menu::where('name','Adjust Stock')->where('menu_id',$piRepair)->select('id')->first()->id;
+        $adjustStock = Menu::where('name', 'Adjust Stock')->where('menu_id', $piRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Adjust Stock',
             'menu_id' => $adjustStock,
@@ -1214,7 +1223,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewAdjustmentHistory = Menu::where('name','View Adjustment History')->where('menu_id',$piRepair)->select('id')->first()->id;
+        $viewAdjustmentHistory = Menu::where('name', 'View Adjustment History')->where('menu_id', $piRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Adjustment History',
             'menu_id' => $viewAdjustmentHistory,
@@ -1232,7 +1241,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Issue
-        $createGI = Menu::where('route_name','goods_issue.selectMR')->select('id')->first()->id;
+        $createGI = Menu::where('route_name', 'goods_issue.selectMR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Issue',
             'menu_id' => $createGI,
@@ -1241,7 +1250,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGI = Menu::where('route_name','goods_issue.index')->select('id')->first()->id;
+        $viewGI = Menu::where('route_name', 'goods_issue.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Issue',
             'menu_id' => $viewGI,
@@ -1267,7 +1276,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Issue Repair
-        $createGI = Menu::where('route_name','goods_issue_repair.selectMR')->select('id')->first()->id;
+        $createGI = Menu::where('route_name', 'goods_issue_repair.selectMR')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Issue',
             'menu_id' => $createGI,
@@ -1276,7 +1285,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGIRepair = Menu::where('route_name','goods_issue_repair.index')->select('id')->first()->id;
+        $viewGIRepair = Menu::where('route_name', 'goods_issue_repair.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Issue',
             'menu_id' => $viewGIRepair,
@@ -1302,7 +1311,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Return
-        $createGR = Menu::where('name','Based On Goods Receipt')->select('id')->first()->id;
+        $createGR = Menu::where('name', 'Based On Goods Receipt')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Return',
             'menu_id' => $createGR,
@@ -1311,7 +1320,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGR = Menu::where('name','View & Edit Goods Return')->select('id')->first()->id;
+        $viewGR = Menu::where('name', 'View & Edit Goods Return')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Return',
             'menu_id' => $viewGR,
@@ -1336,7 +1345,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveGR = Menu::where('name','Approve Goods Return')->select('id')->first()->id;
+        $approveGR = Menu::where('name', 'Approve Goods Return')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Goods Return',
             'menu_id' => $approveGR,
@@ -1346,10 +1355,10 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Return Repair
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
-        $grRepair = Menu::where('name','Goods Return')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createGRRepair = Menu::where('name','Based On Goods Receipt')->where('menu_id',$grRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name', 'Material Management')->where('menu_id', $repair)->select('id')->first()->id;
+        $grRepair = Menu::where('name', 'Goods Return')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $createGRRepair = Menu::where('name', 'Based On Goods Receipt')->where('menu_id', $grRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Return',
             'menu_id' => $createGRRepair,
@@ -1358,7 +1367,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGRRepair = Menu::where('name','View & Edit Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
+        $viewGRRepair = Menu::where('name', 'View & Edit Goods Return')->where('menu_id', $grRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Return',
             'menu_id' => $viewGRRepair,
@@ -1383,7 +1392,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveGRRepair = Menu::where('name','Approve Goods Return')->where('menu_id',$grRepair)->select('id')->first()->id;
+        $approveGRRepair = Menu::where('name', 'Approve Goods Return')->where('menu_id', $grRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Goods Return',
             'menu_id' => $approveGRRepair,
@@ -1393,7 +1402,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Ship
-        $ship = Menu::where('name','Ship')->select('id')->first()->id;
+        $ship = Menu::where('name', 'Ship')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Ship',
             'menu_id' => $ship,
@@ -1427,7 +1436,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Branch
-        $branch = Menu::where('name','Branch')->select('id')->first()->id;
+        $branch = Menu::where('name', 'Branch')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Branch',
             'menu_id' => $branch,
@@ -1461,7 +1470,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Business Unit
-        $businessUnit = Menu::where('name','Business Unit')->select('id')->first()->id;
+        $businessUnit = Menu::where('name', 'Business Unit')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Business Unit',
             'menu_id' => $businessUnit,
@@ -1495,7 +1504,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Master Data Company
-        $company = Menu::where('name','Company')->select('id')->first()->id;
+        $company = Menu::where('name', 'Company')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Company',
             'menu_id' => $company,
@@ -1529,7 +1538,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Storage Location
-        $storageLocation = Menu::where('name','Storage Location')->select('id')->first()->id;
+        $storageLocation = Menu::where('name', 'Storage Location')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Storage Location',
             'menu_id' => $storageLocation,
@@ -1563,7 +1572,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Customer
-        $customer = Menu::where('name','Customer')->select('id')->first()->id;
+        $customer = Menu::where('name', 'Customer')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Customer',
             'menu_id' => $customer,
@@ -1597,7 +1606,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Material
-        $material = Menu::where('name','Material')->select('id')->first()->id;
+        $material = Menu::where('name', 'Material')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Material',
             'menu_id' => $material,
@@ -1631,7 +1640,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Resource Management
-        $resource = Menu::where('name','Manage Resource')->select('id')->first()->id;
+        $resource = Menu::where('name', 'Manage Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Resource',
             'menu_id' => $resource,
@@ -1664,8 +1673,18 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Assign Resource
+        $menu_assign_resource = Menu::where('route_name','resource.assignResource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Assign Resource',
+            'menu_id' => $menu_assign_resource,
+            'middleware' => 'assign-resource',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Receive Resource
-        $receiveResource = Menu::where('name','Receive Resource')->select('id')->first()->id;
+        $receiveResource = Menu::where('name', 'Receive Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Receive Resource',
             'menu_id' => $receiveResource,
@@ -1674,7 +1693,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $listResource = Menu::where('name','View Received Resource')->select('id')->first()->id;
+        $listResource = Menu::where('name', 'View Received Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Received Resource',
             'menu_id' => $listResource,
@@ -1692,7 +1711,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Issue Resource
-        $issueResource = Menu::where('name','Issue Resource')->select('id')->first()->id;
+        $issueResource = Menu::where('name', 'Issue Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Issue Resource',
             'menu_id' => $issueResource,
@@ -1701,7 +1720,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $listIssueResource = Menu::where('name','View Issued Resource')->select('id')->first()->id;
+        $listIssueResource = Menu::where('name', 'View Issued Resource')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Show Issue Resource',
             'menu_id' => $listIssueResource,
@@ -1719,7 +1738,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Resource Schedule
-        $resourceSchedule = Menu::where('name','Resource Schedule')->select('id')->first()->id;
+        $resourceSchedule = Menu::where('name', 'Resource Schedule')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Resource Schedule',
             'menu_id' => $resourceSchedule,
@@ -1729,7 +1748,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Service
-        $service = Menu::where('name','Service')->select('id')->first()->id;
+        $service = Menu::where('name', 'Service')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Service',
             'menu_id' => $service,
@@ -1763,7 +1782,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Unit Of Measurement
-        $uom = Menu::where('name','Unit Of Measurement')->select('id')->first()->id;
+        $uom = Menu::where('name', 'Unit Of Measurement')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Unit Of Measurement',
             'menu_id' => $uom,
@@ -1797,7 +1816,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Vendor
-        $vendor = Menu::where('name','Vendor')->select('id')->first()->id;
+        $vendor = Menu::where('name', 'Vendor')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Vendor',
             'menu_id' => $vendor,
@@ -1831,7 +1850,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Warehouse
-        $warehouse = Menu::where('name','Warehouse')->select('id')->first()->id;
+        $warehouse = Menu::where('name', 'Warehouse')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Warehouse',
             'menu_id' => $warehouse,
@@ -1865,7 +1884,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Yard
-        $yard = Menu::where('name','Yard')->select('id')->first()->id;
+        $yard = Menu::where('name', 'Yard')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List yard',
             'menu_id' => $yard,
@@ -1899,7 +1918,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Menu
-        $menu = Menu::where('name','Menus')->select('id')->first()->id;
+        $menu = Menu::where('name', 'Menus')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Menu',
             'menu_id' => $menu,
@@ -1933,7 +1952,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Appearence
-        $appearance = Menu::where('name','Appearance')->select('id')->first()->id;
+        $appearance = Menu::where('name', 'Appearance')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Appearence',
             'menu_id' => $appearance,
@@ -1951,7 +1970,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Edit Default Password
-        $cdp = Menu::where('name','Change Default Password')->select('id')->first()->id;
+        $cdp = Menu::where('name', 'Change Default Password')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Edit Default Password',
             'menu_id' => $cdp,
@@ -1961,7 +1980,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Currencies
-        $currencies = Menu::where('name','Currencies')->select('id')->first()->id;
+        $currencies = Menu::where('name', 'Currencies')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Currencies',
             'menu_id' => $currencies,
@@ -1995,7 +2014,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data User
-        $userManagement = Menu::where('name','User Management')->select('id')->first()->id;
+        $userManagement = Menu::where('name', 'User Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List User',
             'menu_id' => $userManagement,
@@ -2061,7 +2080,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Role
-        $roleManagement = Menu::where('name','Role Management')->select('id')->first()->id;
+        $roleManagement = Menu::where('name', 'Role Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Role',
             'menu_id' => $roleManagement,
@@ -2095,7 +2114,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Master Data Permission
-        $permissionManagement = Menu::where('name','Permission Management')->select('id')->first()->id;
+        $permissionManagement = Menu::where('name', 'Permission Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Permission',
             'menu_id' => $permissionManagement,
@@ -2129,7 +2148,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Stock Management
-        $stockManagement = Menu::where('name','Stock Management')->select('id')->first()->id;
+        $stockManagement = Menu::where('name', 'Stock Management')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Stock Management',
             'menu_id' => $stockManagement,
@@ -2139,7 +2158,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Stock Management Repair
-        $stockManagement = Menu::where('name','Stock Management')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
+        $stockManagement = Menu::where('name', 'Stock Management')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Stock Management',
             'menu_id' => $stockManagement,
@@ -2149,7 +2168,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Material Write Off
-        $materialWriteOff = Menu::where('name','Create Material Write Off')->select('id')->first()->id;
+        $materialWriteOff = Menu::where('name', 'Create Material Write Off')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Material Write Off',
             'menu_id' => $materialWriteOff,
@@ -2158,7 +2177,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveMaterialWriteOff = Menu::where('name','Approve Material Write Off')->select('id')->first()->id;
+        $approveMaterialWriteOff = Menu::where('name', 'Approve Material Write Off')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Material Write Off',
             'menu_id' => $approveMaterialWriteOff,
@@ -2167,7 +2186,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewMaterialWriteOff = Menu::where('name','View & Edit Material Write Off')->select('id')->first()->id;
+        $viewMaterialWriteOff = Menu::where('name', 'View & Edit Material Write Off')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Material Write Off',
             'menu_id' => $viewMaterialWriteOff,
@@ -2193,8 +2212,8 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Material Write Off Repair
-        $mainMenuMaterialWriteOffRepair = Menu::where('name','Material Write Off')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $materialWriteOff = Menu::where('name','Create Material Write Off')->where('menu_id',$mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
+        $mainMenuMaterialWriteOffRepair = Menu::where('name', 'Material Write Off')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $materialWriteOff = Menu::where('name', 'Create Material Write Off')->where('menu_id', $mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Material Write Off',
             'menu_id' => $materialWriteOff,
@@ -2203,7 +2222,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $approveMaterialWriteOffRepair = Menu::where('name','Approve Material Write Off')->where('menu_id',$mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
+        $approveMaterialWriteOffRepair = Menu::where('name', 'Approve Material Write Off')->where('menu_id', $mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Approve Material Write Off',
             'menu_id' => $approveMaterialWriteOffRepair,
@@ -2212,7 +2231,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewMaterialWriteOff = Menu::where('name','View & Edit Material Write Off')->where('menu_id',$mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
+        $viewMaterialWriteOff = Menu::where('name', 'View & Edit Material Write Off')->where('menu_id', $mainMenuMaterialWriteOffRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Material Write Off',
             'menu_id' => $viewMaterialWriteOff,
@@ -2238,10 +2257,10 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Movement Permission
-        $building =  Menu::where('name','Ship Building')->select('id')->first()->id;
-        $materialManagement =  Menu::where('name','Material Management')->where('menu_id',$building)->select('id')->first()->id;
-        $goodsMovement = Menu::where('name','Goods Movement')->where('menu_id',$materialManagement)->select('id')->first()->id;
-        $createGm = Menu::where('name','Create GM')->where('menu_id',$goodsMovement)->select('id')->first()->id;
+        $building =  Menu::where('name', 'Ship Building')->select('id')->first()->id;
+        $materialManagement =  Menu::where('name', 'Material Management')->where('menu_id', $building)->select('id')->first()->id;
+        $goodsMovement = Menu::where('name', 'Goods Movement')->where('menu_id', $materialManagement)->select('id')->first()->id;
+        $createGm = Menu::where('name', 'Create GM')->where('menu_id', $goodsMovement)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Movement',
             'menu_id' => $createGm,
@@ -2250,7 +2269,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGm = Menu::where('name','View GM')->where('menu_id',$goodsMovement)->select('id')->first()->id;
+        $viewGm = Menu::where('name', 'View GM')->where('menu_id', $goodsMovement)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Movement',
             'menu_id' => $viewGm,
@@ -2268,10 +2287,10 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Goods Movement Permission
-        $repair =  Menu::where('name','Ship Repair')->select('id')->first()->id;
-        $materialManagementRepair =  Menu::where('name','Material Management')->where('menu_id',$repair)->select('id')->first()->id;
-        $goodsMovementRepair = Menu::where('name','Goods Movement')->where('menu_id',$materialManagementRepair)->select('id')->first()->id;
-        $createGmRepair = Menu::where('name','Create GM')->where('menu_id',$goodsMovementRepair)->select('id')->first()->id;
+        $repair =  Menu::where('name', 'Ship Repair')->select('id')->first()->id;
+        $materialManagementRepair =  Menu::where('name', 'Material Management')->where('menu_id', $repair)->select('id')->first()->id;
+        $goodsMovementRepair = Menu::where('name', 'Goods Movement')->where('menu_id', $materialManagementRepair)->select('id')->first()->id;
+        $createGmRepair = Menu::where('name', 'Create GM')->where('menu_id', $goodsMovementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Goods Movement Repair',
             'menu_id' => $createGmRepair,
@@ -2280,7 +2299,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewGmRepair = Menu::where('name','View GM')->where('menu_id',$goodsMovementRepair)->select('id')->first()->id;
+        $viewGmRepair = Menu::where('name', 'View GM')->where('menu_id', $goodsMovementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Goods Movement Repair',
             'menu_id' => $viewGmRepair,
@@ -2298,7 +2317,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Production Order
-        $createProductionOrder = Menu::where('name','Create Production Order')->select('id')->first()->id;
+        $createProductionOrder = Menu::where('name', 'Create Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Production Order',
             'menu_id' => $createProductionOrder,
@@ -2307,7 +2326,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewProductionOrder = Menu::where('name','View Production Order')->select('id')->first()->id;
+        $viewProductionOrder = Menu::where('name', 'View Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Production Order',
             'menu_id' => $viewProductionOrder,
@@ -2332,7 +2351,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $releaseProductionOrder = Menu::where('name','Release Production Order')->select('id')->first()->id;
+        $releaseProductionOrder = Menu::where('name', 'Release Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Release Production Order',
             'menu_id' => $releaseProductionOrder,
@@ -2341,7 +2360,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $confirmProductionOrder = Menu::where('name','Confirm Production Order')->select('id')->first()->id;
+        $confirmProductionOrder = Menu::where('name', 'Confirm Production Order')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Confirm Production Order',
             'menu_id' => $confirmProductionOrder,
@@ -2351,8 +2370,8 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Production Order Repair
-        $prodOrderRepair = Menu::where('name','Production Planning & Execution')->where('menu_id',$repair)->select('id')->first()->id;
-        $createProductionOrderRepair = Menu::where('name','Create Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        $prodOrderRepair = Menu::where('name', 'Production Planning & Execution')->where('menu_id', $repair)->select('id')->first()->id;
+        $createProductionOrderRepair = Menu::where('name', 'Create Production Order')->where('menu_id', $prodOrderRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Production Order Repair',
             'menu_id' => $createProductionOrder,
@@ -2361,7 +2380,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewProductionOrderRepair = Menu::where('name','View Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        $viewProductionOrderRepair = Menu::where('name', 'View Production Order')->where('menu_id', $prodOrderRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Production Order Repair',
             'menu_id' => $viewProductionOrderRepair,
@@ -2386,7 +2405,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $releaseProductionOrderRepair = Menu::where('name','Release Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        $releaseProductionOrderRepair = Menu::where('name', 'Release Production Order')->where('menu_id', $prodOrderRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Release Production Order Repair',
             'menu_id' => $releaseProductionOrderRepair,
@@ -2395,7 +2414,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $confirmProductionOrderRepair= Menu::where('name','Confirm Production Order')->where('menu_id',$prodOrderRepair)->select('id')->first()->id;
+        $confirmProductionOrderRepair = Menu::where('name', 'Confirm Production Order')->where('menu_id', $prodOrderRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Confirm Production Order Repair',
             'menu_id' => $confirmProductionOrderRepair,
@@ -2405,7 +2424,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Yard Plan
-        $manageYardPlan = Menu::where('name','Manage Yard Plan')->select('id')->first()->id;
+        $manageYardPlan = Menu::where('name', 'Manage Yard Plan')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Yard Plan',
             'menu_id' => $manageYardPlan,
@@ -2414,9 +2433,9 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $viewYardPlan = Menu::where('name','View Yard Plan')->select('id')->first()->id;
+        $viewYardPlan = Menu::where('name', 'View Yard Plan')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Viwe Yard Plan',
+            'name' => 'View Yard Plan',
             'menu_id' => $viewYardPlan,
             'middleware' => 'view-yard-plan',
             'created_at' => date('Y-m-d'),
@@ -2427,8 +2446,8 @@ class PermissionsTableSeeder extends Seeder
         // TBD
 
         //Resource Management
-        $resourceManagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
-        $resourceRepair = Menu::where('name','Manage Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        $resourceManagementRepair = Menu::where('name', 'Resource Management')->where('menu_id', $repair)->select('id')->first()->id;
+        $resourceRepair = Menu::where('name', 'Manage Resource')->where('menu_id', $resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Resource Repair',
             'menu_id' => $resourceRepair,
@@ -2461,8 +2480,18 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        //Assign Resource Repair
+        $menu_assign_resource_repair = Menu::where('route_name','resource_repair.assignResource')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Assign Resource Repair',
+            'menu_id' => $menu_assign_resource_repair,
+            'middleware' => 'assign-resource-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Receive Resource
-        $receiveResource = Menu::where('name','Receive Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        $receiveResource = Menu::where('name', 'Receive Resource')->where('menu_id', $resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Receive Resource Repair',
             'menu_id' => $receiveResource,
@@ -2471,7 +2500,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $listResource = Menu::where('name','View Received Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        $listResource = Menu::where('name', 'View Received Resource')->where('menu_id', $resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Received Resource Repair',
             'menu_id' => $listResource,
@@ -2489,7 +2518,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Issue Resource
-        $issueResource = Menu::where('name','Issue Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        $issueResource = Menu::where('name', 'Issue Resource')->where('menu_id', $resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Issue Resource Repair',
             'menu_id' => $issueResource,
@@ -2498,7 +2527,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $listIssueResource = Menu::where('name','View Issued Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        $listIssueResource = Menu::where('name', 'View Issued Resource')->where('menu_id', $resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Show Issue Resource Repair',
             'menu_id' => $listIssueResource,
@@ -2516,7 +2545,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Resource Schedule
-        $resourceSchedule = Menu::where('name','Resource Schedule')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
+        $resourceSchedule = Menu::where('name', 'Resource Schedule')->where('menu_id', $resourceManagementRepair)->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Resource Schedule Repair',
             'menu_id' => $resourceSchedule,
@@ -2526,18 +2555,111 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Quality Control Task
-        $qcTask = Menu::where('name','Create QC Task')->select('id')->first()->id;
+        $menu_create_qc_task = Menu::where('route_name', 'qc_task.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create QC Task',
-            'menu_id' => $qcTask,
+            'menu_id' => $menu_create_qc_task,
             'middleware' => 'create-qc-task',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
 
-         // Customer Portal View Project Progress
-        $projectProgress = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
+        $menu_view_qc_task = Menu::where('route_name', 'qc_task.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Task',
+            'menu_id' => $menu_view_qc_task,
+            'middleware' => 'list-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'View QC Task',
+            'menu_id' => $menu_view_qc_task,
+            'middleware' => 'show-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit QC Task',
+            'menu_id' => $menu_view_qc_task,
+            'middleware' => 'edit-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_confirm_qc_task = Menu::where('route_name', 'qc_task.selectProjectConfirm')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Confirm QC Task',
+            'menu_id' => $menu_confirm_qc_task,
+            'middleware' => 'confirm-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Finish QC Task',
+            'menu_id' => $menu_confirm_qc_task,
+            'middleware' => 'cancel-finish-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_summary_report_qc_task = Menu::where('route_name', 'qc_task.selectProjectSummary')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Summary Report QC Task',
+            'menu_id' => $menu_summary_report_qc_task,
+            'middleware' => 'summary-report-qc-task',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Quality Control Type
+        $qcType = Menu::where('name', 'Create QC Type')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Type',
+            'menu_id' => $qcType,
+            'middleware' => 'create-qc-type',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Type',
+            'menu_id' => $qcType,
+            'middleware' => 'edit-qc-type',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewQcType = Menu::where('name', 'View & Edit QC Type')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'View & Edit QC Type',
+            'menu_id' => $viewQcType,
+            'middleware' => 'list-qc-type',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        DB::table('permissions')->insert([
+            'name' => 'Delete QC Type',
+            'menu_id' => $viewQcType,
+            'middleware' => 'delete-qc-type',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $showQcType = Menu::where('name', 'View & Edit QC Type')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Show QC Type',
+            'menu_id' => $showQcType,
+            'middleware' => 'show-qc-type',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+
+        // Customer Portal View Project Progress
+        $projectProgress = Menu::where('route_name', 'customer_portal.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Project Progress',
             'menu_id' => $projectProgress,
@@ -2547,7 +2669,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Customer Portal Create Post
-        $postComplaints = Menu::where('name','Post Complaints')->select('id')->first()->id;
+        $postComplaints = Menu::where('name', 'Post Complaints')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Post Complaints',
             'menu_id' => $postComplaints,
@@ -2557,7 +2679,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // Customer Portal Reply post
-        $postReply = Menu::where('name','Reply Complaints')->select('id')->first()->id;
+        $postReply = Menu::where('name', 'Reply Complaints')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Reply Complaints',
             'menu_id' => $postReply,
@@ -2567,7 +2689,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Daily Man Hour
-        $daily_man_hour = Menu::where('name','Daily Man Hour')->select('id')->first()->id;
+        $daily_man_hour = Menu::where('name', 'Daily Man Hour')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Daily Man Hour',
             'menu_id' => $daily_man_hour,
@@ -2577,7 +2699,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //approval configuration
-        $approval_configuration = Menu::where('name','Approval Configuration')->select('id')->first()->id;
+        $approval_configuration = Menu::where('name', 'Approval Configuration')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Approval Configuration',
             'menu_id' => $approval_configuration,
@@ -2587,7 +2709,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Estimator WBS
-        $menu_estimator_wbs = Menu::where('route_name','estimator.indexEstimatorWbs')->select('id')->first()->id;
+        $menu_estimator_wbs = Menu::where('route_name', 'estimator.indexEstimatorWbs')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Estimator WBS',
             'menu_id' => $menu_estimator_wbs,
@@ -2619,9 +2741,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         //cost type configuration
-        $cost_type_configuration = Menu::where('name','Cost Type')->select('id')->first()->id;
+        $cost_type_configuration = Menu::where('name', 'Cost Type')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Cost Type Configuration',
             'menu_id' => $cost_type_configuration,
@@ -2631,7 +2753,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //appearance configuration
-        $appearance_configuration = Menu::where('name','Appearance')->select('id')->first()->id;
+        $appearance_configuration = Menu::where('name', 'Appearance')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Appearance Configuration',
             'menu_id' => $appearance_configuration,
@@ -2639,9 +2761,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         //currencies configuration
-        $currencies_configuration = Menu::where('name','Currencies')->select('id')->first()->id;
+        $currencies_configuration = Menu::where('name', 'Currencies')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Currencies Configuration',
             'menu_id' => $currencies_configuration,
@@ -2649,9 +2771,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         //material family configuration
-        $material_family_configuration = Menu::where('name','Material Family')->select('id')->first()->id;
+        $material_family_configuration = Menu::where('name', 'Material Family')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Material Family Configuration',
             'menu_id' => $material_family_configuration,
@@ -2661,7 +2783,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //payment terms configuration
-        $payment_terms_configuration = Menu::where('name','Payment Terms')->select('id')->first()->id;
+        $payment_terms_configuration = Menu::where('name', 'Payment Terms')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Payment Terms',
             'menu_id' => $payment_terms_configuration,
@@ -2671,7 +2793,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //density configuration
-        $density_configuration = Menu::where('name','Density')->select('id')->first()->id;
+        $density_configuration = Menu::where('name', 'Density')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Density Configuration',
             'menu_id' => $density_configuration,
@@ -2680,8 +2802,8 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-         //Cost Standard
-        $menu_cost_standard = Menu::where('route_name','estimator.indexEstimatorCostStandard')->select('id')->first()->id;
+        //Cost Standard
+        $menu_cost_standard = Menu::where('route_name', 'estimator.indexEstimatorCostStandard')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Cost Standard',
             'menu_id' => $menu_cost_standard,
@@ -2696,7 +2818,7 @@ class PermissionsTableSeeder extends Seeder
             'middleware' => 'create-cost-standard',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-        ]); 
+        ]);
 
         DB::table('permissions')->insert([
             'name' => 'Show Cost Standard',
@@ -2723,7 +2845,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Estimator Profile
-        $menu_estimator_profile = Menu::where('route_name','estimator.indexEstimatorProfile')->select('id')->first()->id;
+        $menu_estimator_profile = Menu::where('route_name', 'estimator.indexEstimatorProfile')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Estimator Profile',
             'menu_id' => $menu_estimator_profile,
@@ -2765,7 +2887,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Estimator WBS Repair
-        $menu_estimator_wbs_repair = Menu::where('route_name','estimator_repair.indexEstimatorWbs')->select('id')->first()->id;
+        $menu_estimator_wbs_repair = Menu::where('route_name', 'estimator_repair.indexEstimatorWbs')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Estimator WBS Repair',
             'menu_id' => $menu_estimator_wbs_repair,
@@ -2799,7 +2921,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Cost Standard Repair
-        $menu_cost_standard_repair = Menu::where('route_name','estimator_repair.indexEstimatorCostStandard')->select('id')->first()->id;
+        $menu_cost_standard_repair = Menu::where('route_name', 'estimator_repair.indexEstimatorCostStandard')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Cost Standard Repair',
             'menu_id' => $menu_cost_standard_repair,
@@ -2841,7 +2963,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Estimator Profile Repair
-        $menu_estimator_profile_repair = Menu::where('route_name','estimator_repair.indexEstimatorProfile')->select('id')->first()->id;
+        $menu_estimator_profile_repair = Menu::where('route_name', 'estimator_repair.indexEstimatorProfile')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Estimator Profile Repair',
             'menu_id' => $menu_estimator_profile_repair,
@@ -2883,7 +3005,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Quatation
-        $menu_create_quotation = Menu::where('route_name','quotation.create')->select('id')->first()->id;
+        $menu_create_quotation = Menu::where('route_name', 'quotation.create')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Quotation',
             'menu_id' => $menu_create_quotation,
@@ -2892,7 +3014,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $menu_index_quotation = Menu::where('route_name','quotation.index')->select('id')->first()->id;
+        $menu_index_quotation = Menu::where('route_name', 'quotation.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Quotation',
             'menu_id' => $menu_index_quotation,
@@ -2918,7 +3040,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Quatation Repair
-        $menu_create_quotation_repair = Menu::where('route_name','quotation_repair.create')->select('id')->first()->id;
+        $menu_create_quotation_repair = Menu::where('route_name', 'quotation_repair.create')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Quotation Repair',
             'menu_id' => $menu_create_quotation_repair,
@@ -2927,7 +3049,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $menu_index_quotation_repair = Menu::where('route_name','quotation_repair.index')->select('id')->first()->id;
+        $menu_index_quotation_repair = Menu::where('route_name', 'quotation_repair.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Quotation Repair',
             'menu_id' => $menu_index_quotation_repair,
@@ -2953,7 +3075,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Sales Order
-        $menu_create_sales_order = Menu::where('route_name','sales_order.selectQT')->select('id')->first()->id;
+        $menu_create_sales_order = Menu::where('route_name', 'sales_order.selectQT')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Sales Order',
             'menu_id' => $menu_create_sales_order,
@@ -2962,7 +3084,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $menu_index_sales_order = Menu::where('route_name','sales_order.index')->select('id')->first()->id;
+        $menu_index_sales_order = Menu::where('route_name', 'sales_order.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Sales Order',
             'menu_id' => $menu_index_sales_order,
@@ -2988,7 +3110,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Sales Order Repair
-        $menu_create_sales_order_repair = Menu::where('route_name','sales_order_repair.selectQT')->select('id')->first()->id;
+        $menu_create_sales_order_repair = Menu::where('route_name', 'sales_order_repair.selectQT')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Sales Order Repair',
             'menu_id' => $menu_create_sales_order_repair,
@@ -2997,7 +3119,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $menu_index_sales_order_repair = Menu::where('route_name','sales_order_repair.index')->select('id')->first()->id;
+        $menu_index_sales_order_repair = Menu::where('route_name', 'sales_order_repair.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Sales Order Repair',
             'menu_id' => $menu_index_sales_order_repair,
@@ -3023,7 +3145,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Invoice
-        $menu_create_invoice = Menu::where('route_name','invoice.selectProject')->select('id')->first()->id;
+        $menu_create_invoice = Menu::where('route_name', 'invoice.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Invoice',
             'menu_id' => $menu_create_invoice,
@@ -3032,7 +3154,7 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $menu_index_invoice = Menu::where('route_name','invoice.index')->select('id')->first()->id;
+        $menu_index_invoice = Menu::where('route_name', 'invoice.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Invoice',
             'menu_id' => $menu_index_invoice,
@@ -3058,7 +3180,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Invoice Repair
-        $menu_create_invoice_repair = Menu::where('route_name','invoice_repair.selectProject')->select('id')->first()->id;
+        $menu_create_invoice_repair = Menu::where('route_name', 'invoice_repair.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Invoice Repair',
             'menu_id' => $menu_create_invoice_repair,
@@ -3066,15 +3188,15 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
-        $menu_index_invoice_repair = Menu::where('route_name','invoice_repair.index')->select('id')->first()->id;
+
+        $menu_index_invoice_repair = Menu::where('route_name', 'invoice_repair.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Invoice Repair',
             'menu_id' => $menu_index_invoice_repair,
             'middleware' => 'list-invoice-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-        ]);        
+        ]);
 
         DB::table('permissions')->insert([
             'name' => 'Edit Invoice Repair',
@@ -3093,7 +3215,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //delivery terms configuration
-        $delivery_terms_configuration = Menu::where('name','Delivery Terms')->select('id')->first()->id;
+        $delivery_terms_configuration = Menu::where('name', 'Delivery Terms')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Delivery Terms',
             'menu_id' => $delivery_terms_configuration,
@@ -3101,9 +3223,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         //weather configuration
-        $weather_configuration = Menu::where('name','Weather Configuration')->select('id')->first()->id;
+        $weather_configuration = Menu::where('name', 'Weather Configuration')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Weather Configuration',
             'menu_id' => $weather_configuration,
@@ -3113,7 +3235,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //tidal configuration
-        $tidal_configuration = Menu::where('name','Tidal Configuration')->select('id')->first()->id;
+        $tidal_configuration = Menu::where('name', 'Tidal Configuration')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Tidal Configuration',
             'menu_id' => $tidal_configuration,
@@ -3123,7 +3245,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //dimension type configuration
-        $dimension_type_configuration = Menu::where('name','Dimension Type Configuration')->select('id')->first()->id;
+        $dimension_type_configuration = Menu::where('name', 'Dimension Type Configuration')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Dimension Type Configuration',
             'menu_id' => $dimension_type_configuration,
@@ -3133,7 +3255,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //daily info weather
-        $daily_weather = Menu::where('name','Weather')->select('id')->first()->id;
+        $daily_weather = Menu::where('name', 'Weather')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Daily Weather',
             'menu_id' => $daily_weather,
@@ -3141,9 +3263,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         //daily info tidal
-        $daily_tidal = Menu::where('name','Tidal')->select('id')->first()->id;
+        $daily_tidal = Menu::where('name', 'Tidal')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Daily Tidal',
             'menu_id' => $daily_tidal,
@@ -3153,7 +3275,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Payment
-        $menu_create_payment = Menu::where('route_name','payment.selectInvoice')->select('id')->first()->id;
+        $menu_create_payment = Menu::where('route_name', 'payment.selectInvoice')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Payment',
             'menu_id' => $menu_create_payment,
@@ -3161,15 +3283,15 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
-        $menu_index_payment = Menu::where('route_name','payment.selectInvoiceView')->select('id')->first()->id;
+
+        $menu_index_payment = Menu::where('route_name', 'payment.selectInvoiceView')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Payment',
             'menu_id' => $menu_index_payment,
             'middleware' => 'list-payment',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-        ]);        
+        ]);
 
         DB::table('permissions')->insert([
             'name' => 'Edit Payment',
@@ -3188,7 +3310,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //Payment Repair
-        $menu_create_payment_repair = Menu::where('route_name','payment_repair.selectInvoice')->select('id')->first()->id;
+        $menu_create_payment_repair = Menu::where('route_name', 'payment_repair.selectInvoice')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Create Payment Repair',
             'menu_id' => $menu_create_payment_repair,
@@ -3196,15 +3318,15 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
-        $menu_index_payment_repair = Menu::where('route_name','payment_repair.selectInvoiceView')->select('id')->first()->id;
+
+        $menu_index_payment_repair = Menu::where('route_name', 'payment_repair.selectInvoiceView')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Payment Repair',
             'menu_id' => $menu_index_payment_repair,
             'middleware' => 'list-payment-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-        ]);        
+        ]);
 
         DB::table('permissions')->insert([
             'name' => 'Edit Payment Repair',
@@ -3222,15 +3344,143 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        //Quality Control Task Repair
-        $menu_index_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
+        // Quality Control Task Repair
+        $menu_create_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
-            'name' => 'Index QC Task Repair',
-            'menu_id' => $menu_index_qc_task_repair,
+            'name' => 'Create QC Task',
+            'menu_id' => $menu_create_qc_task_repair,
+            'middleware' => 'create-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+
+        $menu_view_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create QC Task Repair',
+            'menu_id' => $menu_view_qc_task_repair,
             'middleware' => 'list-qc-task-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        //Quality Control Task Building
+
+        DB::table('permissions')->insert([
+            'name' => 'View QC Task Repair',
+            'menu_id' => $menu_view_qc_task_repair,
+            'middleware' => 'show-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Edit QC Task Repair',
+            'menu_id' => $menu_view_qc_task_repair,
+            'middleware' => 'edit-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_confirm_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProjectConfirm')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Confirm QC Task Repair',
+            'menu_id' => $menu_confirm_qc_task_repair,
+            'middleware' => 'confirm-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Cancel Finish QC Task Repair',
+            'menu_id' => $menu_confirm_qc_task_repair,
+            'middleware' => 'cancel-finish-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_summary_report_qc_task_repair = Menu::where('route_name', 'qc_task_repair.selectProjectSummary')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Summary Report QC Task Repair',
+            'menu_id' => $menu_summary_report_qc_task_repair,
+            'middleware' => 'summary-report-qc-task-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Sales Plan
+        $menu_sales_plan = Menu::where('route_name','sales_plan.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Sales Plan',
+            'menu_id' => $menu_sales_plan,
+            'middleware' => 'manage-sales-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Sales Plan
+        $menu_sales_plan_repair = Menu::where('route_name','sales_plan_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Sales Plan Repair',
+            'menu_id' => $menu_sales_plan_repair,
+            'middleware' => 'manage-sales-plan-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Customer Visit
+        $menu_customer_visit = Menu::where('route_name','customer_visit.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Customer Visit',
+            'menu_id' => $menu_customer_visit,
+            'middleware' => 'manage-customer-visit',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Customer Visit
+        $menu_customer_visit_repair = Menu::where('route_name','customer_visit_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Customer Visit Repair',
+            'menu_id' => $menu_customer_visit_repair,
+            'middleware' => 'manage-customer-visit-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Delivery Document
+        $menu_manage_delivery_document = Menu::where('route_name', 'delivery_document.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Delivery Document',
+            'menu_id' => $menu_manage_delivery_document,
+            'middleware' => 'manage-delivery-document',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_view_delivery_document = Menu::where('route_name', 'delivery_document.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Delivery Document',
+            'menu_id' => $menu_view_delivery_document,
+            'middleware' => 'list-delivery-document',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Delivery Document',
+            'menu_id' => $menu_view_delivery_document,
+            'middleware' => 'show-delivery-document',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Close Project
+        $menu_close_project = Menu::where('route_name', 'close_project.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Close Project',
+            'menu_id' => $menu_close_project,
+            'middleware' => 'close-project',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
     }
 }

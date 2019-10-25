@@ -258,8 +258,21 @@ class RepairMenuSeeder extends Seeder
             'name' => 'Sales Plan',
             'icon' => 'fa-wrench',
             'is_active' => true,
-            'route_name' => 'sales_plan.index',
+            'route_name' => 'sales_plan_repair.index',
             'roles' => 'ADMIN,PAMI',
+            'menu_id' => $marketing_sales,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // Repair - Marketing and Sales - Sales Plan - Customer Call / Visit
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Customer Call / Visit',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'customer_visit_repair.index',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $marketing_sales,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')

@@ -16,11 +16,11 @@ class CreateTrxProductionOrderReturnTable extends Migration
         Schema::create('trx_production_order_return', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
-            $table->unsignedInteger('bom_detail_id');
+            $table->unsignedInteger('bom_detail_id')->nullable();
             $table->unsignedInteger('production_order_detail_id');
             $table->unsignedInteger('material_id');
-            $table->unsignedInteger('storage_location_id');
-            $table->unsignedInteger('goods_receipt_detail_id');
+            $table->unsignedInteger('storage_location_id')->nullable();
+            $table->unsignedInteger('goods_receipt_detail_id')->nullable();
             $table->float('quantity',15,2)->nullable();
             $table->timestamps();
 
