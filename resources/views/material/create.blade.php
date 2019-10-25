@@ -69,10 +69,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp) *</label>
+                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="cost_standard_price" name="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                                    <input type="text" class="form-control" id="cost_standard_price" name="cost_standard_price" v-model="submittedForm.cost_standard_price">
                                 </div>
                             </div>
 
@@ -84,7 +84,7 @@
                                     </selectize>
                                 </div>
                             </div>
-                            
+
                             <div class="form-group" v-if="selectedPriceType == 4">
                                 <label for="standard_price_config_range_id" class="col-sm-2 control-label">Range*</label>
                                 <div class="col-sm-10">
@@ -93,10 +93,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp) *</label>
+                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="cost_standard_service" name="cost_standard_service" required v-model="submittedForm.cost_standard_service">
+                                    <input type="text" class="form-control" id="cost_standard_service" name="cost_standard_service" v-model="submittedForm.cost_standard_service">
                                 </div>
                             </div>
 
