@@ -409,7 +409,7 @@
                                     
                                             <div class=" col-sm-4">
                                                 <label for="duration" class=" control-label">Actual Duration (Days)</label>
-                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
+                                                <input :disabled="checkFile" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
                                                     type="number" class="form-control" id="actual_duration" placeholder="Duration">
                                             </div>
                                     
@@ -423,7 +423,7 @@
                                                             Upload File&hellip; <input type="file" style="display: none;" id="add_document">
                                                         </span>
                                                     </label>
-                                                    <input id="file_name_readonly" type="text" class="form-control" readonly>
+                                                    <input id="file_name_readonly" v-model="confirmActivity.file_name" type="text" class="form-control" readonly>
                                                 </div>
                                             </div>
                                             <div class=" col-sm-12">
@@ -431,7 +431,7 @@
                                                 <div class="input-group">
                                                     <div v-if="confirmActivity.file_name != null" class="iframe-popup">
                                                         <a target="_blank" class="text-primary"
-                                                            :href="viewDoc(confirmActivity.file_name)">{{ confirmActivity.file_name }}</a>
+                                                            :href="viewDoc(confirmActivity.last_file_name)">{{ confirmActivity.last_file_name }}</a>
                                                     </div>
                                                     <div v-else>
                                                         No file uploaded
@@ -440,16 +440,55 @@
                                             </div>
                                         </div>
                                     </template>
+
+                                    <template v-else>
+                                        <div class="row">
+                                            <div class=" col-sm-6">
+                                                <label for="actual_start_date" class=" control-label">Actual Start Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker"
+                                                        id="actual_start_date" placeholder="Start Date">
+                                                </div>
+                                            </div>
+                                    
+                                            <div class=" col-sm-6">
+                                                <label for="actual_end_date" class=" control-label">Actual End Date</label>
+                                                <div class="input-group date">
+                                                    <div class="input-group-addon">
+                                                        <i class="fa fa-calendar"></i>
+                                                    </div>
+                                                    <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker"
+                                                        id="actual_end_date" placeholder="End Date">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class=" col-sm-6">
+                                                <label for="duration" class=" control-label">Actual Duration (Days)</label>
+                                                <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
+                                                    type="number" class="form-control" id="actual_duration" :disabled="checkDurationGeneral"
+                                                    placeholder="Duration">
+                                            </div>
+                                            <div class=" col-sm-6">
+                                                <label for="duration" class=" control-label">Current Progress (%)</label>
+                                                <input v-model="confirmActivity.current_progress" type="number" class="form-control" id="current_progress"
+                                                    placeholder="Current Progress">
+                                            </div>
+                                        </div>
+                                    </template>
+                                </div>
                                 <div class="modal-footer">
                                     <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal"
                                         @click.prevent="confirm">SAVE</button>
                                 </div>
+                                <!-- /.modal-content -->
                             </div>
-                            <!-- /.modal-content -->
+                            <!-- /.modal-dialog -->
                         </div>
-                        <!-- /.modal-dialog -->
                     </div>
-
                 </div>
 
                 <div class="box-body">
@@ -1008,7 +1047,6 @@
             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
             input.trigger('fileselect', [numFiles, label]);
         
-
         if(input.get(0).id == "add_document"){
             vm.confirmActivity.file = input.get(0).files[0];
         }else{
@@ -1069,6 +1107,8 @@
             actual_duration : "",
             document_number: "",
             file : null,
+            file_name : "",
+            last_file_name : "",
             type : "",
             current_progress : 0,
         },
@@ -1174,7 +1214,8 @@
         computed : {
             checkFile: function(){
                 let isOk = false;
-                if(this.confirmActivity.file == null){
+                if(this.confirmActivity.file_name == null || 
+                this.confirmActivity.file_name == ""){
                     isOk = true;
                 }
 
@@ -1472,10 +1513,6 @@
             },
             openConfirmModal(data){
                 this.confirmActivity.type = data.type;
-                this.confirmActivity.actual_start_date = data.actual_start_date;
-                this.confirmActivity.actual_end_date = data.actual_end_date;
-                this.confirmActivity.actual_duration = data.actual_duration;
-                this.confirmActivity.file_name = data.drawing;
                 this.predecessorTableView = [];
                 if(data.predecessor != null){
                     this.havePredecessor = true;
@@ -1520,6 +1557,8 @@
                     }
                 }else if(this.confirmActivity.type == "Upload"){
                     //TAMBAHIN MASUKIN FILE SAMA NAMA KE INPUTNYA
+                    this.confirmActivity.file_name = data.drawing;
+                    this.confirmActivity.last_file_name = data.drawing;
                     if(this.confirmActivity.file_name == null){
                         document.getElementById("actual_end_date").disabled = true;
                         document.getElementById("actual_duration").disabled = true;
@@ -1706,9 +1745,9 @@
         watch : {
             "confirmActivity.file" : function(newValue){
                 if(newValue != null){
-                    document.getElementById("file_name_readonly").value = newValue.name;                    
+                    this.confirmActivity.file_name = newValue.name;
                 }else{
-                    document.getElementById("file_name_readonly").value = null;
+                    this.confirmActivity.file_name = "";
                 }
             },
             "return_material.type" : function(newValue){
@@ -1765,7 +1804,7 @@
                             }
                         }  
                     }else if(this.confirmActivity.type == "Upload"){
-                        if(this.confirmActivity.file_name == null){
+                        if(this.confirmActivity.file_name == "" || this.confirmActivity.file_name == null){
                             document.getElementById("actual_end_date").disabled = true;
                             document.getElementById("actual_duration").disabled = true;
                             this.confirmActivity.actual_end_date = "";
@@ -1974,7 +2013,7 @@
         },
         updated : function() {
             if(this.confirmActivity.type == 'Upload'){
-                document.getElementById("file_name_readonly").value = this.confirmActivity.file_name;
+                // document.getElementById("file_name_readonly").value = this.confirmActivity.file_name;
             }
 
             $('.datepicker').datepicker({
