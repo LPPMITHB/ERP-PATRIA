@@ -141,6 +141,24 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        DB::table('permissions')->insert([
+            'name' => 'Delete Project',
+            'menu_id' => $manageProject,
+            'middleware' => 'delete-project',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // WBS Images
+        $menu_manage_wbs_images = Menu::where('route_name','wbs.manageWbsImages')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Wbs Images',
+            'menu_id' => $menu_manage_wbs_images,
+            'middleware' => 'manage-wbs-images',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
         // WBS Profile
         $manageWbsProfile = Menu::where('name','Manage WBS Profile')->select('id')->first()->id;
         DB::table('permissions')->insert([
@@ -208,6 +226,14 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Edit Project',
             'menu_id' => $manageProjectRepair,
             'middleware' => 'edit-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Delete Project',
+            'menu_id' => $manageProjectRepair,
+            'middleware' => 'delete-project-repair',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -377,6 +403,16 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Create Other Cost',
             'menu_id' => $createOtherCost,
             'middleware' => 'create-other-cost',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // approve other cost
+        $menu_approve_other_cost = Menu::where('route_name','rap.selectProjectPlanOtherCost')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Approve Other Cost',
+            'menu_id' => $menu_approve_other_cost,
+            'middleware' => 'approve-other-cost',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -2368,6 +2404,28 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // Yard Plan
+        $manageYardPlan = Menu::where('name','Manage Yard Plan')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Yard Plan',
+            'menu_id' => $manageYardPlan,
+            'middleware' => 'manage-yard-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $viewYardPlan = Menu::where('name','View Yard Plan')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Viwe Yard Plan',
+            'menu_id' => $viewYardPlan,
+            'middleware' => 'view-yard-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Yard Plan Repair
+        // TBD
+
         //Resource Management
         $resourceManagementRepair = Menu::where('name','Resource Management')->where('menu_id',$repair)->select('id')->first()->id;
         $resourceRepair = Menu::where('name','Manage Resource')->where('menu_id',$resourceManagementRepair)->select('id')->first()->id;
@@ -2479,7 +2537,7 @@ class PermissionsTableSeeder extends Seeder
         
 
          // Customer Portal View Project Progress
-        $projectProgress = Menu::where('name','View Project Progress')->select('id')->first()->id;
+        $projectProgress = Menu::where('route_name','customer_portal.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'View Project Progress',
             'menu_id' => $projectProgress,
@@ -2494,6 +2552,16 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Post Complaints',
             'menu_id' => $postComplaints,
             'middleware' => 'create-post',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        // Customer Portal Reply post
+        $postReply = Menu::where('name','Reply Complaints')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Reply Complaints',
+            'menu_id' => $postReply,
+            'middleware' => 'reply-post',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -2628,8 +2696,7 @@ class PermissionsTableSeeder extends Seeder
             'middleware' => 'create-cost-standard',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
-        ]);
-        
+        ]); 
 
         DB::table('permissions')->insert([
             'name' => 'Show Cost Standard',
@@ -3065,7 +3132,6 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        
         //daily info weather
         $daily_weather = Menu::where('name','Weather')->select('id')->first()->id;
         DB::table('permissions')->insert([

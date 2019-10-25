@@ -1,32 +1,17 @@
 @extends('layouts.main')
 @section('content-header')
-@if ($wbs->wbs != null)
     @breadcrumb(
         [
-            'title' => 'Manage Material',
+            'title' => 'Manage WBS\'s Materials',
             'subtitle' => '',
             'items' => [
                 'Dashboard' => route('index'),
-                $wbs->number => route('project_standard.createSubWbsStandard', $wbs->wbs->id),
-                'Manage Material' => '',
+                $wbs->number => route('bom_repair.selectWBSManage', $wbs->project_id),
+                'Manage WBS\'s Materials and Services' => '',
             ]
         ]
     )
     @endbreadcrumb
-@else
-    @breadcrumb(
-        [
-            'title' => 'Manage Material',
-            'subtitle' => '',
-            'items' => [
-                'Dashboard' => route('index'),
-                $wbs->number => route('project_standard.createWbsStandard', $wbs->project_standard_id),
-                'Manage Material' => '',
-            ]
-        ]
-    )
-    @endbreadcrumb
-@endif
 @endsection
 
 @section('content')
@@ -35,38 +20,38 @@
         <div class="box">
             <div class="box-body no-padding p-b-10">
                 @if ($edit)
-                    <form id="create-wbs-material" class="form-horizontal" method="POST" action="{{ route('project_standard.updateMaterialStandard') }}">
+                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.updateWbsMaterial') }}">
                     <input type="hidden" name="_method" value="PATCH">
                 @else
-                    <form id="create-wbs-material" class="form-horizontal" method="POST" action="{{ route('project_standard.storeMaterialStandard') }}">
+                    <form id="create-bom" class="form-horizontal" method="POST" action="{{ route('bom.storeWbsMaterial') }}">
                 @endif
                 @csrf
                     @verbatim
-                    <div id="wbs_material">
+                    <div id="bom">
                         <div class="box-header p-b-0">
-                            <div class="col-xs-12 col-md-4">
-                                <div class="col-sm-12 no-padding"><b>Project Standard Information</b></div>
-        
+                            <div class="col-xs-12 col-md-6">
+                                <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+
                                 <div class="col-xs-4 no-padding">Name</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.name)"><b>: {{project.name}}</b></div>
 
                                 <div class="col-xs-4 no-padding">Description</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.number)"><b>: {{project.description}}</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Ship Type</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(project.ship.type)"><b>: {{project.ship.type}}</b></div>
                             </div>
-                            
-                            <div class="col-xs-12 col-md-4">
+
+                            <div class="col-xs-12 col-md-6">
                                 <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                                
+
                                 <div class="col-xs-4 no-padding">Number</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.number)"><b>: {{wbs.number}}</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Description</div>
                                 <div v-if="wbs.description != ''" class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: {{wbs.description}}</b></div>
                                 <div v-else class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.description)"><b>: -</b></div>
-        
+
                                 <div class="col-xs-4 no-padding">Deliverable</div>
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
                             </div>
@@ -79,7 +64,8 @@
                                         <th width="25%">Material Number</th>
                                         <th width="28%">Material Description</th>
                                         <th width="10%">Quantity</th>
-                                        <th width="10%">Unit</th>
+                                        <th width="7%">Unit</th>
+                                        <th width="10%">Source</th>
                                         <th width="15%">Parts Details</th>
                                         <th width="12%"></th>
                                     </tr>
@@ -87,18 +73,22 @@
                                 <tbody>
                                     <tr v-for="(material, index) in materialTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td :id="material.material_code" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
-                                        <td :id="material.material_name" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
+                                        <td :id="material.material_code" class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
+                                        <td :id="material.material_name" class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
                                         <td>{{ material.quantity }}</td>
                                         <td>{{ material.unit }}</td>
+                                        <td>{{ material.source }}</td>
                                         <td class="p-l-5" align="center" v-if="material.part_details.length > 0">
-                                            <a class="btn btn-primary btn-xs" href="#view_part_details" data-toggle="modal" @click="openViewParts(material)">
+                                            <a class="btn btn-primary btn-xs" href="#view_part_details" data-toggle="modal"
+                                                @click="openViewParts(material)">
                                                 VIEW PARTS DETAILS
                                             </a>
                                         </td>
                                         <td v-else>-</td>
                                         <td class="p-l-5" align="center">
-                                            <a class="btn btn-primary btn-xs" @click="openEditModal(material,index)">
+                                            <a class="btn btn-primary btn-xs" href="#edit_item" @click="openEditModal(material,index)">
                                                 EDIT
                                             </a>
                                             <a href="#" @click="removeRow(material)" class="btn btn-danger btn-xs">
@@ -111,16 +101,28 @@
                                     <tr>
                                         <td>{{newIndex}}</td>
                                         <td colspan="2" class="no-padding">
-                                            <selectize class="selectizeFull" id="material" v-model="input.material_id" :settings="materialSettings">
-                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                            </selectize>    
+                                            <selectize class="selectizeFull" id="material" v-model="input.material_id"
+                                                :settings="materialSettings">
+                                                <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} -
+                                                    {{ material.description }}</option>
+                                            </selectize>
                                         </td>
-                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity" :disabled="materialOk"></td>
-                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.unit" disabled></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.quantity"
+                                                :disabled="materialOk"></td>
+                                        <td class="no-padding"><input class="form-control width100" type="text" v-model="input.unit" disabled>
+                                        </td>
+                                        <td class="no-padding">
+                                            <selectize id="source" name="source" v-model="input.source" :settings="source_settings">
+                                                <option value="Stock">Stock</option>
+                                                <option value="WIP">WIP</option>
+                                            </selectize>
+                                        </td>
                                         <td class="p-l-5" align="center">
                                             <template v-if="input.selected_material != null">
-                                                <template v-if="input.selected_material.dimension_type_id == 1 || input.selected_material.dimension_type_id == 2">
-                                                    <button type="button" class="btn btn-primary btn-xs" href="#add_part_details" data-toggle="modal">
+                                                <template
+                                                    v-if="input.selected_material.dimension_type_id == 1 || input.selected_material.dimension_type_id == 2">
+                                                    <button type="button" class="btn btn-primary btn-xs" href="#add_part_details"
+                                                        data-toggle="modal">
                                                         ADD PARTS DETAILS
                                                     </button>
                                                 </template>
@@ -138,17 +140,20 @@
                                         </td>
                                         <td class="p-l-0" align="center">
                                             <a @click.prevent="submitToTable()" :disabled="inputOk" class="btn btn-primary btn-xs" href="#">
-                                            <div class="btn-group">
-                                                ADD
-                                            </div></a>
+                                                <div class="btn-group">
+                                                    ADD
+                                                </div>
+                                            </a>
                                         </td>
                                     </tr>
                                 </tfoot>
                             </table>
                         </div>
                         <div class="col-md-12 p-t-5">
-                            <button v-if="submittedForm.edit" id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">SAVE</button>
-                            <button v-else id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right" :disabled="createOk">CREATE</button>
+                            <button v-if="submittedForm.edit" id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right"
+                                :disabled="createOk">SAVE</button>
+                            <button v-else id="process" @click.prevent="submitForm()" class="btn btn-primary pull-right"
+                                :disabled="createOk">CREATE</button>
                         </div>
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog modalFull">
@@ -164,16 +169,25 @@
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Material</label>
                                                 <selectize id="edit_modal" v-model="editInput.material_id" :settings="materialSettings">
-                                                    <option v-for="(material, index) in materials_modal" :value="material.id">{{ material.code }} - {{ material.description }}</option>
+                                                    <option v-for="(material, index) in materials_modal" :value="material.id">
+                                                        {{ material.code }} - {{ material.description }}</option>
                                                 </selectize>
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-3">
                                                 <label for="quantity" class="control-label">Quantity</label>
-                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editMaterialOk">
+                                                <input type="text" id="quantity" v-model="editInput.quantity" class="form-control"
+                                                    placeholder="Please Input Quantity" :disabled="editMaterialOk">
                                             </div>
-                                            <div class="col-sm-6">
+                                            <div class="col-sm-3">
                                                 <label for="quantity" class="control-label">Unit</label>
                                                 <input type="text" id="quantity" v-model="editInput.unit" class="form-control" disabled>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label for="type" class="control-label">Source</label>
+                                                <selectize id="source" name="source" v-model="editInput.source" :settings="source_settings">
+                                                    <option value="Stock">Stock</option>
+                                                    <option value="WIP">WIP</option>
+                                                </selectize>
                                             </div>
                                         </div>
                                         <template v-if="editInput.selected_material != null">
@@ -195,9 +209,10 @@
                                                         <label for="type" class="control-label">Parts Information</label>
                                                         <div class="row">
                                                             <div class="col-xs-3">Total Weight</div>
-                                                            <div class="col-xs-8"><b>: {{editInput.parts_weight}} {{editInput.selected_material.weight_uom.unit}}</b></div>
+                                                            <div class="col-xs-8"><b>: {{editInput.parts_weight}}
+                                                                    {{editInput.selected_material.weight_uom.unit}}</b></div>
                                                         </div>
-                                            
+
                                                         <div class="row">
                                                             <div class="col-xs-3">Estimated Quantity</div>
                                                             <div class="col-xs-8"><b>: {{editInput.quantity_by_weight}}</b></div>
@@ -224,14 +239,15 @@
                                                                 <td>{{ index_part + 1 }}</td>
                                                                 <template v-if="part.edit">
                                                                     <td class="no-padding">
-                                                                        <input v-model="part.description" type="text" class="form-control width100"
-                                                                            placeholder="Part Description">
+                                                                        <input v-model="part.description" type="text"
+                                                                            class="form-control width100" placeholder="Part Description">
                                                                     </td>
                                                                     <td class="row no-padding">
                                                                         <template v-if="editInput.selected_material.dimension_type_id == 1">
-                                                                            <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
-                                                                                <input v-model="dimension.value_input" type="text" class="form-control width100"
-                                                                                    :placeholder="dimension.name">
+                                                                            <div v-for="dimension in part.dimensions_value_obj"
+                                                                                class="col-sm-4 no-padding">
+                                                                                <input v-model="dimension.value_input" type="text"
+                                                                                    class="form-control width100" :placeholder="dimension.name">
                                                                             </div>
                                                                         </template>
                                                                     </td>
@@ -240,11 +256,12 @@
                                                                             placeholder="Quantity">
                                                                     </td>
                                                                     <td class="no-padding">
-                                                                        <input disabled v-model="part.weight" type="text" class="form-control width100"
-                                                                            placeholder="Weight">
+                                                                        <input disabled v-model="part.weight" type="text"
+                                                                            class="form-control width100" placeholder="Weight">
                                                                     </td>
                                                                     <td class="p-l-5" align="center">
-                                                                        <a class="btn btn-primary btn-xs" :disabled="savePartEditOk" @click="updateRowPartEdit(index_part)">
+                                                                        <a class="btn btn-primary btn-xs" :disabled="savePartEditOk"
+                                                                            @click="updateRowPartEdit(index_part)">
                                                                             SAVE
                                                                         </a>
                                                                     </td>
@@ -258,7 +275,8 @@
                                                                         <a class="btn btn-primary btn-xs" @click="editRowPartEdit(index_part)">
                                                                             EDIT
                                                                         </a>
-                                                                        <a href="#" @click="removeRowPartEdit(part,index_part)" class="btn btn-danger btn-xs">
+                                                                        <a href="#" @click="removeRowPartEdit(part,index_part)"
+                                                                            class="btn btn-danger btn-xs">
                                                                             <div class="btn-group">DELETE</div>
                                                                         </a>
                                                                     </td>
@@ -269,15 +287,16 @@
                                                             <tr>
                                                                 <td>{{newIndexPartEdit}}</td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="input_part_edit.description" type="text" class="form-control width100"
-                                                                        placeholder="Part Description">
+                                                                    <input v-model="input_part_edit.description" type="text"
+                                                                        class="form-control width100" placeholder="Part Description">
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="editInput.selected_material != null">
                                                                         <template v-if="editInput.selected_material.dimension_type_id == 1">
-                                                                            <div v-for="dimension in input_part_edit.dimensions_value" class="col-sm-4 no-padding">
-                                                                                <input v-model="dimension.value_input" type="text" class="form-control width100"
-                                                                                    :placeholder="dimension.name">
+                                                                            <div v-for="dimension in input_part_edit.dimensions_value"
+                                                                                class="col-sm-4 no-padding">
+                                                                                <input v-model="dimension.value_input" type="text"
+                                                                                    class="form-control width100" :placeholder="dimension.name">
                                                                             </div>
                                                                         </template>
                                                                     </template>
@@ -286,16 +305,16 @@
                                                                     </template>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="input_part_edit.quantity" type="text" class="form-control width100"
-                                                                        placeholder="Quantity">
+                                                                    <input v-model="input_part_edit.quantity" type="text"
+                                                                        class="form-control width100" placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="input_part_edit.weight" type="text" class="form-control width100"
-                                                                        placeholder="Weight">
+                                                                    <input disabled v-model="input_part_edit.weight" type="text"
+                                                                        class="form-control width100" placeholder="Weight">
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
-                                                                    <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk" class="btn btn-primary btn-xs"
-                                                                        href="#">
+                                                                    <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk"
+                                                                        class="btn btn-primary btn-xs" href="#">
                                                                         <div class="btn-group">
                                                                             ADD
                                                                         </div>
@@ -309,7 +328,8 @@
                                         </template>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal" @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
+                                        <button type="button" class="btn btn-primary" :disabled="updateOk" data-dismiss="modal"
+                                            @click.prevent="update(editInput.old_material_id, editInput.material_id)">SAVE</button>
                                     </div>
                                 </div>
                             </div>
@@ -335,16 +355,18 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-xs-2">Weight</div>
-                                                        <div class="col-xs-8"><b>: {{input.selected_material.weight}} {{input.selected_material.weight_uom.unit}}</b></div>
+                                                        <div class="col-xs-8"><b>: {{input.selected_material.weight}}
+                                                                {{input.selected_material.weight_uom.unit}}</b></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <label for="type" class="control-label">Parts Information</label>
                                                     <div class="row">
                                                         <div class="col-xs-3">Total Weight</div>
-                                                        <div class="col-xs-8"><b>: {{input.parts_weight}} {{input.selected_material.weight_uom.unit}}</b></div>
+                                                        <div class="col-xs-8"><b>: {{input.parts_weight}}
+                                                                {{input.selected_material.weight_uom.unit}}</b></div>
                                                     </div>
-    
+
                                                     <div class="row">
                                                         <div class="col-xs-3">Estimated Quantity</div>
                                                         <div class="col-xs-8"><b>: {{input.quantity_by_weight}}</b></div>
@@ -359,12 +381,10 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="25%">Parts Description</th>
+                                                            <th width="35%">Parts Description</th>
                                                             <th width="18%">Dimensions</th>
-                                                            <th width="7%">Quantity</th>
-                                                            <th width="7%">Weight</th>
-                                                            <th width="13%">Service</th>
-                                                            <th width="13%">Service Detail</th>
+                                                            <th width="10%">Quantity</th>
+                                                            <th width="10%">Weight</th>
                                                             <th width="7%"></th>
                                                         </tr>
                                                     </thead>
@@ -373,49 +393,29 @@
                                                             <td>{{ index_part + 1 }}</td>
                                                             <template v-if="part.edit">
                                                                 <td class="no-padding">
-                                                                    <input v-model="part.description" type="text" class="form-control width100" placeholder="Part Description">    
+                                                                    <input v-model="part.description" type="text" class="form-control width100"
+                                                                        placeholder="Part Description">
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
-                                                                            <input v-model="dimension.value_input" type="text" class="form-control width100"
-                                                                                :placeholder="dimension.name">
+                                                                        <div v-for="dimension in part.dimensions_value_obj"
+                                                                            class="col-sm-4 no-padding">
+                                                                            <input v-model="dimension.value_input" type="text"
+                                                                                class="form-control width100" :placeholder="dimension.name">
                                                                         </div>
-                                                                    </template> 
+                                                                    </template>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
+                                                                    <input v-model="part.quantity" type="text" class="form-control width100"
+                                                                        placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="part.weight" type="text" class="form-control width100" placeholder="Weight">
-                                                                </td>
-                                                                <td class="no-padding">
-                                                                    <selectize class="selectizeFull" id="service_edit" v-model="part.service_id" :settings="service_settings">
-                                                                        <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
-                                                                            {{ service.name }} [General]</option>
-                                                                        <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
-                                                                            {{ service.name }}</option>
-                                                                    </selectize>
-                                                                </td>
-                                                                <td class="no-padding">
-                                                                    <div v-show="part.service_id == ''">
-                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
-                                                                        </selectize>
-                                                                    </div>
-                                                                    <div v-show="part.selected_service.length == 0 && part.service_id != ''">
-                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
-                                                                        </selectize>
-                                                                    </div>
-                                                                    <div v-show="part.selected_service.length > 0">
-                                                                        <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
-                                                                            v-model="part.service_detail_id" :settings="service_detail_settings">
-                                                                            <option v-for="(service_detail, index) in part.selected_service" :value="service_detail.id">
-                                                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
-                                                                        </selectize>
-                                                                    </div>
+                                                                    <input disabled v-model="part.weight" type="text"
+                                                                        class="form-control width100" placeholder="Weight">
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
-                                                                    <a class="btn btn-primary btn-xs" :disabled="savePartOk" @click="updateRowPart(index_part)">
+                                                                    <a class="btn btn-primary btn-xs" :disabled="savePartOk"
+                                                                        @click="updateRowPart(index_part)">
                                                                         SAVE
                                                                     </a>
                                                                 </td>
@@ -425,14 +425,12 @@
                                                                 <td>{{ part.dimension_string }}</td>
                                                                 <td>{{ part.quantity }}</td>
                                                                 <td>{{ part.weight }}</td>
-                                                                <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                                <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
-                                                                <td v-else>-</td>
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="editRowPart(index_part)">
                                                                         EDIT
                                                                     </a>
-                                                                    <a href="#" @click="removeRowPart(part,index_part)" class="btn btn-danger btn-xs">
+                                                                    <a href="#" @click="removeRowPart(part,index_part)"
+                                                                        class="btn btn-danger btn-xs">
                                                                         <div class="btn-group">DELETE</div>
                                                                     </a>
                                                                 </td>
@@ -443,13 +441,16 @@
                                                         <tr>
                                                             <td>{{newIndexPart}}</td>
                                                             <td class="no-padding">
-                                                                <input v-model="input_part.description" type="text" class="form-control width100" placeholder="Part Description">
+                                                                <input v-model="input_part.description" type="text"
+                                                                    class="form-control width100" placeholder="Part Description">
                                                             </td>
                                                             <td class="row no-padding">
                                                                 <template v-if="input.selected_material != null">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in input_part.dimensions_value" class="col-sm-4 no-padding">
-                                                                            <input v-model="dimension.value_input" type="text" class="form-control width100" :placeholder="dimension.name">
+                                                                        <div v-for="dimension in input_part.dimensions_value"
+                                                                            class="col-sm-4 no-padding">
+                                                                            <input v-model="dimension.value_input" type="text"
+                                                                                class="form-control width100" :placeholder="dimension.name">
                                                                         </div>
                                                                     </template>
                                                                 </template>
@@ -458,36 +459,16 @@
                                                                 </template>
                                                             </td>
                                                             <td class="no-padding">
-                                                                <input v-model="input_part.quantity" type="text" class="form-control width100" placeholder="Quantity">
+                                                                <input v-model="input_part.quantity" type="text" class="form-control width100"
+                                                                    placeholder="Quantity">
                                                             </td>
                                                             <td class="no-padding">
-                                                                <input disabled v-model="input_part.weight" type="text" class="form-control width100" placeholder="Weight">
-                                                            </td>
-                                                            <td class="no-padding">
-                                                                <selectize class="selectizeFull" id="service" v-model="input_part.service_id" :settings="service_settings">
-                                                                    <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}  [General]</option>
-                                                                    <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
-                                                                </selectize>
-                                                            </td>
-                                                            <td class="no-padding">
-                                                                <div v-show="input_part.service_id == ''">
-                                                                    <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
-                                                                    </selectize>
-                                                                </div>
-                                                                <div v-show="input_part.selected_service.length == 0 && input_part.service_id != ''">
-                                                                    <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
-                                                                    </selectize>
-                                                                </div>
-                                                                <div v-show="input_part.selected_service.length > 0">
-                                                                    <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id" v-model="input_part.service_detail_id"
-                                                                        :settings="service_detail_settings">
-                                                                        <option v-for="(service_detail, index) in input_part.selected_service" :value="service_detail.id">
-                                                                            {{ service_detail.name }} - {{ service_detail.description }}</option>
-                                                                    </selectize>
-                                                                </div>
+                                                                <input disabled v-model="input_part.weight" type="text"
+                                                                    class="form-control width100" placeholder="Weight">
                                                             </td>
                                                             <td class="p-l-5" align="center">
-                                                                <a @click.prevent="submitToTableParts()" :disabled="inputPartOk" class="btn btn-primary btn-xs" href="#">
+                                                                <a @click.prevent="submitToTableParts()" :disabled="inputPartOk"
+                                                                    class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
                                                                         ADD
                                                                     </div>
@@ -526,16 +507,18 @@
                                                     </div>
                                                     <div class="row">
                                                         <div class="col-xs-2">Weight</div>
-                                                        <div class="col-xs-8"><b>: {{view.selected_material.weight}} {{view.selected_material.weight_uom.unit}}</b></div>
+                                                        <div class="col-xs-8"><b>: {{view.selected_material.weight}}
+                                                                {{view.selected_material.weight_uom.unit}}</b></div>
                                                     </div>
                                                 </div>
                                                 <div class="col-sm-6">
                                                     <label for="type" class="control-label">Parts Information</label>
                                                     <div class="row">
                                                         <div class="col-xs-3">Total Weight</div>
-                                                        <div class="col-xs-8"><b>: {{view.parts_weight}} {{view.selected_material.weight_uom.unit}}</b></div>
+                                                        <div class="col-xs-8"><b>: {{view.parts_weight}}
+                                                                {{view.selected_material.weight_uom.unit}}</b></div>
                                                     </div>
-    
+
                                                     <div class="row">
                                                         <div class="col-xs-3">Estimated Quantity</div>
                                                         <div class="col-xs-8"><b>: {{view.quantity_by_weight}}</b></div>
@@ -554,8 +537,6 @@
                                                             <th width="18%">Dimensions</th>
                                                             <th width="10%">Quantity</th>
                                                             <th width="10%">Weight</th>
-                                                            <th width="10%">Service</th>
-                                                            <th width="10%">Service Detail</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -565,8 +546,6 @@
                                                             <td>{{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
-                                                            <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                            <td class="tdEllipsis">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -593,12 +572,10 @@
 
 @push('script')
 <script>
-    const form = document.querySelector('form#create-wbs-material');
+    const form = document.querySelector('form#create-bom');
 
     $(document).ready(function(){
-        $('div.overlay').hide();
-
-        var part_table = $('#part-table').DataTable({
+        var material_table = $('#material-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'ordering'    : true,
@@ -607,30 +584,19 @@
             'bFilter'     : true,
             'initComplete': function(){
                 $('div.overlay').hide();
-                document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
-            }
-        });
-
-        var material_standard_table = $('#material-standard-table').DataTable({
-            'paging'      : true,
-            'lengthChange': false,
-            'ordering'    : true,
-            'info'        : true,
-            'autoWidth'   : false,
-            'bFilter'     : true,
-            'initComplete': function(){
-                $('div.overlay').hide();
-                // document.getElementById("material-standard-table_wrapper").setAttribute("style", "margin-top: -30px");
             }
         });
     });
 
     var data = {
         project : @json($project),
+        all_materials : @json($materials),
         materials : @json($materials),
-        services : @json($services),
         wbs : @json($wbs),
-        newIndex : 0, 
+        services : @json($services),
+        vendors : @json($vendors),
+        uoms : @json($uoms),
+        newIndex : 0,
         newIndexPart : 0,
         newIndexPartEdit : 0,
         submittedForm :{
@@ -639,6 +605,15 @@
             edit : @json($edit),
             deleted_id : [],
             deleted_part_id : [],
+
+            service_id: "",
+            service_detail_id: "",
+            selected_service : "",
+            vendor_id : "",
+            area :"",
+            area_uom_id : "",
+
+            selected_service_detail : @json($wbs->service_detail_id),
         },
         input : {
             selected_material : null,
@@ -651,6 +626,7 @@
             material_ok : "",
             quantity_by_weight : "",
             parts_weight : "",
+            source : "",
 
             part_details : [],
         },
@@ -660,18 +636,10 @@
             quantity : "",
             volume : "",
             weight : "",
-            service_id : "",
-            service_code : "",
-            service_name : "",
-            service_detail_id : "",
-            service_detail_name : "",
-            service_detail_description : "",
-            selected_service : "",
 
             dimension_string : null,
             edit : false,
         },
-
         input_part_edit :{
             description: "",
             dimensions_value : "",
@@ -692,11 +660,12 @@
             unit : "",
             is_decimal : "",
             material_ok : "",
+            source : "",
 
             selected_material : null,
             quantity_by_weight : "",
             parts_weight : "",
-            
+
             part_details : [],
         },
 
@@ -712,9 +681,20 @@
         materialSettings: {
             placeholder: 'Please Select Material'
         },
+        material_id:@json($material_ids),
+        material_id_modal:[],
+        materials_modal :[],
+        active_edit_part_index : "",
+        active_edit_part_edit_index : "",
+
+        temp_part_details_edit : [],
+
         service_settings : {
             placeholder: 'Service'
-            },
+        },
+        vendor_settings : {
+            placeholder: 'Vendor'
+        },
         empty_service_settings:{
             placeholder: 'Please select service first!'
         },
@@ -724,39 +704,38 @@
         service_detail_settings:{
             placeholder: 'Service Detail'
         },
-        material_id:@json($material_ids),
-        material_id_modal:[],
-        materials_modal :[],
-        active_edit_part_index : "",
-        active_edit_part_edit_index : "",
-
-        temp_part_details_edit : [],
+        area_uom_settings: {
+            placeholder: 'Select area UOM!'
+        },
+        source_settings:{
+            placeholder: 'Source'
+        },
     }
 
     Vue.directive('tooltip', function(el, binding){
         $(el).tooltip({
             title: binding.value,
             placement: binding.arg,
-            trigger: 'hover'             
+            trigger: 'hover'
         })
     })
 
     var vm = new Vue({
-        el : '#wbs_material',
+        el : '#bom',
         data : data,
         computed:{
             inputOk: function(){
                 let isOk = false;
 
-                if(this.input.material_id == "" || this.input.quantity == ""){
+                if(this.input.material_id == "" || this.input.quantity == "" || this.input.source == ""){
                     isOk = true;
                 }
                 return isOk;
             },
             inputPartOk: function(){
                 let isOk = false;
-                
-                if(this.input_part.description == "" || this.input_part.quantity == "" || this.input_part.service_id == ""){
+
+                if(this.input_part.description == "" || this.input_part.quantity == ""){
                     isOk = true;
                 }
 
@@ -764,7 +743,7 @@
             },
             inputPartEditOk: function(){
                 let isOk = false;
-                
+
                 if(this.input_part_edit.description == "" || this.input_part_edit.quantity == ""){
                     isOk = true;
                 }
@@ -772,12 +751,18 @@
                 return isOk;
             },
             createOk: function(){
-                let isOk = false;
+                let isOkMaterial = false;
+                let isOkService = false;
 
                 if(this.materialTable.length < 1){
-                    isOk = true;
+                    isOkMaterial = true;
                 }
-                return isOk;
+
+                if(this.submittedForm.service_detail_id == ""){
+                    isOkService = true;
+                }
+
+                return isOkMaterial && isOkService;
             },
             updateOk: function(){
                 let isOk = false;
@@ -809,7 +794,7 @@
             savePartOk : function(){
                 let isOk = false;
 
-                var part = this.input.part_details[this.active_edit_part_index];                
+                var part = this.input.part_details[this.active_edit_part_index];
                 if(part.description == "" || part.quantity == ""){
                     isOk = true;
                 }
@@ -819,7 +804,7 @@
             savePartEditOk : function(){
                 let isOk = false;
 
-                var part = this.editInput.part_details[this.active_edit_part_edit_index];                
+                var part = this.editInput.part_details[this.active_edit_part_edit_index];
                 if(part.description == "" || part.quantity == ""){
                     isOk = true;
                 }
@@ -835,14 +820,14 @@
                         $(el).tooltip({
                             title: el.id,
                             placement: binding.arg,
-                            trigger: 'hover'             
+                            trigger: 'hover'
                         })
                     }else if(el.id == description){
                         $(el).tooltip('destroy');
                         $(el).tooltip({
                             title: el.id,
                             placement: binding.arg,
-                            trigger: 'hover'             
+                            trigger: 'hover'
                         })
                     }
                 })
@@ -884,8 +869,6 @@
             },
             openViewParts(material_standard){
                 this.view = material_standard;
-
-                $('#part-table-view').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table-view').DataTable({
                         'paging' : true,
@@ -896,7 +879,7 @@
                         'bFilter' : true,
                         'initComplete': function(){
                         $('div.overlay').hide();
-                            document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
+                        document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
                         }
                     });
                 })
@@ -913,10 +896,15 @@
                 this.editInput.index = index;
                 this.editInput.unit = data.unit;
                 this.editInput.is_decimal = data.is_decimal;
+                if(data.source == undefined){
+                    this.editInput.source = "";
+                }else{
+                    this.editInput.source = data.source;
+                }
 
                 var material_id = JSON.stringify(this.material_id);
                 material_id = JSON.parse(material_id);
-                
+
                 this.material_id_modal = material_id;
                 this.material_id_modal.forEach(id => {
                     if(id == data.material_id){
@@ -936,16 +924,6 @@
                     data.part_details.forEach(part => {
                         part.quantity = (part.quantity+"").replace(/,/g , '');
                     });
-
-                    data.part_details.forEach(part=>{
-                        part.service_id = parseInt(part.service_id);
-                        if(part.service_detail_id != ""){
-                            part.service_detail_id = parseInt(part.service_detail_id);
-                        }else{
-                            part.service_detail_id = null;
-                        }
-                    });
-
                 })
                 this.submittedForm.materials = this.materialTable;
 
@@ -967,9 +945,9 @@
                     this.material_id.push(data.material_id); //ini buat nambahin material_id terpilih
 
                     var jsonMaterialId = JSON.stringify(this.material_id);
-                    this.getNewMaterials(jsonMaterialId);             
+                    this.getNewMaterials(jsonMaterialId);
 
-                    this.newIndex = this.materialTable.length + 1;  
+                    this.newIndex = this.materialTable.length + 1;
 
                     // refresh tooltip
                     let datas = [];
@@ -986,7 +964,7 @@
                     this.input.quantityInt = 0;
                     this.input.quantity_by_weight = "";
                     this.input.parts_weight = "";
-                    
+
                     this.input.part_details = [];
                     this.newIndexPart = this.input.part_details.length + 1;
 
@@ -1028,15 +1006,15 @@
                 var index_materialId = "";
                 var index_materialTable = "";
                 if(typeof material.id !== 'undefined'){
-                    this.submittedForm.deleted_id.push(material.id);
+                    this.submittedForm.deleted_id.push(material.material_id);
                 }
-                
+
                 this.material_id.forEach(id => {
                     if(id == material.material_id){
                         index_materialId = this.material_id.indexOf(id);
                     }
                 });
-                for (var i in this.materialTable) { 
+                for (var i in this.materialTable) {
                     if(this.materialTable[i].material_id == material.material_id){
                         index_materialTable = i;
                     }
@@ -1090,11 +1068,15 @@
                         material.unit = this.editInput.unit;
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
+                        material.source = this.editInput.source;
+                        if(this.editInput.dimensions_value != null){
+                            material.dimensions_value = JSON.stringify(this.editInput.dimensions_value);
+                        }
 
                         var elemCode = document.getElementById(material.material_code);
                         var elemDesc = document.getElementById(material.material_name);
 
-                        window.axios.get('/api/getMaterialProjectStandard/'+new_material_id).then(({ data }) => {
+                        window.axios.get('/api/getMaterialBOM/'+new_material_id).then(({ data }) => {
                             material.material_name = data.description;
                             material.material_code = data.code;
 
@@ -1113,38 +1095,7 @@
                             elemCode.id = data.code;
                             elemDesc.id = data.description;
                             this.refreshTooltip(elemCode.id,elemDesc.id);
-                            
-                            $('#material-standard-table').DataTable().destroy();
-                            this.$nextTick(function() {
-                                $('#material-standard-table').DataTable({
-                                    'paging' : true,
-                                    'lengthChange': false,
-                                    'ordering' : true,
-                                    'info' : true,
-                                    'autoWidth' : false,
-                                    'bFilter' : true,
-                                    'initComplete': function(){
-                                    $('div.overlay').hide();
-                                    // document.getElementById("material-standard-table_wrapper").setAttribute("style", "margin-top: -30px");
-                                    }
-                                });
-                            })
 
-                            $('#part-table').DataTable().destroy();
-                            this.$nextTick(function() {
-                                $('#part-table').DataTable({
-                                    'paging' : true,
-                                    'lengthChange': false,
-                                    'ordering' : true,
-                                    'info' : true,
-                                    'autoWidth' : false,
-                                    'bFilter' : true,
-                                    'initComplete': function(){
-                                    $('div.overlay').hide();
-                                    document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
-                                    }
-                                });
-                            })
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -1160,9 +1111,8 @@
             },
             submitToTableParts(){
                 $('div.overlay').show();
-
                 var data = JSON.stringify(this.input_part);
-                data = JSON.parse(data); 
+                data = JSON.parse(data);
 
                 var still_empty = false;
                 data.dimensions_value.forEach(dimension => {
@@ -1176,7 +1126,7 @@
                         data.dimensions_value = JSON.stringify(data.dimensions_value);
                         data.dimensions_value_obj = JSON.parse(data.dimensions_value);
                     }
-                    
+
                     this.input.part_details.push(data);
                     this.newIndexPart = this.input.part_details.length + 1;
 
@@ -1186,8 +1136,6 @@
                     this.input_part.quantity = "";
                     this.input_part.weight = "";
                     this.input_part.volume = "";
-                    this.input_part.service_id = "";
-                    this.input_part.service_detail_id = "";
 
                     $('#part-table').DataTable().destroy();
                     this.$nextTick(function() {
@@ -1211,14 +1159,14 @@
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
-                }   
+                }
             },
             editRowPart(index){
                 this.input.part_details[index].edit = true;
                 this.active_edit_part_index = index;
                 // var temp_selected_data = JSON.stringify(this.input.part_details[index]);
-                // temp_selected_data = JSON.parse(temp_selected_data); 
-                
+                // temp_selected_data = JSON.parse(temp_selected_data);
+
                 // this.edit_part.description = temp_selected_data.description;
                 // this.edit_part.dimensions_value = JSON.parse(temp_selected_data.dimensions_value);
                 // this.edit_part.quantity = temp_selected_data.quantity;
@@ -1227,7 +1175,7 @@
             removeRowPart(part, index){
                 this.input.part_details.splice(index, 1);
                 this.newIndexPart = this.input.part_details.length + 1;
-                
+
                 $('#part-table').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table').DataTable({
@@ -1246,7 +1194,8 @@
             },
             updateRowPart(index){
                 var data = JSON.stringify(this.input.part_details[this.active_edit_part_index]);
-                data = JSON.parse(data); 
+                data = JSON.parse(data);
+
                 var still_empty = false;
                 data.dimensions_value_obj.forEach(dimension => {
                     if(dimension.value_input == undefined || dimension.value_input == ""){
@@ -1279,13 +1228,13 @@
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
-                }  
+                }
             },
 
             submitToTablePartsEdit(){
-                $('div.overlay').show();         
+                $('div.overlay').show();
                 var data = JSON.stringify(this.input_part_edit);
-                data = JSON.parse(data); 
+                data = JSON.parse(data);
 
                 var still_empty = false;
                 data.dimensions_value.forEach(dimension => {
@@ -1299,7 +1248,7 @@
                         data.dimensions_value = JSON.stringify(data.dimensions_value);
                         data.dimensions_value_obj = JSON.parse(data.dimensions_value);
                     }
-                    
+
                     this.editInput.part_details.push(data);
                     this.newIndexPartEdit = this.editInput.part_details.length + 1;
 
@@ -1332,7 +1281,7 @@
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
-                }   
+                }
             },
             editRowPartEdit(index){
                 this.editInput.part_details[index].edit = true;
@@ -1344,7 +1293,7 @@
                 }
                 this.editInput.part_details.splice(index, 1);
                 this.newIndexPartEdit = this.editInput.part_details.length + 1;
-                
+
                 $('#part-table-edit').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table-edit').DataTable({
@@ -1363,7 +1312,7 @@
             },
             updateRowPartEdit(index){
                 var data = JSON.stringify(this.editInput.part_details[this.active_edit_part_edit_index]);
-                data = JSON.parse(data); 
+                data = JSON.parse(data);
 
                 var still_empty = false;
                 data.dimensions_value_obj.forEach(dimension => {
@@ -1397,52 +1346,10 @@
                         displayMode: 'replace'
                     });
                     $('div.overlay').hide();
-                }  
+                }
             },
         },
         watch: {
-            'input_part.service_id': function(newValue){
-                if(newValue != ""){
-
-                    this.input_part.service_detail_id = "";
-                        this.services.forEach(service => {
-                        if(service.id == newValue){
-                            this.input_part.selected_service = service.service_details;
-                            if(this.input_part.selected_service_detail != null){
-                                this.input_part.service_detail_id = this.input_part.selected_service_detail;
-                                this.input_part.selected_service_detail = null;
-                            }
-                        }
-                    });
-                    window.axios.get('/api/getServiceStandard/'+this.input_part.service_id).then(({ data }) => {
-                        this.input_part.service_name = data.name;
-                        this.input_part.service_code = data.code;
-                    })
-
-
-                }else{
-                    this.input_part.service_name = "";
-                    this.input_part.service_code = "";
-                    this.input_part.selected_service = "";
-                    // this.input_part.service_detail_id = "";
-                }
-
-            },
-
-            'input_part.service_detail_id': function(newValue){
-                if(newValue != ""){
-                
-                window.axios.get('/api/getServiceDetailStandard/'+this.input_part.service_detail_id).then(({ data }) => {
-                    this.input_part.service_detail_name = data.name;
-                    this.input_part.service_detail_description = data.description;
-                })
-                
-                }else{
-                    this.input_part.service_detail_name = "";
-                    this.input_part.service_detail_description = "";
-                }
-            },
-
             'input.material_id': function(newValue){
                 this.input.quantity = "";
                 this.input_part.dimensions_value = null;
@@ -1496,37 +1403,11 @@
                     this.input.parts_weight = "";
                 }
             },
-            'input.part_details':{ 
+            'input.part_details':{
                 handler: function(newValue) {
                     if(newValue.length > 0){
                         var temp_total_weight = 0;
                         newValue.forEach(part_detail => {
-                            this.services.forEach(service => {
-                                if(service.id == part_detail.service_id){
-                                    part_detail.selected_service = service.service_details;
-                                    if(part_detail.selected_service_detail != null){
-                                        part_detail.service_detail_id = part_detail.selected_service_detail;
-                                        part_detail.selected_service_detail = null;
-                                    }else{
-                                        // part_detail.service_detail_id = "";
-                                    }
-                                }
-                            });
-                            window.axios.get('/api/getServiceStandard/'+part_detail.service_id).then(({ data }) => {
-                                part_detail.service_name = data.name;
-                                part_detail.service_code = data.code;
-                            });
-
-                            if(part_detail.service_id != '' && part_detail.service_detail_id != ''){
-                                window.axios.get('/api/getServiceDetailStandard/'+part_detail.service_detail_id).then(({ data }) => {
-                                    part_detail.service_detail_name = data.name;
-                                    part_detail.service_detail_description = data.description;
-                                });
-                            }else if(part_detail.service_id != '' && part_detail.selected_service.length == 0){
-                                part_detail.service_detail_name = '';
-                                part_detail.service_detail_description = '';
-                            }
-
                             temp_total_weight += part_detail.weight;
                             part_detail.dimensions_value = JSON.stringify(part_detail.dimensions_value_obj);
                             if(part_detail.dimensions_value != null){
@@ -1559,7 +1440,7 @@
                                                 }
                                             }else{
                                                 dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                            } 
+                                            }
                                         }else{
                                             dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         }
@@ -1573,7 +1454,7 @@
                                 }
 
                                 if(part_detail.volume != "" && part_detail.quantity != ""){
-                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , '');                            
+                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , '');
                                     var temp_weight = ((part_detail.volume)/ 1000000) * this.input.selected_material.density.value * temp_part_quantity;
                                     part_detail.weight = parseFloat(temp_weight.toFixed(2));
                                     if(isNaN(part_detail.weight)){
@@ -1599,7 +1480,7 @@
                     this.editInput.parts_weight = "";
                 }
             },
-            'editInput.part_details':{ 
+            'editInput.part_details':{
                 handler: function(newValue) {
                     if(newValue.length > 0){
                         var temp_total_weight = 0;
@@ -1636,7 +1517,7 @@
                                                 }
                                             }else{
                                                 dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                            } 
+                                            }
                                         }else{
                                             dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         }
@@ -1650,7 +1531,7 @@
                                 }
 
                                 if(part_detail.volume != "" && part_detail.quantity != "" && this.editInput.selected_material != null){
-                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , ''); 
+                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , '');
                                     var temp_weight = ((part_detail.volume)/ 1000000) * this.editInput.selected_material.density.value * temp_part_quantity;
                                     part_detail.weight = parseFloat(temp_weight.toFixed(2));
                                     if(isNaN(part_detail.weight)){
@@ -1668,12 +1549,11 @@
                 },
                 deep: true
             },
-            'view.part_details':{ 
+            'view.part_details':{
                 handler: function(newValue) {
                     if(newValue.length > 0){
                         var temp_total_weight = 0;
                         newValue.forEach(part_detail => {
-
                             temp_total_weight += part_detail.weight;
                             part_detail.dimensions_value = JSON.stringify(part_detail.dimensions_value_obj);
                             if(part_detail.dimensions_value != null){
@@ -1706,7 +1586,7 @@
                                                 }
                                             }else{
                                                 dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                            } 
+                                            }
                                         }else{
                                             dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                         }
@@ -1720,7 +1600,7 @@
                                 }
 
                                 if(part_detail.volume != "" && part_detail.quantity != ""){
-                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , '');                            
+                                    var temp_part_quantity = (part_detail.quantity+"").replace(/,/g , '');
                                     var temp_weight = ((part_detail.volume)/ 1000000) * this.view.selected_material.density.value * temp_part_quantity;
                                     part_detail.weight = parseFloat(temp_weight.toFixed(2));
                                     if(isNaN(part_detail.weight)){
@@ -1765,7 +1645,7 @@
                                         }
                                     }else{
                                         dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    } 
+                                    }
                                 }else{
                                     dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 }
@@ -1779,14 +1659,14 @@
                         }
 
                         if(this.input_part.volume != "" && this.input_part.quantity != ""){
-                            var temp_part_quantity = (this.input_part.quantity+"").replace(/,/g , '');                            
+                            var temp_part_quantity = (this.input_part.quantity+"").replace(/,/g , '');
                             var temp_weight = ((this.input_part.volume)/ 1000000) * this.input.selected_material.density.value * temp_part_quantity;
                             this.input_part.weight = parseFloat(temp_weight.toFixed(2));
                         }
-                    }   
+                    }
                 },
                 deep: true
-            }, 
+            },
             'input_part.quantity': function(newValue){
                 if(newValue != null){
                     var still_empty = false;
@@ -1805,7 +1685,7 @@
                     }
 
                     if(this.input_part.volume != ""){
-                        var temp_part_quantity = (newValue+"").replace(/,/g , '');                            
+                        var temp_part_quantity = (newValue+"").replace(/,/g , '');
                         var temp_weight = ((this.input_part.volume)/ 1000000) * this.input.selected_material.density.value * temp_part_quantity;
                         this.input_part.weight = parseFloat(temp_weight.toFixed(2));
                     }
@@ -1833,7 +1713,7 @@
                                         }
                                     }else{
                                         dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                                    } 
+                                    }
                                 }else{
                                     dimension.value_input = (temp_dimension_value+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                                 }
@@ -1847,14 +1727,14 @@
                         }
 
                         if(this.input_part_edit.volume != "" && this.input_part_edit.quantity != ""){
-                            var temp_part_quantity = (this.input_part_edit.quantity+"").replace(/,/g , '');                            
+                            var temp_part_quantity = (this.input_part_edit.quantity+"").replace(/,/g , '');
                             var temp_weight = ((this.input_part_edit.volume)/ 1000000) * this.editInput.selected_material.density.value * temp_part_quantity;
                             this.input_part_edit.weight = parseFloat(temp_weight.toFixed(2));
                         }
-                    }   
+                    }
                 },
                 deep: true
-            }, 
+            },
             'input_part_edit.quantity': function(newValue){
                 if(newValue != null){
                     var still_empty = false;
@@ -1873,7 +1753,7 @@
                     }
 
                     if(this.input_part_edit.volume != ""){
-                        var temp_part_quantity = (newValue+"").replace(/,/g , '');                            
+                        var temp_part_quantity = (newValue+"").replace(/,/g , '');
                         var temp_weight = ((this.input_part_edit.volume)/ 1000000) * this.editInput.selected_material.density.value * temp_part_quantity;
                         this.input_part_edit.weight = parseFloat(temp_weight.toFixed(2));
                     }
@@ -1881,21 +1761,21 @@
                 }
             },
             'input.quantity_by_weight': function(newValue){
-                if(newValue != null){
+                if(newValue != null && newValue != ""){
                     this.input.quantity = newValue;
                 }
             },
             'editInput.quantity_by_weight': function(newValue){
-                if(newValue != null){
+                if(newValue != null && newValue != ""){
                     this.editInput.quantity = newValue;
                 }
             },
             'input.quantity': function(newValue){
                 var is_decimal = this.input.is_decimal;
                 if(is_decimal == 0){
-                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
-                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    var decimal = newValue.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
@@ -1911,7 +1791,7 @@
             'editInput.quantity': function(newValue){
                 var is_decimal = this.editInput.is_decimal;
                 if(is_decimal == 0){
-                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -1924,16 +1804,50 @@
                     }else{
                         this.editInput.quantity = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }  
+                }
+            },
+            'submittedForm.service_id': function(newValue) {
+                if(newValue != ""){
+                    this.submittedForm.service_detail_id = "";
+                    this.services.forEach(service => {
+                        if(service.id == newValue){
+                            this.submittedForm.selected_service = service.service_details;
+
+                            if(this.submittedForm.selected_service_detail != null){
+                                this.submittedForm.service_detail_id = this.submittedForm.selected_service_detail;
+                                this.submittedForm.selected_service_detail = null;
+                            }
+                        }
+                    });
+                }else{
+                    this.submittedForm.selected_service = "";
+                    this.submittedForm.service_detail_id = "";
+                }
+            },
+            'submittedForm.service_detail_id' : function(newValue){
+                if(newValue != ""){
+                    this.submittedForm.selected_service.forEach(service_detail => {
+                        if(service_detail.id == newValue){
+                            this.submittedForm.area_uom_id = service_detail.uom_id;
+                        }
+                    });
+                }else{
+                    this.submittedForm.area_uom_id = "";
+                }
             },
         },
         created: function() {
             this.newIndex = this.materialTable.length + 1;
             this.newIndexPart = this.input.part_details.length + 1;
             var jsonMaterialId = JSON.stringify(this.material_id);
-            this.getNewMaterials(jsonMaterialId);        
+            this.getNewMaterials(jsonMaterialId);
+
+            this.submittedForm.service_id = @json($wbs->serviceDetail != null ? $wbs->serviceDetail->service_id : "");
+            this.submittedForm.vendor_id = @json($wbs->vendor_id);
+            this.submittedForm.area = @json($wbs->area);
+            this.submittedForm.area_uom_id = @json($wbs->area_uom_id);
         }
     });
-       
+
 </script>
 @endpush

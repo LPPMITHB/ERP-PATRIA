@@ -85,16 +85,12 @@
                 <div class="col-sm-6">
                     <table>
                         <thead>
-                            <th>WBS Information</th>
-                            <th></th>
-                            <th></th>
+                            <th colspan="2">WBS Information</th>
                         </thead>
-                    </table>
-                    <table class="tableFixed width100">
                         <tbody>
                             <tr>
-                                <td style="width: 25%">Name</td>
-                                <td style="width: 3%">:</td>
+                                <td>Name</td>
+                                <td>:</td>
                                 <td><b>{{$wbs->number}}</b></td>
                             </tr>
                             <tr>
@@ -149,45 +145,45 @@
                         <thead>
                             <tr>
                                 <th style="width: 5%">No</th>
-                                <th style="width: 14%">Name</th>
-                                <th style="width: 16%">Description</th>
+                                <th style="width: 12%">Type</th>
+                                <th style="width: 12%">Name</th>
+                                <th style="width: 12%">Description</th>
                                 <th style="width: 10%">Start Date</th>
                                 <th style="width: 10%">End Date</th>
-                                <th style="width: 8%" >Duration</th>
-                                <th style="width: 7%">Total Weight</th>
-                                <th style="width: 7%">Weight</th>
-                                <th style="width: 19%">Predecessor</th>
-                                <th style="width: 13%"></th>
+                                <th style="width: 9%" >Duration</th>
+                                <th style="width: 8%">Total Weight (%)</th>
+                                <th style="width: 8%; display:none">Weight</th>
+                                <th style="width: 18%">Predecessor</th>
+                                <th style="width: 14%"></th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.type)">{{ data.type }} </td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
-                                <td>{{ Number.isNaN(((data.weight/wbsWeight)*100)) ? "-" : ((data.weight/wbsWeight)*100).toFixed(2) }} %</td>
-                                <td>{{ data.weight }} %</td>
+                                <td>{{ Number.isNaN(((data.weight/wbsWeight)*100)) ? "-" : ((data.weight/wbsWeight)*100).toFixed(2) }}</td>
+                                <td style="display: none">{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
-                                    <td class="p-l-0 p-r-0 p-b-0 textCenter">
-                                        <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
-                                            <div class="col-sm-12 col-xs-12 no-padding p-r-5 p-b-5">
-                                                <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" data-target="#predecessor_activity"  @click="openModalPredecessor(data)">VIEW PREDECESSOR ACTIVITIES</button>
+                                    <td class="textCenter">
+                                            <div class="col-sm-12 col-xs-12 no-padding textCenter">
+                                                <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" data-target="#predecessor_activity"  @click="openModalPredecessor(data)">VIEW PREDECESSOR</button>
                                             </div>
-                                        </div>
                                     </td>
                                 </template>
                                 <template v-else>
                                     <td>-</td>
                                 </template>
                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
-                                    <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
+                                    <div class="col-sm-12 p-l-5 p-r-5 p-b-0">
                                         <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
                                             <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" data-target="#edit_activity"  @click="openModalEditActivity(data)">EDIT</button>
                                         </div>
-                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-b-5">
                                             <a class="btn btn-danger btn-xs col-xs-12" @click="deleteActivity(data)" data-toggle="modal">
                                                 DELETE
                                             </a>
@@ -196,9 +192,16 @@
                                 </td>
                             </tr>
                         </tbody>
-                        <tfoot>
+                        <tfoot v-if="menu == 'building'">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
+                                <td class="p-l-0 textLeft no-padding">
+                                    <selectize v-model="newActivity.type" :settings="actTypeSettings">
+                                        <option value="Upload">Upload</option>
+                                        <option value="Document Numbe">Document Number</option>
+                                        <option value="General">General</option>
+                                    </selectize>
+                                </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newActivity.name" class="form-control width100" rows="3" id="name" name="name" placeholder="Name"></textarea>
                                 </td>
@@ -217,11 +220,11 @@
                                 <td class="p-l-0">
                                     <input v-model="newActivity.totalWeight"  type="text" class="form-control width100" id="totalWeight" name="totalWeight" placeholder="Weight" >
                                 </td>
-                                <td class="p-l-0">
+                                <td class="p-l-0" style="display: none">
                                     <input disabled v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >
                                 </td>
-                                <td class="p-l-0 textCenter p-r-5 p-l-5">
-                                    <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE DEPENDENT ACTIVITIES</button>
+                                <td class="textCenter p-r-5">
+                                    <button class="btn btn-primary btn-xs col-xs-12 col-md-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE PREDECESSOR</button>
                                 </td>
                                 <td class="textCenter">
                                     <button @click.prevent="add" :disabled="createOk" class="btn btn-primary" id="btnSubmit">CREATE</button>
@@ -493,6 +496,7 @@ var data = {
     newActivity : {
         name : "",
         description : "",
+        type : "",
         planned_start_date : "",
         planned_end_date : "",
         planned_duration : "",
@@ -507,6 +511,7 @@ var data = {
     editActivity : {
         activity_id : "",
         name : "",
+        type : "",
         description : "",
         planned_start_date : "",
         planned_end_date : "",
@@ -526,6 +531,9 @@ var data = {
     },
     typeSettings:{
         placeholder: 'Predecessor Type',
+    },
+    actTypeSettings:{
+        placeholder: 'Activity Type',
     },
     maxWeight : 0,
     totalWeight : 0,
@@ -591,7 +599,8 @@ var vm = new Vue({
     computed:{
         createOk: function(){
             let isOk = false;
-                if(this.newActivity.name == ""
+                if(this.newActivity.name == "" 
+                || this.newActivity.type == ""
                 || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
@@ -602,6 +611,7 @@ var vm = new Vue({
         updateOk: function(){
             let isOk = false;
                 if(this.editActivity.name == ""
+                || this.newActivity.type == ""
                 || this.editActivity.weight == ""
                 || this.editActivity.planned_duration == "")
                 {
@@ -748,6 +758,7 @@ var vm = new Vue({
             document.getElementById("edit_activity_code").innerHTML= data.code;
             this.editActivity.activity_id = data.id;
             this.editActivity.name = data.name;
+            this.editActivity.type = data.type;
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
             this.editActivity.planned_duration = data.planned_duration;
@@ -878,6 +889,7 @@ var vm = new Vue({
                     this.getActivities();
                     this.getAllActivities();
                     this.newActivity.name = "";
+                    this.newActivity.type = "";
                     this.newActivity.description = "";
                     this.newActivity.planned_start_date = "";
                     this.newActivity.planned_end_date = "";
@@ -981,10 +993,9 @@ var vm = new Vue({
                         .catch((error) => {
                             iziToast.warning({
                                 displayMode: 'replace',
-                                title: "Please try again.. ",
+                                title: "Error: "+error.response.data.message,
                                 position: 'topRight',
                             });
-                            console.log(error);
                             $('div.overlay').hide();
                         })
 

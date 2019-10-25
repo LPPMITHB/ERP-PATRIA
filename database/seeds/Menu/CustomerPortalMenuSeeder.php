@@ -23,6 +23,7 @@ class CustomerPortalMenuSeeder extends Seeder
         ]);
 
         $customer_portal =  Menu::where('name', 'Customer Portal')->select('id')->first()->id;
+        
         DB::table('menus')->insert([
             'level' => 4,
             'name' => 'View Project Progress',
