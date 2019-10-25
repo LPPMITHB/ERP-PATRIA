@@ -283,7 +283,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         //BOM
-        $viewBOM = Menu::where('name','View BOM')->select('id')->first()->id;
+        $viewBOM = Menu::where('route_name','bom.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'List Bom',
             'menu_id' => $viewBOM,
@@ -292,23 +292,23 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
-        $manageBOM = Menu::where('name','Manage BOM')->select('id')->first()->id;
-        DB::table('permissions')->insert([
-            'name' => 'Manage Bom',
-            'menu_id' => $manageBOM,
-            'middleware' => 'create-bom',
-            'created_at' => date('Y-m-d'),
-            'updated_at' => date('Y-m-d'),
-        ]);
-
         DB::table('permissions')->insert([
             'name' => 'Show Bom',
-            'menu_id' => $manageBOM,
+            'menu_id' => $viewBOM,
             'middleware' => 'show-bom',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
 
+        $manageBOM = Menu::where('route_name','bom.indexProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Create Bom',
+            'menu_id' => $manageBOM,
+            'middleware' => 'create-bom',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+        
         DB::table('permissions')->insert([
             'name' => 'Edit Bom',
             'menu_id' => $manageBOM,
@@ -321,6 +321,15 @@ class PermissionsTableSeeder extends Seeder
             'name' => 'Confirm Bom',
             'menu_id' => $manageBOM,
             'middleware' => 'confirm-bom',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_material_requirement_summmary = Menu::where('route_name','bom.selectProjectSum')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Material Requirement Summary',
+            'menu_id' => $menu_material_requirement_summmary,
+            'middleware' => 'manage-material-requirement-summary',
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
@@ -3232,5 +3241,25 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
         //Quality Control Task Building
+
+        //Sales Plan
+        $menu_sales_plan = Menu::where('route_name','sales_plan.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Sales Plan',
+            'menu_id' => $menu_sales_plan,
+            'middleware' => 'manage-sales-plan',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Sales Plan
+        $menu_sales_plan_repair = Menu::where('route_name','sales_plan_repair.index')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Sales Plan Repair',
+            'menu_id' => $menu_sales_plan_repair,
+            'middleware' => 'manage-sales-plan-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
     }
 }

@@ -509,7 +509,7 @@ Route::name('yard.')->prefix('yard')->group(function() {
 //BOM Routes
 Route::name('bom.')->prefix('bom')->group(function() {
     //MRS
-    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:create-bom');
+    Route::get('/selectProjectSum', 'BOMController@selectProjectSum')->name('selectProjectSum')->middleware('can:manage-material-requirement-summary');
 
     Route::get('/selectWBSSum/{id}', 'BOMController@selectWBSSum')->name('selectWBSSum')->middleware('can:create-bom');
 
@@ -2137,33 +2137,33 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
 // Sales Plan Routes
 Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
-    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan');
 
-    Route::get('/', 'SalesPlanController@index')->name('index');
+    Route::get('/', 'SalesPlanController@index')->name('index')->middleware('can:manage-sales-plan');
 
-    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+    Route::get('/{id}', 'SalesPlanController@show')->name('show')->middleware('can:manage-sales-plan');
 
-    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit')->middleware('can:manage-sales-plan');
 
-    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update')->middleware('can:manage-sales-plan');
 
-    Route::post('/', 'SalesPlanController@store')->name('store');
+    Route::post('/', 'SalesPlanController@store')->name('store')->middleware('can:manage-sales-plan');
 
 });
 
 // Sales Plan Repair Routes
 Route::name('sales_plan_repair.')->prefix('sales_plan_repair')->group(function() {
-    Route::get('/create/{id}', 'SalesPlanController@create')->name('create');
+    Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/', 'SalesPlanController@index')->name('index');
+    Route::get('/', 'SalesPlanController@index')->name('index')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/{id}', 'SalesPlanController@show')->name('show');
+    Route::get('/{id}', 'SalesPlanController@show')->name('show')->middleware('can:manage-sales-plan-repair');
 
-    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit');
+    Route::get('/{id}/edit', 'SalesPlanController@edit')->name('edit')->middleware('can:manage-sales-plan-repair');
 
-    Route::patch('/{id}', 'SalesPlanController@update')->name('update');
+    Route::patch('/{id}', 'SalesPlanController@update')->name('update')->middleware('can:manage-sales-plan-repair');
 
-    Route::post('/', 'SalesPlanController@store')->name('store');
+    Route::post('/', 'SalesPlanController@store')->name('store')->middleware('can:manage-sales-plan-repair');
 });
 
 // Customer Visit Routes

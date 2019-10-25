@@ -119,7 +119,11 @@ class RolesTableSeeder extends Seeder
                 'delete-qc-task' => true,
                 'confirm-qc-task' => true,
                 'confirm-finish-qc-task' => true,
-                'cancel-finish-qc-task' => true
+                'cancel-finish-qc-task' => true,
+                'manage-sales-plan' => true,                
+                'manage-sales-plan-repair' => true,      
+                'manage-material-requirement-summary' => true,        
+
                 ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -216,8 +220,9 @@ class RolesTableSeeder extends Seeder
                 'delete-qc-task' => true,
                 'confirm-qc-task' => true,
                 'confirm-finish-qc-task' => true,
-                'cancel-finish-qc-task' => true
-
+                'cancel-finish-qc-task' => true,
+                'manage-sales-plan' => true,        
+                'manage-material-requirement-summary' => true,        
             ]),
             'created_at' => date('Y-m-d'),
         ]);
@@ -314,7 +319,9 @@ class RolesTableSeeder extends Seeder
                 'delete-qc-task-repair' => true,
                 'confirm-qc-task-repair' => true,
                 'confirm-finish-qc-task-repair' => true,
-                'cancel-finish-qc-task-repair' => true
+                'cancel-finish-qc-task-repair' => true,
+                'manage-sales-plan' => true,                
+                'manage-sales-plan-repair' => true,   
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
