@@ -214,9 +214,11 @@
                                                                 <th width="5%">No</th>
                                                                 <th width="35%">Parts Description</th>
                                                                 <th width="18%">Dimensions</th>
-                                                                <th width="10%">Quantity</th>
-                                                                <th width="10%">Weight</th>
-                                                                <th width="7%"></th>
+                                                                <th width="8%">Quantity</th>
+                                                                <th width="8%">Weight</th>
+                                                                <th width="10%">Service</th>
+                                                                <th width="10%">Service Detail</th>
+                                                                <th width="10%"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -243,6 +245,29 @@
                                                                         <input disabled v-model="part.weight" type="text" class="form-control width100"
                                                                             placeholder="Weight">
                                                                     </td>
+                                                                    <td class="no-padding">
+                                                                        <selectize class="selectizeFull" id="service" v-model="part.service_id" :settings="service_settings">
+                                                                            <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}  [General]</option>
+                                                                            <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
+                                                                        </selectize>
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <div v-show="part.service_id == ''">
+                                                                            <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                            </selectize>
+                                                                        </div>
+                                                                        <div v-show="part.selected_service.length == 0 && part.service_id != ''">
+                                                                            <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                            </selectize>
+                                                                        </div>
+                                                                        <div v-show="part.selected_service.length > 0">
+                                                                            <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                                v-model="part.service_detail_id" :settings="service_detail_settings">
+                                                                                <option v-for="(service_detail, index) in part.selected_service" :value="service_detail.id">
+                                                                                    {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                            </selectize>
+                                                                        </div>
+                                                                    </td>
                                                                     <td class="p-l-5" align="center">
                                                                         <a class="btn btn-primary btn-xs" :disabled="savePartEditOk" @click="updateRowPartEdit(index_part)">
                                                                             SAVE
@@ -254,6 +279,9 @@
                                                                     <td>{{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
+                                                                    <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                    <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
+                                                                    <td v-else>-</td>                                                                    
                                                                     <td class="p-l-5" align="center">
                                                                         <a class="btn btn-primary btn-xs" @click="editRowPartEdit(index_part)">
                                                                             EDIT
@@ -292,6 +320,29 @@
                                                                 <td class="no-padding">
                                                                     <input disabled v-model="input_part_edit.weight" type="text" class="form-control width100"
                                                                         placeholder="Weight">
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="service" v-model="input_part_edit.service_id" :settings="service_settings">
+                                                                        <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}  [General]</option>
+                                                                        <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} - {{ service.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div v-show="input_part_edit.service_id == ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="input_part_edit.selected_service.length == 0 && input_part_edit.service_id != ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="input_part_edit.selected_service.length > 0">
+                                                                        <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                            v-model="input_part_edit.service_detail_id" :settings="service_detail_settings">
+                                                                            <option v-for="(service_detail, index) in input_part_edit.selected_service" :value="service_detail.id">
+                                                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                        </selectize>
+                                                                    </div>
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
                                                                     <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk" class="btn btn-primary btn-xs"
@@ -678,6 +729,13 @@
             quantity : "",
             volume : "",
             weight : "",
+            service_id : "",
+            service_code : "",
+            service_name : "",
+            service_detail_id : "",
+            service_detail_name : "",
+            service_detail_description : "",
+            selected_service : "",
 
             dimension_string : null,
             edit : false,
@@ -765,7 +823,7 @@
             inputPartEditOk: function(){
                 let isOk = false;
                 
-                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == ""){
+                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == "" || this.input_part_edit.service_id == ""){
                     isOk = true;
                 }
 
@@ -1247,6 +1305,7 @@
             updateRowPart(index){
                 var data = JSON.stringify(this.input.part_details[this.active_edit_part_index]);
                 data = JSON.parse(data); 
+                console.log(data);
                 var still_empty = false;
                 data.dimensions_value_obj.forEach(dimension => {
                     if(dimension.value_input == undefined || dimension.value_input == ""){
@@ -1309,6 +1368,8 @@
                     this.input_part_edit.quantity = "";
                     this.input_part_edit.weight = "";
                     this.input_part_edit.volume = "";
+                    this.input_part_edit.service_id = "";
+                    this.input_part_edit.service_detail_id = "";
 
                     $('#part-table-edit').DataTable().destroy();
                     this.$nextTick(function() {
@@ -1440,6 +1501,48 @@
                 }else{
                     this.input_part.service_detail_name = "";
                     this.input_part.service_detail_description = "";
+                }
+            },
+
+            'input_part_edit.service_id': function(newValue){
+                if(newValue != ""){
+
+                    this.input_part_edit.service_detail_id = "";
+                        this.services.forEach(service => {
+                        if(service.id == newValue){
+                            this.input_part_edit.selected_service = service.service_details;
+                            if(this.input_part_edit.selected_service_detail != null){
+                                this.input_part_edit.service_detail_id = this.input_part_edit.selected_service_detail;
+                                this.input_part_edit.selected_service_detail = null;
+                            }
+                        }
+                    });
+                    window.axios.get('/api/getServiceStandard/'+this.input_part_edit.service_id).then(({ data }) => {
+                        this.input_part_edit.service_name = data.name;
+                        this.input_part_edit.service_code = data.code;
+                    })
+
+
+                }else{
+                    this.input_part_edit.service_name = "";
+                    this.input_part_edit.service_code = "";
+                    this.input_part_edit.selected_service = "";
+                    // this.input_part_edit.service_detail_id = "";
+                }
+
+            },
+
+            'input_part_edit.service_detail_id': function(newValue){
+                if(newValue != ""){
+                
+                window.axios.get('/api/getServiceDetailStandard/'+this.input_part_edit.service_detail_id).then(({ data }) => {
+                    this.input_part_edit.service_detail_name = data.name;
+                    this.input_part_edit.service_detail_description = data.description;
+                })
+                
+                }else{
+                    this.input_part_edit.service_detail_name = "";
+                    this.input_part_edit.service_detail_description = "";
                 }
             },
 
@@ -1604,6 +1707,32 @@
                     if(newValue.length > 0){
                         var temp_total_weight = 0;
                         newValue.forEach(part_detail => {
+                            this.services.forEach(service => {
+                                if(service.id == part_detail.service_id){
+                                    part_detail.selected_service = service.service_details;
+                                    if(part_detail.selected_service_detail != null){
+                                        part_detail.service_detail_id = part_detail.selected_service_detail;
+                                        part_detail.selected_service_detail = null;
+                                    }else{
+                                        // part_detail.service_detail_id = "";
+                                    }
+                                }
+                            });
+                            // window.axios.get('/api/getServiceStandard/'+part_detail.service_id).then(({ data }) => {
+                            //     part_detail.service_name = data.name;
+                            //     part_detail.service_code = data.code;
+                            // });
+
+                            // if(part_detail.service_id != '' && part_detail.service_detail_id != ''){
+                            //     window.axios.get('/api/getServiceDetailStandard/'+part_detail.service_detail_id).then(({ data }) => {
+                            //         part_detail.service_detail_name = data.name;
+                            //         part_detail.service_detail_description = data.description;
+                            //     });
+                            // }else if(part_detail.service_id != '' && part_detail.selected_service.length == 0){
+                            //     part_detail.service_detail_name = '';
+                            //     part_detail.service_detail_description = '';
+                            // }
+
                             temp_total_weight += part_detail.weight;
                             part_detail.dimensions_value = JSON.stringify(part_detail.dimensions_value_obj);
                             if(part_detail.dimensions_value != null){
