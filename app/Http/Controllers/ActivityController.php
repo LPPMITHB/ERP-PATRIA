@@ -26,6 +26,7 @@ use App\Models\BomPrep;
 use DB;
 use DateTime;
 use Auth;
+use File;
 
 class ActivityController extends Controller
 {
@@ -612,13 +613,6 @@ class ActivityController extends Controller
             }
             $activity->document_number = $dataActivity->document_number;
             if($dataActivity->type == 'Upload'){
-                if($activity->drawing == null){
-                    $image_path = public_path("app/documents/activity/".$activity->drawing); 
-                    if(File::exists($image_path)) {
-                        File::delete($image_path);
-                    }
-                }
-
                 if($request->hasFile('file')){
                     // Get filename with the extension
                     $fileNameWithExt = $request->file('file')->getClientOriginalName();
@@ -630,7 +624,12 @@ class ActivityController extends Controller
                     $fileNameToStore = $fileName.'_'.time().'.'.$extension;
                     // Upload image
                     $path = $request->file('file')->storeAs('documents/activity',$fileNameToStore);
-                    
+                    if($activity->drawing != $fileNameToStore){
+                        $image_path = public_path("app/documents/activity/".$activity->drawing); 
+                        if(File::exists($image_path)) {
+                            File::delete($image_path);
+                        }
+                    }
                     $activity->drawing = $fileNameToStore;
                 }
             }
