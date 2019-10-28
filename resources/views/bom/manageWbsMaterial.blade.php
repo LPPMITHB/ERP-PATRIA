@@ -918,6 +918,7 @@
             },
             openViewParts(material_standard){
                 this.view = material_standard;
+                $('#part-table-view').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table-view').DataTable({
                         'paging' : true,

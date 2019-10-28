@@ -65,7 +65,7 @@
                                         <th width="13%">Qty</th>
                                         <th width="13%">Prepared Qty</th>
                                         <th width="14%"></th>
-                                        <th width="7%">Fulfilled ?</th>
+                                        <th width="8%">Completed?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -76,12 +76,23 @@
                                         <td>{{ bomPrep.source }}</td>
                                         <td>{{ bomPrep.quantity }}</td>
                                         <td>{{ bomPrep.already_prepared }}</td>
-                                        <td class="p-l-0 p-r-0 textCenter">
-                                            <button class="btn btn-primary btn-xs" @click="openModalPrep(bomPrep, index)" data-toggle="modal" data-target="#material_prep">MANAGE MATERIAL</button>
-                                        </td>
-                                        <td class="no-padding p-t-2 p-b-2" align="center">
-                                            <input type="checkbox" v-icheck="" v-model="fulfilledBomPrep" :value="bomPrep.id">
-                                        </td>
+                                        <template v-if="bomPrep.status != 0">
+                                            <td class="p-l-0 p-r-0 textCenter">
+                                                <button class="btn btn-primary btn-xs" @click="openModalPrep(bomPrep, index)" data-toggle="modal" data-target="#material_prep">MANAGE MATERIAL</button>
+                                            </td>
+                                            <td class="no-padding p-t-2 p-b-2" align="center" >
+                                                <input type="checkbox" v-icheck="" v-model="fulfilledBomPrep" :value="bomPrep.id">
+                                            </td>
+                                        </template>
+                                        <template v-else>
+                                            <td class="p-l-0 p-r-0 textCenter">
+                                                <button class="btn btn-primary btn-xs" @click="openModalPrep(bomPrep, index)" data-toggle="modal"
+                                                    data-target="#material_prep" disabled>MANAGE MATERIAL</button>
+                                            </td>
+                                            <td class="text-center">
+                                                <i class="fa fa-check text-success"></i>
+                                            </td>
+                                        </template>
                                     </tr>
                                 </tbody>
                             </table>

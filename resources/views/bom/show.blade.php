@@ -85,9 +85,16 @@
                             <div v-if="bom.rap != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showRap(bom.rap.id)" class="text-primary"><b>: {{bom.rap.number}}</b></a></div>
                             <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>        
                             
-                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                            <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
-                            <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
+                            <template v-if="route == '/bom'">
+                                <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                                <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
+                            </template>
+                            <template v-else-if="route == '/bom_repair'">
+                                <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                                <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
+                            </template>
 
                         </div>
 

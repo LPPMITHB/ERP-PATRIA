@@ -42,4 +42,9 @@ class Bom extends Model
     {
         return $this->hasOne('App\Models\PurchaseRequisition');
     }
+
+    public function purchaseRequisitions()
+    {
+        return $this->hasMany('App\Models\PurchaseRequisition');
+    }
 }
