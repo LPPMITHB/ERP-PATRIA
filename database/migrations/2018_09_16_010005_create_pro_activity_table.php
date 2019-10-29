@@ -23,6 +23,7 @@ class CreateProActivityTable extends Migration
             $table->integer('document_number')->nullable();
             $table->string('drawing')->nullable();
             $table->unsignedInteger('wbs_id')->nullable();
+            $table->unsignedInteger('service_id')->nullable();
             $table->unsignedInteger('service_detail_id')->nullable();
             $table->unsignedInteger('wbs_material_id')->nullable();
             $table->integer('planned_duration');
@@ -38,6 +39,7 @@ class CreateProActivityTable extends Migration
             $table->unsignedInteger('branch_id');  
             $table->timestamps();
 
+            $table->foreign('service_id')->references('id')->on('mst_service');
             $table->foreign('service_detail_id')->references('id')->on('mst_service_detail');
             $table->foreign('wbs_material_id')->references('id')->on('pro_wbs_material');
             $table->foreign('wbs_id')->references('id')->on('pro_wbs');

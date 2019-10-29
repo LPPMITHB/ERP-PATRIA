@@ -142,32 +142,45 @@
                 <div class="box-body">
                     <h4 class="box-title">List of Activities (Weight : <b>{{totalWeight}}%</b> / <b>{{wbsWeight}}%</b>)</h4>
                     <table id="activity-table" class="table table-bordered" style="border-collapse:collapse; table-layout: fixed;">
-                        <thead>
+                        <thead v-if="menu == 'repair'">
+                            <tr>
+                                <th style="width: 5%">No</th>
+                                <th style="width: 12%">Name</th>
+                                <th style="width: 12%">Description</th>
+                                <th style="width: 11%">Start Date</th>
+                                <th style="width: 11%">End Date</th>
+                                <th style="width: 9%" >Duration</th>
+                                <th style="width: 8%">Total Weight (%)</th>
+                                <th style="width: 8%">Weight</th>
+                                <th style="width: 16%">Predecessor</th>
+                                <th style="width: 14%"></th>
+                            </tr>
+                        </thead>
+                        <thead v-if="menu == 'building'">
                             <tr>
                                 <th style="width: 5%">No</th>
                                 <th style="width: 12%">Type</th>
                                 <th style="width: 12%">Name</th>
                                 <th style="width: 12%">Description</th>
-                                <th style="width: 10%">Start Date</th>
-                                <th style="width: 10%">End Date</th>
-                                <th style="width: 9%" >Duration</th>
+                                <th style="width: 11%">Start Date</th>
+                                <th style="width: 11%">End Date</th>
+                                <th style="width: 9%">Duration</th>
                                 <th style="width: 8%">Total Weight (%)</th>
-                                <th style="width: 8%; display:none">Weight</th>
-                                <th style="width: 18%">Predecessor</th>
+                                <th style="width: 8%">Weight</th>
+                                <th style="width: 16%">Predecessor</th>
                                 <th style="width: 14%"></th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody v-if="menu == 'repair'">
                             <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.type)">{{ data.type }} </td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
                                 <td>{{ data.planned_end_date }}</td>
                                 <td>{{ data.planned_duration }} Day(s)</td>
                                 <td>{{ Number.isNaN(((data.weight/wbsWeight)*100)) ? "-" : ((data.weight/wbsWeight)*100).toFixed(2) }}</td>
-                                <td style="display: none">{{ data.weight }} %</td>
+                                <td>{{ data.weight }} %</td>
                                 <template v-if="data.predecessor != null">
                                     <td class="textCenter">
                                             <div class="col-sm-12 col-xs-12 no-padding textCenter">
@@ -192,13 +205,97 @@
                                 </td>
                             </tr>
                         </tbody>
+
+                        <tbody v-if="menu == 'building'">
+                            <tr v-for="(data,index) in activities">
+                                <td>{{ index + 1 }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.type)">{{ data.type }} </td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">
+                                {{ data.description }}</td>
+                                <td>{{ data.planned_start_date }}</td>
+                                <td>{{ data.planned_end_date }}</td>
+                                <td>{{ data.planned_duration }} Day(s)</td>
+                                <td>{{ Number.isNaN(((data.weight/wbsWeight)*100)) ? "-" : ((data.weight/wbsWeight)*100).toFixed(2) }}</td>
+                                <td>{{ data.weight }} %</td>
+                                <template v-if="data.predecessor != null">
+                                    <td class="textCenter">
+                                        <div class="col-sm-12 col-xs-12 no-padding textCenter">
+                                            <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal"
+                                                data-target="#predecessor_activity" @click="openModalPredecessor(data)">VIEW
+                                                PREDECESSOR</button>
+                                        </div>
+                                    </td>
+                                </template>
+                                <template v-else>
+                                    <td>-</td>
+                                </template>
+                                <td class="p-l-0 p-r-0 p-b-0 textCenter">
+                                    <div class="col-sm-12 p-l-5 p-r-5 p-b-0">
+                                        <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
+                                            <button class="btn btn-primary btn-xs col-xs-12" data-toggle="modal" data-target="#edit_activity"
+                                                @click="openModalEditActivity(data)">EDIT</button>
+                                        </div>
+                                        <div class="col-sm-6 col-xs-12 no-padding p-b-5">
+                                            <a class="btn btn-danger btn-xs col-xs-12" @click="deleteActivity(data)" data-toggle="modal">
+                                                DELETE
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+
+                        <tfoot v-if="menu == 'repair'">
+                            <tr>
+                                <td class="p-l-10">{{newIndex}}</td>
+                                <td class="p-l-0">
+                                    <textarea v-model="newActivity.name" class="form-control width100" rows="3" id="name" name="name"
+                                        placeholder="Name"></textarea>
+                                </td>
+                                <td class="p-l-0">
+                                    <textarea v-model="newActivity.description" class="form-control width100" rows="3" name="description"
+                                        placeholder="Description"></textarea>
+                                </td>
+                                <td class="p-l-0">
+                                    <input autocomplete="off" v-model="newActivity.planned_start_date" type="text"
+                                        class="form-control datepicker width100 create_date" id="planned_start_date" name="planned_start_date"
+                                        placeholder="Start Date">
+                                </td>
+                                <td class="p-l-0">
+                                    <input autocomplete="off" v-model="newActivity.planned_end_date" type="text"
+                                        class="form-control datepicker width100 create_date" id="planned_end_date" name="planned_end_date"
+                                        placeholder="End Date">
+                                </td>
+                                <td class="p-l-0">
+                                    <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration" type="number"
+                                        class="form-control width100" id="duration" name="duration" placeholder="Duration">
+                                </td>
+                                <td class="p-l-0">
+                                    <input v-model="newActivity.totalWeight" type="text" class="form-control width100" id="totalWeight"
+                                        name="totalWeight" placeholder="Weight">
+                                </td>
+                                <td class="p-l-0">
+                                    <input disabled v-model="newActivity.weight" type="text" class="form-control width100" id="weight"
+                                        name="weight" placeholder="Weight">
+                                </td>
+                                <td class="p-l-0 textCenter p-r-5 p-l-5">
+                                    <button class="btn btn-primary btn-xs col-xs-12 " data-toggle="modal"
+                                        data-target="#add_dependent_activity">MANAGE PREDECESSOR</button>
+                                </td>
+                                <td class="textCenter">
+                                    <button @click.prevent="add" :disabled="createOkRepair" class="btn btn-primary" id="btnSubmit">CREATE</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+
                         <tfoot v-if="menu == 'building'">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0 textLeft no-padding">
                                     <selectize v-model="newActivity.type" :settings="actTypeSettings">
                                         <option value="Upload">Upload</option>
-                                        <option value="Document Numbe">Document Number</option>
+                                        <option value="Document Number">Document Number</option>
                                         <option value="General">General</option>
                                     </selectize>
                                 </td>
@@ -218,10 +315,11 @@
                                     <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="newActivity.planned_duration"  type="number" class="form-control width100" id="duration" name="duration" placeholder="Duration" >
                                 </td>
                                 <td class="p-l-0">
-                                    <input v-model="newActivity.totalWeight"  type="text" class="form-control width100" id="totalWeight" name="totalWeight" placeholder="Weight" >
+                                    <input v-model="newActivity.totalWeight"  type="text" class="form-control width100" id="totalWeight" name="totalWeight" placeholder="Weight">
                                 </td>
-                                <td class="p-l-0" style="display: none">
-                                    <input disabled v-model="newActivity.weight"  type="text" class="form-control width100" id="weight" name="weight" placeholder="Weight" >
+                                <td class="p-l-0">
+                                    <input disabled v-model="newActivity.weight" type="text" class="form-control width100" id="weight" name="weight"
+                                    placeholder="Weight">
                                 </td>
                                 <td class="textCenter p-r-5">
                                     <button class="btn btn-primary btn-xs col-xs-12 col-md-12 " data-toggle="modal" data-target="#add_dependent_activity">MANAGE PREDECESSOR</button>
@@ -609,6 +707,16 @@ var vm = new Vue({
             let isOk = false;
                 if(this.newActivity.name == "" 
                 || this.newActivity.type == ""
+                || this.newActivity.weight == ""
+                || this.newActivity.planned_duration == "")
+                {
+                    isOk = true;
+                }
+            return isOk;
+        },
+        createOkRepair: function(){
+            let isOk = false;
+                if(this.newActivity.name == "" 
                 || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
