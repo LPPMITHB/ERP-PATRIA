@@ -200,15 +200,18 @@ class MasterDataSidenavSeeder extends Seeder
         ]);
 
         // Master Data - Qc Type
+        $menu_create_qc_type = Menu::where('route_name', 'qc_type.create')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $menu_create_qc_type,
+            'route_name' => 'qc_type.create',
+        ]);
+
         $qcType = Menu::where('route_name', 'qc_type.index')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $qcType,
             'route_name' => 'qc_type.index',
         ]);
-        DB::table('sidenav')->insert([
-            'menu_id' => $qcType,
-            'route_name' => 'qc_type.create',
-        ]);
+        
         DB::table('sidenav')->insert([
             'menu_id' => $qcType,
             'route_name' => 'qc_type.edit',

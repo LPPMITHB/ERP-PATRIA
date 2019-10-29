@@ -112,7 +112,9 @@ class MaterialController extends Controller
                     $weight = round(($volume * $material_density),2);
                     $material->weight = $weight;
                     $material->weight_uom_id = 2;
-                    $material->cost_standard_price_per_kg = 1 / $weight * $data->cost_standard_price;
+                    if($data->cost_standard_price != ""){
+                        $material->cost_standard_price_per_kg = 1 / $weight * $data->cost_standard_price;
+                    }
                 }else{
                     $material->cost_standard_price_per_kg = 0;
                 }

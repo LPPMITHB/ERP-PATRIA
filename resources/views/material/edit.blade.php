@@ -43,10 +43,10 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp) *</label>
+                                <label for="cost_standard_price" class="col-sm-2 control-label">Cost Standard Price Material(Rp)</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="cost_standard_price" required v-model="submittedForm.cost_standard_price">
+                                    <input type="text" class="form-control" id="cost_standard_price" v-model="submittedForm.cost_standard_price">
                                 </div>
                             </div>
 
@@ -67,16 +67,16 @@
                             </div>
 
                             <div class="form-group">
-                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp) *</label>
+                                <label for="cost_standard_service" class="col-sm-2 control-label">Cost Standard Price Service (Rp)</label>
 
                                 <div class="col-sm-10">
-                                    <input type="text"  class="form-control" id="cost_standard_service" required v-model="submittedForm.cost_standard_service">
+                                    <input type="text"  class="form-control" id="cost_standard_service" v-model="submittedForm.cost_standard_service">
                                 </div>
                             </div>
 
                             <div class="form-group">
                                 <label for="uom" class="col-sm-2 control-label">Unit Of Measurement *</label>
-                                
+
                                 <div class="col-sm-10">
                                     <selectize id="uom" v-model="submittedForm.uom_id" :settings="uom_settings">
                                         <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
@@ -104,7 +104,7 @@
 
                             <div class="form-group">
                                 <label for="max" class="col-sm-2 control-label">Max</label>
-                                
+
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="max" required v-model="submittedForm.max" :settings="max_settings">
                                 </div>
@@ -112,7 +112,7 @@
 
                             <div class="form-group">
                                 <label for="min" class="col-sm-2 control-label">Min</label>
-                                
+
                                 <div class="col-sm-10">
                                     <input type="text"  class="form-control" id="min" required v-model="submittedForm.min" :settings="min_settings">
                                 </div>
@@ -123,27 +123,27 @@
                                 <div class="col-sm-10">
                                     <selectize id="dimension_type" name="dimension_type" v-model="submittedForm.dimension_type_id" :settings="dimension_type_settings" required aria-required="required">
                                         <option v-for="(data, index) in dimension_types" :value="data.id">{{ data.name }}</option>
-                                    </selectize>   
+                                    </selectize>
                                 </div>
                             </div>
 
                             <template v-for="dimension in selectedDimensionType">
                                 <div class="form-group">
                                     <label for="name" class="col-sm-2 control-label">{{dimension.name}}</label>
-                    
+
                                     <div class="col-sm-8">
                                         <input type="text" name="name" class="form-control" id="weight" v-model="dimension.value" required>
                                     </div>
-    
+
                                     <div class="col-sm-2">
                                         <selectize disabled id="uom" v-model="dimension.uom_id" :settings="weight_uom_settings" >
                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                        </selectize>    
+                                        </selectize>
                                     </div>
                                 </div>
                             </template>
 
-                            
+
                                 <div class="form-group">
                                     <label for="type" class="col-sm-2 control-label">Material Type *</label>
                                     <div class="col-sm-10">
@@ -170,7 +170,7 @@
                                     </div>
                                 </div>
 
-    
+
 
                                 <div class="form-group">
                                     <label for="status" class="col-sm-2 control-label">Status *</label>
@@ -591,7 +591,7 @@
                         });
                         var is_decimal = uom_data.is_decimal;
                         if(is_decimal == 0){
-                            dimension.value = (dimension.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                            dimension.value = (dimension.value+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                         }else{
                             var decimal = dimension.value.replace(/,/g, '').split('.');
                             if(decimal[1] != undefined){

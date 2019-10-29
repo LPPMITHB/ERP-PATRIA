@@ -29,6 +29,16 @@ class QualityControlSidenavSeeder extends Seeder
         $createQcTaskBuilding = Menu::where('route_name', 'qc_task.selectProject')->select('id')->first()->id;
         DB::table('sidenav')->insert([
             'menu_id' => $createQcTaskBuilding,
+            'route_name' => 'qc_task.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTaskBuilding,
+            'route_name' => 'qc_task.selectWBS',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTaskBuilding,
             'route_name' => 'qc_task.create',
         ]);
 

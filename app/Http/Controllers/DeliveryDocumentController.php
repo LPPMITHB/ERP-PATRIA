@@ -87,8 +87,7 @@ class DeliveryDocumentController extends Controller
             $delivery_document->document_name = $request->document_name;
             $delivery_document->user_id = Auth::user()->id;
             $delivery_document->branch_id = Auth::user()->branch->id;
-
-            if($delivery_document->file_name != null){
+            if($delivery_document->file_name == null){
                 $image_path = public_path("app/documents/delivery_documents/".$delivery_document->file_name); 
                 if(File::exists($image_path)) {
                     File::delete($image_path);
@@ -108,10 +107,9 @@ class DeliveryDocumentController extends Controller
                 // Upload document
                 $path = $request->file('file')->storeAs('documents/delivery_documents',$fileNameToStore);
                 $delivery_document->status = 0;
-            }else{
-                $fileNameToStore =  null;
+                $delivery_document->file_name = $fileNameToStore;
             }
-            $delivery_document->file_name = $fileNameToStore;
+
             if(!$delivery_document->update()){
                 return response(["error"=>"Failed to save, please try again!"],Response::HTTP_OK);
             }else{
