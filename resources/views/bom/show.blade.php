@@ -91,8 +91,12 @@
                                 <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
                             </template>
                             <template v-else-if="route == '/bom_repair'">
-                                <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                                <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                                <div class="col-md-5 col-xs-4 no-padding">PR Number(s)</div>
+                                <div v-if="bom.purchase_requisitions.length > 1" class="col-md-7 col-xs-8 no-padding tdEllipsis">
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#show_prs">SHOW PR NUMBERS</button>
+                                </div>
+                                <div v-else-if="bom.purchase_requisitions.length == 1" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                                </div>
                                 <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
                             </template>
 
@@ -160,6 +164,53 @@
                             </tbody>
                         </table>
                     </template>
+
+                    <div class="modal fade" id="show_prs">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header text-left">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">PR Numbers</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">                    
+                                        <div class="col-sm-12">
+                                            <table id="details-table" class="table table-bordered tableFixed"
+                                                style="border-collapse:collapse;">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">No</th>
+                                                        <th width="80%">PR Number</th>
+                                                        <th width="15%"></th>
+                                                    </tr>
+                                                </thead>
+                                                <br>
+                                                <tbody>
+                                                    <tr v-for="(data,index) in bom.purchase_requisitions">
+                                                        <td>{{ index + 1 }}</td>
+                                                        <td class="tdEllipsis text-left" data-container="body"
+                                                            >{{data.number}}</td>
+                                                        <td class="text-center">
+                                                            <a target="_blank" :href="showPr(data.id)" class="btn btn-primary btn-xs">
+                                                                SHOW
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
                 </div>
                 @endverbatim
             <div class="overlay">

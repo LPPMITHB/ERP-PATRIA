@@ -542,6 +542,7 @@ class BOMController extends Controller
                     foreach ($material->part_details as $part) {
                         $wbsMaterial = new WbsMaterial;
                         $wbsMaterial->wbs_id = $datas->wbs_id;
+                        $wbsMaterial->part_description = $part->description;
                         $wbsMaterial->material_id = $material->material_id;
                         $wbsMaterial->quantity = $part->quantity;
                         if($part->dimensions_value_obj != null){
@@ -919,6 +920,7 @@ class BOMController extends Controller
                         $there_are_changes = false;
                         if(isset($part->id)){
                             $wbsMaterial = WbsMaterial::find($part->id);
+                            $wbsMaterial->part_description = $part->description;
                             if($wbsMaterial->source != null){
                                 $old_material_source = $wbsMaterial->source;
                             }else{
@@ -944,6 +946,7 @@ class BOMController extends Controller
                         }else{
                             $wbsMaterial = new WbsMaterial;
                             $wbsMaterial->wbs_id = $datas->wbs_id;
+                            $wbsMaterial->part_description = $part->description;
                             $wbsMaterial->material_id = $material->material_id;
                             $wbsMaterial->quantity = $part->quantity;
                             if($part->dimensions_value_obj != null){
@@ -1717,7 +1720,27 @@ class BOMController extends Controller
             return redirect()->route('bom_repair.selectProject')->with('error', 'BOM doesn\'t exist, Please define BOM first!');
         }
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service','material.uom')->get();
-        // dd($modelBOMDetail);
+        
+        $temp_bom_detail = Collection::make();
+        foreach ($modelBOMDetail as $bom_detail) {
+            if(count($temp_bom_detail)==0){
+                $temp_bom_detail->push($bom_detail);
+            }else{
+                $not_found = true;
+                foreach ($temp_bom_detail as $temp) {
+                    if($temp->material_id == $bom_detail->material_id
+                    && $temp->source == $bom_detail->source){
+                        $temp->quantity += $bom_detail->quantity;
+                        $not_found = false;
+                    }
+                }
+
+                if($not_found){
+                    $temp_bom_detail->push($bom_detail);
+                }
+            }
+        }
+        $modelBOMDetail = $temp_bom_detail;
         return view('bom.show', compact('modelBOM','modelBOMDetail','route'));
     }
 
