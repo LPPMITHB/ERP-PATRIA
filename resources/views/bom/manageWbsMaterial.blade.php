@@ -56,47 +56,19 @@
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
                             </div>
 
-                            <div class="col-xs-12 col-md-3">                                
-                                <div class="col-xs-4 no-padding">Service</div>
-                                <selectize id="service" name="service_id" v-model="submittedForm.service_id" :settings="service_settings">
-                                    <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
-                                        {{ service.name }} [General]</option>
-                                    <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
-                                        {{ service.name }} [{{service.ship.type}}]</option>
-                                </selectize>
-
-                                <div class="col-xs-4 no-padding">Service Detail</div>        
-                                <div class="row">
-                                    <div v-show="submittedForm.service_id == ''" class="col-sm-12">
-                                        <selectize disabled :settings="empty_service_settings">
-                                        </selectize>
-                                    </div>
-                                    <div v-show="submittedForm.selected_service.length == 0 && submittedForm.service_id != ''" class="col-sm-12">
-                                        <selectize disabled :settings="empty_service_detail_settings">
-                                        </selectize>
-                                    </div>
-                                    <div class="col-sm-12" v-show="submittedForm.selected_service.length > 0">
-                                        <selectize id="service_detail" name="service_detail_id" v-model="submittedForm.service_detail_id"
-                                            :settings="service_detail_settings">
-                                            <option v-for="(service_detail, index) in submittedForm.selected_service" :value="service_detail.id">
-                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-                            </div>
                             <div class="col-xs-12 col-md-3">
                                 <div class="col-xs-4 no-padding">Vendor</div>
                                 <selectize id="vendor" name="vendor_id" v-model="submittedForm.vendor_id" :settings="vendor_settings">
                                     <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                 </selectize>
-                                
+                            
                                 <div class="col-xs-4 no-padding">Quantity/Area</div>
                                 <div class="row">
                                     <div class="col-sm-8">
                                         <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
                                             v-model="submittedForm.area">
                                     </div>
-                                
+                            
                                     <div class="col-sm-4 p-l-2">
                                         <selectize id="uom" name="area_uom_id" v-model="submittedForm.area_uom_id" :settings="area_uom_settings">
                                             <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
@@ -278,9 +250,13 @@
                                                                 <th width="5%">No</th>
                                                                 <th width="35%">Parts Description</th>
                                                                 <th width="18%">Dimensions</th>
-                                                                <th width="10%">Quantity</th>
-                                                                <th width="10%">Weight</th>
-                                                                <th width="7%"></th>
+                                                                <th width="8%">Quantity</th>
+                                                                <th width="8%">Weight</th>
+                                                                <th width="10%">Service</th>
+                                                                <th width="10%">Service Detail</th>
+                                                                <th width="10%">Vendor</th>
+                                                                <th width="10%">Quantity/Area</th>
+                                                                <th width="10%"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -288,29 +264,67 @@
                                                                 <td>{{ index_part + 1 }}</td>
                                                                 <template v-if="part.edit">
                                                                     <td class="no-padding">
-                                                                        <input v-model="part.description" type="text"
-                                                                            class="form-control width100" placeholder="Part Description">
+                                                                        <input v-model="part.description" type="text" class="form-control width100"
+                                                                            placeholder="Part Description">
                                                                     </td>
                                                                     <td class="row no-padding">
                                                                         <template v-if="editInput.selected_material.dimension_type_id == 1">
-                                                                            <div v-for="dimension in part.dimensions_value_obj"
-                                                                                class="col-sm-4 no-padding">
-                                                                                <input v-model="dimension.value_input" type="text"
-                                                                                    class="form-control width100" :placeholder="dimension.name">
+                                                                            <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
+                                                                                <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                    :placeholder="dimension.name">
                                                                             </div>
                                                                         </template>
                                                                     </td>
                                                                     <td class="no-padding">
-                                                                        <input v-model="part.quantity" type="text" class="form-control width100"
-                                                                            placeholder="Quantity">
+                                                                        <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                     </td>
                                                                     <td class="no-padding">
-                                                                        <input disabled v-model="part.weight" type="text"
-                                                                            class="form-control width100" placeholder="Weight">
+                                                                        <input disabled v-model="part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <selectize class="selectizeFull" id="service" v-model="part.service_id" :settings="service_settings">
+                                                                            <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                                {{ service.code }} - {{ service.name }} [General]</option>
+                                                                            <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                                {{ service.code }} - {{ service.name }}</option>
+                                                                        </selectize>
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <div v-show="part.service_id == ''">
+                                                                            <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                            </selectize>
+                                                                        </div>
+                                                                        <div v-show="part.selected_service.length == 0 && part.service_id != ''">
+                                                                            <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                            </selectize>
+                                                                        </div>
+                                                                        <div v-show="part.selected_service.length > 0">
+                                                                            <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                                v-model="part.service_detail_id" :settings="service_detail_settings">
+                                                                                <option v-for="(service_detail, index) in part.selected_service" :value="service_detail.id">
+                                                                                    {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                            </selectize>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <selectize id="vendor" name="vendor_id" v-model="part.vendor_id" :settings="vendor_settings">
+                                                                            <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                        </selectize>
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <div class="col-sm-8">
+                                                                            <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                                                                v-model="part.area">
+                                                                        </div>
+                                                                        
+                                                                        <div class="col-sm-4 p-l-2">
+                                                                            <selectize disabled id="uom" name="area_uom_id" v-model="part.area_uom_id" :settings="area_uom_settings">
+                                                                                <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                                            </selectize>
+                                                                        </div>
                                                                     </td>
                                                                     <td class="p-l-5" align="center">
-                                                                        <a class="btn btn-primary btn-xs" :disabled="savePartEditOk"
-                                                                            @click="updateRowPartEdit(index_part)">
+                                                                        <a class="btn btn-primary btn-xs" :disabled="savePartEditOk" @click="updateRowPartEdit(index_part)">
                                                                             SAVE
                                                                         </a>
                                                                     </td>
@@ -320,12 +334,17 @@
                                                                     <td>{{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
+                                                                    <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                    <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                        {{ part.service_detail_description }}</td>
+                                                                    <td v-else>-</td>
+                                                                    <td>{{part.vendor_name}}</td>
+                                                                    <td>{{part.area}}</td>
                                                                     <td class="p-l-5" align="center">
                                                                         <a class="btn btn-primary btn-xs" @click="editRowPartEdit(index_part)">
                                                                             EDIT
                                                                         </a>
-                                                                        <a href="#" @click="removeRowPartEdit(part,index_part)"
-                                                                            class="btn btn-danger btn-xs">
+                                                                        <a href="#" @click="removeRowPartEdit(part,index_part)" class="btn btn-danger btn-xs">
                                                                             <div class="btn-group">DELETE</div>
                                                                         </a>
                                                                     </td>
@@ -336,16 +355,15 @@
                                                             <tr>
                                                                 <td>{{newIndexPartEdit}}</td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="input_part_edit.description" type="text"
-                                                                        class="form-control width100" placeholder="Part Description">
+                                                                    <input v-model="input_part_edit.description" type="text" class="form-control width100"
+                                                                        placeholder="Part Description">
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="editInput.selected_material != null">
                                                                         <template v-if="editInput.selected_material.dimension_type_id == 1">
-                                                                            <div v-for="dimension in input_part_edit.dimensions_value"
-                                                                                class="col-sm-4 no-padding">
-                                                                                <input v-model="dimension.value_input" type="text"
-                                                                                    class="form-control width100" :placeholder="dimension.name">
+                                                                            <div v-for="dimension in input_part_edit.dimensions_value" class="col-sm-4 no-padding">
+                                                                                <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                    :placeholder="dimension.name">
                                                                             </div>
                                                                         </template>
                                                                     </template>
@@ -354,16 +372,59 @@
                                                                     </template>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="input_part_edit.quantity" type="text"
-                                                                        class="form-control width100" placeholder="Quantity">
+                                                                    <input v-model="input_part_edit.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="input_part_edit.weight" type="text"
-                                                                        class="form-control width100" placeholder="Weight">
+                                                                    <input disabled v-model="input_part_edit.weight" type="text" class="form-control width100"
+                                                                        placeholder="Weight">
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="service" v-model="input_part_edit.service_id"
+                                                                        :settings="service_settings">
+                                                                        <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} - {{ service.name }} [General]</option>
+                                                                        <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} - {{ service.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div v-show="input_part_edit.service_id == ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="input_part_edit.selected_service.length == 0 && input_part_edit.service_id != ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="input_part_edit.selected_service.length > 0">
+                                                                        <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                            v-model="input_part_edit.service_detail_id" :settings="service_detail_settings">
+                                                                            <option v-for="(service_detail, index) in input_part_edit.selected_service"
+                                                                                :value="service_detail.id">
+                                                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                        </selectize>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize id="vendor" name="vendor_id" v-model="input_part_edit.vendor_id" :settings="vendor_settings">
+                                                                        <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div class="col-sm-8">
+                                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                                                            v-model="input_part_edit.area">
+                                                                    </div>
+                                                                
+                                                                    <div class="col-sm-4 p-l-2">
+                                                                        <selectize id="uom" disabled name="area_uom_id" v-model="input_part_edit.area_uom_id" :settings="area_uom_settings">
+                                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                                        </selectize>
+                                                                    </div>
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
-                                                                    <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk"
-                                                                        class="btn btn-primary btn-xs" href="#">
+                                                                    <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk" class="btn btn-primary btn-xs"
+                                                                        href="#">
                                                                         <div class="btn-group">
                                                                             ADD
                                                                         </div>
@@ -430,10 +491,14 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="35%">Parts Description</th>
+                                                            <th width="25%">Parts Description</th>
                                                             <th width="18%">Dimensions</th>
-                                                            <th width="10%">Quantity</th>
-                                                            <th width="10%">Weight</th>
+                                                            <th width="7%">Quantity</th>
+                                                            <th width="7%">Weight</th>
+                                                            <th width="13%">Service</th>
+                                                            <th width="13%">Service Detail</th>
+                                                            <th width="10%">Vendor</th>
+                                                            <th width="10%">Quantity/Area</th>
                                                             <th width="7%"></th>
                                                         </tr>
                                                     </thead>
@@ -447,24 +512,65 @@
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in part.dimensions_value_obj"
-                                                                            class="col-sm-4 no-padding">
-                                                                            <input v-model="dimension.value_input" type="text"
-                                                                                class="form-control width100" :placeholder="dimension.name">
+                                                                        <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
+                                                                            <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                :placeholder="dimension.name">
                                                                         </div>
                                                                     </template>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="part.quantity" type="text" class="form-control width100"
-                                                                        placeholder="Quantity">
+                                                                    <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="part.weight" type="text"
-                                                                        class="form-control width100" placeholder="Weight">
+                                                                    <input disabled v-model="part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="service_edit" v-model="part.service_id"
+                                                                        :settings="service_settings">
+                                                                        <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} -
+                                                                            {{ service.name }} [General]</option>
+                                                                        <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} -
+                                                                            {{ service.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div v-show="part.service_id == ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="part.selected_service.length == 0 && part.service_id != ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="part.selected_service.length > 0">
+                                                                        <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                            v-model="part.service_detail_id" :settings="service_detail_settings">
+                                                                            <option v-for="(service_detail, index) in part.selected_service" :value="service_detail.id">
+                                                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                        </selectize>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize id="vendor" name="vendor_id" v-model="part.vendor_id" :settings="vendor_settings">
+                                                                        <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div class="col-sm-8">
+                                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                                                            v-model="part.area">
+                                                                    </div>
+                                                                
+                                                                    <div class="col-sm-4 p-l-2">
+                                                                        <selectize id="uom" disabled name="area_uom_id" v-model="part.area_uom_id" :settings="area_uom_settings">
+                                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                                        </selectize>
+                                                                    </div>
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
-                                                                    <a class="btn btn-primary btn-xs" :disabled="savePartOk"
-                                                                        @click="updateRowPart(index_part)">
+                                                                    <a class="btn btn-primary btn-xs" :disabled="savePartOk" @click="updateRowPart(index_part)">
                                                                         SAVE
                                                                     </a>
                                                                 </td>
@@ -474,12 +580,17 @@
                                                                 <td>{{ part.dimension_string }}</td>
                                                                 <td>{{ part.quantity }}</td>
                                                                 <td>{{ part.weight }}</td>
+                                                                <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                    {{ part.service_detail_description }}</td>
+                                                                <td v-else>-</td>
+                                                                <td>{{part.vendor_name}}</td>
+                                                                <td>{{part.area}}</td>
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="editRowPart(index_part)">
                                                                         EDIT
                                                                     </a>
-                                                                    <a href="#" @click="removeRowPart(part,index_part)"
-                                                                        class="btn btn-danger btn-xs">
+                                                                    <a href="#" @click="removeRowPart(part,index_part)" class="btn btn-danger btn-xs">
                                                                         <div class="btn-group">DELETE</div>
                                                                     </a>
                                                                 </td>
@@ -490,16 +601,15 @@
                                                         <tr>
                                                             <td>{{newIndexPart}}</td>
                                                             <td class="no-padding">
-                                                                <input v-model="input_part.description" type="text"
-                                                                    class="form-control width100" placeholder="Part Description">
+                                                                <input v-model="input_part.description" type="text" class="form-control width100"
+                                                                    placeholder="Part Description">
                                                             </td>
                                                             <td class="row no-padding">
                                                                 <template v-if="input.selected_material != null">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in input_part.dimensions_value"
-                                                                            class="col-sm-4 no-padding">
-                                                                            <input v-model="dimension.value_input" type="text"
-                                                                                class="form-control width100" :placeholder="dimension.name">
+                                                                        <div v-for="dimension in input_part.dimensions_value" class="col-sm-4 no-padding">
+                                                                            <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                :placeholder="dimension.name">
                                                                         </div>
                                                                     </template>
                                                                 </template>
@@ -508,16 +618,55 @@
                                                                 </template>
                                                             </td>
                                                             <td class="no-padding">
-                                                                <input v-model="input_part.quantity" type="text" class="form-control width100"
-                                                                    placeholder="Quantity">
+                                                                <input v-model="input_part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                             </td>
                                                             <td class="no-padding">
-                                                                <input disabled v-model="input_part.weight" type="text"
-                                                                    class="form-control width100" placeholder="Weight">
+                                                                <input disabled v-model="input_part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <selectize class="selectizeFull" id="service" v-model="input_part.service_id" :settings="service_settings">
+                                                                    <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                        {{ service.code }} - {{ service.name }} [General]</option>
+                                                                    <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                        {{ service.code }} - {{ service.name }}</option>
+                                                                </selectize>
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <div v-show="input_part.service_id == ''">
+                                                                    <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                    </selectize>
+                                                                </div>
+                                                                <div v-show="input_part.selected_service.length == 0 && input_part.service_id != ''">
+                                                                    <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                    </selectize>
+                                                                </div>
+                                                                <div v-show="input_part.selected_service.length > 0">
+                                                                    <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                        v-model="input_part.service_detail_id" :settings="service_detail_settings">
+                                                                        <option v-for="(service_detail, index) in input_part.selected_service" :value="service_detail.id">
+                                                                            {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                    </selectize>
+                                                                </div>
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <selectize id="vendor" name="vendor_id" v-model="input_part.vendor_id" :settings="vendor_settings">
+                                                                    <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                </selectize>
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <div class="col-sm-8 no-padding">
+                                                                    <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                                                        v-model="input_part.area">
+                                                                </div>
+                                                            
+                                                                <div class="col-sm-4 no-padding">
+                                                                    <selectize disabled id="uom" name="area_uom_id" v-model="input_part.area_uom_id" :settings="area_uom_settings">
+                                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
+                                                                    </selectize>
+                                                                </div>
                                                             </td>
                                                             <td class="p-l-5" align="center">
-                                                                <a @click.prevent="submitToTableParts()" :disabled="inputPartOk"
-                                                                    class="btn btn-primary btn-xs" href="#">
+                                                                <a @click.prevent="submitToTableParts()" :disabled="inputPartOk" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
                                                                         ADD
                                                                     </div>
@@ -586,6 +735,10 @@
                                                             <th width="18%">Dimensions</th>
                                                             <th width="10%">Quantity</th>
                                                             <th width="10%">Weight</th>
+                                                            <th width="10%">Service</th>
+                                                            <th width="10%">Service Detail</th>
+                                                            <th width="10%">Vendor</th>
+                                                            <th width="10%">Quantity/Area</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -595,6 +748,10 @@
                                                             <td>{{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
+                                                            <td>{{part.vendor_name}}</td>
+                                                            <td>{{part.area}}</td>
+                                                            <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                            <td class="tdEllipsis">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -654,15 +811,6 @@
             edit : @json($edit),
             deleted_id : [],
             deleted_part_id : [],
-
-            service_id: "",
-            service_detail_id: "",
-            selected_service : "",
-            vendor_id : "",
-            area :"",
-            area_uom_id : "",
-
-            selected_service_detail : @json($wbs->service_detail_id),
         },
         input : {
             selected_material : null,
@@ -685,6 +833,18 @@
             quantity : "",
             volume : "",
             weight : "",
+            service_id : "",
+            service_code : "",
+            service_name : "",
+            service_detail_id : "",
+            service_detail_name : "",
+            service_detail_description : "",
+            selected_service : "",
+            vendor_id : "",
+            vendor_name : "",
+            area :"",
+            area_uom_id : "",
+            area_uom_unit : "",
 
             dimension_string : null,
             edit : false,
@@ -695,6 +855,18 @@
             quantity : "",
             volume : "",
             weight : "",
+            service_id : "",
+            service_code : "",
+            service_name : "",
+            service_detail_id : "",
+            service_detail_name : "",
+            service_detail_description : "",
+            selected_service : "",
+            vendor_id : "",
+            vendor_name : "",
+            area :"",
+            area_uom_id : "",
+            area_uom_unit : "",
 
             dimension_string : null,
             edit : false,
@@ -784,7 +956,7 @@
             inputPartOk: function(){
                 let isOk = false;
                 
-                if(this.input_part.description == "" || this.input_part.quantity == ""){
+                if(this.input_part.description == "" || this.input_part.quantity == "" || this.input_part.service_id == ""){
                     isOk = true;
                 }
 
@@ -793,7 +965,7 @@
             inputPartEditOk: function(){
                 let isOk = false;
                 
-                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == ""){
+                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == "" || this.input_part_edit.service_id == ""){
                     isOk = true;
                 }
 
@@ -1400,6 +1572,94 @@
             },
         },
         watch: {
+            'input_part.service_id': function(newValue){
+                if(newValue != ""){
+                    this.input_part.service_detail_id = "";
+                    this.services.forEach(service => {
+                        if(service.id == newValue){
+                            this.input_part.selected_service = service.service_details;
+
+                            if(this.input_part.selected_service_detail != null){
+                                this.input_part.service_detail_id = this.input_part.selected_service_detail;
+                                this.input_part.selected_service_detail = null;
+                            }
+                        }
+                    });
+                }else{
+                    this.input_part.selected_service = "";
+                    this.input_part.service_detail_id = "";
+                }
+
+            },
+
+            'input_part.vendor_id': function(newValue){
+                if(newValue != ""){
+                        this.vendors.forEach(vendor => {
+                        if(vendor.id == newValue){
+                            this.input_part.vendor_name = vendor.name;
+                        }
+                    });
+                }else{
+                    this.input_part.vendor_id = "";
+                    this.input_part.vendor_name = "";
+                }
+
+            },
+
+            'input_part.service_detail_id': function(newValue){
+                if(newValue != ""){
+                    this.input_part.selected_service.forEach(service_detail => {
+                        if(service_detail.id == newValue){
+                            this.input_part.area_uom_id = service_detail.uom_id;
+                        }
+                    });
+                }else{
+                    this.input_part.area_uom_id = "";
+                }
+            },
+
+            'input_part_edit.service_id': function(newValue){
+                if(newValue != ""){
+
+                    this.input_part_edit.service_detail_id = "";
+                        this.services.forEach(service => {
+                        if(service.id == newValue){
+                            this.input_part_edit.selected_service = service.service_details;
+                            if(this.input_part_edit.selected_service_detail != null){
+                                this.input_part_edit.service_detail_id = this.input_part_edit.selected_service_detail;
+                                this.input_part_edit.selected_service_detail = null;
+                            }
+                        }
+                    });
+                    window.axios.get('/api/getServiceStandard/'+this.input_part_edit.service_id).then(({ data }) => {
+                        this.input_part_edit.service_name = data.name;
+                        this.input_part_edit.service_code = data.code;
+                    })
+
+
+                }else{
+                    this.input_part_edit.service_name = "";
+                    this.input_part_edit.service_code = "";
+                    this.input_part_edit.selected_service = "";
+                    // this.input_part_edit.service_detail_id = "";
+                }
+
+            },
+
+            'input_part_edit.service_detail_id': function(newValue){
+                if(newValue != ""){
+                
+                window.axios.get('/api/getServiceDetailStandard/'+this.input_part_edit.service_detail_id).then(({ data }) => {
+                    this.input_part_edit.service_detail_name = data.name;
+                    this.input_part_edit.service_detail_description = data.description;
+                })
+                
+                }else{
+                    this.input_part_edit.service_detail_name = "";
+                    this.input_part_edit.service_detail_description = "";
+                }
+            },
+
             'input.material_id': function(newValue){
                 this.input.quantity = "";
                 this.input_part.dimensions_value = null;
