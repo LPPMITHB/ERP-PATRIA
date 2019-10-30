@@ -593,7 +593,6 @@ class ActivityController extends Controller
 
     public function updateActualActivity(Request $request, $id)
     {
-        // $data = $request->json()->all();
         $dataActivity = json_decode($request->dataConfirmActivity);
         $dataFile = $request->file;
         DB::beginTransaction();

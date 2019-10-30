@@ -22,6 +22,7 @@ use App\Models\PurchaseRequisitionDetail;
 use App\Models\WbsMaterial;
 use App\Models\Vendor;
 use App\Models\Uom;
+use App\Models\Activity;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
@@ -334,7 +335,7 @@ class BOMController extends Controller
         $wbs = Wbs::find($wbs_id);
         $project = Project::where('id',$wbs->project_id)->with('ship')->first();
         $materials = Material::orderBy('code')->get()->jsonSerialize();
-        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails.uom','ship')->get();
         $vendors = Vendor::all();
         $densities = Configuration::get('density');
         $uoms = Uom::all();
@@ -540,6 +541,18 @@ class BOMController extends Controller
             foreach($datas->materials as $material){
                 if(count($material->part_details) > 0){
                     foreach ($material->part_details as $part) {
+                        
+                        $activity = new Activity;
+                        $activity->code = self::generateActivityCode($datas->wbs_id);
+                        dd($part,$datas,$activity);
+                        $activity->name = $part->description;
+                        $activity->type = "General";
+                        $activity->description = $part->description;
+                        $activity->wbs_id = $datas->wbs_id;
+                        $activity->user_id = Auth::user()->id;
+                        $activity->branch_id = Auth::user()->branch->id;
+                        $activity->save();
+                        
                         $wbsMaterial = new WbsMaterial;
                         $wbsMaterial->wbs_id = $datas->wbs_id;
                         $wbsMaterial->part_description = $part->description;
@@ -2616,7 +2629,8 @@ class BOMController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
-
+    
+    //Method
     public function checkValueMaterial($prds){
         $pr_value = 0;
         foreach ($prds as $prd) {
@@ -2624,6 +2638,24 @@ class BOMController extends Controller
         }
 
         return $pr_value;
+    }
+
+    public function generateActivityCode($id){
+        $code = 'ACT';
+        $project = WBS::find($id)->project;
+        $projectSequence = $project->project_sequence;
+        $year = $project->created_at->year % 100;
+        $businessUnit = $project->business_unit_id;
+
+        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
+
+        $number = 1;
+		if(isset($modelActivity)){
+            $number += intval(substr($modelActivity->code, -4));
+		}
+
+        $activity_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		return $activity_code;
     }
 
     public function getMaterialAPI($id){

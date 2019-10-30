@@ -56,26 +56,6 @@
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
                             </div>
 
-                            <div class="col-xs-12 col-md-3">
-                                <div class="col-xs-4 no-padding">Vendor</div>
-                                <selectize id="vendor" name="vendor_id" v-model="submittedForm.vendor_id" :settings="vendor_settings">
-                                    <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
-                                </selectize>
-                            
-                                <div class="col-xs-4 no-padding">Quantity/Area</div>
-                                <div class="row">
-                                    <div class="col-sm-8">
-                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
-                                            v-model="submittedForm.area">
-                                    </div>
-                            
-                                    <div class="col-sm-4 p-l-2">
-                                        <selectize id="uom" name="area_uom_id" v-model="submittedForm.area_uom_id" :settings="area_uom_settings">
-                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-                            </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-5">
                             <table id="material-standard-table" class="table table-bordered tableFixed m-b-0">
@@ -330,7 +310,7 @@
                                                                     </td>
                                                                 </template>
                                                                 <template v-else>
-                                                                    <td>{{ part.description }}</td>
+                                                                    <td >{{ part.description }}</td>
                                                                     <td>{{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
@@ -487,11 +467,11 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Parts</label>
-                                                <table id="part-table" class="table table-bordered tableFixed tablePagingVue">
+                                                <table id="part-table" class="table table-bordered tableFixed">
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="25%">Parts Description</th>
+                                                            <th width="20%">Parts Description</th>
                                                             <th width="18%">Dimensions</th>
                                                             <th width="7%">Quantity</th>
                                                             <th width="7%">Weight</th>
@@ -499,7 +479,7 @@
                                                             <th width="13%">Service Detail</th>
                                                             <th width="10%">Vendor</th>
                                                             <th width="10%">Quantity/Area</th>
-                                                            <th width="7%"></th>
+                                                            <th width="10%"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -553,20 +533,19 @@
                                                                     </div>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <selectize id="vendor" name="vendor_id" v-model="part.vendor_id" :settings="vendor_settings">
+                                                                    <selectize class="selectizeFull" id="vendor" name="vendor_id" v-model="part.vendor_id"
+                                                                        :settings="vendor_settings">
                                                                         <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                                                     </selectize>
                                                                 </td>
-                                                                <td class="no-padding">
-                                                                    <div class="col-sm-8">
-                                                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                                               <td class="row no-padding">
+                                                                    <div class="col-sm-7 no-padding">
+                                                                        <input autocomplete="off" type="text" name="area" class="form-control width100" placeholder="Quantity/Area"
                                                                             v-model="part.area">
                                                                     </div>
-                                                                
-                                                                    <div class="col-sm-4 p-l-2">
-                                                                        <selectize id="uom" disabled name="area_uom_id" v-model="part.area_uom_id" :settings="area_uom_settings">
-                                                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                                        </selectize>
+                                                                    <div class="col-sm-5 no-padding">
+                                                                        <input disabled autocomplete="off" type="text" name="area" class="form-control width100"
+                                                                            v-model="part.area_uom_unit">
                                                                     </div>
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
@@ -576,16 +555,21 @@
                                                                 </td>
                                                             </template>
                                                             <template v-else>
-                                                                <td>{{ part.description }}</td>
-                                                                <td>{{ part.dimension_string }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.dimension_string)">{{ part.dimension_string }}</td>
                                                                 <td>{{ part.quantity }}</td>
                                                                 <td>{{ part.weight }}</td>
-                                                                <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                                <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
                                                                     {{ part.service_detail_description }}</td>
                                                                 <td v-else>-</td>
-                                                                <td>{{part.vendor_name}}</td>
-                                                                <td>{{part.area}}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)">{{part.vendor_name}}</td>
+                                                                <td>{{part.area}} {{part.area_uom_unit}}</td>
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="editRowPart(index_part)">
                                                                         EDIT
@@ -649,20 +633,18 @@
                                                                 </div>
                                                             </td>
                                                             <td class="no-padding">
-                                                                <selectize id="vendor" name="vendor_id" v-model="input_part.vendor_id" :settings="vendor_settings">
+                                                                <selectize class="selectizeFull" id="vendor" name="vendor_id" v-model="input_part.vendor_id" :settings="vendor_settings">
                                                                     <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
                                                                 </selectize>
                                                             </td>
-                                                            <td class="no-padding">
-                                                                <div class="col-sm-8 no-padding">
-                                                                    <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
+                                                            <td class="row no-padding">
+                                                                <div class="col-sm-7 no-padding">
+                                                                    <input autocomplete="off" type="text" name="area" class="form-control width100" placeholder="Quantity/Area"
                                                                         v-model="input_part.area">
                                                                 </div>
-                                                            
-                                                                <div class="col-sm-4 no-padding">
-                                                                    <selectize disabled id="uom" name="area_uom_id" v-model="input_part.area_uom_id" :settings="area_uom_settings">
-                                                                        <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                                                    </selectize>
+                                                                <div class="col-sm-5 no-padding">
+                                                                    <input disabled autocomplete="off" type="text" name="area" class="form-control width100"
+                                                                        v-model="input_part.area_uom_unit">
                                                                 </div>
                                                             </td>
                                                             <td class="p-l-5" align="center">
@@ -731,12 +713,12 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="35%">Parts Description</th>
+                                                            <th width="25%">Parts Description</th>
                                                             <th width="18%">Dimensions</th>
-                                                            <th width="10%">Quantity</th>
-                                                            <th width="10%">Weight</th>
-                                                            <th width="10%">Service</th>
-                                                            <th width="10%">Service Detail</th>
+                                                            <th width="7%">Quantity</th>
+                                                            <th width="7%">Weight</th>
+                                                            <th width="13%">Service</th>
+                                                            <th width="13%">Service Detail</th>
                                                             <th width="10%">Vendor</th>
                                                             <th width="10%">Quantity/Area</th>
                                                         </tr>
@@ -748,10 +730,12 @@
                                                             <td>{{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
+                                                            <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                            <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                {{ part.service_detail_description }}</td>
+                                                            <td v-else>-</td>
                                                             <td>{{part.vendor_name}}</td>
                                                             <td>{{part.area}}</td>
-                                                            <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                            <td class="tdEllipsis">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -790,6 +774,32 @@
             'bFilter'     : true,
             'initComplete': function(){
                 $('div.overlay').hide();
+            }
+        });
+
+        $('#part-table-view').DataTable({
+            'paging' : true,
+            'lengthChange': false,
+            'ordering' : true,
+            'info' : true,
+            'autoWidth' : false,
+            'bFilter' : true,
+            'initComplete': function(){
+            $('div.overlay').hide();
+            document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
+            }
+        });
+
+        $('#part-table').DataTable({
+            'paging' : true,
+            'lengthChange': false,
+            'ordering' : true,
+            'info' : true,
+            'autoWidth' : false,
+            'bFilter' : true,
+            'initComplete': function(){
+            $('div.overlay').hide();
+            document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
             }
         });
     });
@@ -956,7 +966,7 @@
             inputPartOk: function(){
                 let isOk = false;
                 
-                if(this.input_part.description == "" || this.input_part.quantity == "" || this.input_part.service_id == ""){
+                if(this.input_part.description == "" || this.input_part.quantity == ""){
                     isOk = true;
                 }
 
@@ -965,7 +975,7 @@
             inputPartEditOk: function(){
                 let isOk = false;
                 
-                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == "" || this.input_part_edit.service_id == ""){
+                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == ""){
                     isOk = true;
                 }
 
@@ -1058,6 +1068,9 @@
             },
             tooltipDesc: function(desc) {
                 return desc;
+            },
+            tooltipText: function(text){
+                return text;
             },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
@@ -1358,6 +1371,11 @@
                     this.input_part.quantity = "";
                     this.input_part.weight = "";
                     this.input_part.volume = "";
+                    this.input_part.service_id = "";
+                    this.input_part.service_detail_id = "";
+                    this.input_part.vendor_id = "";
+                    this.input_part.area = "";
+                    this.input_part.area_uom = "";
 
                     $('#part-table').DataTable().destroy();
                     this.$nextTick(function() {
@@ -1386,6 +1404,32 @@
             editRowPart(index){
                 this.input.part_details[index].edit = true;
                 this.active_edit_part_index = index;
+
+                $('#part-table').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#part-table').DataTable({
+                        'paging' : true,
+                        'lengthChange': false,
+                        'ordering' : true,
+                        'info' : true,
+                        'autoWidth' : false,
+                        'bFilter' : true,
+                        'initComplete': function(){
+                        $('div.overlay').hide();
+                        document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+                        }
+                    });
+
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).tooltip('hide')
+                        .attr('data-original-title', binding.value)
+                        .tooltip('fixTitle')
+                        .tooltip('show');
+                    })
+                })
+
+
+               
                 // var temp_selected_data = JSON.stringify(this.input.part_details[index]);
                 // temp_selected_data = JSON.parse(temp_selected_data); 
                 
@@ -1578,6 +1622,8 @@
                     this.services.forEach(service => {
                         if(service.id == newValue){
                             this.input_part.selected_service = service.service_details;
+                            this.input_part.service_code = service.code;
+                            this.input_part.service_name = service.name;
 
                             if(this.input_part.selected_service_detail != null){
                                 this.input_part.service_detail_id = this.input_part.selected_service_detail;
@@ -1611,6 +1657,10 @@
                     this.input_part.selected_service.forEach(service_detail => {
                         if(service_detail.id == newValue){
                             this.input_part.area_uom_id = service_detail.uom_id;
+                            this.input_part.area_uom_unit = service_detail.uom.unit;
+
+                            this.input_part.service_detail_code = service_detail.code;
+                            this.input_part.service_detail_name = service_detail.name;
                         }
                     });
                 }else{
@@ -2085,7 +2135,7 @@
                 if(is_decimal == 0){
                     this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
