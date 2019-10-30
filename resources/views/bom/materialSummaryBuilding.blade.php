@@ -306,7 +306,7 @@
                             if(found){
                                 var temp = {};
                                 temp.id = null;
-                                temp.material_id = material_id;
+                                temp.material_id = material.id;
                                 temp.material_name = material.code+" - "+material.description;
                                 temp.available_quantity = material.stock.quantity - material.stock.reserved;
                                 temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
@@ -360,10 +360,15 @@
                             if(found){
                                 var temp = {};
                                 temp.id = null;
-                                temp.material_id = material_id;
+                                temp.material_id = material.id;
                                 temp.material_name = material.code+" - "+material.description;
-                                temp.available_quantity = material.stock.quantity - material.stock.reserved;
-                                temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
+                                if(material.stock != null){
+                                    temp.available_quantity = material.stock.quantity - material.stock.reserved;
+                                    temp.const_available_quantity = material.stock.quantity - material.stock.reserved;
+                                }else{
+                                    temp.available_quantity = 0;
+                                    temp.const_available_quantity = 0;
+                                }
                                 temp.prepared = "";
 
                                 this.activeBomPrep.details.push(temp);
