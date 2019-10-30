@@ -541,18 +541,6 @@ class BOMController extends Controller
             foreach($datas->materials as $material){
                 if(count($material->part_details) > 0){
                     foreach ($material->part_details as $part) {
-                        
-                        $activity = new Activity;
-                        $activity->code = self::generateActivityCode($datas->wbs_id);
-                        dd($part,$datas,$activity);
-                        $activity->name = $part->description;
-                        $activity->type = "General";
-                        $activity->description = $part->description;
-                        $activity->wbs_id = $datas->wbs_id;
-                        $activity->user_id = Auth::user()->id;
-                        $activity->branch_id = Auth::user()->branch->id;
-                        $activity->save();
-                        
                         $wbsMaterial = new WbsMaterial;
                         $wbsMaterial->wbs_id = $datas->wbs_id;
                         $wbsMaterial->part_description = $part->description;
@@ -571,6 +559,33 @@ class BOMController extends Controller
                         $wbsMaterial->weight = $part->weight;
                         $wbsMaterial->save();
 
+                        $activity = new Activity;
+                        $activity->code = self::generateActivityCode($datas->wbs_id);
+                        $activity->name = $part->description;
+                        $activity->type = "General";
+                        $activity->description = $part->description;
+                        $activity->wbs_id = $datas->wbs_id;
+                        if($part->service_id!=""){
+                            $activity->service_id = $part->service_id;
+                        }
+
+                        if($part->service_detail_id!=""){
+                            $activity->service_detail_id = $part->service_detail_id;
+                        }
+
+                        if($part->vendor_id!=""){
+                            $activity->vendor_id = $part->vendor_id;
+                        }
+
+                        if($part->area!=""){
+                            $activity->area = $part->area;
+                        }
+
+                        $activity->wbs_material_id = $wbsMaterial->id;
+                        $activity->user_id = Auth::user()->id;
+                        $activity->branch_id = Auth::user()->branch->id;
+                        $activity->save();
+                        
                         $weight = $part->weight;
 
                         $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->where('source', $old_material_source)->get();

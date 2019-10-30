@@ -568,8 +568,10 @@
                                                                     {{ part.service_detail_description }}</td>
                                                                 <td v-else>-</td>
                                                                 <td class="tdEllipsis" data-container="body"
-                                            v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)">{{part.vendor_name}}</td>
-                                                                <td>{{part.area}} {{part.area_uom_unit}}</td>
+                                            v-tooltip:top="tooltipText(part.vendor_name)" v-if="part.vendor_name != ''">{{part.vendor_name}}</td>
+                                                                <td v-else>-</td>                                                                
+                                                                <td v-if="part.area_uom_unit != ''">{{part.area}} {{part.area_uom_unit}}</td>
+                                                                <td v-else>-</td>                                                                
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="editRowPart(index_part)">
                                                                         EDIT
@@ -876,6 +878,7 @@
             vendor_name : "",
             area :"",
             area_uom_id : "",
+            area_uom_obj : "",
             area_uom_unit : "",
 
             dimension_string : null,
@@ -1616,6 +1619,24 @@
             },
         },
         watch: {
+            'input_part.area': function(newValue){
+                var is_decimal = this.input_part.area_uom_obj.is_decimal;
+                if(is_decimal == 0){
+                    this.input_part.area = (this.input_part.area+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input_part.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input_part.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input_part.area = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
+            },
             'input_part.service_id': function(newValue){
                 if(newValue != ""){
                     this.input_part.service_detail_id = "";
@@ -1632,6 +1653,9 @@
                         }
                     });
                 }else{
+                    this.input_part.service_code = "";
+                    this.input_part.service_name = "";
+
                     this.input_part.selected_service = "";
                     this.input_part.service_detail_id = "";
                 }
@@ -1657,6 +1681,7 @@
                     this.input_part.selected_service.forEach(service_detail => {
                         if(service_detail.id == newValue){
                             this.input_part.area_uom_id = service_detail.uom_id;
+                            this.input_part.area_uom_obj = service_detail.uom;
                             this.input_part.area_uom_unit = service_detail.uom.unit;
 
                             this.input_part.service_detail_code = service_detail.code;
@@ -1665,6 +1690,11 @@
                     });
                 }else{
                     this.input_part.area_uom_id = "";
+                    this.input_part.area_uom_obj = "";
+                    this.input_part.area_uom_unit = "";
+
+                    this.input_part.service_detail_code = "";
+                    this.input_part.service_detail_name = "";
                 }
             },
 
