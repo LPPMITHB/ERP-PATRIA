@@ -1399,14 +1399,14 @@ var vm = new Vue({
             'editActivity.service_id': function(newValue){
                 if(newValue != ""){
 
-                    this.editActivity.service_detail_id = "";
+                    // this.editActivity.service_detail_id = "";
                         this.services.forEach(service => {
                         if(service.id == newValue){
                             this.editActivity.selected_service = service.service_details;
-                            if(this.editActivity.selected_service_detail != null){
-                                this.editActivity.service_detail_id = this.editActivity.selected_service_detail;
-                                this.editActivity.selected_service_detail = null;
-                            }
+                            // if(this.editActivity.selected_service_detail != null){
+                            //     this.editActivity.service_detail_id = this.editActivity.selected_service_detail;
+                            //     this.editActivity.selected_service_detail = null;
+                            // }
                         }
                     });
                     window.axios.get('/api/getServiceStandard/'+this.editActivity.service_id).then(({ data }) => {
