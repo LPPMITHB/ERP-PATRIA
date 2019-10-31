@@ -693,12 +693,13 @@ class ProductionOrderController extends Controller
         $modelRD = ResourceTrx::where('wbs_id',$wbs->id)->get();
         if($modelBOM != null){
             return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
-        }else{
-            if($route == "/production_order"){
-                return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This top WBS doesn't have BOM");
-            }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This top WBS doesn't have BOM");
-            }
+        }else{            
+            return view('production_order.create', compact('wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+            // if($route == "/production_order"){
+            //     return redirect()->route('production_order.selectWBS',$wbs->project_id)->with('error', "This top WBS doesn't have BOM");
+            // }elseif($route == "/production_order_repair"){
+            //     return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This top WBS doesn't have BOM");
+            // }
         }
     }
 
@@ -893,7 +894,7 @@ class ProductionOrderController extends Controller
     public function storeRelease(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $pro_id = $datas->modelPrO->id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
         DB::beginTransaction();
         try {

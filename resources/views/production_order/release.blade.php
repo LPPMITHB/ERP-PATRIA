@@ -141,23 +141,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in wbsMaterials">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.material.code }}</td>
-                                <td class="tdEllipsis">{{ data.material.description }}</td>
-                                <td class="tdEllipsis">{{ data.part_description }}</td>
-                                <td class="tdEllipsis">{{ data.dimensions_string }}</td>
-                                <td class="tdEllipsis">{{ data.quantity }}</td>
-                                <td class="tdEllipsis">{{ data.estimated_quantity }}</td>
-                                <td class="tdEllipsis">{{ data.source }}</td>
-                            </tr>
+                            <template v-if="wbsMaterials.length > 0">
+                                <tr v-for="(data,index) in wbsMaterials">
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis">{{ data.material.code }}</td>
+                                    <td class="tdEllipsis">{{ data.material.description }}</td>
+                                    <td class="tdEllipsis">{{ data.part_description }}</td>
+                                    <td class="tdEllipsis">{{ data.dimensions_string }}</td>
+                                    <td class="tdEllipsis">{{ data.quantity }}</td>
+                                    <td class="tdEllipsis">{{ data.estimated_quantity }}</td>
+                                    <td class="tdEllipsis">{{ data.source }}</td>
+                                </tr>
+                            </template>
+                            <template v-else>
+                                <tr>
+                                    <td colspan="8" class="text-center"><b>NO BOM DATA</b></td>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="box-body p-t-0 p-b-5">
                     <h4>Top WBS Material</h4>
-                    <table id="material-table" class="table table-bordered tableFixed">
+                    <table v-if="materials.length > 0" id="material-table" class="table table-bordered tableFixed">
+                    <table v-else id="material-table" class="table table-bordered tableFixed showTable">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -172,24 +180,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(data,index) in materials">
-                                <td>{{ index + 1 }}</td>
-                                <td class="tdEllipsis">{{ data.material.code }}</td>
-                                <td class="tdEllipsis">{{ data.material.description }}</td>
-                                <td class="tdEllipsis">{{ data.sugQuantity }}</td>
-                                <td class="no-padding">
-                                    <input class="form-control" v-model="data.allocated" placeholder="Allocated">
-                                </td>
-                                <td class="tdEllipsis">{{ data.quantity }}</td>
-                                <td class="tdEllipsis">{{ data.material.unit }}</td>
-                                <td class="tdEllipsis">{{ data.material.source }}</td>
-                                <td class="tdEllipsis text-center" v-if="data.status == 'ok'">
-                                    <i class="fa fa-check text-success"></i>
-                                </td>
-                                <td class="tdEllipsis text-center" v-else>
-                                    <i class="fa fa-times text-danger"></i>
-                                </td>
-                            </tr>
+                            <template v-if="materials.length > 0">
+                                <tr v-for="(data,index) in materials">
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis">{{ data.material.code }}</td>
+                                    <td class="tdEllipsis">{{ data.material.description }}</td>
+                                    <td class="tdEllipsis">{{ data.sugQuantity }}</td>
+                                    <td class="no-padding">
+                                        <input class="form-control" v-model="data.allocated" placeholder="Allocated">
+                                    </td>
+                                    <td class="tdEllipsis">{{ data.quantity }}</td>
+                                    <td class="tdEllipsis">{{ data.material.unit }}</td>
+                                    <td class="tdEllipsis">{{ data.material.source }}</td>
+                                    <td class="tdEllipsis text-center" v-if="data.status == 'ok'">
+                                        <i class="fa fa-check text-success"></i>
+                                    </td>
+                                    <td class="tdEllipsis text-center" v-else>
+                                        <i class="fa fa-times text-danger"></i>
+                                    </td>
+                                </tr>
+                            </template>
+                            <template v-else>
+                                <tr>
+                                    <td colspan="9" class="text-center"><b>NO BOM DATA</b></td>
+                                </tr>
+                            </template>
                         </tbody>
                     </table>
                 </div>
@@ -316,6 +331,8 @@
     var data = {
         route : @json($route),
         wbsMaterials : @json($wbsMaterials),
+        materials : @json($materials),
+        modelPrO : @json($modelPrO),
         modelPrOD : @json($modelPrOD),
         materials : @json($materials),
         services : @json($services),
@@ -477,6 +494,7 @@
                 });
                 this.submittedForm.materials = this.materials;
                 this.submittedForm.modelPrOD = this.modelPrOD;
+                this.submittedForm.modelPrO = this.modelPrO;
                 this.submittedForm.resources = this.resources;
 
                 let struturesElem = document.createElement('input');
