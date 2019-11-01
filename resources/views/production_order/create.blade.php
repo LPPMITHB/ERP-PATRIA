@@ -125,37 +125,63 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
-
-            <div class="box-body p-t-0 p-b-5">
-                <h4>Top WBS Material</h4>
-                <table class="table table-bordered showTable tableFixed" id="material-table">
-                    <thead>
-                        <tr>
-                            <th width="5%">No</th>
-                            <th width="15%">Material Number</th>
-                            <th width="30%">Material Description</th>
-                            <th width="10%">Quantity</th>
-                            <th width="10%">Unit</th>
-                            <th width="10%">Source</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @php($counter = 1)
-                        @foreach($modelBOM->bomDetails as $BOMD)
+            @if($modelBOM != null)
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Top WBS Material</h4>
+                    <table class="table table-bordered showTable tableFixed" id="material-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="15%">Material Number</th>
+                                <th width="30%">Material Description</th>
+                                <th width="10%">Quantity</th>
+                                <th width="10%">Unit</th>
+                                <th width="10%">Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @php($counter = 1)
+                            @foreach($modelBOM->bomDetails as $BOMD)
                             @if($BOMD->material_id != "")
-                                <tr>
-                                    <td>{{ $counter++ }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">{{ $BOMD->material->code }}</td>
-                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
-                                    <td>{{ number_format($BOMD->quantity,2) }}</td>
-                                    <td>{{ $BOMD->material->uom->unit }}</td>
-                                    <td>{{ $BOMD->source }}</td>
-                                </tr>
+                            <tr>
+                                <td>{{ $counter++ }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">
+                                    {{ $BOMD->material->code }}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"
+                                    title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
+                                <td>{{ number_format($BOMD->quantity,2) }}</td>
+                                <td>{{ $BOMD->material->uom->unit }}</td>
+                                <td>{{ $BOMD->source }}</td>
+                            </tr>
                             @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div> <!-- /.box-body -->
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div> <!-- /.box-body -->
+            @else
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Top WBS Material</h4>
+                    <table class="table table-bordered showTable tableFixed" id="material-table">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="15%">Material Number</th>
+                                <th width="30%">Material Description</th>
+                                <th width="10%">Quantity</th>
+                                <th width="10%">Unit</th>
+                                <th width="10%">Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="6" class="text-center">
+                                    <b>NO BOM DATA</b>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> <!-- /.box-body -->
+            @endif
 
             <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
@@ -364,7 +390,7 @@
         materials : @json($materials),
         resources : [],
         services : [],
-        bom : @json($modelBOM->bomDetails),
+        bom : @json($modelBOM != null ? $modelBOM->bomDetails : []),
         assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},

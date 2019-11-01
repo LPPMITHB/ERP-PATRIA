@@ -8,6 +8,7 @@ use App\Models\Bom;
 use App\Models\BomDetail;
 use App\Models\Material;
 use App\Models\Service;
+use App\Models\ServiceDetail;
 use App\Models\Branch;
 use App\Models\WBS;
 use App\Models\User;
@@ -400,6 +401,43 @@ class BOMController extends Controller
                         foreach ($part->dimensions_value_obj as $dimension) {
                             $dimension->uom = Uom::find($dimension->uom_id);
                         }
+                        if($material->activity != null){
+                            $activity_ref = $material->activity;
+                            $service_ref = Service::find($activity_ref->service_id);
+                            $service_detail_ref = ServiceDetail::find($activity_ref->service_detail_id);
+                            $vendor_ref = Vendor::find($activity_ref->vendor_id);
+
+                            $part->service_id = $activity_ref->service_id;
+                            $part->service_code = $service_ref->code;
+                            $part->service_name = $service_ref->name;
+                            $part->service_detail_id = $activity_ref->service_detail_id;
+                            $part->service_detail_name = $service_detail_ref->name;
+                            $part->service_detail_description = $service_detail_ref->description;
+                            $part->selected_service = $service_ref;
+                            $part->selected_service_detail = $service_detail_ref->id;
+                            $part->vendor_id = $vendor_ref->id;
+                            $part->vendor_name = $vendor_ref->name;
+                            $part->area = $activity_ref->area;
+                            $part->area_uom_id = $service_detail_ref->uom_id;
+                            $part->area_uom_obj = $service_detail_ref->uom;
+                            $part->area_uom_unit = $service_detail_ref->uom->unit;
+                        }else{
+                            $part->service_id = "";
+                            $part->service_code = "";
+                            $part->service_name = "";
+                            $part->service_detail_id = "";
+                            $part->service_detail_name = "";
+                            $part->service_detail_description = "";
+                            $part->selected_service = "";
+                            $part->selected_service_detail = "";
+                            $part->vendor_id = "";
+                            $part->vendor_name = "";
+                            $part->area = "";
+                            $part->area_uom_id = "";
+                            $part->area_uom_obj = "";
+                            $part->area_uom_unit = "";
+                        }
+
                         array_push($temp_material->part_details,$part);
                     }
 
@@ -417,6 +455,42 @@ class BOMController extends Controller
                         foreach ($part->dimensions_value_obj as $dimension) {
                             $dimension->uom = Uom::find($dimension->uom_id);
                         }
+
+                        if($material->activity != null){
+                            $activity_ref = $material->activity;
+                            $service_ref = Service::find($activity_ref->service_id);
+                            $service_detail_ref = ServiceDetail::find($activity_ref->service_detail_id);
+                            $vendor_ref = Vendor::find($activity_ref->vendor_id);
+
+                            $part->service_id = $activity_ref->service_id;
+                            $part->service_code = $service_ref->code;
+                            $part->service_name = $service_ref->name;
+                            $part->service_detail_id = $activity_ref->service_detail_id;
+                            $part->service_detail_name = $service_detail_ref->name;
+                            $part->service_detail_description = $service_detail_ref->description;
+                            $part->selected_service_detail = $service_detail_ref->id;
+                            $part->vendor_id = $vendor_ref->id;
+                            $part->vendor_name = $vendor_ref->name;
+                            $part->area = $activity_ref->area;
+                            $part->area_uom_id = $service_detail_ref->uom_id;
+                            $part->area_uom_obj = $service_detail_ref->uom;
+                            $part->area_uom_unit = $service_detail_ref->uom->unit;
+                        }else{
+                            $part->service_id = "";
+                            $part->service_code = "";
+                            $part->service_name = "";
+                            $part->service_detail_id = "";
+                            $part->service_detail_name = "";
+                            $part->service_detail_description = "";
+                            $part->selected_service = "";
+                            $part->vendor_id = "";
+                            $part->vendor_name = "";
+                            $part->area = "";
+                            $part->area_uom_id = "";
+                            $part->area_uom_obj = "";
+                            $part->area_uom_unit = "";
+                        }
+
                         $existed_temp = $temp_wbs_material->where('material_id', $material->material->id)->first();
                         $existed_temp->parts_weight += $material->weight;
                         $existed_temp->quantity = ceil($existed_temp->parts_weight / $material->material->weight);
@@ -565,6 +639,7 @@ class BOMController extends Controller
                         $activity->type = "General";
                         $activity->description = $part->description;
                         $activity->wbs_id = $datas->wbs_id;
+
                         if($part->service_id!=""){
                             $activity->service_id = $part->service_id;
                         }
@@ -580,7 +655,7 @@ class BOMController extends Controller
                         if($part->area!=""){
                             $activity->area = $part->area;
                         }
-
+                        
                         $activity->wbs_material_id = $wbsMaterial->id;
                         $activity->user_id = Auth::user()->id;
                         $activity->branch_id = Auth::user()->branch->id;
