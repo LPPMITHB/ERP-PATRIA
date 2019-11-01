@@ -96,9 +96,9 @@
                                 <th style="width: 2px">No</th>
                                 <th style="width: 15%">Deliverables</th>
                                 <th style="width: 15%">Description</th>
-                                <th style="width: 10%">Number</th>
-                                <th style="width: 7%">Start Date</th>
-                                <th style="width: 7%">End Date</th>
+                                <th style="width: 8%">Number</th>
+                                <th style="width: 8%">Start Date</th>
+                                <th style="width: 8%">End Date</th>
                                 <th style="width: 7%">Duration</th>
                                 <th style="width: 30px">Total Weight</th>
                                 <th style="width: 30px">Weight</th>

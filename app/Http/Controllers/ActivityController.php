@@ -15,6 +15,7 @@ use App\Models\Activity;
 use App\Models\ActivityDetail;
 use App\Models\Material;
 use App\Models\Service;
+use App\Models\ServiceDetail;
 use App\Models\Vendor;
 use App\Models\WbsProfile;
 use App\Models\WbsStandard;
@@ -36,10 +37,12 @@ class ActivityController extends Controller
         $wbs = WBS::find($id);
         $project = $wbs->project;
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
+
         if($wbs->weight == null){
             return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
         }else{
-            return view('activity.create', compact('project', 'wbs','menu'));
+            return view('activity.create', compact('project', 'wbs','menu','services'));
         }
 
     }
@@ -51,7 +54,6 @@ class ActivityController extends Controller
         foreach ($materials as $material) {
             $material['selected'] = false;
         }
-        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
         $vendors = Vendor::all();
         $uoms = Uom::all();
         $project = $wbs->project;
@@ -109,6 +111,8 @@ class ActivityController extends Controller
             }
 
             $activity->weight = $data['weight'];
+            $activity->service_id = $data['service_id'];
+            $activity->service_detail_id = $data['service_detail_id'];
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
@@ -593,7 +597,6 @@ class ActivityController extends Controller
 
     public function updateActualActivity(Request $request, $id)
     {
-        // $data = $request->json()->all();
         $dataActivity = json_decode($request->dataConfirmActivity);
         $dataFile = $request->file;
         DB::beginTransaction();
@@ -942,5 +945,15 @@ class ActivityController extends Controller
 
         return response($latestActivity, Response::HTTP_OK);
 
+    }
+
+    public function getServiceStandardAPI($id){
+
+        return response(Service::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
+    }
+
+    public function getServiceDetailStandardAPI($id){
+
+        return response(ServiceDetail::where('id',$id)->first()->jsonSerialize(), Response::HTTP_OK);
     }
 }

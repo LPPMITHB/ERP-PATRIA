@@ -40,10 +40,10 @@
                             <tr>
                                 <th width=5%>No</th>
                                 <th width=20%>WBS</th>
-                                <th width=25%>Description</th>
-                                <th width=23%>Deliverables</th>
+                                <th width=23%>Description</th>
+                                <th width=20%>Deliverables</th>
                                 <th width=10%>Duration</th>
-                                <th width=25%></th>
+                                <th width=30%></th>
                             </tr>
                         </thead>
                         <tbody>
