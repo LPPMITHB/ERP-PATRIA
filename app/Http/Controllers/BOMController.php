@@ -2322,7 +2322,7 @@ class BOMController extends Controller
     private function saveBomDetailRepair($bom, $bom_preps, $rap){
         $pr_id = null;
         foreach($bom_preps as $bom_prep){
-            $bom_prep_model = BomPrep::find(6);
+            $bom_prep_model = BomPrep::find($bom_prep->id);
             if($bom_prep->status != 0){
                 if(count($bom_prep->bom_details) > 0){
                     foreach ($bom_prep->bom_details as $bom_detail) {
