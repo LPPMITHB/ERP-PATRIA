@@ -85,9 +85,20 @@
                             <div v-if="bom.rap != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showRap(bom.rap.id)" class="text-primary"><b>: {{bom.rap.number}}</b></a></div>
                             <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>        
                             
-                            <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
-                            <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
-                            <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
+                            <template v-if="route == '/bom'">
+                                <div class="col-md-5 col-xs-4 no-padding">PR Number</div>
+                                <div v-if="bom.purchase_requisition != null" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
+                            </template>
+                            <template v-else-if="route == '/bom_repair'">
+                                <div class="col-md-5 col-xs-4 no-padding">PR Number(s)</div>
+                                <div v-if="bom.purchase_requisitions.length > 1" class="col-md-7 col-xs-8 no-padding tdEllipsis">
+                                    <button class="btn btn-primary btn-xs" data-toggle="modal" data-target="#show_prs">SHOW PR NUMBERS</button>
+                                </div>
+                                <div v-else-if="bom.purchase_requisitions.length == 1" class="col-md-7 col-xs-8 no-padding tdEllipsis"><a :href="showPr(bom.purchase_requisition.id)" class="text-primary"><b>: {{bom.purchase_requisition.number}}</b></a></div>
+                                </div>
+                                <div v-else class="col-md-7 col-xs-8 no-padding"><b>: -</b></div>     
+                            </template>
 
                         </div>
 
@@ -117,7 +128,7 @@
                                 <tr v-for="(bomDetail,index) in bomDetail">
                                     <td class="p-t-15 p-b-15">{{ index+1 }}</td>
                                     <td>{{ bomDetail.material.code }}</td>
-                                    <td>{{ bomDetail.material.description }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomDetail.material.description)">{{ bomDetail.material.description }}</td>
                                     <td>{{ bomDetail.quantity }}</td>
                                     <td>{{ bomDetail.material.uom.unit }}</td>
                                     <td>{{ bomDetail.source}}</td>
@@ -144,7 +155,7 @@
                                     <template v-if="bomDetail.material_id != null">
                                         <td>Material</td>
                                         <td>{{ bomDetail.material.code }}</td>
-                                        <td>{{ bomDetail.material.description }}</td>
+                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomDetail.material.description)">{{ bomDetail.material.description }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
                                         <td>{{ bomDetail.material.uom.unit }}</td>
                                         <td>{{ bomDetail.source }}</td>
@@ -153,6 +164,53 @@
                             </tbody>
                         </table>
                     </template>
+
+                    <div class="modal fade" id="show_prs">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header text-left">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">PR Numbers</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">                    
+                                        <div class="col-sm-12">
+                                            <table id="details-table" class="table table-bordered tableFixed"
+                                                style="border-collapse:collapse;">
+                                                <thead>
+                                                    <tr>
+                                                        <th width="5%">No</th>
+                                                        <th width="80%">PR Number</th>
+                                                        <th width="15%"></th>
+                                                    </tr>
+                                                </thead>
+                                                <br>
+                                                <tbody>
+                                                    <tr v-for="(data,index) in bom.purchase_requisitions">
+                                                        <td>{{ index + 1 }}</td>
+                                                        <td class="tdEllipsis text-left" data-container="body"
+                                                            >{{data.number}}</td>
+                                                        <td class="text-center">
+                                                            <a target="_blank" :href="showPr(data.id)" class="btn btn-primary btn-xs">
+                                                                SHOW
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-danger" data-dismiss="modal">CLOSE</button>
+                                </div>
+                            </div>
+                            <!-- /.modal-content -->
+                        </div>
+                        <!-- /.modal-dialog -->
+                    </div>
                 </div>
                 @endverbatim
             <div class="overlay">
@@ -224,6 +282,9 @@
         el : '#show-bom',
         data : data,
         methods:{
+            tooltipText: function(text) {
+                return text
+            },
             showRap(id){
                 var url = "";
                 if(this.route == "/bom"){

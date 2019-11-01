@@ -103,7 +103,7 @@
             <div id="production_order">
                 <div class="box-body p-t-0 p-b-5">
                     <h4>Activity</h4>
-                    <table id="activity-table" class="table table-bordered tableFixed">
+                    <table id="activity-table" class="table table-bordered tableFixed showTable">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -111,7 +111,6 @@
                                 <th width="28%">Description</th>
                                 <th width="18%">Planned Start Date</th>
                                 <th width="19%">Planned End Date</th>
-                                <th width="8%"></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -121,16 +120,50 @@
                                 <td class="tdEllipsis">{{ data.description }}</td>
                                 <td class="tdEllipsis">{{ data.planned_start_date }}</td>
                                 <td class="tdEllipsis">{{ data.planned_end_date }}</td>
-                                <td class="tdEllipsis">
-                                    <button class="btn btn-primary btn-xs col-xs-12" @click.prevent="openActDetails(data)">DETAILS</button>
-                                </td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
                 <div class="box-body p-t-0 p-b-5">
-                    <h4>Material</h4>
+                    <h4>WBS Material</h4>
+                    <table id="material-table" class="table table-bordered tableFixed showTable">
+                        <thead>
+                            <tr>
+                                <th width="5%">No</th>
+                                <th width="15%">Number</th>
+                                <th width="20%">Material Description</th>
+                                <th width="20%">Part Description</th>
+                                <th width="15%">Dimensions</th>
+                                <th width="8%">Quantity</th>
+                                <th width="8%">Estimated Quantity</th>
+                                <th width="7%">Source</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template v-if="wbsMaterials.length > 0">
+                                <tr v-for="(data,index) in wbsMaterials">
+                                    <td>{{ index + 1 }}</td>
+                                    <td class="tdEllipsis">{{ data.material.code }}</td>
+                                    <td class="tdEllipsis">{{ data.material.description }}</td>
+                                    <td class="tdEllipsis">{{ data.part_description }}</td>
+                                    <td class="tdEllipsis">{{ data.dimensions_string }}</td>
+                                    <td class="tdEllipsis">{{ data.quantity }}</td>
+                                    <td class="tdEllipsis">{{ data.estimated_quantity }}</td>
+                                    <td class="tdEllipsis">{{ data.source }}</td>
+                                </tr>
+                            </template>
+                            <template v-else>
+                                <tr>
+                                    <td colspan="8" class="text-center"><b>NO BOM DATA</b></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="box-body p-t-0 p-b-5">
+                    <h4>Project's Material</h4>
                     <table id="material-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
@@ -246,105 +279,6 @@
                     </div>
                 </div>
 
-                <div class="modal fade" id="activity_detail">
-                    <div class="modal-dialog modalPredecessor">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">×</span>
-                                </button>
-                                <h4 class="modal-title">Activity Details</h4>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <label for="activity-material-table" class="col-sm-12">Material</label>
-                                    <div class="col-sm-12">
-                                        <table class="table table-bordered showTable tableFixed" id="activity-material-table">
-                                            <thead>
-                                                <tr>
-                                                    <th class="p-l-5" style="width: 3%">No</th>
-                                                    <th style="width: 25%">Material</th>
-                                                    <th style="width: 7%">Length</th>
-                                                    <th style="width: 7%">Width</th>
-                                                    <th style="width: 7%">Height</th>
-                                                    <th style="width: 5%">UOM</th>
-                                                    <th style="width: 7%">Quantity</th>
-                                                    <th style="width: 6%">Source</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr v-for="(data,index) in activityDetailMaterials">
-                                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.material.code +' - '+  data.material.description)">{{ data.material.code }} - {{ data.material.description }}</td>
-                                                    <template v-if="data.weight > 0">
-                                                        <td v-if="data.length != ''" class="p-b-15 p-t-15">{{ (data.length+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                        <td v-else class="p-b-15 p-t-15">-</td>
-                                                        <td v-if="data.width != ''" class="p-b-15 p-t-15">{{ (data.width+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                        <td v-else class="p-b-15 p-t-15">-</td>
-                                                        <td v-if="data.height != ''" class="p-b-15 p-t-15">{{ (data.height+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                        <td v-else class="p-b-15 p-t-15">-</td>
-                                                        <td v-if="data.unit != ''" class="p-b-15 p-t-15">{{ data.dimension_uom.unit }}</td>
-                                                        <td v-else class="p-b-15 p-t-15">-</td>
-                                                        <td class="p-b-15 p-t-15">{{ (Math.ceil(data.weight / data.material.weight)+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",") }}</td>
-                                                    </template>
-                                                    <template v-else>
-                                                        <td class="p-b-15 p-t-15">-</td>
-                                                        <td class="p-b-15 p-t-15">-</td>
-                                                        <td class="p-b-15 p-t-15">-</td>
-                                                        <td class="p-b-15 p-t-15">-</td>
-                                                        <td class="p-b-15 p-t-15">{{ data.quantity_material }}</td>
-                                                    </template>
-                                                    <td class="p-b-15 p-t-15">{{ data.source }}</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-
-                                    <label for="activity-material-table" class="col-sm-12">Service</label>
-
-                                    <template v-if="activityDetailService != ''">
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <div for="length" class="col-sm-3">Service Name</div>
-                
-                                                <div class="col-sm-9">
-                                                    : <b>{{activityDetailService.service_detail.service.name}} - {{activityDetailService.service_detail.name}}</b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                                
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <div for="length" class="col-sm-3">Area</div>
-            
-                                                <div class="col-sm-9">
-                                                    : <b>{{(activityDetailService.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} {{activityDetailService.area_uom.unit}}</b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-sm-12">
-                                            <div class="row">
-                                                <div for="length" class="col-sm-3">Vendor</div>
-            
-                                                <div class="col-sm-9">
-                                                    : <b>{{activityDetailService.vendor.name}}</b>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </template>
-
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" data-dismiss="modal" aria-label="Close">CLOSE</button>
-                            </div>
-                        </div>
-                        <!-- /.modal-content -->
-                    </div>
-                    <!-- /.modal-dialog -->
-                </div>
-
                 <div class="box-body p-t-0 p-b-10">
                     <div class="col-md-12 p-t-10 p-r-0">
                         <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="createOk">RELEASE</button>
@@ -379,6 +313,8 @@
 
     var data = {
         route : @json($route),
+        wbsMaterials : @json($wbsMaterials),
+        modelPrO : @json($modelPrO),
         modelPrOD : @json($modelPrOD),
         materials : @json($materials),
         services : @json($services),
@@ -504,6 +440,7 @@
                 this.submittedForm.materials = this.materials;
                 this.submittedForm.modelPrOD = this.modelPrOD;
                 this.submittedForm.resources = this.resources;
+                this.submittedForm.modelPrO = this.modelPrO;
 
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');

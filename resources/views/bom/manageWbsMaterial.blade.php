@@ -56,54 +56,6 @@
                                 <div class="col-xs-8 no-padding tdEllipsis" v-tooltip:top="(wbs.deliverables)"><b>: {{wbs.deliverables}}</b></div>
                             </div>
 
-                            <div class="col-xs-12 col-md-3">                                
-                                <div class="col-xs-4 no-padding">Service</div>
-                                <selectize id="service" name="service_id" v-model="submittedForm.service_id" :settings="service_settings">
-                                    <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
-                                        {{ service.name }} [General]</option>
-                                    <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">{{ service.code }} -
-                                        {{ service.name }} [{{service.ship.type}}]</option>
-                                </selectize>
-
-                                <div class="col-xs-4 no-padding">Service Detail</div>        
-                                <div class="row">
-                                    <div v-show="submittedForm.service_id == ''" class="col-sm-12">
-                                        <selectize disabled :settings="empty_service_settings">
-                                        </selectize>
-                                    </div>
-                                    <div v-show="submittedForm.selected_service.length == 0 && submittedForm.service_id != ''" class="col-sm-12">
-                                        <selectize disabled :settings="empty_service_detail_settings">
-                                        </selectize>
-                                    </div>
-                                    <div class="col-sm-12" v-show="submittedForm.selected_service.length > 0">
-                                        <selectize id="service_detail" name="service_detail_id" v-model="submittedForm.service_detail_id"
-                                            :settings="service_detail_settings">
-                                            <option v-for="(service_detail, index) in submittedForm.selected_service" :value="service_detail.id">
-                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 col-md-3">
-                                <div class="col-xs-4 no-padding">Vendor</div>
-                                <selectize id="vendor" name="vendor_id" v-model="submittedForm.vendor_id" :settings="vendor_settings">
-                                    <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
-                                </selectize>
-                                
-                                <div class="col-xs-4 no-padding">Quantity/Area</div>
-                                <div class="row">
-                                    <div class="col-sm-8">
-                                        <input autocomplete="off" type="text" name="area" class="form-control" id="area" placeholder="Quantity/Area"
-                                            v-model="submittedForm.area">
-                                    </div>
-                                
-                                    <div class="col-sm-4 p-l-2">
-                                        <selectize id="uom" name="area_uom_id" v-model="submittedForm.area_uom_id" :settings="area_uom_settings">
-                                            <option v-for="(uom, index) in uoms" :value="uom.id">{{ uom.unit }}</option>
-                                        </selectize>
-                                    </div>
-                                </div>
-                            </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-5">
                             <table id="material-standard-table" class="table table-bordered tableFixed m-b-0">
@@ -122,10 +74,10 @@
                                 <tbody>
                                     <tr v-for="(material, index) in materialTable">
                                         <td>{{ index + 1 }}</td>
-                                        <td :id="material.material_code" class="tdEllipsis" data-container="body"
-                                            v-tooltip:top="tooltipCode(material.material_code)">{{ material.material_code}}</td>
-                                        <td :id="material.material_name" class="tdEllipsis" data-container="body"
-                                            v-tooltip:top="tooltipDesc(material.material_name)">{{ material.material_name }}</td>
+                                        <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(material.material_code)">{{ material.material_code}}</td>
+                                        <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(material.material_name)">{{ material.material_name }}</td>
                                         <td>{{ material.quantity }}</td>
                                         <td>{{ material.unit }}</td>
                                         <td>{{ material.source }}</td>
@@ -276,11 +228,15 @@
                                                         <thead>
                                                             <tr>
                                                                 <th width="5%">No</th>
-                                                                <th width="35%">Parts Description</th>
+                                                                <th width="20%">Parts Description</th>
                                                                 <th width="18%">Dimensions</th>
-                                                                <th width="10%">Quantity</th>
-                                                                <th width="10%">Weight</th>
-                                                                <th width="7%"></th>
+                                                                <th width="7%">Quantity</th>
+                                                                <th width="7%">Weight</th>
+                                                                <th width="13%">Service</th>
+                                                                <th width="13%">Service Detail</th>
+                                                                <th width="10%">Vendor</th>
+                                                                <th width="10%">Quantity/Area</th>
+                                                                <th width="10%"></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -288,44 +244,93 @@
                                                                 <td>{{ index_part + 1 }}</td>
                                                                 <template v-if="part.edit">
                                                                     <td class="no-padding">
-                                                                        <input v-model="part.description" type="text"
-                                                                            class="form-control width100" placeholder="Part Description">
+                                                                        <input v-model="part.description" type="text" class="form-control width100"
+                                                                            placeholder="Part Description">
                                                                     </td>
                                                                     <td class="row no-padding">
                                                                         <template v-if="editInput.selected_material.dimension_type_id == 1">
-                                                                            <div v-for="dimension in part.dimensions_value_obj"
-                                                                                class="col-sm-4 no-padding">
-                                                                                <input v-model="dimension.value_input" type="text"
-                                                                                    class="form-control width100" :placeholder="dimension.name">
+                                                                            <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
+                                                                                <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                    :placeholder="dimension.name">
                                                                             </div>
                                                                         </template>
                                                                     </td>
                                                                     <td class="no-padding">
-                                                                        <input v-model="part.quantity" type="text" class="form-control width100"
-                                                                            placeholder="Quantity">
+                                                                        <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                     </td>
                                                                     <td class="no-padding">
-                                                                        <input disabled v-model="part.weight" type="text"
-                                                                            class="form-control width100" placeholder="Weight">
+                                                                        <input disabled v-model="part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <selectize class="selectizeFull" id="service" v-model="part.service_id" :settings="service_settings">
+                                                                            <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                                {{ service.code }} - {{ service.name }} [General]</option>
+                                                                            <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                                {{ service.code }} - {{ service.name }}</option>
+                                                                        </selectize>
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <div v-show="part.service_id == ''">
+                                                                            <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                            </selectize>
+                                                                        </div>
+                                                                        <div v-show="part.selected_service.length == 0 && part.service_id != ''">
+                                                                            <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                            </selectize>
+                                                                        </div>
+                                                                        <div v-if="part.selected_service.length > 0">
+                                                                            <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                                v-model="part.service_detail_id" :settings="service_detail_settings">
+                                                                                <option v-for="(service_detail, index) in part.selected_service" :value="service_detail.id">
+                                                                                    {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                            </selectize>
+                                                                        </div>
+                                                                    </td>
+                                                                    <td class="no-padding">
+                                                                        <selectize class="selectizeFull" id="vendor" name="vendor_id" v-model="part.vendor_id"
+                                                                            :settings="vendor_settings">
+                                                                            <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                        </selectize>
+                                                                    </td>
+                                                                    <td class="row no-padding">
+                                                                        <div class="col-sm-7 no-padding">
+                                                                            <input autocomplete="off" type="text" name="area" class="form-control width100" placeholder="Quantity/Area"
+                                                                                v-model="part.area">
+                                                                        </div>
+                                                                        <div class="col-sm-5 no-padding">
+                                                                            <input disabled autocomplete="off" type="text" name="area" class="form-control width100"
+                                                                                v-model="part.area_uom_unit">
+                                                                        </div>
                                                                     </td>
                                                                     <td class="p-l-5" align="center">
-                                                                        <a class="btn btn-primary btn-xs" :disabled="savePartEditOk"
-                                                                            @click="updateRowPartEdit(index_part)">
+                                                                        <a class="btn btn-primary btn-xs" :disabled="savePartEditOk" @click="updateRowPartEdit(index_part)">
                                                                             SAVE
                                                                         </a>
                                                                     </td>
                                                                 </template>
                                                                 <template v-else>
-                                                                    <td>{{ part.description }}</td>
-                                                                    <td>{{ part.dimension_string }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">
+                                                                        {{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">
+                                                                        {{ part.service_code }} - {{ part.service_name }}</td>
+                                                                    <td class="tdEllipsis" data-container="body"
+                                                                        v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)"
+                                                                        v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                        {{ part.service_detail_description }}</td>
+                                                                    <td v-else>-</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.vendor_name)"
+                                                                        v-if="part.vendor_name != ''">{{part.vendor_name}}</td>
+                                                                    <td v-else>-</td>
+                                                                    <td v-if="part.area_uom_unit != ''">{{part.area}} {{part.area_uom_unit}}</td>
+                                                                    <td v-else>-</td>
                                                                     <td class="p-l-5" align="center">
                                                                         <a class="btn btn-primary btn-xs" @click="editRowPartEdit(index_part)">
                                                                             EDIT
                                                                         </a>
-                                                                        <a href="#" @click="removeRowPartEdit(part,index_part)"
-                                                                            class="btn btn-danger btn-xs">
+                                                                        <a href="#" @click="removeRowPartEdit(part,index_part)" class="btn btn-danger btn-xs">
                                                                             <div class="btn-group">DELETE</div>
                                                                         </a>
                                                                     </td>
@@ -336,16 +341,15 @@
                                                             <tr>
                                                                 <td>{{newIndexPartEdit}}</td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="input_part_edit.description" type="text"
-                                                                        class="form-control width100" placeholder="Part Description">
+                                                                    <input v-model="input_part_edit.description" type="text" class="form-control width100"
+                                                                        placeholder="Part Description">
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="editInput.selected_material != null">
                                                                         <template v-if="editInput.selected_material.dimension_type_id == 1">
-                                                                            <div v-for="dimension in input_part_edit.dimensions_value"
-                                                                                class="col-sm-4 no-padding">
-                                                                                <input v-model="dimension.value_input" type="text"
-                                                                                    class="form-control width100" :placeholder="dimension.name">
+                                                                            <div v-for="dimension in input_part_edit.dimensions_value" class="col-sm-4 no-padding">
+                                                                                <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                    :placeholder="dimension.name">
                                                                             </div>
                                                                         </template>
                                                                     </template>
@@ -354,16 +358,57 @@
                                                                     </template>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="input_part_edit.quantity" type="text"
-                                                                        class="form-control width100" placeholder="Quantity">
+                                                                    <input v-model="input_part_edit.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="input_part_edit.weight" type="text"
-                                                                        class="form-control width100" placeholder="Weight">
+                                                                    <input disabled v-model="input_part_edit.weight" type="text" class="form-control width100"
+                                                                        placeholder="Weight">
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="service" v-model="input_part_edit.service_id"
+                                                                        :settings="service_settings">
+                                                                        <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} - {{ service.name }} [General]</option>
+                                                                        <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} - {{ service.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div v-show="input_part_edit.service_id == ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="input_part_edit.selected_service.length == 0 && input_part_edit.service_id != ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="input_part_edit.selected_service.length > 0">
+                                                                        <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                            v-model="input_part_edit.service_detail_id" :settings="service_detail_settings">
+                                                                            <option v-for="(service_detail, index) in input_part_edit.selected_service"
+                                                                                :value="service_detail.id">
+                                                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                        </selectize>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="vendor" name="vendor_id" v-model="input_part_edit.vendor_id" :settings="vendor_settings">
+                                                                        <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="row no-padding">
+                                                                    <div class="col-sm-7 no-padding">
+                                                                        <input autocomplete="off" type="text" name="area" class="form-control width100" placeholder="Quantity/Area"
+                                                                            v-model="input_part_edit.area">
+                                                                    </div>
+                                                                    <div class="col-sm-5 no-padding">
+                                                                        <input disabled autocomplete="off" type="text" name="area" class="form-control width100"
+                                                                            v-model="input_part_edit.area_uom_unit">
+                                                                    </div>
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
-                                                                    <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk"
-                                                                        class="btn btn-primary btn-xs" href="#">
+                                                                    <a @click.prevent="submitToTablePartsEdit()" :disabled="inputPartEditOk" class="btn btn-primary btn-xs"
+                                                                        href="#">
                                                                         <div class="btn-group">
                                                                             ADD
                                                                         </div>
@@ -426,15 +471,19 @@
                                         <div class="row">
                                             <div class="col-sm-12">
                                                 <label for="type" class="control-label">Parts</label>
-                                                <table id="part-table" class="table table-bordered tableFixed tablePagingVue">
+                                                <table id="part-table" class="table table-bordered tableFixed">
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="35%">Parts Description</th>
+                                                            <th width="20%">Parts Description</th>
                                                             <th width="18%">Dimensions</th>
-                                                            <th width="10%">Quantity</th>
-                                                            <th width="10%">Weight</th>
-                                                            <th width="7%"></th>
+                                                            <th width="7%">Quantity</th>
+                                                            <th width="7%">Weight</th>
+                                                            <th width="13%">Service</th>
+                                                            <th width="13%">Service Detail</th>
+                                                            <th width="10%">Vendor</th>
+                                                            <th width="10%">Quantity/Area</th>
+                                                            <th width="10%"></th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -447,39 +496,91 @@
                                                                 </td>
                                                                 <td class="row no-padding">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in part.dimensions_value_obj"
-                                                                            class="col-sm-4 no-padding">
-                                                                            <input v-model="dimension.value_input" type="text"
-                                                                                class="form-control width100" :placeholder="dimension.name">
+                                                                        <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
+                                                                            <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                :placeholder="dimension.name">
                                                                         </div>
                                                                     </template>
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input v-model="part.quantity" type="text" class="form-control width100"
-                                                                        placeholder="Quantity">
+                                                                    <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                                 </td>
                                                                 <td class="no-padding">
-                                                                    <input disabled v-model="part.weight" type="text"
-                                                                        class="form-control width100" placeholder="Weight">
+                                                                    <input disabled v-model="part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="service_edit" v-model="part.service_id"
+                                                                        :settings="service_settings">
+                                                                        <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} -
+                                                                            {{ service.name }} [General]</option>
+                                                                        <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                            {{ service.code }} -
+                                                                            {{ service.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <div v-show="part.service_id == ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="part.selected_service.length == 0 && part.service_id != ''">
+                                                                        <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                        </selectize>
+                                                                    </div>
+                                                                    <div v-show="part.selected_service.length > 0">
+                                                                        <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                            v-model="part.service_detail_id" :settings="service_detail_settings">
+                                                                            <option v-for="(service_detail, index) in part.selected_service" :value="service_detail.id">
+                                                                                {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                        </selectize>
+                                                                    </div>
+                                                                </td>
+                                                                <td class="no-padding">
+                                                                    <selectize class="selectizeFull" id="vendor" name="vendor_id" v-model="part.vendor_id"
+                                                                        :settings="vendor_settings">
+                                                                        <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                    </selectize>
+                                                                </td>
+                                                               <td class="row no-padding">
+                                                                    <div class="col-sm-7 no-padding">
+                                                                        <input autocomplete="off" type="text" name="area" class="form-control width100" placeholder="Quantity/Area"
+                                                                            v-model="part.area">
+                                                                    </div>
+                                                                    <div class="col-sm-5 no-padding">
+                                                                        <input disabled autocomplete="off" type="text" name="area" class="form-control width100"
+                                                                            v-model="part.area_uom_unit">
+                                                                    </div>
                                                                 </td>
                                                                 <td class="p-l-5" align="center">
-                                                                    <a class="btn btn-primary btn-xs" :disabled="savePartOk"
-                                                                        @click="updateRowPart(index_part)">
+                                                                    <a class="btn btn-primary btn-xs" :disabled="savePartOk" @click="updateRowPart(index_part)">
                                                                         SAVE
                                                                     </a>
                                                                 </td>
                                                             </template>
                                                             <template v-else>
-                                                                <td>{{ part.description }}</td>
-                                                                <td>{{ part.dimension_string }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.dimension_string)">{{ part.dimension_string }}</td>
                                                                 <td>{{ part.quantity }}</td>
                                                                 <td>{{ part.weight }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                    {{ part.service_detail_description }}</td>
+                                                                <td v-else>-</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                            v-tooltip:top="tooltipText(part.vendor_name)" v-if="part.vendor_name != ''">{{part.vendor_name}}</td>
+                                                                <td v-else>-</td>                                                                
+                                                                <td v-if="part.area_uom_unit != ''">{{part.area}} {{part.area_uom_unit}}</td>
+                                                                <td v-else>-</td>                                                                
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="editRowPart(index_part)">
                                                                         EDIT
                                                                     </a>
-                                                                    <a href="#" @click="removeRowPart(part,index_part)"
-                                                                        class="btn btn-danger btn-xs">
+                                                                    <a href="#" @click="removeRowPart(part,index_part)" class="btn btn-danger btn-xs">
                                                                         <div class="btn-group">DELETE</div>
                                                                     </a>
                                                                 </td>
@@ -490,16 +591,15 @@
                                                         <tr>
                                                             <td>{{newIndexPart}}</td>
                                                             <td class="no-padding">
-                                                                <input v-model="input_part.description" type="text"
-                                                                    class="form-control width100" placeholder="Part Description">
+                                                                <input v-model="input_part.description" type="text" class="form-control width100"
+                                                                    placeholder="Part Description">
                                                             </td>
                                                             <td class="row no-padding">
                                                                 <template v-if="input.selected_material != null">
                                                                     <template v-if="input.selected_material.dimension_type_id == 1">
-                                                                        <div v-for="dimension in input_part.dimensions_value"
-                                                                            class="col-sm-4 no-padding">
-                                                                            <input v-model="dimension.value_input" type="text"
-                                                                                class="form-control width100" :placeholder="dimension.name">
+                                                                        <div v-for="dimension in input_part.dimensions_value" class="col-sm-4 no-padding">
+                                                                            <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                                :placeholder="dimension.name">
                                                                         </div>
                                                                     </template>
                                                                 </template>
@@ -508,16 +608,53 @@
                                                                 </template>
                                                             </td>
                                                             <td class="no-padding">
-                                                                <input v-model="input_part.quantity" type="text" class="form-control width100"
-                                                                    placeholder="Quantity">
+                                                                <input v-model="input_part.quantity" type="text" class="form-control width100" placeholder="Quantity">
                                                             </td>
                                                             <td class="no-padding">
-                                                                <input disabled v-model="input_part.weight" type="text"
-                                                                    class="form-control width100" placeholder="Weight">
+                                                                <input disabled v-model="input_part.weight" type="text" class="form-control width100" placeholder="Weight">
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <selectize class="selectizeFull" id="service" v-model="input_part.service_id" :settings="service_settings">
+                                                                    <option v-if="service.ship_id == null" v-for="(service, index) in services" :value="service.id">
+                                                                        {{ service.code }} - {{ service.name }} [General]</option>
+                                                                    <option v-if="service.ship_id != null" v-for="(service, index) in services" :value="service.id">
+                                                                        {{ service.code }} - {{ service.name }}</option>
+                                                                </selectize>
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <div v-show="input_part.service_id == ''">
+                                                                    <selectize class="selectizeFull width100" disabled :settings="empty_service_settings">
+                                                                    </selectize>
+                                                                </div>
+                                                                <div v-show="input_part.selected_service.length == 0 && input_part.service_id != ''">
+                                                                    <selectize class="selectizeFull width100" disabled :settings="empty_service_detail_settings">
+                                                                    </selectize>
+                                                                </div>
+                                                                <div v-show="input_part.selected_service.length > 0">
+                                                                    <selectize class="selectizeFull width100" id="service_detail" name="service_detail_id"
+                                                                        v-model="input_part.service_detail_id" :settings="service_detail_settings">
+                                                                        <option v-for="(service_detail, index) in input_part.selected_service" :value="service_detail.id">
+                                                                            {{ service_detail.name }} - {{ service_detail.description }}</option>
+                                                                    </selectize>
+                                                                </div>
+                                                            </td>
+                                                            <td class="no-padding">
+                                                                <selectize class="selectizeFull" id="vendor" name="vendor_id" v-model="input_part.vendor_id" :settings="vendor_settings">
+                                                                    <option v-for="(vendor, index) in vendors" :value="vendor.id">{{ vendor.code }} - {{ vendor.name }}</option>
+                                                                </selectize>
+                                                            </td>
+                                                            <td class="row no-padding">
+                                                                <div class="col-sm-7 no-padding">
+                                                                    <input autocomplete="off" type="text" name="area" class="form-control width100" placeholder="Quantity/Area"
+                                                                        v-model="input_part.area">
+                                                                </div>
+                                                                <div class="col-sm-5 no-padding">
+                                                                    <input disabled autocomplete="off" type="text" name="area" class="form-control width100"
+                                                                        v-model="input_part.area_uom_unit">
+                                                                </div>
                                                             </td>
                                                             <td class="p-l-5" align="center">
-                                                                <a @click.prevent="submitToTableParts()" :disabled="inputPartOk"
-                                                                    class="btn btn-primary btn-xs" href="#">
+                                                                <a @click.prevent="submitToTableParts()" :disabled="inputPartOk" class="btn btn-primary btn-xs" href="#">
                                                                     <div class="btn-group">
                                                                         ADD
                                                                     </div>
@@ -582,19 +719,36 @@
                                                     <thead>
                                                         <tr>
                                                             <th width="5%">No</th>
-                                                            <th width="35%">Parts Description</th>
+                                                            <th width="25%">Parts Description</th>
                                                             <th width="18%">Dimensions</th>
-                                                            <th width="10%">Quantity</th>
-                                                            <th width="10%">Weight</th>
+                                                            <th width="7%">Quantity</th>
+                                                            <th width="7%">Weight</th>
+                                                            <th width="13%">Service</th>
+                                                            <th width="13%">Service Detail</th>
+                                                            <th width="10%">Vendor</th>
+                                                            <th width="10%">Quantity/Area</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="(part, index_part) in view.part_details">
-                                                            <td>{{ index_part + 1 }}</td>
-                                                            <td>{{ part.description }}</td>
-                                                            <td>{{ part.dimension_string }}</td>
+                                                            <td>{{ index_part+ 1 }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">
+                                                                {{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">
+                                                                {{ part.service_code }} - {{ part.service_name }}</td>
+                                                            <td class="tdEllipsis" data-container="body"
+                                                                v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)"
+                                                                v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                {{ part.service_detail_description }}</td>
+                                                            <td v-else>-</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.vendor_name)"
+                                                                v-if="part.vendor_name != ''">{{part.vendor_name}}</td>
+                                                            <td v-else>-</td>
+                                                            <td v-if="part.area_uom_unit != ''">{{part.area}} {{part.area_uom_unit}}</td>
+                                                            <td v-else>-</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -635,6 +789,32 @@
                 $('div.overlay').hide();
             }
         });
+
+        $('#part-table-view').DataTable({
+            'paging' : true,
+            'lengthChange': false,
+            'ordering' : true,
+            'info' : true,
+            'autoWidth' : false,
+            'bFilter' : true,
+            'initComplete': function(){
+            $('div.overlay').hide();
+            document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
+            }
+        });
+
+        $('#part-table').DataTable({
+            'paging' : true,
+            'lengthChange': false,
+            'ordering' : true,
+            'info' : true,
+            'autoWidth' : false,
+            'bFilter' : true,
+            'initComplete': function(){
+            $('div.overlay').hide();
+            document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+            }
+        });
     });
 
     var data = {
@@ -654,15 +834,6 @@
             edit : @json($edit),
             deleted_id : [],
             deleted_part_id : [],
-
-            service_id: "",
-            service_detail_id: "",
-            selected_service : "",
-            vendor_id : "",
-            area :"",
-            area_uom_id : "",
-
-            selected_service_detail : @json($wbs->service_detail_id),
         },
         input : {
             selected_material : null,
@@ -685,6 +856,20 @@
             quantity : "",
             volume : "",
             weight : "",
+            service_id : "",
+            service_code : "",
+            service_name : "",
+            service_detail_id : "",
+            service_detail_name : "",
+            service_detail_description : "",
+            selected_service : "",
+            selected_service_detail : "",
+            vendor_id : "",
+            vendor_name : "",
+            area :"",
+            area_uom_id : "",
+            area_uom_obj : "",
+            area_uom_unit : "",
 
             dimension_string : null,
             edit : false,
@@ -695,6 +880,20 @@
             quantity : "",
             volume : "",
             weight : "",
+            service_id : "",
+            service_code : "",
+            service_name : "",
+            service_detail_id : "",
+            service_detail_name : "",
+            service_detail_description : "",
+            selected_service : "",
+            selected_service_detail : "",
+            vendor_id : "",
+            vendor_name : "",
+            area :"",
+            area_uom_id : "",
+            area_uom_obj : "",
+            area_uom_unit : "",
 
             dimension_string : null,
             edit : false,
@@ -761,13 +960,7 @@
         },
     }
 
-    Vue.directive('tooltip', function(el, binding){
-        $(el).tooltip({
-            title: binding.value,
-            placement: binding.arg,
-            trigger: 'hover'             
-        })
-    })
+    
 
     var vm = new Vue({
         el : '#bom',
@@ -862,30 +1055,8 @@
             },
         },
         methods: {
-            refreshTooltip: function(code,description){
-                Vue.directive('tooltip', function(el, binding){
-                    if(el.id == code){
-                        $(el).tooltip('destroy');
-                        $(el).tooltip({
-                            title: el.id,
-                            placement: binding.arg,
-                            trigger: 'hover'             
-                        })
-                    }else if(el.id == description){
-                        $(el).tooltip('destroy');
-                        $(el).tooltip({
-                            title: el.id,
-                            placement: binding.arg,
-                            trigger: 'hover'             
-                        })
-                    }
-                })
-            },
-            tooltipCode: function(code) {
-                return code;
-            },
-            tooltipDesc: function(desc) {
-                return desc;
+            tooltipText: function(text){
+                return text;
             },
             getNewMaterials(jsonMaterialId){
                 window.axios.get('/api/getMaterialsBOM/'+jsonMaterialId).then(({ data }) => {
@@ -918,6 +1089,7 @@
             },
             openViewParts(material_standard){
                 this.view = material_standard;
+                $('#part-table-view').DataTable().destroy();
                 this.$nextTick(function() {
                     $('#part-table-view').DataTable({
                         'paging' : true,
@@ -999,11 +1171,10 @@
                     this.newIndex = this.materialTable.length + 1;  
 
                     // refresh tooltip
-                    let datas = [];
-                    datas.push(this.input.material_code,this.input.material_name);
-                    datas = JSON.stringify(datas);
-                    datas = JSON.parse(datas);
-                    this.refreshTooltip(datas[0],datas[1]);
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
 
                     this.input.material_id = "";
                     this.input.material_code = "";
@@ -1118,6 +1289,7 @@
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
                         material.source = this.editInput.source;
+
                         if(this.editInput.dimensions_value != null){
                             material.dimensions_value = JSON.stringify(this.editInput.dimensions_value);
                         }
@@ -1140,11 +1312,6 @@
                             var jsonMaterialId = JSON.stringify(this.material_id);
                             this.getNewMaterials(jsonMaterialId);
 
-                            // refresh tooltip
-                            elemCode.id = data.code;
-                            elemDesc.id = data.description;
-                            this.refreshTooltip(elemCode.id,elemDesc.id);
-
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -1156,6 +1323,10 @@
                             $('div.overlay').hide();
                         })
                     }
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 });
             },
             submitToTableParts(){
@@ -1185,6 +1356,11 @@
                     this.input_part.quantity = "";
                     this.input_part.weight = "";
                     this.input_part.volume = "";
+                    this.input_part.service_id = "";
+                    this.input_part.service_detail_id = "";
+                    this.input_part.vendor_id = "";
+                    this.input_part.area = "";
+                    this.input_part.area_uom = "";
 
                     $('#part-table').DataTable().destroy();
                     this.$nextTick(function() {
@@ -1213,6 +1389,29 @@
             editRowPart(index){
                 this.input.part_details[index].edit = true;
                 this.active_edit_part_index = index;
+
+                $('#part-table').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#part-table').DataTable({
+                        'paging' : true,
+                        'lengthChange': false,
+                        'ordering' : true,
+                        'info' : true,
+                        'autoWidth' : false,
+                        'bFilter' : true,
+                        'initComplete': function(){
+                        $('div.overlay').hide();
+                        document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+                        }
+                    });
+                })
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).attr('data-original-title', binding.value)
+                    .tooltip('fixTitle');
+                })
+
+
+               
                 // var temp_selected_data = JSON.stringify(this.input.part_details[index]);
                 // temp_selected_data = JSON.parse(temp_selected_data); 
                 
@@ -1270,6 +1469,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1323,6 +1526,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1335,6 +1542,26 @@
             editRowPartEdit(index){
                 this.editInput.part_details[index].edit = true;
                 this.active_edit_part_edit_index = index;
+
+                $('#part-table-edit').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#part-table-edit').DataTable({
+                        'paging' : true,
+                        'lengthChange': false,
+                        'ordering' : true,
+                        'info' : true,
+                        'autoWidth' : false,
+                        'bFilter' : true,
+                        'initComplete': function(){
+                        $('div.overlay').hide();
+                        document.getElementById("part-table-edit_wrapper").setAttribute("style", "margin-top: -30px");
+                        }
+                    });
+                })
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).attr('data-original-title', binding.value)
+                    .tooltip('fixTitle');
+                })
             },
             removeRowPartEdit(part, index){
                 if(part.id != undefined){
@@ -1388,6 +1615,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1399,6 +1630,150 @@
             },
         },
         watch: {
+            'input_part.area': function(newValue){
+                var is_decimal = this.input_part.area_uom_obj.is_decimal;
+                if(is_decimal == 0){
+                    this.input_part.area = (this.input_part.area+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input_part.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input_part.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input_part.area = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
+            },
+            'input_part_edit.area': function(newValue){
+                var is_decimal = this.input_part_edit.area_uom_obj.is_decimal;
+                if(is_decimal == 0){
+                    this.input_part_edit.area = (this.input_part_edit.area+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                }else{
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
+                    if(decimal[1] != undefined){
+                        var maxDecimal = 2;
+                        if((decimal[1]+"").length > maxDecimal){
+                            this.input_part_edit.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                        }else{
+                            this.input_part_edit.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                        }
+                    }else{
+                        this.input_part_edit.area = (newValue+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    }
+                }
+            },
+            'input_part.service_id': function(newValue){
+                if(newValue != ""){
+                    this.input_part.service_detail_id = "";
+                    this.services.forEach(service => {
+                        if(service.id == newValue){
+                            this.input_part.selected_service = service.service_details;
+                            this.input_part.service_code = service.code;
+                            this.input_part.service_name = service.name;
+
+                            if(this.input_part.selected_service_detail != null){
+                                this.input_part.service_detail_id = this.input_part.selected_service_detail;
+                                this.input_part.selected_service_detail = null;
+                            }
+                        }
+                    });
+                }else{
+                    this.input_part.service_code = "";
+                    this.input_part.service_name = "";
+
+                    this.input_part.selected_service = "";
+                    this.input_part.service_detail_id = "";
+                }
+
+            },
+
+            'input_part.vendor_id': function(newValue){
+                if(newValue != ""){
+                        this.vendors.forEach(vendor => {
+                        if(vendor.id == newValue){
+                            this.input_part.vendor_name = vendor.name;
+                        }
+                    });
+                }else{
+                    this.input_part.vendor_id = "";
+                    this.input_part.vendor_name = "";
+                }
+
+            },
+
+            'input_part.service_detail_id': function(newValue){
+                if(newValue != ""){
+                    this.input_part.selected_service.forEach(service_detail => {
+                        if(service_detail.id == newValue){
+                            this.input_part.area_uom_id = service_detail.uom_id;
+                            this.input_part.area_uom_obj = service_detail.uom;
+                            this.input_part.area_uom_unit = service_detail.uom.unit;
+
+                            this.input_part.service_detail_code = service_detail.code;
+                            this.input_part.service_detail_name = service_detail.name;
+                        }
+                    });
+                }else{
+                    this.input_part.area_uom_id = "";
+                    this.input_part.area_uom_obj = "";
+                    this.input_part.area_uom_unit = "";
+
+                    this.input_part.service_detail_code = "";
+                    this.input_part.service_detail_name = "";
+                }
+            },
+
+            'input_part_edit.service_id': function(newValue){
+                if(newValue != ""){
+                    this.input_part_edit.service_detail_id = "";
+                    this.services.forEach(service => {
+                        if(service.id == newValue){
+                            this.input_part_edit.selected_service = service.service_details;
+                            this.input_part_edit.service_code = service.code;
+                            this.input_part_edit.service_name = service.name;
+
+                            if(this.input_part_edit.selected_service_detail != null){
+                                this.input_part_edit.service_detail_id = this.input_part_edit.selected_service_detail;
+                                this.input_part_edit.selected_service_detail = null;
+                            }
+                        }
+                    });
+                }else{
+                    this.input_part_edit.service_code = "";
+                    this.input_part_edit.service_name = "";
+
+                    this.input_part_edit.selected_service = "";
+                    this.input_part_edit.service_detail_id = "";
+                }
+
+            },
+
+            'input_part_edit.service_detail_id': function(newValue){
+                if(newValue != ""){
+                    this.input_part_edit.selected_service.forEach(service_detail => {
+                        if(service_detail.id == newValue){
+                            this.input_part_edit.area_uom_id = service_detail.uom_id;
+                            this.input_part_edit.area_uom_obj = service_detail.uom;
+                            this.input_part_edit.area_uom_unit = service_detail.uom.unit;
+
+                            this.input_part_edit.service_detail_code = service_detail.code;
+                            this.input_part_edit.service_detail_name = service_detail.name;
+                        }
+                    });
+                }else{
+                    this.input_part_edit.area_uom_id = "";
+                    this.input_part_edit.area_uom_obj = "";
+                    this.input_part_edit.area_uom_unit = "";
+
+                    this.input_part_edit.service_detail_code = "";
+                    this.input_part_edit.service_detail_name = "";
+                }
+            },
+
             'input.material_id': function(newValue){
                 this.input.quantity = "";
                 this.input_part.dimensions_value = null;
@@ -1590,6 +1965,76 @@
                             }
 
                             part_detail.quantity = (part_detail.quantity+"").replace(/[^0-9]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                        
+                            if(part_detail.service_id != ""){
+                                // part_detail.service_detail_id = "";
+                                this.services.forEach(service => {
+                                    if(service.id == part_detail.service_id){
+                                        part_detail.selected_service = service.service_details;
+                                        part_detail.service_code = service.code;
+                                        part_detail.service_name = service.name;
+
+                                        if(part_detail.selected_service_detail != null){
+                                            part_detail.service_detail_id = part_detail.selected_service_detail;
+                                            part_detail.selected_service_detail = null;
+                                        }
+                                    }
+                                });
+                            }else{
+                                part_detail.service_code = "";
+                                part_detail.service_name = "";
+
+                                part_detail.selected_service = "";
+                                part_detail.service_detail_id = "";
+                            }
+
+                            if(part_detail.service_detail_id != ""){
+                                part_detail.selected_service.forEach(service_detail => {
+                                    if(service_detail.id == part_detail.service_detail_id){
+                                        part_detail.area_uom_id = service_detail.uom_id;
+                                        part_detail.area_uom_obj = service_detail.uom;
+                                        part_detail.area_uom_unit = service_detail.uom.unit;
+
+                                        part_detail.service_detail_code = service_detail.code;
+                                        part_detail.service_detail_name = service_detail.name;
+                                    }
+                                });
+                            }else{
+                                part_detail.area_uom_id = "";
+                                part_detail.area_uom_obj = "";
+                                part_detail.area_uom_unit = "";
+
+                                part_detail.service_detail_code = "";
+                                part_detail.service_detail_name = "";
+                            }
+
+                            if(part_detail.vendor_id != ""){
+                                    this.vendors.forEach(vendor => {
+                                    if(vendor.id == part_detail.vendor_id){
+                                        part_detail.vendor_name = vendor.name;
+                                    }
+                                });
+                            }else{
+                                part_detail.vendor_id = "";
+                                part_detail.vendor_name = "";
+                            }
+
+                            var is_decimal = part_detail.area_uom_obj.is_decimal;
+                            if(is_decimal == 0){
+                                part_detail.area = (part_detail.area+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                            }else{
+                                var decimal = (part_detail.area+"").replace(/,/g, '').split('.');
+                                if(decimal[1] != undefined){
+                                    var maxDecimal = 2;
+                                    if((decimal[1]+"").length > maxDecimal){
+                                        part_detail.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").substring(0,maxDecimal).replace(/\D/g, "");
+                                    }else{
+                                        part_detail.area = (decimal[0]+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")+"."+(decimal[1]+"").replace(/\D/g, "");
+                                    }
+                                }else{
+                                    part_detail.area = (part_detail.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                }
+                            }
                         });
                         this.editInput.parts_weight = (parseFloat(temp_total_weight).toFixed(2));
                     }else{
@@ -1824,7 +2269,7 @@
                 if(is_decimal == 0){
                     this.input.quantity = (this.input.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 }else{
-                    var decimal = newValue.replace(/,/g, '').split('.');
+                    var decimal = (newValue+"").replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
                         var maxDecimal = 2;
                         if((decimal[1]+"").length > maxDecimal){
@@ -1855,37 +2300,44 @@
                     }
                 }  
             },
-            'submittedForm.service_id': function(newValue) {
-                if(newValue != ""){
-                    this.submittedForm.service_detail_id = "";
-                    this.services.forEach(service => {
-                        if(service.id == newValue){
-                            this.submittedForm.selected_service = service.service_details;
+            // 'submittedForm.service_id': function(newValue) {
+            //     if(newValue != ""){
+            //         this.submittedForm.service_detail_id = "";
+            //         this.services.forEach(service => {
+            //             if(service.id == newValue){
+            //                 this.submittedForm.selected_service = service.service_details;
 
-                            if(this.submittedForm.selected_service_detail != null){
-                                this.submittedForm.service_detail_id = this.submittedForm.selected_service_detail;
-                                this.submittedForm.selected_service_detail = null;
-                            }
-                        }
-                    });
-                }else{
-                    this.submittedForm.selected_service = "";
-                    this.submittedForm.service_detail_id = "";
-                }
-            },
-            'submittedForm.service_detail_id' : function(newValue){
-                if(newValue != ""){
-                    this.submittedForm.selected_service.forEach(service_detail => {
-                        if(service_detail.id == newValue){
-                            this.submittedForm.area_uom_id = service_detail.uom_id;
-                        }
-                    });
-                }else{
-                    this.submittedForm.area_uom_id = "";
-                }
-            },
+            //                 if(this.submittedForm.selected_service_detail != null){
+            //                     this.submittedForm.service_detail_id = this.submittedForm.selected_service_detail;
+            //                     this.submittedForm.selected_service_detail = null;
+            //                 }
+            //             }
+            //         });
+            //     }else{
+            //         this.submittedForm.selected_service = "";
+            //         this.submittedForm.service_detail_id = "";
+            //     }
+            // },
+            // 'submittedForm.service_detail_id' : function(newValue){
+            //     if(newValue != ""){
+            //         this.submittedForm.selected_service.forEach(service_detail => {
+            //             if(service_detail.id == newValue){
+            //                 this.submittedForm.area_uom_id = service_detail.uom_id;
+            //             }
+            //         });
+            //     }else{
+            //         this.submittedForm.area_uom_id = "";
+            //     }
+            // },
         },
         created: function() {
+            Vue.directive('tooltip', function(el, binding){
+                $(el).tooltip({
+                    title: binding.value,
+                    placement: binding.arg,
+                    trigger: 'hover'             
+                })
+            })
             this.newIndex = this.materialTable.length + 1;
             this.newIndexPart = this.input.part_details.length + 1;
             var jsonMaterialId = JSON.stringify(this.material_id);

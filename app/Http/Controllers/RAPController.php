@@ -193,7 +193,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code,
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number,
+                        "text" => $wbs->number .' - '.$wbs->description.'<b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap.showMaterialEvaluation', $wbs->id)],
                     ]);
@@ -201,7 +201,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code,
                         "parent" => $project->number,
-                        "text" => $wbs->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap.showMaterialEvaluation', $wbs->id)],
                     ]);
@@ -213,7 +213,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code,
                         "parent" => $wbs->wbs->code,
-                        "text" => $wbs->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation', $wbs->id)],
                     ]);
@@ -221,7 +221,7 @@ class RAPController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code,
                         "parent" => $project->number,
-                        "text" => $wbs->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => route('rap_repair.showMaterialEvaluation', $wbs->id)],
                     ]);
