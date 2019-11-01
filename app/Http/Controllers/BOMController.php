@@ -408,19 +408,45 @@ class BOMController extends Controller
                             $vendor_ref = Vendor::find($activity_ref->vendor_id);
 
                             $part->service_id = $activity_ref->service_id;
-                            $part->service_code = $service_ref->code;
-                            $part->service_name = $service_ref->name;
-                            $part->service_detail_id = $activity_ref->service_detail_id;
-                            $part->service_detail_name = $service_detail_ref->name;
-                            $part->service_detail_description = $service_detail_ref->description;
-                            $part->selected_service = $service_ref;
-                            $part->selected_service_detail = $service_detail_ref->id;
-                            $part->vendor_id = $vendor_ref->id;
-                            $part->vendor_name = $vendor_ref->name;
-                            $part->area = $activity_ref->area;
-                            $part->area_uom_id = $service_detail_ref->uom_id;
-                            $part->area_uom_obj = $service_detail_ref->uom;
-                            $part->area_uom_unit = $service_detail_ref->uom->unit;
+                            if($service_ref != null){
+                                $part->service_code = $service_ref->code;
+                                $part->service_name = $service_ref->name;
+                            }else{
+                                $part->service_code = "";
+                                $part->service_name = "";
+                            }
+
+                            if($service_detail_ref != null){
+                                $part->service_detail_id = $activity_ref->service_detail_id;
+                                $part->service_detail_name = $service_detail_ref->name;
+                                $part->service_detail_description = $service_detail_ref->description;
+                                $part->selected_service_detail = $service_detail_ref->id;
+                                $part->area_uom_id = $service_detail_ref->uom_id;
+                                $part->area_uom_obj = $service_detail_ref->uom;
+                                $part->area_uom_unit = $service_detail_ref->uom->unit;
+                            }else{
+                                $part->service_detail_id = "";
+                                $part->service_detail_name = "";
+                                $part->service_detail_description = "";
+                                $part->selected_service_detail = "";
+                                $part->area_uom_id = "";
+                                $part->area_uom_obj = "";
+                                $part->area_uom_unit = "";
+                            }
+                            $part->selected_service = "";
+                            if($vendor_ref != null){
+                                $part->vendor_id = $vendor_ref->id;
+                                $part->vendor_name = $vendor_ref->name;
+                            }else{
+                                $part->vendor_id = "";
+                                $part->vendor_name = "";
+                            }
+
+                            if($activity_ref->area != null){
+                                $part->area = $activity_ref->area;
+                            }else{
+                                $part->area = "";
+                            }
                         }else{
                             $part->service_id = "";
                             $part->service_code = "";
@@ -463,18 +489,45 @@ class BOMController extends Controller
                             $vendor_ref = Vendor::find($activity_ref->vendor_id);
 
                             $part->service_id = $activity_ref->service_id;
-                            $part->service_code = $service_ref->code;
-                            $part->service_name = $service_ref->name;
-                            $part->service_detail_id = $activity_ref->service_detail_id;
-                            $part->service_detail_name = $service_detail_ref->name;
-                            $part->service_detail_description = $service_detail_ref->description;
-                            $part->selected_service_detail = $service_detail_ref->id;
-                            $part->vendor_id = $vendor_ref->id;
-                            $part->vendor_name = $vendor_ref->name;
-                            $part->area = $activity_ref->area;
-                            $part->area_uom_id = $service_detail_ref->uom_id;
-                            $part->area_uom_obj = $service_detail_ref->uom;
-                            $part->area_uom_unit = $service_detail_ref->uom->unit;
+                            if($service_ref != null){
+                                $part->service_code = $service_ref->code;
+                                $part->service_name = $service_ref->name;
+                            }else{
+                                $part->service_code = "";
+                                $part->service_name = "";
+                            }
+
+                            if($service_detail_ref != null){
+                                $part->service_detail_id = $activity_ref->service_detail_id;
+                                $part->service_detail_name = $service_detail_ref->name;
+                                $part->service_detail_description = $service_detail_ref->description;
+                                $part->selected_service_detail = $service_detail_ref->id;
+                                $part->area_uom_id = $service_detail_ref->uom_id;
+                                $part->area_uom_obj = $service_detail_ref->uom;
+                                $part->area_uom_unit = $service_detail_ref->uom->unit;
+                            }else{
+                                $part->service_detail_id = "";
+                                $part->service_detail_name = "";
+                                $part->service_detail_description = "";
+                                $part->selected_service_detail = "";
+                                $part->area_uom_id = "";
+                                $part->area_uom_obj = "";
+                                $part->area_uom_unit = "";
+                            }
+                            $part->selected_service = "";
+                            if($vendor_ref != null){
+                                $part->vendor_id = $vendor_ref->id;
+                                $part->vendor_name = $vendor_ref->name;
+                            }else{
+                                $part->vendor_id = "";
+                                $part->vendor_name = "";
+                            }
+
+                            if($activity_ref->area != null){
+                                $part->area = $activity_ref->area;
+                            }else{
+                                $part->area = "";
+                            }
                         }else{
                             $part->service_id = "";
                             $part->service_code = "";
@@ -984,15 +1037,14 @@ class BOMController extends Controller
         $datas = json_decode($request->datas);
         DB::beginTransaction();
         try {
-            $wbs = WBS::find($datas->wbs_id);
-            if($datas->service_detail_id != ""){
-                $wbs->service_detail_id = $datas->service_detail_id;
-                $wbs->vendor_id = $datas->vendor_id;
-                $wbs->area = $datas->area;
-                $wbs->area_uom_id = $datas->area_uom_id;
-            }
-            $wbs->update();
-
+            // $wbs = WBS::find($datas->wbs_id);
+            // if($datas->service_detail_id != ""){
+            //     $wbs->service_detail_id = $datas->service_detail_id;
+            //     $wbs->vendor_id = $datas->vendor_id;
+            //     $wbs->area = $datas->area;
+            //     $wbs->area_uom_id = $datas->area_uom_id;
+            // }
+            // $wbs->update();
             foreach ($datas->deleted_id as $id) {
                 $wbsMaterials = WbsMaterial::where('material_id',$id)->where('wbs_id',$datas->wbs_id)->get();
                 foreach ($wbsMaterials as $wbsMaterial) {
@@ -1004,7 +1056,14 @@ class BOMController extends Controller
                         $bomPrep->quantity -= $wbsMaterial->quantity;
                         $bomPrep->update();
                     }
-                    $wbsMaterial->delete();
+                    if($wbsMaterial->activity->progress > 0){
+                        return redirect()->route('bom_repair.manageWbsMaterial', ['wbs_id' => $datas->wbs_id])->with('error', 'Parts cannot be deleted, it\'s activity already have progress');
+                    }else{
+                        $activity_ref = $wbsMaterial->activity;
+                        dd($activity_ref);
+                        $wbsMaterial->delete();
+                        $activity_ref->delete();
+                    }
                 }
             }
             foreach ($datas->deleted_part_id as $id) {
@@ -1015,8 +1074,16 @@ class BOMController extends Controller
                     $bomPrep->weight -= $wbsMaterial->weight;
                     $bomPrep->update();
                 }
-                $wbsMaterial->delete();
+
+                if($wbsMaterial->activity->progress > 0){
+                    return redirect()->route('bom_repair.manageWbsMaterial', ['wbs_id' => $datas->wbs_id])->with('error', 'Parts cannot be deleted, it\'s activity already have progress');
+                }else{
+                    $activity_ref = $wbsMaterial->activity;
+                    $activity_ref->delete();
+                    $wbsMaterial->delete();
+                }
             }
+                                       
             foreach($datas->materials as $material){
                 if(count($material->part_details) > 0){
                     foreach ($material->part_details as $part) {
@@ -1042,10 +1109,35 @@ class BOMController extends Controller
                             }
                             $wbsMaterial->source = $material->source;
                             $wbsMaterial->update();
+                            
 
                             if(count($wbsMaterial->getChanges())>0){
                                 $there_are_changes = true;
                             }
+
+                            $activity = $wbsMaterial->activity;
+                            $activity->name = $part->description;
+                            $activity->description = $part->description;
+
+                            if($part->service_id!=""){
+                                $activity->service_id = $part->service_id;
+                            }
+
+                            if($part->service_detail_id!=""){
+                                $activity->service_detail_id = $part->service_detail_id;
+                            }
+
+                            if($part->vendor_id!=""){
+                                $activity->vendor_id = $part->vendor_id;
+                            }
+
+                            if($part->area!=""){
+                                $activity->area = $part->area;
+                            }
+                            
+                            $activity->user_id = Auth::user()->id;
+                            $activity->branch_id = Auth::user()->branch->id;
+                            $activity->save();
                         }else{
                             $wbsMaterial = new WbsMaterial;
                             $wbsMaterial->wbs_id = $datas->wbs_id;
@@ -1065,6 +1157,34 @@ class BOMController extends Controller
                             $wbsMaterial->save();
 
                             $there_are_changes = true;
+
+                            $activity = new Activity;
+                            $activity->code = self::generateActivityCode($datas->wbs_id);
+                            $activity->name = $part->description;
+                            $activity->type = "General";
+                            $activity->description = $part->description;
+                            $activity->wbs_id = $datas->wbs_id;
+
+                            if($part->service_id!=""){
+                                $activity->service_id = $part->service_id;
+                            }
+
+                            if($part->service_detail_id!=""){
+                                $activity->service_detail_id = $part->service_detail_id;
+                            }
+
+                            if($part->vendor_id!=""){
+                                $activity->vendor_id = $part->vendor_id;
+                            }
+
+                            if($part->area!=""){
+                                $activity->area = $part->area;
+                            }
+                            
+                            $activity->wbs_material_id = $wbsMaterial->id;
+                            $activity->user_id = Auth::user()->id;
+                            $activity->branch_id = Auth::user()->branch->id;
+                            $activity->save();
                         }
 
                         $old_weight = $wbsMaterial->weight;
@@ -2202,7 +2322,7 @@ class BOMController extends Controller
     private function saveBomDetailRepair($bom, $bom_preps, $rap){
         $pr_id = null;
         foreach($bom_preps as $bom_prep){
-            $bom_prep_model = BomPrep::find(6);
+            $bom_prep_model = BomPrep::find($bom_prep->id);
             if($bom_prep->status != 0){
                 if(count($bom_prep->bom_details) > 0){
                     foreach ($bom_prep->bom_details as $bom_detail) {
