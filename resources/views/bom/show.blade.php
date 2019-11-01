@@ -128,7 +128,7 @@
                                 <tr v-for="(bomDetail,index) in bomDetail">
                                     <td class="p-t-15 p-b-15">{{ index+1 }}</td>
                                     <td>{{ bomDetail.material.code }}</td>
-                                    <td>{{ bomDetail.material.description }}</td>
+                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomDetail.material.description)">{{ bomDetail.material.description }}</td>
                                     <td>{{ bomDetail.quantity }}</td>
                                     <td>{{ bomDetail.material.uom.unit }}</td>
                                     <td>{{ bomDetail.source}}</td>
@@ -155,7 +155,7 @@
                                     <template v-if="bomDetail.material_id != null">
                                         <td>Material</td>
                                         <td>{{ bomDetail.material.code }}</td>
-                                        <td>{{ bomDetail.material.description }}</td>
+                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(bomDetail.material.description)">{{ bomDetail.material.description }}</td>
                                         <td>{{ bomDetail.quantity }}</td>
                                         <td>{{ bomDetail.material.uom.unit }}</td>
                                         <td>{{ bomDetail.source }}</td>
@@ -282,6 +282,9 @@
         el : '#show-bom',
         data : data,
         methods:{
+            tooltipText: function(text) {
+                return text
+            },
             showRap(id){
                 var url = "";
                 if(this.route == "/bom"){
