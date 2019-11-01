@@ -1707,7 +1707,7 @@ Route::name('production_order_repair.')->prefix('production_order_repair')->grou
 
     Route::get('/confirmPrO/{id}', 'ProductionOrderController@confirmPrO')->name('confirmPrO')->middleware('can:confirm-production-order-repair');
 
-    Route::get('/confirm/{id}', 'ProductionOrderController@confirmRepair')->name('confirm')->middleware('can:confirm-production-order-repair');
+    Route::get('/confirm/{id}', 'ProductionOrderController@confirm')->name('confirm')->middleware('can:confirm-production-order-repair');
 
     Route::patch('/storeConfirm', 'ProductionOrderController@storeConfirmRepair')->name('storeConfirm')->middleware('can:confirm-production-order-repair');
 

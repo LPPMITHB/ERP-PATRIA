@@ -18,11 +18,8 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->unsignedInteger('production_order_id');
             $table->unsignedInteger('production_order_detail_id')->nullable();
             $table->unsignedInteger('material_id')->nullable();
-            $table->float('length', 15, 2)->nullable();
-            $table->float('width', 15, 2)->nullable();
-            $table->float('height', 15, 2)->nullable();
+            $table->longText('dimensions_value')->nullable();
             $table->float('weight', 15, 2)->nullable();
-            $table->unsignedInteger('dimension_uom_id')->nullable();
             $table->string('source')->nullable();
             $table->unsignedInteger('resource_id')->nullable();
             $table->unsignedInteger('resource_detail_id')->nullable();
@@ -47,7 +44,6 @@ class CreateTrxProductionOrderDetailTable extends Migration
             $table->foreign('trx_resource_id')->references('id')->on('trx_resource');
             $table->foreign('service_id')->references('id')->on('mst_service');
             $table->foreign('performance_uom_id')->references('id')->on('mst_uom');
-            $table->foreign('dimension_uom_id')->references('id')->on('mst_uom');
         });
     }
 

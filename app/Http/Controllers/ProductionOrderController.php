@@ -423,8 +423,31 @@ class ProductionOrderController extends Controller
         $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->get();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $wbs = WBS::findOrFail($modelPrO->wbs_id);
-
-        $activities = Activity::where('wbs_id',$modelPrO->wbs_id)->with('activityDetails.material','activityDetails.dimensionUom','activityDetails.areaUom','activityDetails.serviceDetail.service','activityDetails.vendor')->get();
+        $wbsMaterials = WbsMaterial::where('wbs_id',$wbs->id)->with('material')->get();
+        foreach ($wbsMaterials as $wbsMaterial) {
+            if($wbsMaterial->dimensions_value != null){
+                $estimated_quantity = ceil($wbsMaterial->weight / $wbsMaterial->material->weight);
+                $temp_dimensions_value = json_decode($wbsMaterial->dimensions_value);
+    
+                $dimensions_string = "";
+                foreach ($temp_dimensions_value as $dimension) {
+                    $dimension->uom = Uom::find($dimension->uom_id);
+                    if($dimensions_string == ""){
+                        $dimensions_string .= $dimension->value_input." ".$dimension->uom->unit;
+                    }else{
+                        $dimensions_string .= " x ".$dimension->value_input." ".$dimension->uom->unit;
+                    }   
+                }
+                $wbsMaterial->estimated_quantity = $estimated_quantity;
+                $wbsMaterial->dimensions_string = $dimensions_string;
+                $wbsMaterial->dimensions_value_obj = $temp_dimensions_value;
+            }else{
+                $wbsMaterial->estimated_quantity = $wbsMaterial->quantity;
+                $wbsMaterial->part_description = "-";
+                $wbsMaterial->dimensions_string = "-";
+            }
+        }
+        $activities = $wbs->activities;
         $materials = Collection::make();
         $services = Collection::make();
         $resources = Collection::make();
@@ -441,7 +464,9 @@ class ProductionOrderController extends Controller
                             "source" => $prOD->source,
                         ],
                         "quantity" => $prOD->quantity,
+                        "quantityFloat" => $prOD->quantity,
                         "material_id" => $prOD->material_id,
+                        "material_type" => $prOD->material_type,
                         'allocated' => "",
                     ]);
                 }elseif($prOD->resource_id != ""){
@@ -453,11 +478,15 @@ class ProductionOrderController extends Controller
                                 "code" => $prOD->resource->code,
                                 "name" => $prOD->resource->name,
                                 "description" => $prOD->resource->description,
+                                "category_id" => $prOD->category_id,
+                            ],
+                            "resource_detail" =>[
+                                "code" => ($prOD->resourceDetail) ? $prOD->resourceDetail->code : null,
+                                "id" => ($prOD->resourceDetail) ? $prOD->resourceDetail->id : null,
                             ],
                             "quantity" => $prOD->quantity,
                             "resource_id" => $prOD->resource_id,
-                            "trx_resource_id" => '',
-                            "trx_resource_code" => null,
+                            "trx_resource_id" => $prOD->trx_resource_id,
                             "status" => null,
                         ]);
                     } 
@@ -465,7 +494,7 @@ class ProductionOrderController extends Controller
             }
         }
 
-        return view('production_order.releaseRepair', compact('modelPrO','project','modelPrOD','materials','services','resources','route','wbs','activities'));
+        return view('production_order.releaseRepair', compact('modelPrO','wbsMaterials','project','modelPrOD','materials','services','resources','route','wbs','activities'));
     }
 
     public function confirm(Request $request,$id){
@@ -486,46 +515,48 @@ class ProductionOrderController extends Controller
             $material['selected'] = false;
         }
         foreach($modelPrOD as $prod){
-            $modelMRD = MaterialRequisitionDetail::where('wbs_id',$prod->productionOrder->wbs_id)->select('material_requisition_id')->get();
-            $modelGI = GoodsIssue::whereIn('material_requisition_id',$modelMRD)->get();
-            $actual = 0;
-            $return = 0;
-            foreach($modelGI as $gi){
-                foreach($gi->goodsIssueDetails as $gid){
-                    if($gid->material_id == $prod->material_id){
-                        $actual += $gid->quantity;
+            if($prod->material_id != null){
+                $modelMRD = MaterialRequisitionDetail::where('wbs_id',$prod->productionOrder->wbs_id)->select('material_requisition_id')->get();
+                $modelGI = GoodsIssue::whereIn('material_requisition_id',$modelMRD)->get();
+                $actual = 0;
+                $return = 0;
+                foreach($modelGI as $gi){
+                    foreach($gi->goodsIssueDetails as $gid){
+                        if($gid->material_id == $prod->material_id){
+                            $actual += $gid->quantity;
+                        }
                     }
                 }
-            }
-            $prod->actual = $actual;
-            // $materials->push([
-            //    "material_code" => $prod->material->code,
-            //    "material_description" => $prod->material->description,
-            //    "quantity" => $prod->quantity,
-            //    "actual" => $actual - $return,
-            //    "remaining" => $prod->quantity - $actual + $return,
-            //    "unit" => $prod->material->uom->unit
-            // ]);
-
-            foreach ($prod->productionOrderReturns as $returned_material) {
-                if($returned_material->type == "Other BOM"){
-                    $bom_ref = $returned_material->bomDetail->bom;
-                    $returned_material['bom_code'] = $bom_ref->code;
-                    $returned_material['bom_description'] = $bom_ref->description;
-                    $returned_material['sloc_name'] = "-";
-                    $returned_material['received_date'] = "-";
-
-                }elseif($returned_material->type == "Storage"){
-                    $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
-                    $grd_ref = $returned_material->goodsReceiptDetail;
-                    $returned_material['received_date'] = date("d-m-Y", strtotime($grd_ref->received_date));;
+                $prod->actual = $actual;
+                // $materials->push([
+                //    "material_code" => $prod->material->code,
+                //    "material_description" => $prod->material->description,
+                //    "quantity" => $prod->quantity,
+                //    "actual" => $actual - $return,
+                //    "remaining" => $prod->quantity - $actual + $return,
+                //    "unit" => $prod->material->uom->unit
+                // ]);
+    
+                foreach ($prod->productionOrderReturns as $returned_material) {
+                    if($returned_material->type == "Other BOM"){
+                        $bom_ref = $returned_material->bomDetail->bom;
+                        $returned_material['bom_code'] = $bom_ref->code;
+                        $returned_material['bom_description'] = $bom_ref->description;
+                        $returned_material['sloc_name'] = "-";
+                        $returned_material['received_date'] = "-";
+    
+                    }elseif($returned_material->type == "Storage"){
+                        $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
+                        $grd_ref = $returned_material->goodsReceiptDetail;
+                        $returned_material['received_date'] = date("d-m-Y", strtotime($grd_ref->received_date));;
+                    }
+                    $returned_material['material_name'] = $returned_material->material->code." - ".$returned_material->material->description;
+                    $returned_material['new'] = false;
                 }
-                $returned_material['material_name'] = $returned_material->material->code." - ".$returned_material->material->description;
-                $returned_material['new'] = false;
+    
+                $prod['returned_materials'] = $prod->productionOrderReturns;
+                $prod['deleted_returned_material'] = [];
             }
-
-            $prod['returned_materials'] = $prod->productionOrderReturns;
-            $prod['deleted_returned_material'] = [];
         }
         return view('production_order.confirm', compact('boms','modelSloc','modelPrO','project','modelPrOD','route','uoms','POU','materials'));
     }
@@ -533,35 +564,53 @@ class ProductionOrderController extends Controller
     public function confirmRepair(Request $request,$id){
         $route = $request->route()->getPrefix();
         $modelPrO = ProductionOrder::where('id',$id)->with('project')->first();
-        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','material.dimensionUom','resource','service','productionOrder','resourceDetail','dimensionUom','productionOrderDetails.dimensionUom')->get();
+        $modelPrOD = ProductionOrderDetail::where('production_order_id',$modelPrO->id)->with('material','material.uom','resource','service','productionOrder','resourceDetail')->get();
         $project = Project::where('id',$modelPrO->project_id)->with('customer','ship')->first();
         $uoms = Uom::all()->jsonSerialize();
         $densities = Configuration::get('density'); 
         $modelSloc = StorageLocation::all();
         
-        foreach ($modelPrOD as $prod_order_detail) {
-            foreach ($densities as $density) {
-                if($density->id == $prod_order_detail->material->density_id){
-                    $prod_order_detail->material['density'] = $density;
+        $wbs = WBS::find($modelPrO->wbs_id);
+        $boms = Bom::where('project_id', $wbs->project_id)->with('wbs')->get();
+        
+        foreach ($modelPrOD as $prod) {
+            if($prod->material_id != null){
+                if($prod->material->dimension_type_id == 1){
+                    foreach ($densities as $density) {
+                        if($density->id == $prod->material->density_id){
+                            $prod->material['density'] = $density;
+                        }
+                    }
+
+                    $prod->dimensions_value = $material->dimensions_value;
+                    $prod->dimensions_value_obj = json_decode($prod->dimensions_value);
+                    foreach ($prod->dimensions_value_obj as $dimension) {
+                        $dimension->uom = Uom::find($dimension->uom_id);
+                    }
                 }
-            }
-
-            $prod_order_detail['lengths'] = "";
-            $prod_order_detail['width'] = "";
-            $prod_order_detail['height'] = "";
-            $prod_order_detail['weight'] = "";
-            $prod_order_detail['editable'] = true;
-
-            $temp_returned_material = [];
-            foreach ($prod_order_detail->goodsReceiptDetails as $returned_material) {
-                $returned_material['material_name'] = $returned_material->material->code." - ".$returned_material->material->description;
-                $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
-            }
-            $prod_order_detail['returned_materials'] = $prod_order_detail->goodsReceiptDetails;
-            $prod_order_detail['deleted_returned_material'] = [];
-
-            foreach ($prod_order_detail->productionOrderDetails as $prod) {
-                $prod['lengths'] = $prod['length'];
+    
+                $prod['weight'] = "";
+                $prod['editable'] = true;
+    
+                foreach ($prod->productionOrderReturns as $returned_material) {
+                    if($returned_material->type == "Other BOM"){
+                        $bom_ref = $returned_material->bomDetail->bom;
+                        $returned_material['bom_code'] = $bom_ref->code;
+                        $returned_material['bom_description'] = $bom_ref->description;
+                        $returned_material['sloc_name'] = "-";
+                        $returned_material['received_date'] = "-";
+    
+                    }elseif($returned_material->type == "Storage"){
+                        $returned_material['sloc_name'] = $returned_material->storageLocation->code." - ".$returned_material->storageLocation->description;
+                        $grd_ref = $returned_material->goodsReceiptDetail;
+                        $returned_material['received_date'] = date("d-m-Y", strtotime($grd_ref->received_date));;
+                    }
+                    $returned_material['material_name'] = $returned_material->material->code." - ".$returned_material->material->description;
+                    $returned_material['new'] = false;
+                }
+    
+                $prod['returned_materials'] = $prod->productionOrderReturns;
+                $prod['deleted_returned_material'] = [];
             }
         }
         $materials = Material::all();
@@ -750,12 +799,16 @@ class ProductionOrderController extends Controller
                     }
                 }
             }else{
-                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This Project doesn't have BOM");
+                $modelBOMD = [];
+                return view('production_order.createPrORepair', compact('modelBOMD','wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+                // return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This Project doesn't have BOM");
             }
             if($modelBOM != null){
                 return view('production_order.createPrORepair', compact('modelBOMD','wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
             }else{                
-                return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This Project doesn't have BOM");
+                $modelBOMD = [];
+                return view('production_order.createPrORepair', compact('modelBOMD','wbs','project','materials','resources','services','modelBOM','modelRD','route','modelActivities'));
+                // return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This Project doesn't have BOM");
             }
         }else{
             return redirect()->route('production_order_repair.selectWBS',$wbs->project_id)->with('error', "This WBS doesn't have Activities");
@@ -772,6 +825,7 @@ class ProductionOrderController extends Controller
     {
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
+
         $arrData = $datas->datas;
         $po_number = $this->generatePrONumber();
 
@@ -803,7 +857,6 @@ class ProductionOrderController extends Controller
                             $PrOD->material_id = $material->material_id;
                             $PrOD->quantity = $material->quantity;
                             $PrOD->source = $material->source;
-                            $PrOD->dimension_uom_id = $bom_prep->activityDetails[0]->dimension_uom_id;
                             $PrOD->save();
                         }
                     }
@@ -886,7 +939,7 @@ class ProductionOrderController extends Controller
             if($route == "/production_order"){
                 return redirect()->route('production_order.create',$datas->wbs_id)->with('error', $e->getMessage());
             }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.create',$datas->project_id)->with('error', $e->getMessage());
+                return redirect()->route('production_order_repair.create',$datas->wbs_id)->with('error', $e->getMessage());
             }
         }
     }

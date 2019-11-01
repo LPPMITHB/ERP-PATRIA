@@ -116,8 +116,10 @@ class ActivityController extends Controller
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
-            $activity->save();
-
+            if($activity->wbs->project->business_unit_id == 2){
+                $activity->service_id = $data['service_id'];
+                $activity->service_detail_id = $data['service_detail_id'];
+            }
             // if($activity->wbs->project->business_unit_id == 2){
             //     $project_id = $activity->wbs->project_id;
             //     if(count($data['dataMaterial']) > 0 || $data['service_id'] != null){
@@ -226,6 +228,7 @@ class ActivityController extends Controller
             //         }
             //     }
             // }
+            $activity->save();
             DB::commit();
             return response(["response"=>"Success to create new activity"],Response::HTTP_OK);
         } catch (\Exception $e) {
@@ -294,7 +297,10 @@ class ActivityController extends Controller
                 $activity->predecessor = null;
             }
 
-            $project_id = $activity->wbs->project_id;
+            if($activity->wbs->project->business_unit_id == 2){
+                $activity->service_id = $data['service_id'];
+                $activity->service_detail_id = $data['service_detail_id'];
+            }
             // if(isset($data['deletedActDetail'])){
             //     if(count($data['deletedActDetail'])>0){
             //         foreach ($data['deletedActDetail'] as $act_detail_id) {
