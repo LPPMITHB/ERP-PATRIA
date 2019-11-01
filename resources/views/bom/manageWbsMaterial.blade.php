@@ -309,16 +309,23 @@
                                                                     </td>
                                                                 </template>
                                                                 <template v-else>
-                                                                    <td >{{ part.description }}</td>
-                                                                    <td>{{ part.dimension_string }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">
+                                                                        {{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
-                                                                    <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                                    <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">
+                                                                        {{ part.service_code }} - {{ part.service_name }}</td>
+                                                                    <td class="tdEllipsis" data-container="body"
+                                                                        v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)"
+                                                                        v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
                                                                         {{ part.service_detail_description }}</td>
                                                                     <td v-else>-</td>
-                                                                    <td>{{part.vendor_name}}</td>
-                                                                    <td>{{part.area}} {{part.area_uom_unit}}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.vendor_name)"
+                                                                        v-if="part.vendor_name != ''">{{part.vendor_name}}</td>
+                                                                    <td v-else>-</td>
+                                                                    <td v-if="part.area_uom_unit != ''">{{part.area}} {{part.area_uom_unit}}</td>
+                                                                    <td v-else>-</td>
                                                                     <td class="p-l-5" align="center">
                                                                         <a class="btn btn-primary btn-xs" @click="editRowPartEdit(index_part)">
                                                                             EDIT
@@ -724,17 +731,24 @@
                                                     </thead>
                                                     <tbody>
                                                         <tr v-for="(part, index_part) in view.part_details">
-                                                            <td>{{ index_part + 1 }}</td>
-                                                            <td>{{ part.description }}</td>
-                                                            <td>{{ part.dimension_string }}</td>
+                                                            <td>{{ index_part+ 1 }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">
+                                                                {{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
-                                                            <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                            <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">
+                                                                {{ part.service_code }} - {{ part.service_name }}</td>
+                                                            <td class="tdEllipsis" data-container="body"
+                                                                v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)"
+                                                                v-if="part.service_detail_id != ''">{{ part.service_detail_name }} -
                                                                 {{ part.service_detail_description }}</td>
                                                             <td v-else>-</td>
-                                                            <td>{{part.vendor_name}}</td>
-                                                            <td>{{part.area}} {{part.area_uom_unit}}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.vendor_name)"
+                                                                v-if="part.vendor_name != ''">{{part.vendor_name}}</td>
+                                                            <td v-else>-</td>
+                                                            <td v-if="part.area_uom_unit != ''">{{part.area}} {{part.area_uom_unit}}</td>
+                                                            <td v-else>-</td>
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -946,13 +960,7 @@
         },
     }
 
-    Vue.directive('tooltip', function(el, binding){
-        $(el).tooltip({
-            title: binding.value,
-            placement: binding.arg,
-            trigger: 'hover'             
-        })
-    })
+    
 
     var vm = new Vue({
         el : '#bom',
@@ -1281,6 +1289,7 @@
                         material.material_id = new_material_id;
                         material.wbs_id = this.editInput.wbs_id;
                         material.source = this.editInput.source;
+
                         if(this.editInput.dimensions_value != null){
                             material.dimensions_value = JSON.stringify(this.editInput.dimensions_value);
                         }
@@ -1303,11 +1312,6 @@
                             var jsonMaterialId = JSON.stringify(this.material_id);
                             this.getNewMaterials(jsonMaterialId);
 
-                            Vue.directive('tooltip', function(el, binding){
-                                $(el).attr('data-original-title', binding.value)
-                                .tooltip('fixTitle');
-                            })
-
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -1319,6 +1323,10 @@
                             $('div.overlay').hide();
                         })
                     }
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 });
             },
             submitToTableParts(){
@@ -1396,11 +1404,10 @@
                         document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
                         }
                     });
-
-                    Vue.directive('tooltip', function(el, binding){
-                            $(el).attr('data-original-title', binding.value)
-                            .tooltip('fixTitle');
-                    })
+                })
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).attr('data-original-title', binding.value)
+                    .tooltip('fixTitle');
                 })
 
 
@@ -1462,6 +1469,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1515,6 +1526,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1542,11 +1557,10 @@
                         document.getElementById("part-table-edit_wrapper").setAttribute("style", "margin-top: -30px");
                         }
                     });
-
-                    Vue.directive('tooltip', function(el, binding){
-                            $(el).attr('data-original-title', binding.value)
-                            .tooltip('fixTitle');
-                    })
+                })
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).attr('data-original-title', binding.value)
+                    .tooltip('fixTitle');
                 })
             },
             removeRowPartEdit(part, index){
@@ -1600,6 +1614,10 @@
                             document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
                             }
                         });
+                    })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
                     })
                 }else{
                     iziToast.warning({
@@ -1990,6 +2008,17 @@
                                 part_detail.service_detail_name = "";
                             }
 
+                            if(part_detail.vendor_id != ""){
+                                    this.vendors.forEach(vendor => {
+                                    if(vendor.id == part_detail.vendor_id){
+                                        part_detail.vendor_name = vendor.name;
+                                    }
+                                });
+                            }else{
+                                part_detail.vendor_id = "";
+                                part_detail.vendor_name = "";
+                            }
+
                             var is_decimal = part_detail.area_uom_obj.is_decimal;
                             if(is_decimal == 0){
                                 part_detail.area = (part_detail.area+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
@@ -2302,6 +2331,13 @@
             // },
         },
         created: function() {
+            Vue.directive('tooltip', function(el, binding){
+                $(el).tooltip({
+                    title: binding.value,
+                    placement: binding.arg,
+                    trigger: 'hover'             
+                })
+            })
             this.newIndex = this.materialTable.length + 1;
             this.newIndexPart = this.input.part_details.length + 1;
             var jsonMaterialId = JSON.stringify(this.material_id);

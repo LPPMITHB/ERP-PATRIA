@@ -820,6 +820,26 @@ class ProjectController extends Controller
                                     $wbs_material->dimensions_value = $part->dimensions_value;
                                     $wbs_material->weight = $part->weight;
                                     $wbs_material->save();
+
+                                    $activity = new Activity;
+                                    $activity->code = self::generateActivityCode($wbs->id);
+                                    $activity->name = $part->description;
+                                    $activity->type = "General";
+                                    $activity->description = $part->description;
+                                    $activity->wbs_id = $wbs->id;
+
+                                    if($part->service_id!=null){
+                                        $activity->service_id = $part->service_id;
+                                    }
+
+                                    if($part->service_detail_id!=null){
+                                        $activity->service_detail_id = $part->service_detail_id;
+                                    }
+                                    
+                                    $activity->wbs_material_id = $wbs_material->id;
+                                    $activity->user_id = Auth::user()->id;
+                                    $activity->branch_id = Auth::user()->branch->id;
+                                    $activity->save();
                                 }
                             }else{
                                 $wbs_material = new WbsMaterial;
