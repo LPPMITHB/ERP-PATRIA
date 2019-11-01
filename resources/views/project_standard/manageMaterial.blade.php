@@ -275,12 +275,13 @@
                                                                     </td>
                                                                 </template>
                                                                 <template v-else>
-                                                                    <td>{{ part.description }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
                                                                     <td>{{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
-                                                                    <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                                    <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
+                                                                    <td class="tdEllipsis" v-if="part.service_id != ''" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                    <td v-else>-</td>
+                                                                    <td class="tdEllipsis" v-if="part.service_detail_id != ''" data-container="body" v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
                                                                     <td v-else>-</td>                                                                    
                                                                     <td class="p-l-5" align="center">
                                                                         <a class="btn btn-primary btn-xs" @click="editRowPartEdit(index_part)">
@@ -472,12 +473,12 @@
                                                                 </td>
                                                             </template>
                                                             <template v-else>
-                                                                <td>{{ part.description }}</td>
+                                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
                                                                 <td>{{ part.dimension_string }}</td>
                                                                 <td>{{ part.quantity }}</td>
                                                                 <td>{{ part.weight }}</td>
-                                                                <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                                <td class="tdEllipsis" v-if="part.service_detail_id != ''">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
+                                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                                <td class="tdEllipsis" v-if="part.service_detail_id != ''" data-container="body" v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
                                                                 <td v-else>-</td>
                                                                 <td class="p-l-5" align="center">
                                                                     <a class="btn btn-primary btn-xs" @click="editRowPart(index_part)">
@@ -612,12 +613,14 @@
                                                     <tbody>
                                                         <tr v-for="(part, index_part) in view.part_details">
                                                             <td>{{ index_part + 1 }}</td>
-                                                            <td>{{ part.description }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
                                                             <td>{{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
-                                                            <td class="tdEllipsis">{{ part.service_code }} - {{ part.service_name }}</td>
-                                                            <td class="tdEllipsis">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
+                                                            <td v-if="part.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
+                                                            <td v-else>-</td>
+                                                            <td v-if="part.service_detail_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_detail_name +' - '+ part.service_detail_description)">{{ part.service_detail_name }} - {{ part.service_detail_description }}</td>
+                                                            <td v-else>-</td>                                                            
                                                         </tr>
                                                     </tbody>
                                                 </table>
@@ -659,6 +662,19 @@
             'initComplete': function(){
                 $('div.overlay').hide();
                 document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+            }
+        });
+
+        $('#part-table-view').DataTable({
+            'paging' : true,
+            'lengthChange': false,
+            'ordering' : true,
+            'info' : true,
+            'autoWidth' : false,
+            'bFilter' : true,
+            'initComplete': function(){
+            $('div.overlay').hide();
+            document.getElementById("part-table-view_wrapper").setAttribute("style", "margin-top: -30px");
             }
         });
 
@@ -814,7 +830,7 @@
             inputPartOk: function(){
                 let isOk = false;
                 
-                if(this.input_part.description == "" || this.input_part.quantity == "" || this.input_part.service_id == ""){
+                if(this.input_part.description == "" || this.input_part.quantity == ""){
                     isOk = true;
                 }
 
@@ -823,7 +839,7 @@
             inputPartEditOk: function(){
                 let isOk = false;
                 
-                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == "" || this.input_part_edit.service_id == ""){
+                if(this.input_part_edit.description == "" || this.input_part_edit.quantity == ""){
                     isOk = true;
                 }
 
@@ -886,6 +902,9 @@
             },
         },
         methods: {
+            tooltipText: function(text){
+                return text;
+            },
             refreshTooltip: function(code,description){
                 Vue.directive('tooltip', function(el, binding){
                     if(el.id == code){
@@ -1305,7 +1324,6 @@
             updateRowPart(index){
                 var data = JSON.stringify(this.input.part_details[this.active_edit_part_index]);
                 data = JSON.parse(data); 
-                console.log(data);
                 var still_empty = false;
                 data.dimensions_value_obj.forEach(dimension => {
                     if(dimension.value_input == undefined || dimension.value_input == ""){
@@ -1485,7 +1503,7 @@
                     this.input_part.service_name = "";
                     this.input_part.service_code = "";
                     this.input_part.selected_service = "";
-                    // this.input_part.service_detail_id = "";
+                    this.input_part.service_detail_id = "";
                 }
 
             },
@@ -1527,19 +1545,17 @@
                     this.input_part_edit.service_name = "";
                     this.input_part_edit.service_code = "";
                     this.input_part_edit.selected_service = "";
-                    // this.input_part_edit.service_detail_id = "";
+                    this.input_part_edit.service_detail_id = "";
                 }
 
             },
 
             'input_part_edit.service_detail_id': function(newValue){
                 if(newValue != ""){
-                
-                window.axios.get('/api/getServiceDetailStandard/'+this.input_part_edit.service_detail_id).then(({ data }) => {
-                    this.input_part_edit.service_detail_name = data.name;
-                    this.input_part_edit.service_detail_description = data.description;
-                })
-                
+                    window.axios.get('/api/getServiceDetailStandard/'+this.input_part_edit.service_detail_id).then(({ data }) => {
+                        this.input_part_edit.service_detail_name = data.name;
+                        this.input_part_edit.service_detail_description = data.description;
+                    })
                 }else{
                     this.input_part_edit.service_detail_name = "";
                     this.input_part_edit.service_detail_description = "";
@@ -1604,21 +1620,26 @@
                     if(newValue.length > 0){
                         var temp_total_weight = 0;
                         newValue.forEach(part_detail => {
-                            this.services.forEach(service => {
-                                if(service.id == part_detail.service_id){
-                                    part_detail.selected_service = service.service_details;
-                                    if(part_detail.selected_service_detail != null){
-                                        part_detail.service_detail_id = part_detail.selected_service_detail;
-                                        part_detail.selected_service_detail = null;
-                                    }else{
-                                        // part_detail.service_detail_id = "";
-                                    }
-                                }
-                            });
-                            window.axios.get('/api/getServiceStandard/'+part_detail.service_id).then(({ data }) => {
-                                part_detail.service_name = data.name;
-                                part_detail.service_code = data.code;
-                            });
+                            // this.services.forEach(service => {
+                            //     if(service.id == part_detail.service_id){
+                            //         part_detail.selected_service = service.service_details;
+                            //         if(part_detail.selected_service_detail != null){
+                            //             part_detail.service_detail_id = part_detail.selected_service_detail;
+                            //             part_detail.selected_service_detail = null;
+                            //         }else{
+                            //             // part_detail.service_detail_id = "";
+                            //         }
+                            //     }
+                            // });
+                            if(part_detail.service_id != ''){
+                                window.axios.get('/api/getServiceStandard/'+part_detail.service_id).then(({ data }) => {
+                                    part_detail.service_name = data.name;
+                                    part_detail.service_code = data.code;
+                                });
+                            }else{
+                                part_detail.service_name = '';
+                                part_detail.service_code = '';
+                            }
 
                             if(part_detail.service_id != '' && part_detail.service_detail_id != ''){
                                 window.axios.get('/api/getServiceDetailStandard/'+part_detail.service_detail_id).then(({ data }) => {
@@ -1707,31 +1728,70 @@
                     if(newValue.length > 0){
                         var temp_total_weight = 0;
                         newValue.forEach(part_detail => {
-                            this.services.forEach(service => {
-                                if(service.id == part_detail.service_id){
-                                    part_detail.selected_service = service.service_details;
-                                    if(part_detail.selected_service_detail != null){
-                                        part_detail.service_detail_id = part_detail.selected_service_detail;
-                                        part_detail.selected_service_detail = null;
-                                    }else{
-                                        // part_detail.service_detail_id = "";
-                                    }
-                                }
-                            });
-                            // window.axios.get('/api/getServiceStandard/'+part_detail.service_id).then(({ data }) => {
-                            //     part_detail.service_name = data.name;
-                            //     part_detail.service_code = data.code;
+                            // this.services.forEach(service => {
+                            //     if(service.id == part_detail.service_id){
+                            //         part_detail.selected_service = service.service_details;
+                            //         if(part_detail.selected_service_detail != null){
+                            //             part_detail.service_detail_id = part_detail.selected_service_detail;
+                            //             part_detail.selected_service_detail = null;
+                            //         }else{
+                            //             // part_detail.service_detail_id = "";
+                            //         }
+                            //     }
                             // });
 
-                            // if(part_detail.service_id != '' && part_detail.service_detail_id != ''){
+                            // if(part_detail.service_id != '' && part_detail.service_id != null){
+                            //     window.axios.get('/api/getServiceStandard/'+part_detail.service_id).then(({ data }) => {
+                            //         part_detail.service_name = data.name;
+                            //         part_detail.service_code = data.code;
+                            //     });
+                            // }else{
+                            //     part_detail.service_name = '';
+                            //     part_detail.service_code = '';
+                            // }
+
+                            // if(part_detail.service_id != '' && part_detail.service_detail_id != null){
                             //     window.axios.get('/api/getServiceDetailStandard/'+part_detail.service_detail_id).then(({ data }) => {
                             //         part_detail.service_detail_name = data.name;
                             //         part_detail.service_detail_description = data.description;
                             //     });
-                            // }else if(part_detail.service_id != '' && part_detail.selected_service.length == 0){
+                            // }else{
                             //     part_detail.service_detail_name = '';
                             //     part_detail.service_detail_description = '';
                             // }
+
+                            if(part_detail.service_id != "" && part_detail.service_id != null){
+                                this.services.forEach(service => {
+                                    if(service.id == part_detail.service_id){
+                                        part_detail.selected_service = service.service_details;
+                                        part_detail.service_code = service.code;
+                                        part_detail.service_name = service.name;
+
+                                        if(part_detail.selected_service_detail != null){
+                                            part_detail.service_detail_id = part_detail.selected_service_detail;
+                                            part_detail.selected_service_detail = null;
+                                        }
+                                    }
+                                });
+                            }else{
+                                part_detail.service_code = "";
+                                part_detail.service_name = "";
+
+                                part_detail.selected_service = "";
+                                part_detail.service_detail_id = "";
+                            }
+
+                            if(part_detail.service_detail_id != "" && part_detail.service_detail_id != null){
+                                part_detail.selected_service.forEach(service_detail => {
+                                    if(service_detail.id == part_detail.service_detail_id){
+                                        part_detail.service_detail_name = service_detail.name;
+                                        part_detail.service_detail_description = service_detail.description;
+                                    }
+                                });
+                            }else{
+                                part_detail.service_detail_name = "";
+                                part_detail.service_detail_description = "";
+                            }
 
                             temp_total_weight += part_detail.weight;
                             part_detail.dimensions_value = JSON.stringify(part_detail.dimensions_value_obj);
