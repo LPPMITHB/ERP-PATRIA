@@ -246,7 +246,7 @@
                             </tr>
                         </tbody>
 
-                        <tfoot v-if="menu == 'repair'">
+                        <tfoot v-if="menu == 'repair' && index == false">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
@@ -289,7 +289,7 @@
                             </tr>
                         </tfoot>
 
-                        <tfoot v-if="menu == 'building'">
+                        <tfoot v-if="menu == 'building' && index == false">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0 textLeft no-padding">
@@ -784,6 +784,7 @@ var data = {
     wbs_end_date : @json($wbs->planned_end_date),
     wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
+    index : @json($index),
     activities :[],
     types :['Upload','Document Number','General'],
     newIndex : "",
