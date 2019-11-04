@@ -15,10 +15,12 @@ class CreateMstQualityTypeDetailsTable extends Migration
     {
         Schema::create('mst_quality_control_type_detail', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('quality_control_type_id');
-            $table->string('name');
-            $table->text('description')->nullable();
-            
+            $table->unsignedInteger('quality_control_type_id');//group dari tugasnya
+            $table->string('name');//nama tugasnya 
+            $table->text('task_description')->nullable(); //disuruh ngapain sih tugasnya
+            $table->boolean('external_join'); //harus ngundang pihak luar ga untuk melakukan tugas ini
+            $table->string('acceptance_value'); //value lolos quality controlnya berapa ?
+
             $table->timestamps();
 
             $table->foreign('quality_control_type_id')->references('id')->on('mst_quality_control_type');

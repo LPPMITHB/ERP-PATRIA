@@ -15,7 +15,8 @@ class CreateMstQualityTypesTable extends Migration
     {
         Schema::create('mst_quality_control_type', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('code');
+            $table->unsignedInteger('ship_id')->nullable();
+            
             $table->string('name');
             $table->text('description')->nullable();
             $table->unsignedInteger('user_id');
@@ -24,6 +25,7 @@ class CreateMstQualityTypesTable extends Migration
 
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
+            $table->foreign('ship_id')->references('id')->on('mst_ship');
         });
     }
 
