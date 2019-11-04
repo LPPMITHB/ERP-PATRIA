@@ -1068,7 +1068,7 @@ class ProductionOrderController extends Controller
     public function storeConfirm(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $pro_id = $datas->modelPrO->id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
         DB::beginTransaction();
         try {
