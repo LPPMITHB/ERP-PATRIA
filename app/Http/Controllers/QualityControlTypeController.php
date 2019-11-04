@@ -151,13 +151,13 @@ class QualityControlTypeController extends Controller
             $modelQcType->update();
 
             foreach ($data->task as $task) {
-                if(!isset($task->id)){
+                if (!isset($task->id)) {
                     $qcTypeDetail = new QualityControlTypeDetail;
                     $qcTypeDetail->quality_control_type_id = $modelQcType->id;
                     $qcTypeDetail->name = $task->name;
                     $qcTypeDetail->description = $task->description;
                     $qcTypeDetail->save();
-                }else{
+                } else {
                     $qcTypeDetail = QualityControlTypeDetail::find($task->id);
                     $qcTypeDetail->name = $task->name;
                     $qcTypeDetail->description = $task->description;
@@ -210,5 +210,14 @@ class QualityControlTypeController extends Controller
         //     return redirect()->route('qc_type.index')->with('error', $e.'Deleting Quality Control Error');
         // }
         return redirect()->route('qc_type.index')->with('success', 'Deleting Quality Control Succsess');
+    }
+
+    // /**
+    //  * 
+    //  */
+    public function apiGetQcTypeMaster()
+    {
+        $dataQcType = QualityControlType::select(['name', 'description'])->get()->jsonSerialize();
+        return response($dataQcType, Response::HTTP_OK);
     }
 }
