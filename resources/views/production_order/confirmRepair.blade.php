@@ -318,9 +318,7 @@
                                         <th width="5%">Quantity</th>
                                         <th width="5%">Actual</th>
                                         <th width="6%">Remaining</th>
-                                        <th width="5%">Length</th>
-                                        <th width="5%">Width</th>
-                                        <th width="5%">Height</th>
+                                        <th width="18%">Dimensions</th>                                        
                                         <th width="4%">UOM</th>
                                         <th width="5%">Weight</th>
                                         <th width="6%">Used</th>
@@ -336,7 +334,20 @@
                                         <td class="tdEllipsis">{{ data.used }}</td>
                                         <td class="tdEllipsis">{{ data.actual }}</td>
                                         <td class="tdEllipsis">{{ data.sugQuantity }}</td>
-                                        <template v-if="data.dimension_uom != null">
+                                        <template v-if="data.dimension_type_id == 1">
+                                            <template v-if="data.editable">
+                                                <td class="row no-padding">
+                                                    <template v-if="input.selected_material.dimension_type_id == 1">
+                                                        <div v-for="dimension in part.dimensions_value_obj" class="col-sm-4 no-padding">
+                                                            <input v-model="dimension.value_input" type="text" class="form-control width100"
+                                                                :placeholder="dimension.name">
+                                                        </div>
+                                                    </template>
+                                                </td>
+                                                <td class="no-padding">
+                                                    <input v-model="part.quantity" type="text" class="form-control width100" placeholder="Quantity">
+                                                </td>
+                                            </template>
                                             <td v-if="data.editable" class="tdEllipsis no-padding">
                                                 <input class="form-control width100" v-model="data.lengths" placeholder="Length">
                                             </td>

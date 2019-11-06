@@ -2,12 +2,12 @@
 
 @section('content-header')
 @breadcrumb([
-    'title' => 'View All Quality Control Type',
-    'subtitle' => '',
-    'items' => [
-        'Dashboard' => route('index'),
-        'View All Quality Control Type' => '',
-    ]
+'title' => 'View All Quality Control Type',
+'subtitle' => '',
+'items' => [
+'Dashboard' => route('index'),
+'View All Quality Control Type' => '',
+]
 ])
 @endbreadcrumb
 @endsection
@@ -62,7 +62,8 @@
 <script>
     $('div.overlay').hide();
     var data = {
-        qc_type: @json($qct_type),
+        // qc_type: @json($qct_type),
+        qc_type:'',
     };
     var vm = new Vue({
         el: '#index_qctype',
@@ -76,22 +77,45 @@
                 var url = "/qc_type/" + id + "/edit";
                 return url;
             }
+        },
+        mounted(){
+            //
+            loading();
+            window.axios.get('/api/get/qc_type_master')
+            .then(({ data }) => {
+                this.qc_type = data;
+            })
+            .finally(function(){
+                $('#qct-table').DataTable({
+                    'paging': true,
+                    'lengthChange': false,
+                    'ordering': true,
+                    'info': true,
+                    'autoWidth': false,
+                    'bFilter': true,
+                    'initComplete': function() {
+                        $('div.overlay').hide();
+                    }
+                });
+            });
+            
+            
         }
     });
 
-    $(document).ready(function() {
-        $('#qct-table').DataTable({
-            'paging': true,
-            'lengthChange': false,
-            'ordering': true,
-            'info': true,
-            'autoWidth': false,
-            'bFilter': true,
-            'initComplete': function() {
-                $('div.overlay').hide();
-            }
-        });
-    });
+    // $(document).ready(function() {
+    //     $('#qct-table').DataTable({
+    //         'paging': true,
+    //         'lengthChange': false,
+    //         'ordering': true,
+    //         'info': true,
+    //         'autoWidth': false,
+    //         'bFilter': true,
+    //         'initComplete': function() {
+    //             $('div.overlay').hide();
+    //         }
+    //     });
+    // });
 
     function loading() {
         $('div.overlay').show();

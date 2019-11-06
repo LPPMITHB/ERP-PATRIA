@@ -18,4 +18,8 @@ class Activity extends Model
         return $this->hasMany('App\Models\ActivityDetail');
     }
 
+    public function wbsMaterial()
+    {
+        return $this->hasOne('App\Models\WbsMaterial');
+    }
 }
