@@ -703,7 +703,18 @@ Route::name('wbs.')->prefix('wbs')->group(function() {
 
     Route::delete('/deleteWbsImage/{id}','WBSController@destroyWbsImage')->name('destroyWbsImage')->middleware('can:delete-project');
 
-    Route::get('/manageWbsImages', 'WBSController@manageWbsImages')->name('manageWbsImages')->middleware('can:manage-wbs-images');
+    // WBS IMAGES (Manage Drawing)
+
+    Route::get('/selectProject', 'WBSController@selectProject')->name('selectProject')->middleware('can:manage-wbs-images');
+
+    Route::get('/manageWbsImages/{id}', 'WBSController@manageWbsImages')->name('manageWbsImages')->middleware('can:manage-wbs-images');
+
+    Route::post('/storeWBSImages', 'WBSController@storeWBSImages')->name('storeWBSImages')->middleware('can:manage-wbs-images');
+
+    Route::post('/{id}', 'WBSController@updateWBSImages')->name('updateWBSImages')->middleware('can:manage-wbs-images');
+
+    Route::delete('/deleteImages/{id}', 'WBSController@deleteImages')->name('deleteImages')->middleware('can:manage-wbs-images');
+
 
     // WBS Profile
     Route::get('/createWbsProfile', 'WBSController@createWbsProfile')->name('createWbsProfile')->middleware('can:manage-wbs-profile');
