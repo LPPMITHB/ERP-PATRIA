@@ -125,10 +125,10 @@
         form.submit();
     }
     function deleteWbs(evt){
-        var node = $("#treeview").jstree(true).get_node(evt.srcElement.id);//111 is node id
+        var node = $("#treeview").jstree(true).get_node(evt.srcElement.id);
         $("#treeview").jstree("delete_node", node);
         dataTree.forEach(element => {
-            if(project.number != element.id){
+            if(project.number != element.id && !element.id.includes("ACT")){
                 const elem = document.getElementById(element.id+"_anchor");
                 let button = document.createElement('button');
                 button.innerHTML = "DELETE"
@@ -164,10 +164,9 @@
         }).on("changed.jstree", function (e, data) {
         
         }).on("loaded.jstree", function (event, data) {
-            // you get two params - event & data - check the core docs for a detailed description
             $(this).jstree("open_all");
-            dataTree.forEach(element => {
-                if(project.number != element.id){
+            dataTree.forEach(element => {         
+                if(project.number != element.id && !element.id.includes("ACT")){
                     const elem = document.getElementById(element.id+"_anchor");
                     let button = document.createElement('button');
                     button.innerHTML = "DELETE"

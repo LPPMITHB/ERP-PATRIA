@@ -2,12 +2,12 @@
 
 @section('content-header')
 @breadcrumb([
-'title' => 'View All Quality Control Type',
-'subtitle' => '',
-'items' => [
-'Dashboard' => route('index'),
-'View All Quality Control Type' => '',
-]
+    'title' => 'View All Quality Control Type',
+    'subtitle' => '',
+    'items' => [
+    'Dashboard' => route('index'),
+    'View All Quality Control Type' => '',
+    ]
 ])
 @endbreadcrumb
 @endsection
@@ -23,8 +23,8 @@
                     </div>
                 </div>
                 @verbatim
-                <div id="index_qctype">
-                    <table id="qct-table" class="table table-bordered tableFixed">
+                <div id="index_qc_type">
+                    <table id="qc-table" class="table table-bordered tableFixed">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -62,11 +62,10 @@
 <script>
     $('div.overlay').hide();
     var data = {
-        // qc_type: @json($qct_type),
         qc_type:'',
     };
     var vm = new Vue({
-        el: '#index_qctype',
+        el: '#index_qc_type',
         data: data,
         methods: {
             createRouteShow(id) {
@@ -86,7 +85,7 @@
                 this.qc_type = data;
             })
             .finally(function(){
-                $('#qct-table').DataTable({
+                $('#qc-table').DataTable({
                     'paging': true,
                     'lengthChange': false,
                     'ordering': true,
@@ -104,7 +103,7 @@
     });
 
     // $(document).ready(function() {
-    //     $('#qct-table').DataTable({
+    //     $('#qc-table').DataTable({
     //         'paging': true,
     //         'lengthChange': false,
     //         'ordering': true,
