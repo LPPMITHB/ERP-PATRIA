@@ -52,7 +52,7 @@ class QualityControlTypeController extends Controller
 
         try {
             $qcType = new QualityControlType;
-            $qcType->code = "DOCUMENT" . strtotime("now") . "QC" . Auth::user()->branch->id;
+            // $qcType->code = "DOCUMENT" . strtotime("now") . "QC" . Auth::user()->branch->id;
             $qcType->name = $data->name;
             $qcType->description = $data->description;
             $qcType->user_id = Auth::user()->id;
@@ -63,7 +63,8 @@ class QualityControlTypeController extends Controller
                     $qcTypeDetail = new QualityControlTypeDetail;
                     $qcTypeDetail->quality_control_type_id = $qcType->id;
                     $qcTypeDetail->name = $qctask->name;
-                    $qcTypeDetail->description = $qctask->description;
+                    $qcTypeDetail->task_description = $qctask->description;
+                    $qcTypeDetail->external_join = $data->checkedExternal;
                     $qcTypeDetail->save();
                 }
             }
@@ -155,12 +156,12 @@ class QualityControlTypeController extends Controller
                     $qcTypeDetail = new QualityControlTypeDetail;
                     $qcTypeDetail->quality_control_type_id = $modelQcType->id;
                     $qcTypeDetail->name = $task->name;
-                    $qcTypeDetail->description = $task->description;
+                    $qcTypeDetail->task_description = $task->task_description;
                     $qcTypeDetail->save();
                 } else {
                     $qcTypeDetail = QualityControlTypeDetail::find($task->id);
                     $qcTypeDetail->name = $task->name;
-                    $qcTypeDetail->description = $task->description;
+                    $qcTypeDetail->task_description = $task->task_description;
                     $qcTypeDetail->update();
                 }
             }

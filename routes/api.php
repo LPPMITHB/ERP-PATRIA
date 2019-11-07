@@ -232,6 +232,7 @@ Route::get('/getSalesPlan/{year}', 'SalesPlanController@getSalesPlanAPI')->name(
 Route::get('/get/qc_type_master', 'QualityControlTypeController@apiGetQcTypeMaster')->name('api.qc_type.get_qc_type_master');
 // QC Task
 Route::get('/getQcType/{id}', 'QualityControlTaskController@getQcTypeApi')->name('api.qc_task.getQcTypeApi');
+Route::get('/getQcTypeDetails/{id}', 'QualityControlTaskController@getQcTypeDetailsApi')->name('api.qc_task.getQcTypeDetailsApi');
 Route::get('/getQcTaskDetails/{id}', 'QualityControlTaskController@getQcTaskDetailsApi')->name('api.qc_task.getQcTaskDetailsApi');
 
 // Delivery Document

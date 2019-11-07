@@ -19,7 +19,7 @@ class CreateMstQualityTypeDetailsTable extends Migration
             $table->string('name');//nama tugasnya 
             $table->text('task_description')->nullable(); //disuruh ngapain sih tugasnya
             $table->boolean('external_join'); //harus ngundang pihak luar ga untuk melakukan tugas ini
-            $table->string('acceptance_value'); //value lolos quality controlnya berapa ?
+            $table->string('acceptance_value')->nullable(); //value lolos quality controlnya berapa ?
 
             $table->timestamps();
 

@@ -14,6 +14,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
+use DateTime;
 use Auth;
 use DB;
 
@@ -209,9 +210,8 @@ class QualityControlTaskController extends Controller
         $route = $request->route()->getPrefix();
         $modelQcType = QualityControlType::all();
         $modelWbs = WBS::findOrFail($id);
-
-        // dd($modelWbs);
-        
+        $planned_end_date = DateTime::createFromFormat('Y-m-d', $modelWbs->planned_end_date);
+        $modelWbs->planned_end_date = $planned_end_date->format('d-m-Y');
         return view('qc_task.create', compact('route','modelQcType','modelWbs'));
     }
 
@@ -229,6 +229,7 @@ class QualityControlTaskController extends Controller
             $qcTask->wbs_id = $data->wbs_id;
             $qcTask->quality_control_type_id = $data->qc_type_id;
             $qcTask->description = $data->description;
+            $qc_task->external_join = $data->checkedExternal;
             $qcTask->user_id = Auth::user()->id;
             $qcTask->branch_id = Auth::user()->branch->id;
             
@@ -403,6 +404,11 @@ class QualityControlTaskController extends Controller
     public function getQcTypeApi($id){
         $qc_type = QualityControlType::where('id',$id)->with('qualityControlTypeDetails')->first()->jsonSerialize();
         return response($qc_type, Response::HTTP_OK);
+    }
+
+    public function getQcTypeDetailsApi($id){
+        $qcTypeDetails = QualityControlTypeDetail::where('quality_control_type_id',$id)->get()->jsonSerialize();
+        return response($qcTypeDetails, Response::HTTP_OK);
     }
 
     public function getQcTaskDetailsAPI($id){
