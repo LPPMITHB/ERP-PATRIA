@@ -535,6 +535,8 @@ class ResourceController extends Controller
         DB::beginTransaction();
         try {
             $resource_ref->resource_id = $data['resource_id'];
+            $resource_ref->category_id = $data['category_id'];
+
             $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->quantity = $data['quantity'];
             if($data['category_id'] == 4){
@@ -552,6 +554,8 @@ class ResourceController extends Controller
                     $resource_ref->start_date = null;
                     $resource_ref->end_date = null;
                 }
+            }else if($data['category_id'] != 4){
+                $resource_ref->resource_detail_id = null;
             }
 
             if(!$resource_ref->save()){
@@ -579,8 +583,12 @@ class ResourceController extends Controller
             if($data['resource_detail_id'] != ''){
                 $resource->resource_detail_id = $data['resource_detail_id'];
             }
-            $resource->project_id = $data['project_id'];
-            $resource->wbs_id = $data['wbs_id'];
+            if($data['project_id'] != ''){
+                $resource->project_id = $data['project_id'];
+            }
+            if($data['wbs_id'] != ''){
+                $resource->wbs_id = $data['wbs_id'];
+            }
             $resource->quantity = $data['quantity'];
             if($data['start_date'] != ''){
                 $resource->start_date = $data['start_date'];

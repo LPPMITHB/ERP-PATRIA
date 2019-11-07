@@ -53,7 +53,6 @@
                                 </div>
                             </template>
                         </div>
-                        <template v-if="selectedProject.length > 0">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                     <table id="assign-rsc" class="table table-bordered tableFixed" style="border-collapse:collapse;">
@@ -71,14 +70,15 @@
                                         <tbody>
                                             <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
-                                                <td v-if="data.category_id == 1">SubCon</td>
+                                                <td v-if="data.category_id == 1">Sub Contractor</td>
                                                 <td v-else-if="data.category_id == 2">Others</td>
                                                 <td v-else-if="data.category_id == 3">External Equipment</td>
                                                 <td v-else-if="data.category_id == 4">Internal Equipment</td>
+                                                <td v-else-if="data.category_id == null"> - </td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
                                                 <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
                                                 <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
-                                                <td v-else>-</td>
+                                                <td v-else-if="data.resource_detail_id == null">-</td>
                                                 <td>{{ data.quantity }}</td>
                                                 <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
@@ -150,7 +150,6 @@
                                     </table>
                                 </div>
                             </div>
-                        </template>
 
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog ">
@@ -163,6 +162,12 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Resource Category</label>
+                                                <selectize v-model="editInput.category_id">
+                                                    <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
+                                                </selectize>
+                                            </div>
                                             <div class="col-sm-12">
                                                 <label class="control-label">Resource</label>
                                                 <selectize v-model="editInput.resource_id" :settings="resourceSettings">
@@ -346,13 +351,13 @@
             end_date : "",
         },
         projectSettings: {
-            placeholder: 'Please Select Project'
+            placeholder: 'Please Select Project (Optional)'
         },
         resourceSettings: {
             placeholder: 'Please Select Resource'
         },
         wbsSettings: {
-            placeholder: 'Please Select WBS'
+            placeholder: 'Please Select WBS (Optional)'
         },
         categorySettings: {
             placeholder: 'Please Select Category'
@@ -421,7 +426,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.resource_id == "" || this.dataInput.quantity == "" || this.dataInput.wbs_id == ""){
+                if(this.dataInput.resource_id == "" || this.dataInput.quantity == "" ){
                     isOk = true;
                 }
 
@@ -820,7 +825,7 @@
                     var url = "/resource/updateAssignResource/"+this.editInput.id;
                 }else if(this.route == "/resource_repair"){
                     var url = "/resource_repair/updateAssignResource/"+this.editInput.id;
-                }         
+                }  
                 let editInput = JSON.stringify(this.editInput);
                 window.axios.put(url,editInput).then((response) => {
                     if(response.data.error != undefined){
@@ -897,6 +902,9 @@
                     })
                 }else{
                     this.selectedProject = [];
+                    this.modelAssignResource = "";
+                    this.modelWBS = "";
+                    this.newIndex = this.modelAssignResource.length + 1;
                 }              
             },
             'dataInput.quantity': function(newValue){
@@ -998,6 +1006,9 @@
                     }
                 }             
             },
+        },
+        updated:function(){
+
         },
     });
 </script>
