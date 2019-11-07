@@ -20,7 +20,7 @@ class PagesController extends Controller
     public function index()
     {
         $business_unit_id = json_decode(Auth::user()->business_unit_id);
-        $modelProject = Project::orderBy('planned_end_date','asc')->whereIn('business_unit_id', $business_unit_id)->where('status',1)->get();
+        $modelProject = Project::orderBy('planned_end_date','asc')->whereIn('business_unit_id', $business_unit_id)->where('status',1)->whereNull('project_id')->get();
         $datas = Collection::make();
 
         foreach($modelProject as $project){

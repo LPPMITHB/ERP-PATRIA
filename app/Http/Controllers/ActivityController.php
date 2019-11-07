@@ -112,14 +112,17 @@ class ActivityController extends Controller
             }
 
             $activity->weight = $data['weight'];
-            $activity->service_id = $data['service_id'];
-            $activity->service_detail_id = $data['service_detail_id'];
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->service_id = $data['service_id'];
-                $activity->service_detail_id = $data['service_detail_id'];
+                if($data['service_id'] != ""){
+                    $activity->service_id = $data['service_id'];
+                }
+
+                if($data['service_detail_id'] != ""){
+                    $activity->service_detail_id = $data['service_detail_id'];
+                }
             }
             // if($activity->wbs->project->business_unit_id == 2){
             //     $project_id = $activity->wbs->project_id;
@@ -299,8 +302,13 @@ class ActivityController extends Controller
             }
 
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->service_id = $data['service_id'];
-                $activity->service_detail_id = $data['service_detail_id'];
+                if($data['service_id'] != ""){
+                    $activity->service_id = $data['service_id'];
+                }
+
+                if($data['service_detail_id'] != ""){
+                    $activity->service_detail_id = $data['service_detail_id'];
+                }
             }
             // if(isset($data['deletedActDetail'])){
             //     if(count($data['deletedActDetail'])>0){
