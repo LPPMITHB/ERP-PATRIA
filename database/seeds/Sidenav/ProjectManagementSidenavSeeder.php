@@ -52,11 +52,6 @@ class ProjectManagementSidenavSeeder extends Seeder
 
         DB::table('sidenav')->insert([
             'menu_id' => $manageProject,
-            'route_name' => 'project.selectAdditionalWork',
-        ]);
-
-        DB::table('sidenav')->insert([
-            'menu_id' => $manageProject,
             'route_name' => 'project.edit',
         ]);
 
@@ -139,6 +134,11 @@ class ProjectManagementSidenavSeeder extends Seeder
         DB::table('sidenav')->insert([
             'menu_id' => $manageProjectRepair,
             'route_name' => 'project_repair.edit',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageProjectRepair,
+            'route_name' => 'project_repair.selectAdditionalWork',
         ]);
 
         DB::table('sidenav')->insert([

@@ -59,7 +59,7 @@
                             <tr v-for="(data,index) in qcTypeDetail">
                                 <td>{{ index + 1 }}</td>
                                 <td class="tdEllipsis">{{ data.name }}</td>
-                                <td class="tdEllipsis">{{ data.description }}</td>
+                                <td class="tdEllipsis">{{ data.task_description }}</td>
                             </tr>
                         </tbody>
                     </table>

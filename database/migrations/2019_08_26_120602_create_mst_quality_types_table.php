@@ -19,6 +19,7 @@ class CreateMstQualityTypesTable extends Migration
             
             $table->string('name');
             $table->text('description')->nullable();
+
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  
             $table->timestamps();

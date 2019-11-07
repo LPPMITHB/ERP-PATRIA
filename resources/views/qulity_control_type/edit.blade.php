@@ -48,7 +48,7 @@
                                 <tr v-for="(qtc_tasks, index) in qtc_task">
                                     <td>{{ index + 1 }}</td>
                                     <td>{{ qtc_tasks.name }}</td>
-                                    <td>{{ qtc_tasks.description }}</td>
+                                    <td>{{ qtc_tasks.task_description }}</td>
                                     <td class="p-l-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="#edit_item"
                                             @click="openEditModal(index)">
