@@ -246,7 +246,7 @@
                             </tr>
                         </tbody>
 
-                        <tfoot v-if="menu == 'repair'">
+                        <tfoot v-if="menu == 'repair' && index == false">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0">
@@ -284,12 +284,12 @@
                                         data-target="#add_dependent_activity">MANAGE PREDECESSOR</button>
                                 </td>
                                 <td class="textCenter">
-                                    <button data-toggle="modal" data-target="#add_service_activity" class="btn btn-primary">ADD</button>
+                                    <button data-toggle="modal" :disabled="createOk" data-target="#add_service_activity" class="btn btn-primary">ADD</button>
                                 </td>
                             </tr>
                         </tfoot>
 
-                        <tfoot v-if="menu == 'building'">
+                        <tfoot v-if="menu == 'building' && index == false">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
                                 <td class="p-l-0 textLeft no-padding">
@@ -640,7 +640,7 @@
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">
+                                            <input autocomplete="off" v-model="editActivity.planned_start_date" type="text" class="form-control datepicker" id="edit_planned_start_date" placeholder="Insert Start Date here...">
                                         </div>
                                     </div>
 
@@ -650,7 +650,7 @@
                                             <div class="input-group-addon">
                                                 <i class="fa fa-calendar"></i>
                                             </div>
-                                            <input v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">
+                                            <input autocomplete="off" v-model="editActivity.planned_end_date" type="text" class="form-control datepicker" id="edit_planned_end_date" placeholder="Insert End Date here...">
                                         </div>
                                     </div>
 
@@ -784,6 +784,7 @@ var data = {
     wbs_end_date : @json($wbs->planned_end_date),
     wbsWeight : @json($wbs->weight),
     project_id: @json($project->id),
+    index : @json($index),
     activities :[],
     types :['Upload','Document Number','General'],
     newIndex : "",
@@ -1095,10 +1096,14 @@ var vm = new Vue({
             this.editActivity.description = data.description;
             this.editActivity.weight = data.weight;
             this.editActivity.planned_duration = data.planned_duration;
-            this.editActivity.service_id = data.service_id;
-            this.editActivity.service_detail_id = data.service_detail_id;
+            if(data.service_id != null){
+                this.editActivity.service_id = data.service_id;
+            }
 
-            console.log(data,this.editActivity);
+            if(data.service_detail_id != null){
+                this.editActivity.service_detail_id = data.service_detail_id;
+            }
+
             this.editActivity.totalWeight = Number.isNaN(((data.weight/this.wbsWeight)*100)) ? "" : ((data.weight/this.wbsWeight)*100).toFixed(2);
             if(JSON.parse(data.predecessor) != null){
                 this.editActivity.allPredecessor = JSON.parse(data.predecessor);
@@ -1106,8 +1111,16 @@ var vm = new Vue({
                 this.editActivity.allPredecessor = [];
             }
             this.constWeightAct = data.weight;
-            $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
-            $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date.split("-").reverse().join("-")));
+            if(data.planned_start_date != null){
+                $('#edit_planned_start_date').datepicker('setDate', new Date(data.planned_start_date.split("-").reverse().join("-")));
+            }else{
+                $('#edit_planned_start_date').datepicker('setDate', "");
+            }
+            if(data.planned_end_date != null){
+                $('#edit_planned_end_date').datepicker('setDate', new Date(data.planned_end_date.split("-").reverse().join("-")));
+            }else{
+                $('#edit_planned_end_date').datepicker('setDate', "");
+            }
 
             window.axios.get('/api/getAllActivitiesEdit/'+this.project_id+'/'+data.id).then(({ data }) => {
                 this.allActivitiesEdit = data;

@@ -322,7 +322,7 @@ class BuildingMenuSeeder extends Seeder
             'level' => 3,
             'name' => 'Manage Drawings',
             'icon' => 'fa-calendar',
-            'route_name' => 'wbs.manageWbsImages',
+            'route_name' => 'wbs.selectProject',
             'is_active' => true,
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $project_management,

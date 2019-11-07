@@ -118,7 +118,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $rapDetail->material->code }}</td>
-                                    <td>{{ $rapDetail->material->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$rapDetail->material->description}}">{{ $rapDetail->material->description }}</td>
                                     <td>{{ number_format($rapDetail->quantity,2) }}</td>
                                     <td>{{ $rapDetail->material->uom->unit }}</td>
                                     <td>Rp.{{ number_format($rapDetail->price / $rapDetail->quantity,2) }}</td>
@@ -154,7 +154,7 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td class="tdEllipsis">{{ $rapDetail->material->code }}</td>
-                                    <td class="tdEllipsis">{{ $rapDetail->material->description }}</td>
+                                    <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$rapDetail->material->description}}">{{ $rapDetail->material->description }}</td>
                                     <td class="tdEllipsis">{{$rapDetail->dimensions_string}}</td>
                                     <td>{{ number_format($rapDetail->quantity,2) }}</td>                                    
                                     <td class="tdEllipsis">{{$rapDetail->source}}</td>

@@ -1469,6 +1469,7 @@
                                 PROD.usage = parseInt((PROD.usage+"").replace(/,/g , ''));
                             }
                         });
+                        this.submittedForm.modelPrO = this.modelPrO;
                         this.submittedForm.modelPrOD = this.modelPrOD;
                         this.submittedForm.materials = this.materials;
                         this.submittedForm.services = this.services;

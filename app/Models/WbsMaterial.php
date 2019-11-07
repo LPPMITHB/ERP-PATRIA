@@ -42,4 +42,9 @@ class WbsMaterial extends Model
     {
         return $this->belongsTo('App\Models\BomPrep');
     }
+
+    public function activity()
+    {
+        return $this->hasOne('App\Models\Activity');
+    }
 }
