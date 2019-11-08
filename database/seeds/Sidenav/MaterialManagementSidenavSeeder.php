@@ -2,7 +2,7 @@
 
 
 use Illuminate\Database\Seeder;
-use App\Models\Menu; 
+use App\Models\Menu;
 
 class MaterialManagementSidenavSeeder extends Seeder
 {
@@ -53,6 +53,12 @@ class MaterialManagementSidenavSeeder extends Seeder
             'menu_id' => $indexConsolidation,
             'route_name' => 'purchase_requisition.indexConsolidation',
         ]);
+
+		$repeatOrder = Menu::where('route_name', 'purchase_requisition.repeatOrder')->select('id')->first()->id;
+		DB::table('sidenav')->insert([
+			'menu_id' => $repeatOrder,
+			'route_name' => 'purchase_requisition.repeatOrder',
+		]);
 
         // Building - Material Management - Purchase Order
         $createPo = Menu::where('route_name', 'purchase_order.selectPR')->select('id')->first()->id;
@@ -357,7 +363,7 @@ class MaterialManagementSidenavSeeder extends Seeder
             'menu_id' => $indexReverse,
             'route_name' => 'reverse_transaction.index',
         ]);
-        
+
 
         /**
          * ========================================================================
@@ -399,6 +405,12 @@ class MaterialManagementSidenavSeeder extends Seeder
             'menu_id' => $indexConsolidation,
             'route_name' => 'purchase_requisition_repair.indexConsolidation',
         ]);
+
+		$repeatOrder = Menu::where('route_name', 'purchase_requisition_repair.repeatOrder')->select('id')->first()->id;
+		DB::table('sidenav')->insert([
+			'menu_id' => $repeatOrder,
+			'route_name' => 'purchase_requisition_repair.repeatOrder',
+		]);
 
         // Repairing - Material Management - Purchase Order
         $createPo = Menu::where('route_name', 'purchase_order_repair.selectPR')->select('id')->first()->id;

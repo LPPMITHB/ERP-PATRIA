@@ -1058,6 +1058,8 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition');
 
+	Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
+
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
     Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:consolidation-purchase-requisition');
@@ -2102,7 +2104,7 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
 //  QC Task Routes
 Route::name('qc_task.')->prefix('qc_task')->group(function() {
-    
+
     Route::get('/index/{id}', 'QualityControlTaskController@index')->name('index')->middleware('can:list-qc-task');
 
     Route::get('/selectQcTask/{id}', 'QualityControlTaskController@selectQcTask')->name('selectQcTask')->middleware('can:confirm-qc-task');

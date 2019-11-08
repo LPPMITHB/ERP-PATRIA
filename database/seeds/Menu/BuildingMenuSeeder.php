@@ -23,7 +23,7 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-       
+
 
         DB::table('menus')->insert([
             'level' => 1,
@@ -34,7 +34,7 @@ class BuildingMenuSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $building = Menu::where('name', 'Ship Building')->select('id')->first()->id;
 
         // Building - Marketing and Sales
@@ -635,6 +635,19 @@ class BuildingMenuSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+		// Building - Material Management - Purchase Requisition - Repeat Order
+		DB::table('menus')->insert([
+			'level' => 4,
+			'name' => 'Repeat Order',
+			'icon' => 'fa-file-text-o',
+			'route_name' => 'purchase_requisition.repeatOrder',
+			'is_active' => true,
+			'roles' => 'ADMIN,PMP,PAMI',
+			'menu_id' => $purchase_requisition,
+			'created_at' => date('Y-m-d'),
+			'updated_at' => date('Y-m-d')
+		]);
 
         // Building - Material Management - Purchase Order
         DB::table('menus')->insert([
@@ -1259,7 +1272,7 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // Building - Resource Management 
+        // Building - Resource Management
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Resource Management',
