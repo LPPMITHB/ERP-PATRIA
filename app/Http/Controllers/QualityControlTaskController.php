@@ -224,21 +224,39 @@ class QualityControlTaskController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
+        DB::beginTransaction();
         try {
             $qcTask = new QualityControlTask;
             $qcTask->wbs_id = $data->wbs_id;
             $qcTask->quality_control_type_id = $data->qc_type_id;
-            $qcTask->description = $data->description;
-            $qc_task->external_join = $data->checkedExternal;
+            if($data->description != ''){
+                $qcTask->description = $data->description;
+            }else{
+                $qcTask->description = null;
+            }
+            $qcTask->external_join = $data->checkedExternal;
+            $startDate = DateTime::createFromFormat('d-m-Y', $data->start_date);
+            $endDate = DateTime::createFromFormat('d-m-Y', $data->end_date);
+            if($startDate){
+                $qcTask->start_date = $startDate->format('Y-m-d');
+            }else{
+                $qcTask->start_date = null;
+            }
+            if($endDate){
+                $qcTask->end_date = $endDate->format('Y-m-d');
+            }else{
+                $qcTask->end_date = null;
+            }
+            $qcTask->duration = $data->duration;
             $qcTask->user_id = Auth::user()->id;
             $qcTask->branch_id = Auth::user()->branch->id;
             
             if ($qcTask->save()) {
-                foreach ($data->dataQcTask as $data) {
+                foreach ($data->dataQcTask as $dataQCDetail) {
                     $qcTaskDetail = new QualityControlTaskDetail;
                     $qcTaskDetail->quality_control_task_id = $qcTask->id;
-                    $qcTaskDetail->name = $data->name;
-                    $qcTaskDetail->description = $data->description;
+                    $qcTaskDetail->name = $dataQCDetail->name;
+                    $qcTaskDetail->description = $dataQCDetail->task_description;
                     $qcTaskDetail->save();
                 }
             }
@@ -246,7 +264,7 @@ class QualityControlTaskController extends Controller
             return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Created New Quality Control Task!');
         } catch (\Exception $e) {
             DB::rollback();
-            return redirect()->route('qc_task.create', $qcTask->wbs_id)->with('error', $e->getMessage())->withInput();
+            return redirect()->route('qc_task.selectProject')->with('error', $e->getMessage())->withInput();
         }
     }
 

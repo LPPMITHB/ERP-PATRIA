@@ -57,103 +57,48 @@
                                     </selectize>
                                 </div>
                                 <div class="col-xs-12 col-md-4 " v-show="qc_type_id != ''">
-                                    <div class="col-xs-12 no-padding"><b>Quality Control Task Description</b></div>
-                                    <div class="col-xs-12 no-padding">
-                                        <textarea class="form-control" placeholder="Please Input Quality Control Task Description" rows="3"
-                                            v-model="submittedForm.description"></textarea>
+                                    <div class="row">
+                                        <div class="col-xs-12 no-padding"><b>Quality Control Task Description</b></div>
+                                        <div class="col-xs-12 no-padding">
+                                            <textarea class="form-control" placeholder="Please Input Quality Control Task Description" rows="3"
+                                                v-model="submittedForm.description"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12 col-md-12 p-l-0 p-t-20">
+                                            <div class="col-xs-1 no-padding">
+                                                <input type="checkbox" v-icheck="" v-model="checkedExternal">
+                                            </div>
+                                            <div class="col-xs-11 no-padding"><b>Check if need external join</b></div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                             <div class="row" v-show="qc_type_id != ''">
                                 <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                    <table class="table table-bordered tableFixed" style="border-collapse:collapse;">
+                                    <table class="table table-bordered tableFixed showTable" style="border-collapse:collapse;">
                                         <thead>
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 43%">QC Task Name</th>
                                                 <th style="width: 40%">Description</th>
                                                 <th style="width: 13%">Status</th>
-                                                <th style="width: 13%"></th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             <tr v-for="(qc_task,index) in submittedForm.dataQcTask">
                                                 <td>{{ index + 1 }}</td>
                                                 <td class="tdEllipsis">{{ qc_task.name }}</td>
-                                                <td class="tdEllipsis">{{ qc_task.description }}</td>
+                                                <td class="tdEllipsis">{{ qc_task.task_description }}</td>
                                                 <td class="tdEllipsis" v-if="qc_task.status == null">NOT DONE</td>
                                                 <td class="tdEllipsis" v-else>{{qc_task.status}}</td>
-                                                <td v-if="qc_task.status == null" class="p-l-0 textCenter">
-                                                    <a class="btn btn-primary btn-xs" @click="openEditModal(index)">
-                                                        EDIT
-                                                    </a>
-                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
-                                                        DELETE
-                                                    </a>
-                                                </td>
-                                                <td v-else class="p-l-0 textCenter">
-                                                    <a class="btn btn-primary btn-xs" disabled>
-                                                        EDIT
-                                                    </a>
-                                                    <a class="btn btn-danger btn-xs" disabled>
-                                                        DELETE
-                                                    </a>
-                                                </td>
                                             </tr>
                                         </tbody>
-                                        <tfoot>
-                                            <tr>
-                                                <td class="p-l-10">{{newIndex}}</td>
-
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.name" placeholder="Please Input Name">
-                                                </td>
-                                                <td class="p-l-0">
-                                                    <input class="form-control" v-model="dataInput.description" placeholder="Please Input description">
-                                                </td>
-                                                <td >
-                                                    NOT DONE
-                                                </td>
-                                                <td class="p-l-0 textCenter">
-                                                    <button @click.prevent="add" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
-                                                </td>
-                                            </tr>
-                                        </tfoot>
                                     </table>
                                 </div>
                             </div>
                             <div class="col-md-12 p-r-0 p-t-10">
                                 <button @click.prevent="submitForm" v-show="qc_type_id != ''" class="btn btn-primary pull-right">SAVE</button>
-                            </div>
-
-                            <div class="modal fade" id="edit_item">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">×</span>
-                                            </button>
-                                            <h4 class="modal-title">Edit Quality Control Task Detail</h4>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="row">
-                                                <div class="col-sm-12">
-                                                    <label for="type" class="control-label">Task Name</label>
-                                                    <input class="form-control" type="text" v-model="editQcTask.name">
-                                                </div>
-                                                <div class="col-sm-12">
-                                                    <label for="quantity" class="control-label">Task
-                                                        Description</label>
-                                                    <textarea class="form-control" rows="5" v-model="editQcTask.description"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button class="btn btn-primary" data-dismiss="modal" :disabled="updateOk"
-                                                @click.prevent="updateQcTaskDetail">SAVE</button>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                         @endverbatim
@@ -178,6 +123,9 @@
         qc_type_id : @json($qcTask->quality_control_type_id),
         wbs : @json($qcTask->wbs),
         newIndex : "",
+        start_date : @json($qcTask->start_date);
+        end_date : @json($qcTask->end_date);
+        duration : @json($qcTask->duration);
         qcTypeSettings: {
             placeholder: 'Please Select QC Type'
         },
@@ -197,6 +145,7 @@
             name :"",
             description : "",
         },
+        checkedExternal : @json($qcTask->external_join),
 
         editable : @json($editable),
     }
@@ -225,6 +174,25 @@
             },
         },
         methods : {
+            getQcType(newValue){
+                window.axios.get('/api/getQcType/'+newValue).then(({ data }) => {
+                    this.selectedQcType = data;
+                    data.quality_control_type_details.forEach(qc_task_detail => {
+                        delete qc_task_detail.id;
+                    });
+                    this.submittedForm.dataQcTask = data.quality_control_type_details;
+                    this.newIndex = this.submittedForm.dataQcTask.length + 1;
+                    $('div.overlay').hide();
+                })
+                .catch((error) => {
+                    iziToast.warning({
+                        title: 'Please Try Again..',
+                        position: 'topRight',
+                        displayMode: 'replace'
+                    });
+                    $('div.overlay').hide();
+                })
+            },
             clearData(){
                 this.editQcTask.index = "";
                 this.editQcTask.name = "";
@@ -285,29 +253,45 @@
                 this.selectedQcType = [];
                 if(newValue != ""){
                     $('div.overlay').show();
-                    window.axios.get('/api/getQcType/'+newValue).then(({ data }) => {
-                        this.selectedQcType = data;
-                        data.quality_control_type_details.forEach(qc_task_detail => {
-                            delete qc_task_detail.id;
-                        });
-                        this.submittedForm.dataQcTask = data.quality_control_type_details;
-                        this.newIndex = this.submittedForm.dataQcTask.length + 1;
-                        $('div.overlay').hide();
-                    })
-                    .catch((error) => {
-                        iziToast.warning({
-                            title: 'Please Try Again..',
-                            position: 'topRight',
-                            displayMode: 'replace'
-                        });
-                        $('div.overlay').hide();
-                    })
+                    this.getQcType(newValue);
                 }else{
                     this.selectedQcType = "";
                 }
             },
         },
+        directives: {
+            icheck: {
+                inserted: function(el, b, vnode) {
+                    var vdirective = vnode.data.directives,
+                    vModel;
+                    for (var i = 0, vDirLength = vdirective.length; i < vDirLength; i++) {
+                        if (vdirective[i].name == "model") {
+                            vModel = vdirective[i].expression;
+                            break;
+                        }
+                    }
+                    jQuery(el).iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-blue",
+                        increaseArea: "20%" // optional
+                    });
+                    jQuery(el).on("ifChanged", function(e) {
+                        if ($(el).attr("type") == "radio") {
+                            vm.$data[vModel] = $(this).val();
+                        }
+                        if ($(el).attr("type") == "checkbox") {
+                            let data = vm.$data[vModel];
+
+                            $(el).prop("checked")
+                            ? vm.$data[vModel] = true
+                            : vm.$data[vModel] = false;
+                        }
+                    });
+                }
+            }
+        },
         created : function(){ 
+            this.getQcType(this.qc_type_id);
             this.newIndex = this.submittedForm.dataQcTask.length + 1;            
         }
     })

@@ -36,12 +36,6 @@
                                     <textarea class="form-control" placeholder="Please Input Quality Control Type Description" rows="3" v-model="mstInput.description"></textarea>
                                 </div>
                             </div>
-                            <div class="col-xs-12 col-md-4">
-                                <div class="col-xs-1 no-padding">
-                                    <input type="checkbox" v-icheck="" v-model="checkedExternal">
-                                </div>
-                                <div class="col-xs-11 no-padding"><b>Check if need external join</b></div>
-                            </div>
                         </div> <!-- /.box-header -->
                         <div class="col-md-12 p-t-5">
                             <table class="table table-bordered tableFixed m-b-0 tablePagingVue">
@@ -163,7 +157,6 @@
             name: '',
             description: '',
         },
-        checkedExternal : false,
     }
 
     var app = new Vue({
@@ -182,7 +175,6 @@
                 this.sumbitedForm.task = this.qtc_task;
                 this.sumbitedForm.name = this.mstInput.name;
                 this.sumbitedForm.description = this.mstInput.description;
-                this.sumbitedForm.checkedExternal = this.checkedExternal;
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
