@@ -16,9 +16,10 @@ class CreateProProjectTable extends Migration
         //
         Schema::create('pro_project', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('number')->unique();
+            $table->string('number');
             $table->string('drawing')->nullable();
-            $table->unsignedInteger('project_standard_id')->nullable();;
+            $table->unsignedInteger('project_standard_id')->nullable();
+            $table->unsignedInteger('project_id')->nullable();
             $table->unsignedInteger('business_unit_id');
             $table->unsignedInteger('project_sequence');
             $table->unsignedInteger('ship_id');
@@ -54,6 +55,7 @@ class CreateProProjectTable extends Migration
 
             $table->foreign('project_standard_id')->references('id')->on('mst_project_standard');
             $table->foreign('business_unit_id')->references('id')->on('mst_business_unit');
+            $table->foreign('project_id')->references('id')->on('pro_project');
             $table->foreign('branch_id')->references('id')->on('mst_branch');
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('ship_id')->references('id')->on('mst_ship');

@@ -198,7 +198,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
@@ -212,7 +212,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
@@ -223,7 +223,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : ".$wbs->weight."%",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
@@ -237,7 +237,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : ".$wbs->weight."%",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
@@ -251,7 +251,7 @@ class ProductionOrderController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
-                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                        
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $routes.$wbs->id],
@@ -265,7 +265,7 @@ class ProductionOrderController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
-                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                        
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
@@ -1068,7 +1068,7 @@ class ProductionOrderController extends Controller
     public function storeConfirm(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $pro_id = $datas->modelPrO->id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
         DB::beginTransaction();
         try {

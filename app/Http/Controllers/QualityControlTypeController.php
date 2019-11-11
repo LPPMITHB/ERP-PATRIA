@@ -23,8 +23,7 @@ class QualityControlTypeController extends Controller
      */
     public function index()
     {
-        $qct_type = QualityControlType::get()->jsonSerialize();
-        return view('qulity_control_type.index', compact('qct_type'));
+        return view('qulity_control_type.index');
     }
 
     /**
@@ -52,7 +51,6 @@ class QualityControlTypeController extends Controller
 
         try {
             $qcType = new QualityControlType;
-            $qcType->code = "DOCUMENT" . strtotime("now") . "QC" . Auth::user()->branch->id;
             $qcType->name = $data->name;
             $qcType->description = $data->description;
             $qcType->user_id = Auth::user()->id;
@@ -63,7 +61,7 @@ class QualityControlTypeController extends Controller
                     $qcTypeDetail = new QualityControlTypeDetail;
                     $qcTypeDetail->quality_control_type_id = $qcType->id;
                     $qcTypeDetail->name = $qctask->name;
-                    $qcTypeDetail->description = $qctask->description;
+                    $qcTypeDetail->task_description = $qctask->description;
                     $qcTypeDetail->save();
                 }
             }
@@ -122,13 +120,13 @@ class QualityControlTypeController extends Controller
                 $modelQcTypeDetail = new QualityControlTypeDetail;
                 $modelQcTypeDetail->quality_control_type_id = $data['qc_typeID'];
                 $modelQcTypeDetail->name = $data['name'];
-                $modelQcTypeDetail->description = $data['description'];
+                $modelQcTypeDetail->task_description = $data['description'];
                 $modelQcTypeDetail->save();
             } else {
                 $modelQcTypeDetail =  QualityControlTypeDetail::findOrFail($data['detailID']);
                 $modelQcTypeDetail->quality_control_type_id = $data['qc_typeID'];
                 $modelQcTypeDetail->name = $data['name'];
-                $modelQcTypeDetail->description =  $data['description'];
+                $modelQcTypeDetail->task_description =  $data['description'];
                 $modelQcTypeDetail->update();
             }
             DB::commit();
@@ -151,16 +149,16 @@ class QualityControlTypeController extends Controller
             $modelQcType->update();
 
             foreach ($data->task as $task) {
-                if(!isset($task->id)){
+                if (!isset($task->id)) {
                     $qcTypeDetail = new QualityControlTypeDetail;
                     $qcTypeDetail->quality_control_type_id = $modelQcType->id;
                     $qcTypeDetail->name = $task->name;
-                    $qcTypeDetail->description = $task->description;
+                    $qcTypeDetail->task_description = $task->task_description;
                     $qcTypeDetail->save();
-                }else{
+                } else {
                     $qcTypeDetail = QualityControlTypeDetail::find($task->id);
                     $qcTypeDetail->name = $task->name;
-                    $qcTypeDetail->description = $task->description;
+                    $qcTypeDetail->task_description = $task->task_description;
                     $qcTypeDetail->update();
                 }
             }
@@ -168,8 +166,8 @@ class QualityControlTypeController extends Controller
             return redirect()->route('qc_type.show', $modelQcType->id)->with('success', "Success Updated Quality Control Type!");
         } catch (\Exception $e) {
             DB::rollback();
-            echo ($e);
-            return redirect()->route('qc_type.show', $modelQcType->id)->with('error', $e);
+            dd($e);
+            // return redirect()->route('qc_type.show', $modelQcType->id)->with('error', $e);
         }
         return response($modelQcType->id, Response::HTTP_OK);
     }
@@ -210,5 +208,14 @@ class QualityControlTypeController extends Controller
         //     return redirect()->route('qc_type.index')->with('error', $e.'Deleting Quality Control Error');
         // }
         return redirect()->route('qc_type.index')->with('success', 'Deleting Quality Control Succsess');
+    }
+
+    // /**
+    //  * 
+    //  */
+    public function apiGetQcTypeMaster()
+    {
+        $dataQcType = QualityControlType::select(['id','name', 'description'])->get()->jsonSerialize();
+        return response($dataQcType, Response::HTTP_OK);
     }
 }

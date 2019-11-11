@@ -150,7 +150,7 @@ class PermissionsTableSeeder extends Seeder
         ]);
 
         // WBS Images
-        $menu_manage_wbs_images = Menu::where('route_name', 'wbs.manageWbsImages')->select('id')->first()->id;
+        $menu_manage_wbs_images = Menu::where('route_name', 'wbs.selectProject')->select('id')->first()->id;
         DB::table('permissions')->insert([
             'name' => 'Manage Wbs Images',
             'menu_id' => $menu_manage_wbs_images,

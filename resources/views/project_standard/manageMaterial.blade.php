@@ -276,7 +276,7 @@
                                                                 </template>
                                                                 <template v-else>
                                                                     <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
-                                                                    <td>{{ part.dimension_string }}</td>
+                                                                    <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">{{ part.dimension_string }}</td>
                                                                     <td>{{ part.quantity }}</td>
                                                                     <td>{{ part.weight }}</td>
                                                                     <td class="tdEllipsis" v-if="part.service_id != ''" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
@@ -474,7 +474,7 @@
                                                             </template>
                                                             <template v-else>
                                                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
-                                                                <td>{{ part.dimension_string }}</td>
+                                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">{{ part.dimension_string }}</td>
                                                                 <td>{{ part.quantity }}</td>
                                                                 <td>{{ part.weight }}</td>
                                                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
@@ -614,7 +614,7 @@
                                                         <tr v-for="(part, index_part) in view.part_details">
                                                             <td>{{ index_part + 1 }}</td>
                                                             <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.description)">{{ part.description }}</td>
-                                                            <td>{{ part.dimension_string }}</td>
+                                                            <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.dimension_string)">{{ part.dimension_string }}</td>
                                                             <td>{{ part.quantity }}</td>
                                                             <td>{{ part.weight }}</td>
                                                             <td v-if="part.service_id != null" class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(part.service_code +' - '+ part.service_name)">{{ part.service_code }} - {{ part.service_name }}</td>
@@ -1049,11 +1049,16 @@
                     this.newIndex = this.materialTable.length + 1;  
 
                     // refresh tooltip
-                    let datas = [];
-                    datas.push(this.input.material_code,this.input.material_name);
-                    datas = JSON.stringify(datas);
-                    datas = JSON.parse(datas);
-                    this.refreshTooltip(datas[0],datas[1]);
+                    // let datas = [];
+                    // datas.push(this.input.material_code,this.input.material_name);
+                    // datas = JSON.stringify(datas);
+                    // datas = JSON.parse(datas);
+                    // this.refreshTooltip(datas[0],datas[1]);
+
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
 
                     this.input.material_id = "";
                     this.input.material_code = "";
@@ -1187,41 +1192,41 @@
                             this.getNewMaterials(jsonMaterialId);
 
                             // refresh tooltip
-                            elemCode.id = data.code;
-                            elemDesc.id = data.description;
-                            this.refreshTooltip(elemCode.id,elemDesc.id);
+                            // elemCode.id = data.code;
+                            // elemDesc.id = data.description;
+                            // this.refreshTooltip(elemCode.id,elemDesc.id);
                             
-                            $('#material-standard-table').DataTable().destroy();
-                            this.$nextTick(function() {
-                                $('#material-standard-table').DataTable({
-                                    'paging' : true,
-                                    'lengthChange': false,
-                                    'ordering' : true,
-                                    'info' : true,
-                                    'autoWidth' : false,
-                                    'bFilter' : true,
-                                    'initComplete': function(){
-                                    $('div.overlay').hide();
-                                    // document.getElementById("material-standard-table_wrapper").setAttribute("style", "margin-top: -30px");
-                                    }
-                                });
-                            })
+                            // $('#material-standard-table').DataTable().destroy();
+                            // this.$nextTick(function() {
+                            //     $('#material-standard-table').DataTable({
+                            //         'paging' : true,
+                            //         'lengthChange': false,
+                            //         'ordering' : true,
+                            //         'info' : true,
+                            //         'autoWidth' : false,
+                            //         'bFilter' : true,
+                            //         'initComplete': function(){
+                            //         $('div.overlay').hide();
+                            //         // document.getElementById("material-standard-table_wrapper").setAttribute("style", "margin-top: -30px");
+                            //         }
+                            //     });
+                            // })
 
-                            $('#part-table').DataTable().destroy();
-                            this.$nextTick(function() {
-                                $('#part-table').DataTable({
-                                    'paging' : true,
-                                    'lengthChange': false,
-                                    'ordering' : true,
-                                    'info' : true,
-                                    'autoWidth' : false,
-                                    'bFilter' : true,
-                                    'initComplete': function(){
-                                    $('div.overlay').hide();
-                                    document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
-                                    }
-                                });
-                            })
+                            // $('#part-table').DataTable().destroy();
+                            // this.$nextTick(function() {
+                            //     $('#part-table').DataTable({
+                            //         'paging' : true,
+                            //         'lengthChange': false,
+                            //         'ordering' : true,
+                            //         'info' : true,
+                            //         'autoWidth' : false,
+                            //         'bFilter' : true,
+                            //         'initComplete': function(){
+                            //         $('div.overlay').hide();
+                            //         document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+                            //         }
+                            //     });
+                            // })
                             $('div.overlay').hide();
                         })
                         .catch((error) => {
@@ -1233,6 +1238,10 @@
                             $('div.overlay').hide();
                         })
                     }
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 });
             },
             submitToTableParts(){
@@ -1293,6 +1302,26 @@
             editRowPart(index){
                 this.input.part_details[index].edit = true;
                 this.active_edit_part_index = index;
+
+                $('#part-table').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#part-table').DataTable({
+                        'paging' : true,
+                        'lengthChange': false,
+                        'ordering' : true,
+                        'info' : true,
+                        'autoWidth' : false,
+                        'bFilter' : true,
+                        'initComplete': function(){
+                        $('div.overlay').hide();
+                        document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
+                        }
+                    });
+                })
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).attr('data-original-title', binding.value)
+                    .tooltip('fixTitle');
+                })
                 // var temp_selected_data = JSON.stringify(this.input.part_details[index]);
                 // temp_selected_data = JSON.parse(temp_selected_data); 
                 
@@ -1349,6 +1378,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1404,6 +1437,10 @@
                             }
                         });
                     })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
+                    })
                 }else{
                     iziToast.warning({
                         title: 'Please manage the part\'s dimension',
@@ -1416,6 +1453,26 @@
             editRowPartEdit(index){
                 this.editInput.part_details[index].edit = true;
                 this.active_edit_part_edit_index = index;
+
+                $('#part-table-edit').DataTable().destroy();
+                this.$nextTick(function() {
+                    $('#part-table-edit').DataTable({
+                        'paging' : true,
+                        'lengthChange': false,
+                        'ordering' : true,
+                        'info' : true,
+                        'autoWidth' : false,
+                        'bFilter' : true,
+                        'initComplete': function(){
+                        $('div.overlay').hide();
+                        document.getElementById("part-table-edit_wrapper").setAttribute("style", "margin-top: -30px");
+                        }
+                    });
+                })
+                Vue.directive('tooltip', function(el, binding){
+                    $(el).attr('data-original-title', binding.value)
+                    .tooltip('fixTitle');
+                })
             },
             removeRowPartEdit(part, index){
                 if(part.id != undefined){
@@ -1468,6 +1525,10 @@
                             document.getElementById("part-table_wrapper").setAttribute("style", "margin-top: -30px");
                             }
                         });
+                    })
+                    Vue.directive('tooltip', function(el, binding){
+                        $(el).attr('data-original-title', binding.value)
+                        .tooltip('fixTitle');
                     })
                 }else{
                     iziToast.warning({
@@ -2117,6 +2178,13 @@
             },
         },
         created: function() {
+            Vue.directive('tooltip', function(el, binding){
+                $(el).tooltip({
+                    title: binding.value,
+                    placement: binding.arg,
+                    trigger: 'hover'             
+                })
+            })
             this.newIndex = this.materialTable.length + 1;
             this.newIndexPart = this.input.part_details.length + 1;
             var jsonMaterialId = JSON.stringify(this.material_id);

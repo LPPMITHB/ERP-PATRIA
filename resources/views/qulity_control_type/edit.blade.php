@@ -15,6 +15,9 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12 p-b-50">
+        <form id="edit-qc" class="form-horizontal" method="POST" action="{{ route('qc_type.updatemaster') }}">
+        @csrf
+        <input type="hidden" name="_method" value="PATCH">
         @verbatim
         <div id="qualityControl">
             <div class="box">
@@ -48,7 +51,7 @@
                                 <tr v-for="(qtc_tasks, index) in qtc_task">
                                     <td>{{ index + 1 }}</td>
                                     <td>{{ qtc_tasks.name }}</td>
-                                    <td>{{ qtc_tasks.description }}</td>
+                                    <td>{{ qtc_tasks.task_description }}</td>
                                     <td class="p-l-5" align="center">
                                         <a class="btn btn-primary btn-xs" href="#edit_item"
                                             @click="openEditModal(index)">
@@ -119,9 +122,6 @@
             </div>
         </div>
         @endverbatim
-        <form id="edit-qc" class="form-horizontal" method="POST" action="{{ route('qc_type.updatemaster') }}">
-            @csrf
-            <input type="hidden" name="_method" value="PUT">
         </form>
     </div>
 </div>
@@ -159,10 +159,10 @@
             index: '',
             name: '',
             description: '',
-        }
+        },
     }
 
-    var vm = new Vue({
+    var app = new Vue({
         el: '#qualityControl',
         data: data,
         methods: {
@@ -327,7 +327,7 @@
             },
             addRow:function(response){
                 this.qtc_task[this.forms.index].name = this.forms.name;
-                this.qtc_task[this.forms.index].description = this.forms.description;
+                this.qtc_task[this.forms.index].task_description = this.forms.description;
                 $('div.overlay').hide();
             },
             removeRow: function(positions) {
@@ -339,13 +339,13 @@
                 this.forms.detailID = this.qtc_task[positions].id;
                 this.forms.index = positions;;
                 this.forms.name = this.qtc_task[positions].name;
-                this.forms.description = this.qtc_task[positions].description;
+                this.forms.description = this.qtc_task[positions].task_description;
                 $('#edit_item').modal();
             },
             addTypeDetail: function() {
                 data = {
                     name: this.input.name,
-                    description: this.input.description
+                    task_description: this.input.description
                 };
                 this.qtc_task.push(data);
                 this.newIndex = this.qtc_task.length + 1;

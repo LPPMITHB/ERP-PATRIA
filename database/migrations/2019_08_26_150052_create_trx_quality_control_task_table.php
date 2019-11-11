@@ -18,6 +18,8 @@ class CreateTrxQualityControlTaskTable extends Migration
             $table->unsignedInteger('wbs_id');
             $table->unsignedInteger('quality_control_type_id');
             $table->text('description')->nullable();
+            $table->boolean('external_join'); //harus ngundang pihak luar ga untuk melakukan tugas ini
+
             $table->integer('status')->default(1);
             $table->unsignedInteger('user_id');
             $table->unsignedInteger('branch_id');  

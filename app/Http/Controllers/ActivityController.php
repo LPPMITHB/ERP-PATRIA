@@ -39,10 +39,11 @@ class ActivityController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
 
+        $index = false;
         if($wbs->weight == null){
             return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
         }else{
-            return view('activity.create', compact('project', 'wbs','menu','services'));
+            return view('activity.create', compact('index','project', 'wbs','menu','services'));
         }
 
     }
@@ -111,14 +112,17 @@ class ActivityController extends Controller
             }
 
             $activity->weight = $data['weight'];
-            $activity->service_id = $data['service_id'];
-            $activity->service_detail_id = $data['service_detail_id'];
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->service_id = $data['service_id'];
-                $activity->service_detail_id = $data['service_detail_id'];
+                if($data['service_id'] != ""){
+                    $activity->service_id = $data['service_id'];
+                }
+
+                if($data['service_detail_id'] != ""){
+                    $activity->service_detail_id = $data['service_detail_id'];
+                }
             }
             // if($activity->wbs->project->business_unit_id == 2){
             //     $project_id = $activity->wbs->project_id;
@@ -298,8 +302,13 @@ class ActivityController extends Controller
             }
 
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->service_id = $data['service_id'];
-                $activity->service_detail_id = $data['service_detail_id'];
+                if($data['service_id'] != ""){
+                    $activity->service_id = $data['service_id'];
+                }
+
+                if($data['service_detail_id'] != ""){
+                    $activity->service_detail_id = $data['service_detail_id'];
+                }
             }
             // if(isset($data['deletedActDetail'])){
             //     if(count($data['deletedActDetail'])>0){
@@ -502,23 +511,15 @@ class ActivityController extends Controller
     public function index($id, Request $request)
     {
         $wbs = WBS::find($id);
-        if(count($wbs->wbsConfig->activities)>0){
-            $activity_config = $wbs->wbsConfig->activities;
+        $project = $wbs->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
 
-            $materials = Material::with('dimensionUom')->get();
-            foreach ($materials as $material) {
-                $material['selected'] = false;
-            }
-            $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
-            $vendors = Vendor::all();
-            $uoms = Uom::all();
-            $project = $wbs->project;
-            $menu = "repair";
-
-            $index = true;
-            return view('activity.createActivityRepair', compact('index','vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
+        $index = true;
+        if($wbs->weight == null){
+            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
         }else{
-            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please Make Activity Configuration for WBS '.$wbs->number.' - '.$wbs->description);
+            return view('activity.create', compact('index','project', 'wbs','menu','services'));
         }
     }
 

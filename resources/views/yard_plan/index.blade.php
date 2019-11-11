@@ -326,7 +326,6 @@
                             var tasks = {
                                 data:data.data,
                             };
-                            console.log(data);
                             gantt.render();
                             gantt.parse(tasks);
                             
