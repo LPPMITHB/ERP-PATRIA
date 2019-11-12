@@ -539,6 +539,7 @@ class ResourceController extends Controller
 
             $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->quantity = $data['quantity'];
+            $resource_ref->description = $data['description'];
             if($data['category_id'] == 4){
                 if($data['resource_detail_id'] != "" && $data['resource_detail_id'] != null){
                     $resource_ref->resource_detail_id = $data['resource_detail_id'];
@@ -580,6 +581,7 @@ class ResourceController extends Controller
             $resource = new ResourceTrx;
             $resource->category_id = $data['category_id'];
             $resource->resource_id = $data['resource_id'];
+            $resource->description = $data['description'];
             if($data['resource_detail_id'] != ''){
                 $resource->resource_detail_id = $data['resource_detail_id'];
             }
@@ -837,7 +839,6 @@ class ResourceController extends Controller
 
     public function getResourceTrxApi($id){
         $resourceTrx = ResourceTrx::with('project','resource','wbs','resourceDetail')->where('project_id',$id)->get()->jsonSerialize();
-
         return response($resourceTrx, Response::HTTP_OK);
     }
 
