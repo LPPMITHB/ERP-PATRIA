@@ -62,16 +62,16 @@
                                     <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
                                         <label for="">Start Date</label>
                                     </div>
-                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 p-r-0">
                                         <input v-model="start_date" required autocomplete="off" type="text"
                                             class="form-control datepicker width100" name="start_date" id="start_date"
                                             placeholder="Set Start Date">
                                     </div>
 
-                                    <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                                    <div class="col-sm-12 col-lg-4 p-l-0 p-t-20">
                                         <label for="">End Date</label>
                                     </div>
-                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 p-r-0">
                                         <input v-model="end_date" required autocomplete="off" type="text"
                                             class="form-control datepicker width100" name="end_date" id="end_date"
                                             placeholder="Set End Date">
@@ -80,7 +80,7 @@
                                     <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
                                         <label for="">Duration</label>
                                     </div>
-                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 ">
+                                    <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 p-r-0">
                                         <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="duration"
                                             type="number" class="form-control" id="duration" placeholder="Duration"
                                             required>
@@ -88,25 +88,28 @@
                                 </div>
                             </div>
                             <div class="col-xs-12 col-md-4 " v-show="qc_type_id != ''">
-                                <div class="col-xs-12 no-padding"><b>Quality Control Task Description</b></div>
-                                <div class="col-xs-12 no-padding">
-                                    <textarea class="form-control"
-                                        placeholder="Please Input Quality Control Task Description" rows="3"
-                                        v-model="submittedForm.description"></textarea>
-                                </div>
-
-                                <div class="col-xs-12 col-md-12">
-                                    <div class="col-xs-1 no-padding">
-                                        <input type="checkbox" v-icheck="" v-model="checkedExternal">
+                                <div class="row">
+                                    <div class="col-xs-12 no-padding"><b>Quality Control Task Description</b></div>
+                                    <div class="col-xs-12 no-padding">
+                                        <textarea class="form-control"
+                                            placeholder="Please Input Quality Control Task Description" rows="3"
+                                            v-model="description"></textarea>
                                     </div>
-                                    <div class="col-xs-11 no-padding"><b>Check if need external join</b></div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-md-12 p-l-0 p-t-20">
+                                        <div class="col-xs-1 no-padding">
+                                            <input type="checkbox" v-icheck="" v-model="checkedExternal">
+                                        </div>
+                                        <div class="col-xs-11 no-padding"><b>Check if need external join</b></div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row" v-show="qc_type_id != ''">
                             <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
-                                <table class="table table-bordered tableFixed" style="border-collapse:collapse;" id="qc-task">
+                                <table class="table table-bordered tableFixed showTable" style="border-collapse:collapse;" id="qc-task">
                                     <thead>
                                         <tr>
                                             <th style="width: 5%">No</th>
@@ -118,7 +121,7 @@
                                         <tr v-for="(qc_task,index) in dataQcTask">
                                             <td>{{ index + 1 }}</td>
                                             <td class="tdEllipsis">{{ qc_task.name }}</td>
-                                            <td class="tdEllipsis">{{ qc_task.description }}</td>
+                                            <td class="tdEllipsis">{{ qc_task.task_description }}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -155,6 +158,7 @@
         end_date : "",
         duration : "",
         checkedExternal : false,
+        description : "",
 
         qcTypeSettings: {
             placeholder: 'Please Select QC Type'
@@ -223,7 +227,6 @@
         methods : {
             getQcTypeDetails(){
                 window.axios.get('/api/getQcTypeDetails/'+this.qc_type_id).then(({ data }) => {
-                    console.log(data);
                     $('div.overlay').show();
                     this.dataQcTask = data;
                     this.newIndex = Object.keys(this.dataQcTask).length+1;
@@ -272,6 +275,9 @@
                 this.submittedForm.start_date = this.start_date;
                 this.submittedForm.end_date = this.end_date;
                 this.submittedForm.duration = this.duration;
+                this.submittedForm.description = this.description;
+                this.submittedForm.checkedExternal = this.checkedExternal;
+                this.submittedForm.wbs_id = this.wbs.id;
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
