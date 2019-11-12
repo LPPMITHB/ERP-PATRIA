@@ -66,8 +66,9 @@
                                                 <td>{{ index + 1 }}</td>
                                                 <td class="tdEllipsis">{{ data.name }}</td>
                                                 <td class="tdEllipsis">{{ data.description }}</td>
-                                                <td class="tdEllipsis" v-if="data.status == null">NOT DONE</td>
-                                                <td class="tdEllipsis" v-else>{{data.status}}</td>
+                                                <td class="tdEllipsis" v-if="data.status_first == null">NOT DONE</td>
+                                                <td class="tdEllipsis" v-else-if="data.status_second != null">{{data.status_second}}</td>
+                                                <td class="tdEllipsis" v-else-if="data.status_second == null && data.status_first != null">{{data.status_first}}</td>
                                                 <td class="p-l-0 textCenter">
                                                     <a v-if="qc_task_ref.status == 1" class="btn btn-primary btn-xs" @click="openConfirmModal(index)">
                                                         CONFIRM
@@ -103,23 +104,51 @@
                                                     <p>{{confirm_qc_task.description}}</p>
                                                 </div>
 
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-3">
                                                     <label for="quantity" class="control-label">Status</label>
                                                     <div v-if="qc_task_ref.status == 1" class="row">
+                                                        <div v-show="confirm_qc_task.status_first_ref == null" class="col-sm-12">
+                                                            <input class="checkbox_icheck_first" :disabled="finishedOk" type="checkbox" id="OK_first" value="OK">
+                                                            <label class="text-success">OK</label>
+                                                        </div>
+                                                        <div v-show="confirm_qc_task.status_first_ref == null" class="col-sm-12">
+                                                            <input class="checkbox_icheck_first" :disabled="finishedOk" type="checkbox" id="NOT_OK_first"value="NOT OK">
+                                                            <label class="text-danger">NOT OK</label>
+                                                        </div>
+                                                        <div v-show="confirm_qc_task.status_first_ref != null" class="col-sm-12">
+                                                            <p>
+                                                                <b v-if="confirm_qc_task.status_first_ref == 'OK'" class="text-success">{{confirm_qc_task.status_first_ref}}</b>
+                                                                <b v-else-if="confirm_qc_task.status_first_ref == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_first_ref}}</b>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div v-else-if="qc_task_ref.status == 0" class="row">
                                                         <div class="col-sm-12">
-                                                            <input class="checkbox_icheck" :disabled="finishedOk" type="checkbox" id="OK" value="OK">
+                                                            <p>
+                                                                <b v-if="confirm_qc_task.status_first == 'OK'" class="text-success">{{confirm_qc_task.status_first}}</b>
+                                                                <b v-else-if="confirm_qc_task.status_first == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_first}}</b>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-3" v-show="confirm_qc_task.status_first_ref != '' && confirm_qc_task.status_first_ref != null">
+                                                    <label for="quantity" class="control-label">Status Reinspect</label>
+                                                    <div v-if="qc_task_ref.status == 1" class="row">
+                                                        <div class="col-sm-12">
+                                                            <input class="checkbox_icheck_second" :disabled="finishedOk" type="checkbox" id="OK_second" value="OK">
                                                             <label class="text-success">OK</label>
                                                         </div>
                                                         <div class="col-sm-12">
-                                                            <input class="checkbox_icheck" :disabled="finishedOk" type="checkbox" id="NOT_OK"value="NOT OK">
+                                                            <input class="checkbox_icheck_second" :disabled="finishedOk" type="checkbox" id="NOT_OK_second" value="NOT OK">
                                                             <label class="text-danger">NOT OK</label>
                                                         </div>
                                                     </div>
                                                     <div v-else-if="qc_task_ref.status == 0" class="row">
                                                         <div class="col-sm-12">
                                                             <p>
-                                                                <b v-if="confirm_qc_task.status == 'OK'" class="text-success">{{confirm_qc_task.status}}</b>
-                                                                <b v-else-if="confirm_qc_task.status == 'NOT OK'" class="text-danger">{{confirm_qc_task.status}}</b>
+                                                                <b v-if="confirm_qc_task.status_second == 'OK'" class="text-success">{{confirm_qc_task.status_second}}</b>
+                                                                <b v-else-if="confirm_qc_task.status_second == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_second}}</b>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -177,7 +206,9 @@
         confirm_qc_task :{
             index : "",
             id : "",
-            status : "",
+            status_first : "",
+            status_first_ref : "",
+            status_second : "",
             notes : "",
             name : "",
             description : "",
@@ -190,35 +221,20 @@
         el : '#qc_task',
         data : data,
         mounted: function(){
-            jQuery('.checkbox_icheck').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'iradio_square-blue',
-                increaseArea: '20%' // optional
-            });
-
-            jQuery('.checkbox_icheck').on('ifChecked', function(e){
-                var value = $(this).val().split('-')[0];
-                var index = $(this).val().split('-')[1];
-
-                if(value == "OK"){
-                    $('#NOT_OK').iCheck('uncheck');
-                }else if(value == "NOT OK"){
-                    $('#OK').iCheck('uncheck');
-                }
-                vm.confirm_qc_task.status = value;
-            });
-            jQuery('.checkbox_icheck').on('ifUnchecked', function(e){
-                var value = $(this).val().split('-')[0];
-                var index = $(this).val().split('-')[1];
-                vm.confirm_qc_task.status = null;
-            });
+            
         },
         computed : {
             confirmOk: function(){
                 let isOk = false;
 
-                if(this.confirm_qc_task.status == "" || this.confirm_qc_task.status == null){
-                    isOk = true;
+                if(this.confirm_qc_task.status_first_ref == null){
+                    if(this.confirm_qc_task.status_first == "" || this.confirm_qc_task.status_first == null){
+                        isOk = true;
+                    }
+                }else{
+                    if(this.confirm_qc_task.status_second == "" || this.confirm_qc_task.status_second == null){
+                        isOk = true;
+                    }
                 }
 
                 return isOk;
@@ -237,10 +253,14 @@
                 this.confirm_qc_task.id = "";
                 this.confirm_qc_task.name = "";
                 this.confirm_qc_task.description = "";
-                this.confirm_qc_task.status = "";
+                this.confirm_qc_task.status_first = "";
+                this.confirm_qc_task.status_first_ref= "";
+                this.confirm_qc_task.status_second = "";
                 this.confirm_qc_task.notes = "";
-                $('#NOT_OK').iCheck('uncheck');
-                $('#OK').iCheck('uncheck');
+                $('#NOT_OK_first').iCheck('uncheck');
+                $('#OK_first').iCheck('uncheck');
+                $('#NOT_OK_second').iCheck('uncheck');
+                $('#OK_second').iCheck('uncheck');
             },
             openConfirmModal(index){
                 this.clearData();
@@ -249,12 +269,13 @@
                 this.confirm_qc_task.id = qc_task_detail.id;
                 this.confirm_qc_task.name = qc_task_detail.name;
                 this.confirm_qc_task.description = qc_task_detail.description;
-                this.confirm_qc_task.status = qc_task_detail.status;
+                this.confirm_qc_task.status_first = qc_task_detail.status_first;
+                this.confirm_qc_task.status_first_ref = qc_task_detail.status_first;
                 this.confirm_qc_task.notes = qc_task_detail.notes;
-                if(qc_task_detail.status == "OK"){
-                    $('#OK').iCheck('check');
-                }else if(qc_task_detail.status == "NOT OK"){
-                    $('#NOT_OK').iCheck('check');
+                if(qc_task_detail.status_second == "OK"){
+                    $('#OK_second').iCheck('check');
+                }else if(qc_task_detail.status_second == "NOT OK"){
+                    $('#NOT_OK_second').iCheck('check');
                 }
 
                 $('#confirm_qc_task_detail').modal();
@@ -381,7 +402,54 @@
         },
         created : function(){ 
             this.getQcTaskDetails();
+            
         },
+        updated : function(){
+            jQuery('.checkbox_icheck_first').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+
+            jQuery('.checkbox_icheck_first').on('ifChecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+
+                if(value == "OK"){
+                    $('#NOT_OK_first').iCheck('uncheck');
+                }else if(value == "NOT OK"){
+                    $('#OK_first').iCheck('uncheck');
+                }
+                vm.confirm_qc_task.status_first = value;
+            });
+            jQuery('.checkbox_icheck_first').on('ifUnchecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+                vm.confirm_qc_task.status_first = null;
+            });
+            
+            jQuery('.checkbox_icheck_second').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+            jQuery('.checkbox_icheck_second').on('ifChecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+
+                if(value == "OK"){
+                    $('#NOT_OK_second').iCheck('uncheck');
+                }else if(value == "NOT OK"){
+                    $('#OK_second').iCheck('uncheck');
+                }
+                vm.confirm_qc_task.status_second = value;
+            });
+            jQuery('.checkbox_icheck_second').on('ifUnchecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+                vm.confirm_qc_task.status_second = null;
+            });
+        }
     })
 
 </script>
