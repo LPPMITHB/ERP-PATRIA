@@ -40,7 +40,6 @@
                         @php
                         $date = DateTime::createFromFormat('Y-m-d', $qcTask->start_date);
                         $date = $date->format('d-m-Y');
-                        echo $date;
                         @endphp
                         <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$date}}"><b>: {{$date}}</b></div>
 
@@ -48,7 +47,6 @@
                         @php
                         $date = DateTime::createFromFormat('Y-m-d', $qcTask->end_date);
                         $date = $date->format('d-m-Y');
-                        echo $date;
                         @endphp
                         <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$date}}"><b>: {{$date}}</b></div>
 
