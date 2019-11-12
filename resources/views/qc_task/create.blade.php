@@ -227,7 +227,6 @@
         methods : {
             getQcTypeDetails(){
                 window.axios.get('/api/getQcTypeDetails/'+this.qc_type_id).then(({ data }) => {
-                    console.log(data);
                     $('div.overlay').show();
                     this.dataQcTask = data;
                     this.newIndex = Object.keys(this.dataQcTask).length+1;

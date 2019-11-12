@@ -315,6 +315,10 @@ class QualityControlTaskController extends Controller
     public function edit(Request $request,$id)
     {
         $qcTask = QualityControlTask::findOrFail($id);
+        $start_date = DateTime::createFromFormat('Y-m-d', $qcTask->start_date);
+        $qcTask->start_date = $start_date->format('d-m-Y');
+        $end_date = DateTime::createFromFormat('Y-m-d', $qcTask->end_date);
+        $qcTask->end_date = $end_date->format('d-m-Y');
 
         $route = $request->route()->getPrefix();
         $modelQcType = QualityControlType::all();
@@ -345,29 +349,41 @@ class QualityControlTaskController extends Controller
                 $qcTask->qualityControlTaskDetails()->delete();
             }
             $qcTask->quality_control_type_id = $data->qc_type_id;
-            $qcTask->description = $data->description;
+            if($data->description != ''){
+                $qcTask->description = $data->description;
+            }else{
+                $qcTask->description = null;
+            }
+            $qcTask->external_join = $data->checkedExternal;
+            $startDate = DateTime::createFromFormat('d-m-Y', $data->start_date);
+            $endDate = DateTime::createFromFormat('d-m-Y', $data->end_date);
+            if($startDate){
+                $qcTask->start_date = $startDate->format('Y-m-d');
+            }else{
+                $qcTask->start_date = null;
+            }
+            if($endDate){
+                $qcTask->end_date = $endDate->format('Y-m-d');
+            }else{
+                $qcTask->end_date = null;
+            }
+            $qcTask->duration = $data->duration;
             $qcTask->user_id = Auth::user()->id;
             $qcTask->branch_id = Auth::user()->branch->id;
             $qcTask->update();
 
+            // Delete first QC Task Detail
+            $qcTaskDetail = QualityControlTaskDetail::where('quality_control_task_id',$data->id)->delete();
+            // if(count($qcTaskDetail) > 0){
+            //     $qcTaskDetail->delete();
+            // }
 
-            foreach ($data->deletedQcTaskDetail as $id) {
-                $qcTaskDetail = QualityControlTaskDetail::find($id);
-                $qcTaskDetail->delete();
-            }
             foreach ($data->dataQcTask as $data) {
-                if(isset($data->id)){
-                    $qcTaskDetail = QualityControlTaskDetail::find($data->id);
-                    $qcTaskDetail->name = $data->name;
-                    $qcTaskDetail->description = $data->description;
-                    $qcTaskDetail->update();
-                }else{
-                    $qcTaskDetail = new QualityControlTaskDetail;
-                    $qcTaskDetail->quality_control_task_id = $qcTask->id;
-                    $qcTaskDetail->name = $data->name;
-                    $qcTaskDetail->description = $data->description;
-                    $qcTaskDetail->save();
-                }
+                $qcTaskDetail = new QualityControlTaskDetail;
+                $qcTaskDetail->quality_control_task_id = $qcTask->id;
+                $qcTaskDetail->name = $data->name;
+                $qcTaskDetail->description = $data->task_description;
+                $qcTaskDetail->save();
             }
             DB::commit();
             return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Updated Quality Control Task!');

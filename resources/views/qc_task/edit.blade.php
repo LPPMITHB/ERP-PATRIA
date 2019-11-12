@@ -55,13 +55,42 @@
                                     <selectize :disabled="!editable" v-model="qc_type_id" :settings="qcTypeSettings" >
                                         <option v-for="(qc_type, index) in qc_types" :value="qc_type.id">{{ qc_type.name }}</option>
                                     </selectize>
+
+                                    <div v-show="qc_type_id != ''">
+                                        <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                                            <label for="">Start Date</label>
+                                        </div>
+                                        <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 p-r-0">
+                                            <input v-model="start_date" required autocomplete="off" type="text"
+                                                class="form-control datepicker width100" name="start_date" id="start_date"
+                                                placeholder="Set Start Date">
+                                        </div>
+
+                                        <div class="col-sm-12 col-lg-4 p-l-0 p-t-20">
+                                            <label for="">End Date</label>
+                                        </div>
+                                        <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 p-r-0">
+                                            <input v-model="end_date" required autocomplete="off" type="text"
+                                                class="form-control datepicker width100" name="end_date" id="end_date"
+                                                placeholder="Set End Date">
+                                        </div>
+
+                                        <div class="col-sm-12 col-lg-4 p-l-0 p-t-20 ">
+                                            <label for="">Duration</label>
+                                        </div>
+                                        <div class="col-sm-12 col-lg-8 p-l-0 p-t-15 p-r-0">
+                                            <input @keyup="setEndDateNew" @change="setEndDateNew" v-model="duration"
+                                                type="number" class="form-control" id="duration" placeholder="Duration"
+                                                required>
+                                        </div>
+                                    </div>
                                 </div>
                                 <div class="col-xs-12 col-md-4 " v-show="qc_type_id != ''">
                                     <div class="row">
                                         <div class="col-xs-12 no-padding"><b>Quality Control Task Description</b></div>
                                         <div class="col-xs-12 no-padding">
                                             <textarea class="form-control" placeholder="Please Input Quality Control Task Description" rows="3"
-                                                v-model="submittedForm.description"></textarea>
+                                                v-model="description"></textarea>
                                         </div>
                                     </div>
                                     <div class="row">
@@ -123,16 +152,15 @@
         qc_type_id : @json($qcTask->quality_control_type_id),
         wbs : @json($qcTask->wbs),
         newIndex : "",
-        start_date : @json($qcTask->start_date);
-        end_date : @json($qcTask->end_date);
-        duration : @json($qcTask->duration);
+        start_date : @json($qcTask->start_date),
+        end_date : @json($qcTask->end_date),
+        duration : @json($qcTask->duration),
         qcTypeSettings: {
             placeholder: 'Please Select QC Type'
         },
 
         submittedForm: {
             id:@json($qcTask->id),
-            description: @json($qcTask->description),
             dataQcTask :@json($qcTask->qualityControlTaskDetails),
             deletedQcTaskDetail: [],
         },
@@ -146,13 +174,36 @@
             description : "",
         },
         checkedExternal : @json($qcTask->external_join),
-
+        description : @json($qcTask->description),
         editable : @json($editable),
     }
 
     var vm = new Vue({
         el : '#qc_task',
         data : data,
+        mounted() {
+            $('.datepicker').datepicker({
+                autoclose : true,
+                format: 'dd-mm-yyyy',
+            });
+            $("#start_date").datepicker().on(
+                "changeDate", () => {
+                    this.start_date = $('#start_date').val();
+                    if(this.end_date != ""){
+                        this.duration = datediff(parseDate(this.start_date), parseDate(this.end_date));
+                    }
+                    this.setEndDateNew();
+                }
+            );
+            $("#end_date").datepicker().on(
+                "changeDate", () => {
+                    this.end_date = $('#end_date').val();
+                    if(this.start_date != ""){
+                        this.duration = datediff(parseDate(this.start_date), parseDate(this.end_date));
+                    }
+                }
+            );
+        },
         computed : {
             dataOk: function(){
                 let isOk = false;
@@ -223,6 +274,11 @@
             submitForm() {
                 $('div.overlay').show();
                 this.submittedForm.qc_type_id = this.qc_type_id;
+                this.submittedForm.start_date = this.start_date;
+                this.submittedForm.end_date = this.end_date;
+                this.submittedForm.duration = this.duration;
+                this.submittedForm.description = this.description;
+                this.submittedForm.checkedExternal = this.checkedExternal;
                 let struturesElem = document.createElement('input');
                 struturesElem.setAttribute('type', 'hidden');
                 struturesElem.setAttribute('name', 'datas');
@@ -243,6 +299,18 @@
                 this.submittedForm.dataQcTask[index_edit].description = this.editQcTask.description;
                 this.clearData();
                 $('div.overlay').hide();
+            },
+            setEndDateNew(){
+                if(this.duration != "" && this.start_date != ""){
+                    var planned_duration = parseInt(this.duration);
+                    var planned_start_date = this.start_date;
+                    var planned_end_date = new Date(planned_start_date.split("-").reverse().join("-"));
+
+                    planned_end_date.setDate(planned_end_date.getDate() + planned_duration-1);
+                    $('#end_date').datepicker('setDate', planned_end_date);
+                }else{
+                    this.end_date = "";
+                }
             },
         },
 
@@ -294,7 +362,20 @@
             this.getQcType(this.qc_type_id);
             this.newIndex = this.submittedForm.dataQcTask.length + 1;            
         }
-    })
+    });
+
+    function parseDate(str) {
+        var mdy = str.split('-');
+        var date = new Date(mdy[2], mdy[1]-1, mdy[0]);
+        return date;
+    }
+
+    //Additional Function
+    function datediff(first, second) {
+        // Take the difference between the dates and divide by milliseconds per day.
+        // Round to nearest whole number to deal with DST.
+        return Math.round(((second-first)/(1000*60*60*24))+1);
+    }
 
 </script>
 @endpush
