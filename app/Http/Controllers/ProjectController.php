@@ -335,6 +335,70 @@ class ProjectController extends Controller
         return view('project.selectStructure', compact('dataWbs','projectStandard','mainMenu','newProject'));
     }
 
+    public function selectStructureAdditional($project_standard_id, $project_id){
+        $projectStandard = ProjectStandard::find($project_standard_id);
+        $projectRef = Project::find($project_id);
+        $mainMenu = $projectRef->business_unit_id == "1" ? "building" : "repair";
+        $wbss = $projectStandard->wbss;
+        $dataWbs = Collection::make();
+        
+        $totalWeightProject = $projectStandard->wbss->where('wbs_id',null)->sum('weight');
+        $dataWbs->push([
+            "id" => "PRO".$projectStandard->id,
+            "parent" => "#",
+            "text" => $projectStandard->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        foreach($wbss as $wbs){
+            if($wbs->wbs){
+                // if(count($wbs->activities)>0){
+                //     $dataWbs->push([
+                //         "id" => "WBS".$wbs->id,
+                //         "parent" => "WBS".$wbs->wbs->id,
+                //         "text" => $wbs->number." - ".$wbs->description,
+                //         "icon" => "fa fa-suitcase",
+                //     ]);
+                //     // foreach($wbs->activities as $activity){
+                //     //     $dataWbs->push([
+                //     //         "id" => "ACT".$activity->id,
+                //     //         "parent" => "WBS".$activity->wbs->id,
+                //     //         "text" => $activity->name,
+                //     //         "icon" => "fa fa-clock-o",
+                //     //     ]);
+                //     // }
+                // }else{
+                    $dataWbs->push([
+                        "id" => "WBS".$wbs->id,
+                        "parent" => "WBS".$wbs->wbs->id,
+                        "text" => $wbs->number." - ".$wbs->description,
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                // }
+            }else{
+                // if(count($wbs->activities)>0){
+                //     foreach($wbs->activities as $activity){
+                //         $dataWbs->push([
+                //             "id" => "ACT".$activity->id,
+                //             "parent" => "WBS".$activity->wbs->id,
+                //             "text" => $activity->name,
+                //             "icon" => "fa fa-clock-o",
+                //         ]);
+                //     }
+                // }
+
+                $dataWbs->push([
+                    "id" => "WBS".$wbs->id,
+                    "parent" => "PRO".$projectStandard->id,
+                    "text" => $wbs->number." - ".$wbs->description,
+                    "icon" => "fa fa-suitcase",
+                ]);
+            }
+        }
+
+        return view('project.selectStructureAdditional', compact('dataWbs','projectStandard','mainMenu','projectRef'));
+    }
+
     public function index(Request $request)
     {
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
@@ -599,7 +663,7 @@ class ProjectController extends Controller
         }
 
         DB::beginTransaction();
-        $modelProject = Project::orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
+        $modelProject = Project::where('project_id','!=', null)->orderBy('id','desc')->whereYear('created_at', '=', date('Y'))->first();
         try {
             $project = new Project;
             $project->number =  $request->number;
@@ -892,6 +956,116 @@ class ProjectController extends Controller
         }
 
     }
+
+    public function storeAdditionalWork(Request $request)
+    {
+        $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
+        $datas = json_decode($request->structures);
+        $project_ref = Project::find($request->project_id);
+        
+        $project = new Project;
+        $project = $project_ref->replicate();
+        $project->project_id = $project_ref->id;
+        $project->user_id = Auth::user()->id;
+        $project->branch_id = Auth::user()->branch->id;
+        $project->name = $project->name." [Additional]";
+        $project->save();
+        $project_id = $project->id;
+
+        $wbsIdConverter = [];
+
+        DB::beginTransaction();
+        try {
+            foreach ($datas as $dataTree) {
+                if(strpos($dataTree, 'WBS') !== false) {
+                    $wbs_standard_id = str_replace("WBS", "", $dataTree);
+                    $wbs_standard = WbsStandard::find($wbs_standard_id);
+
+                    $wbs = new WBS;
+                    $wbs->number = $wbs_standard->number;
+                    $wbs->description = $wbs_standard->description;
+                    $wbs->deliverables = $wbs_standard->deliverables;
+                    $wbs->planned_duration = $wbs_standard->duration;
+                    $wbs->wbs_standard_id = $wbs_standard_id;
+
+                    $wbs->code = self::generateWbsCode($project_ref->id);
+                    if(isset($wbsIdConverter[$wbs_standard->wbs_id])){
+                        $wbs->wbs_id = $wbsIdConverter[$wbs_standard->wbs_id];
+                    }
+                    $wbs->project_id = $project_id;
+                    $wbs->user_id = Auth::user()->id;
+                    $wbs->branch_id = Auth::user()->branch->id;
+                    $wbs->save();
+                    $wbsIdConverter[$wbs_standard_id] = $wbs->id;
+                    $materialStandards = MaterialStandard::where('wbs_standard_id', $wbs_standard->id)->get();
+                    if(count($materialStandards) > 0){
+                        foreach ($materialStandards as $materialStandard) {
+                            if(count($materialStandard->partDetails) > 0){
+                                foreach ($materialStandard->partDetails as $part) {
+                                    $wbs_material = new WbsMaterial;
+                                    $wbs_material->wbs_id = $wbs->id;
+                                    $wbs_material->part_description = $part->description;
+                                    $wbs_material->material_id = $part->materialStandard->material_id;
+                                    $wbs_material->quantity = $part->quantity;
+                                    $wbs_material->dimensions_value = $part->dimensions_value;
+                                    $wbs_material->weight = $part->weight;
+                                    $wbs_material->save();
+
+                                    $activity = new Activity;
+                                    $activity->code = self::generateActivityCode($wbs->id);
+                                    
+                                    $activity->name = $part->description;
+                                    $activity->type = "General";
+                                    $activity->description = $part->description;
+                                    $activity->wbs_id = $wbs->id;
+
+                                    if($part->service_id!=null){
+                                        $activity->service_id = $part->service_id;
+                                    }
+
+                                    if($part->service_detail_id!=null){
+                                        $activity->service_detail_id = $part->service_detail_id;
+                                    }
+                                    
+                                    $activity->wbs_material_id = $wbs_material->id;
+                                    $activity->user_id = Auth::user()->id;
+                                    $activity->branch_id = Auth::user()->branch->id;
+                                    $activity->save();
+                                }
+                            }else{
+                                $wbs_material = new WbsMaterial;
+                                $wbs_material->wbs_id = $wbs->id;
+                                $wbs_material->material_id = $materialStandard->material_id;
+                                $wbs_material->quantity = $materialStandard->quantity;
+                                $wbs_material->save();
+                            }
+                        }
+                    }
+
+                    $resourceStandards = ResourceStandard::where('wbs_standard_id', $wbs_standard->id)->get();
+                    if(count($resourceStandards) > 0){
+                        foreach ($resourceStandards as $resource) {
+                            $resource_input = new ResourceTrx;
+                            $resource_input->resource_id = $resource->resource_id;
+                            $resource_input->wbs_id = $wbs->id;
+                            $resource_input->project_id = $project_id;
+                            $resource_input->quantity = $resource->quantity;
+                            $resource_input->user_id = Auth::user()->id;
+                            $resource_input->branch_id = Auth::user()->branch->id;
+                            $resource_input->save();
+                        }
+                    }
+                }
+            }
+            DB::commit();
+
+            return redirect()->route('project_repair.show', ['id' => $project_ref->id])->with('success', 'Additional Work Created');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('project_repair.selectStructureAdditional', ['project_standard_id' => $request->project_standard_id,'project_id' => $project_ref->id])->with('error', "Please Try Again, ".$e->getMessage());
+        }
+
+    }
 // public function store(Request $request)
 // {
 //     $this->validate($request, [
@@ -1099,6 +1273,7 @@ class ProjectController extends Controller
         if (in_array("2", json_decode($business_ids))) {
             $is_pami = true;
         }
+
         //planned
         $dataPlannedCost = Collection::make();
         $modelBom = Bom::where('project_id',$id)->get();
@@ -1146,6 +1321,7 @@ class ProjectController extends Controller
             ]);
         }
         self::getDataChart($dataPlannedCost,$objectDate,$modelMR,$dataActualCost, $project, $dataActualProgress, $dataPlannedProgress, $menu, $dataEvm);
+       
         $ganttData = Collection::make();
         $links = Collection::make();
         $outstanding_item = Collection::make();
@@ -1346,9 +1522,20 @@ class ProjectController extends Controller
         }
 
         $project_done = $project->progress == 100 ? true:false;
-        return view('project.show', compact('activities','wbss','project','today','ganttData','links','is_pami',
-        'outstanding_item','modelPrO','menu','dataPlannedCost','dataActualCost','project_done',
-        'dataActualProgress','dataPlannedProgress', 'progressStatus','str_expected_date','expectedStatus','dataEvm'));
+
+        $additional_works_data = Collection::make();
+
+        $additional_works = $project->additionalWorks;
+        foreach ($additional_works as $additional_work) {
+            $temp_project = new \stdClass;
+            self::getAdditionalWorkData($additional_work,$temp_project,$menu);
+            $additional_works_data->push($temp_project);
+        }
+        
+        return view('project.show', compact('additional_works_data','project','today','is_pami','menu',
+        'outstanding_item','progressStatus','ganttData','links','str_expected_date','expectedStatus','dataEvm',
+        'dataPlannedCost','dataActualCost','dataPlannedProgress','dataActualProgress'
+        ));
     }
 
 
@@ -1685,6 +1872,283 @@ class ProjectController extends Controller
     }
 
     //Methods
+    public function getAdditionalWorkData($project,$temp_project)
+    {
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $wbss = $project->wbss;
+        $today = date("Y-m-d");
+        $is_pami = false;
+        $business_ids = Auth::user()->business_unit_id;
+        if (in_array("2", json_decode($business_ids))) {
+            $is_pami = true;
+        }
+
+        //planned
+        $dataPlannedCost = Collection::make();
+        $modelBom = Bom::where('project_id',$project->id)->get();
+        if($menu == "building"){
+            $objectDate = $project->wbss->groupBy('planned_start_date');
+        }else{
+            $wbss_id = $project->wbss->pluck('id')->toArray();
+            $objectDate = Activity::whereIn('wbs_id',$wbss_id)->get()->groupBy('planned_start_date');
+        }
+        $dataPlannedCost->push([
+            "t" => $project->planned_start_date,
+            "y" => "0",
+        ]);
+
+        //actual
+        $dataActualCost = Collection::make();
+        $modelMR = MaterialRequisition::where('project_id',$project->id)->get();
+        if($project->actual_start_date != null){
+            $dataActualCost->push([
+                "t" => $project->actual_start_date,
+                "y" => "0",
+            ]);
+        }
+
+        //evm
+        $dataEvm = Collection::make();
+        if($project->actual_start_date != null){
+            $dataEvm->push([
+                "t" => $project->actual_start_date,
+                "y" => "0",
+            ]);
+        }
+
+        //Progress
+        $dataPlannedProgress = Collection::make();
+        $dataPlannedProgress->push([
+            "t" => $project->planned_start_date,
+            "y" => "0",
+        ]);
+        $dataActualProgress = Collection::make();
+        if($project->actual_start_date != null){
+            $dataActualProgress->push([
+                "t" => $project->actual_start_date,
+                "y" => "0",
+            ]);
+        }
+        self::getDataChart($dataPlannedCost,$objectDate,$modelMR,$dataActualCost, $project, $dataActualProgress, $dataPlannedProgress, $menu, $dataEvm);
+       
+        $ganttData = Collection::make();
+        $links = Collection::make();
+        $outstanding_item = Collection::make();
+        
+        $progressStatus = Collection::make();
+        self::getDataStatusProgress($project,$progressStatus);
+
+        $outstanding_item->push([
+            "id" => $project->number ,
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        self::getOutstandingItem($wbss,$outstanding_item, $project,$today);
+        self::getDataForGantt($project, $ganttData, $links, $today);
+
+        $wbss = $project->wbss->pluck('id')->toArray();
+        $activities = Activity::whereIn('wbs_id',$wbss)->get();
+        $predecessors =$activities->pluck('predecessor','id')->toArray();
+        $predecessor_collection = Collection::make();
+        $predecessor_array = [];
+        $temp_starting_point = [];
+        $starting_point = [];
+        foreach($predecessors as $act_id => $predecessor){
+            if($predecessor != null){
+                $temp = json_decode($predecessor);
+                foreach($temp as $act){
+                    $predecessor_collection->push([
+                        'act_id' => $act_id,
+                        'predecessor' => $act[0],
+                    ]);
+                    array_push($predecessor_array, $act[0]);
+                }
+            }else{
+                array_push($temp_starting_point, $act_id);
+            }
+        }
+
+        foreach($temp_starting_point as $key => $act_id){
+            if(array_search($act_id,$predecessor_array) > -1){
+                array_push($starting_point, $act_id);
+            }
+        }
+
+        $cpm_model = Collection::make();
+        foreach($starting_point as $act_id){
+            $act_ref = Activity::find($act_id);
+            $cpm_collection = Collection::make();
+            $level = 0;
+            $cpm_collection->push([
+                'level'=>$level,
+                'act_id'=>$act_id,
+                'duration'=> $act_ref->planned_duration,
+                'parent'=> null,
+            ]);
+            $cpm_model->put($act_id,$cpm_collection);
+            self::makeCpm($act_id,$act_id, $cpm_model, $predecessor_collection, $level);
+        }
+
+        $separated_model = [];
+        foreach ($cpm_model as $key => $data) {
+            $dataPerLvl = $data->groupBy('level');
+            $separated_model[$key] = [];
+            foreach ($dataPerLvl as $perLvl) {
+
+                if($perLvl[0]['parent'] == null){
+                    $parent = $perLvl[0]['parent'];
+                    $separated_model[$key][$perLvl[0]['act_id']] = [$perLvl[0]];
+                }else{
+                    $temp_parent_coll = $separated_model[$key];
+                    foreach ($perLvl as $dataPerLvl) {
+                        if(isset($temp_parent_coll[$dataPerLvl['parent']])){
+                            $temp_array_data = $temp_parent_coll;
+                            array_push($temp_array_data[$dataPerLvl['parent']],$dataPerLvl);
+                            $separated_model[$key][$dataPerLvl['act_id']] = $temp_array_data[$dataPerLvl['parent']];
+                        }
+                    }
+                }
+            }
+        }
+
+        $longest_duration = 0;
+        $longest_model = [];
+        foreach ($separated_model as $model) {
+            foreach ($model as $sub_model) {
+                $temp_duration = 0;
+                foreach ($sub_model as $singular) {
+                    $temp_duration += $singular['duration'];
+                }
+                if($longest_duration == $temp_duration){
+                    array_push($longest_model, $sub_model);
+                } else if($longest_duration < $temp_duration){
+                    $longest_duration = $temp_duration;
+                    $longest_model = [$sub_model];
+                }
+            }
+        }
+        $cpm_act_code = [];
+        foreach ($longest_model as $model) {
+            foreach ($model as $singular) {
+                $activity_code = Activity::find($singular['act_id'])->code;
+                array_push($cpm_act_code,$activity_code);
+            }
+        }
+
+        $cpm_act_code = array_unique($cpm_act_code);
+        foreach ($ganttData as $key => $data) {
+            if(array_search($data["id"], $cpm_act_code) > -1){
+                $data['is_cpm'] = true;
+                $data['text'] = $data['text']." CPM!";
+                $ganttData[$key] = $data;
+            }
+        }
+
+        $ganttData->jsonSerialize();
+        $links->jsonSerialize();
+        $dataPlannedCost->jsonSerialize();
+        $dataActualCost->jsonSerialize();
+        $dataActualProgress->jsonSerialize();
+        $dataPlannedProgress->jsonSerialize();
+
+        $activities = [];
+        if($menu == "building"){
+            $wbss = WBS::where('project_id', $project->id)->with('bom.purchaseRequisition.purchaseOrders.vendor',
+            'bom.purchaseRequisition.purchaseOrders.goodsReceipts.purchaseOrder','productionOrder',
+            'materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->get();
+        }else{
+            $wbs_id = WBS::where('project_id', $project->id)->pluck('id')->toArray();
+            if(count($wbs_id)>0){
+                $activities = Activity::whereIn("wbs_id",$wbs_id)->
+                // with('activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.vendor',
+                // 'activityDetails.bomPrep.bomDetails.bom.purchaseRequisition.purchaseOrders.goodsReceipts.purchaseOrder',
+                // 'wbs.productionOrder.goodsReceipts.goodsReceiptDetails','wbs.materialRequisitionDetails.material_requisition.goodsIssues.materialRequisition')->
+                get();
+            }
+        }
+        $modelPrO = productionOrder::where('project_id',$project->id)->where('status',0)->get();
+
+        // ngitung expected end date
+        $modelWBS = WBS::where('project_id',$project->id)->get();
+        $WbsAll = WBS::where('project_id',$project->id)->get();
+        if(count($modelWBS)> 0){
+
+            foreach($modelWBS as $key => $wbs){
+                foreach($WbsAll as $dataWbs){
+                    if($dataWbs->wbs_id == $wbs->id){
+                        $modelWBS->forget($key);
+                    }
+                }
+            }
+            $dateGlobal = date("Y-m-d");
+            $date = date_create($dateGlobal);
+            $late_days = 0;
+            foreach($modelWBS as $wbs){
+                if($wbs->progress >= 100){
+                    $planned_end_date = date_create($wbs->planned_end_date);
+                    $actual_end_date = date_create($wbs->actual_end_date);
+                    $diff=date_diff($actual_end_date,$planned_end_date);
+                    if($diff->invert == 0){
+                        $late_days += $diff->d * -1;
+                    }else{
+                        $late_days += $diff->d;
+                    }
+                }else{
+                    if($wbs->planned_end_date < $dateGlobal){
+                        $planned_end_date = date_create($wbs->planned_end_date);
+                        $diff=date_diff($date,$planned_end_date);
+                        $late_days += $diff->d;
+                    }
+                }
+            }
+            $latestDate = WBS::orderBy('planned_end_date','desc')->where('project_id',$project->id)->first()->planned_end_date;
+            $expectedDate = date($latestDate);
+            $expectedDate = strtotime($expectedDate);
+            $expectedDate = date("Y-m-d",strtotime("$late_days day", $expectedDate));
+
+            $project_end_date = date_create($project->planned_end_date);
+            $expected_end_date = date_create($expectedDate);
+            $diff=date_diff($expected_end_date,$project_end_date);
+
+            if($expectedDate == $project->planned_end_date){
+                $expectedDate = date("d-m-Y", strtotime($expectedDate));
+                $expectedStatus = 0;
+                $str_expected_date = "$expectedDate, On Time";
+            }elseif($expectedDate < $project->planned_end_date){
+                $expectedDate = date("d-m-Y", strtotime($expectedDate));
+                $expectedStatus = 1;
+                $str_expected_date = "$expectedDate, $diff->d day(s) early than project's planned end date";
+            }elseif($expectedDate > $project->planned_end_date){
+                $expectedDate = date("d-m-Y", strtotime($expectedDate));
+                $expectedStatus = 2;
+                $str_expected_date = "$expectedDate, $diff->d day(s) late than project's planned end date";
+            }
+        }else{
+            $str_expected_date = null;
+            $expectedStatus = null;
+        }
+
+        $project_done = $project->progress == 100 ? true:false;
+
+        $temp_project->project = $project;
+        $temp_project->activities = $activities;
+        $temp_project->wbss = $wbss;
+        $temp_project->project_done = $project_done;
+        $temp_project->ganttData = $ganttData;
+        $temp_project->links = $links;
+        $temp_project->modelPrO = $modelPrO;
+        $temp_project->progressStatus = $progressStatus;
+        $temp_project->str_expected_date = $str_expected_date;
+        $temp_project->expectedStatus = $expectedStatus;
+        $temp_project->dataPlannedCost = $dataPlannedCost;
+        $temp_project->dataActualCost = $dataActualCost;
+        $temp_project->dataEvm = $dataEvm;
+        $temp_project->dataPlannedProgress = $dataPlannedProgress;
+        $temp_project->dataActualProgress = $dataActualProgress;
+    }
+
     public function makeCpm($earliest_act, $current_act, $cpm_model, $predecessor_collection, $level)
     {
         $level++;
@@ -1718,11 +2182,18 @@ class ProjectController extends Controller
     public function generateWbsCode($id){
         $code = 'WBS';
         $project = Project::find($id);
+        $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
+
+        if(count($project->additionalWorks)>0){
+            $additional_work_ids = $project->additionalWorks->pluck('id')->toArray();
+            array_push($additional_work_ids, $id);
+            $modelWbs = WBS::orderBy('code', 'desc')->whereIn('project_id', $additional_work_ids)->first();
+        }
+        
         $projectSequence = $project->project_sequence;
         $businessUnit = $project->business_unit_id;
         $year = $project->created_at->year % 100;
 
-        $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
 
         $number = 1;
 		if(isset($modelWbs)){
@@ -1736,11 +2207,23 @@ class ProjectController extends Controller
     public function generateActivityCode($id){
         $code = 'ACT';
         $project = WBS::find($id)->project;
+        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
+
+        $parent_project = $project->parentProject;
+        if($parent_project != null){
+            if(count($parent_project->additionalWorks)>0){
+                $additional_work_ids = $parent_project->additionalWorks->pluck('id')->toArray();
+                array_push($additional_work_ids, $parent_project->id);
+                $modelWbs = WBS::orderBy('code', 'desc')->whereIn('project_id', $additional_work_ids)->pluck('id')->toArray();
+                $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $modelWbs)->first();
+            }
+
+        }
+
         $projectSequence = $project->project_sequence;
         $year = $project->created_at->year % 100;
         $businessUnit = $project->business_unit_id;
 
-        $modelActivity = Activity::orderBy('code', 'desc')->whereIn('wbs_id', $project->wbss->pluck('id')->toArray())->first();
 
         $number = 1;
 		if(isset($modelActivity)){
