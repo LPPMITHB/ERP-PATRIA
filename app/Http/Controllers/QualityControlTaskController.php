@@ -320,7 +320,11 @@ class QualityControlTaskController extends Controller
         DB::beginTransaction();
         try{
             $qc_task_detail = QualityControlTaskDetail::find($data['id']);
-            $qc_task_detail->status = $data['status'];
+            if($data['status_first_ref'] == null){
+                $qc_task_detail->status_first = $data['status_first'];
+            }else{
+                $qc_task_detail->status_second = $data['status_second'];
+            }
             $qc_task_detail->notes = $data['notes'];
 
             if(!$qc_task_detail->update()){

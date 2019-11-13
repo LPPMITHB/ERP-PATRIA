@@ -53,7 +53,6 @@
                                 </div>
                             </template>
                         </div>
-                        <template v-if="selectedProject.length > 0">
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                     <table id="assign-rsc" class="table table-bordered tableFixed" style="border-collapse:collapse;">
@@ -62,8 +61,9 @@
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 15%">Category</th>
                                                 <th style="width: 25%">Resource</th>
-                                                <th style="width: 25%">Resource Detail</th>
+                                                <th style="width: 20%">Resource Detail</th>
                                                 <th style="width: 10%">Quantity</th>
+                                                <th style="width: 15%">Description</th>
                                                 <th style="width: 25%">WBS</th>
                                                 <th style="width: 14%"></th>
                                             </tr>
@@ -71,15 +71,17 @@
                                         <tbody>
                                             <tr v-for="(data,index) in modelAssignResource">
                                                 <td>{{ index + 1 }}</td>
-                                                <td v-if="data.category_id == 1">SubCon</td>
+                                                <td v-if="data.category_id == 1">Sub Contractor</td>
                                                 <td v-else-if="data.category_id == 2">Others</td>
                                                 <td v-else-if="data.category_id == 3">External Equipment</td>
                                                 <td v-else-if="data.category_id == 4">Internal Equipment</td>
+                                                <td v-else-if="data.category_id == null"> - </td>
                                                 <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
                                                 <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
                                                 <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
-                                                <td v-else>-</td>
+                                                <td v-else-if="data.resource_detail_id == null">-</td>
                                                 <td>{{ data.quantity }}</td>
+                                                <td>{{ data.description }}</td>
                                                 <td>{{ data.wbs.number }} - {{ data.wbs.description }}</td>
                                                 <td class="p-l-0 p-r-0 p-b-0 textCenter">
                                                     <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
@@ -134,10 +136,13 @@
                                                     <option v-for="(rd, index) in selectedRD" :value="rd.id">{{ rd.code }} - {{ rd.serial_number }}</option>
                                                 </selectize>
                                             </td>
-                                          
                                             <td class="p-l-0 textLeft">
                                                 <input type="text" v-model="dataInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled='resourceDetail'>
                                             </td>
+                                            <td class="p-l-0 textLeft">
+                                                <input type="text" v-model="dataInput.description" class="form-control" placeholder="Please Input Description">
+                                            </td>
+
                                             <td class="p-l-0 textLeft">
                                                 <selectize v-model="dataInput.wbs_id" :settings="wbsSettings">
                                                     <option v-for="(wbs, index) in modelWBS" :value="wbs.id">{{ wbs.number }} - {{ wbs.description }}</option>
@@ -150,7 +155,6 @@
                                     </table>
                                 </div>
                             </div>
-                        </template>
 
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog ">
@@ -163,6 +167,12 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="row">
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Resource Category</label>
+                                                <selectize v-model="editInput.category_id">
+                                                    <option v-for="(category,index) in resource_categories" :value="category.id">{{ category.name }}</option>
+                                                </selectize>
+                                            </div>
                                             <div class="col-sm-12">
                                                 <label class="control-label">Resource</label>
                                                 <selectize v-model="editInput.resource_id" :settings="resourceSettings">
@@ -186,6 +196,10 @@
                                             <div class="col-sm-12">
                                                 <label class="control-label">Quantity</label>
                                                 <input type="text" v-model="editInput.quantity" class="form-control" placeholder="Please Input Quantity" :disabled="editResource">
+                                            </div>
+                                            <div class="col-sm-12">
+                                                <label class="control-label">Description</label>
+                                                <input type="text" v-model="editInput.description" class="form-control" placeholder="Please Input Description">
                                             </div>
                                             <div class="col-sm-12" v-show="editInput.category_id == 4 && editInput.resource_detail_id != '' && editInput.resource_detail_id != null">
                                                 <label class="control-label">Schedule</label>
@@ -328,6 +342,7 @@
             resource_detail_id :"",
             wbs_id : "",
             quantity : "",
+            description : "",
             start : "",
             end : "",
             start_date : "",
@@ -339,6 +354,7 @@
             resource_detail_id :"",
             wbs_id : "",
             quantity : "",
+            description : "",
             category_id : "",
             start : "",
             end : "",
@@ -346,13 +362,13 @@
             end_date : "",
         },
         projectSettings: {
-            placeholder: 'Please Select Project'
+            placeholder: 'Please Select Project (Optional)'
         },
         resourceSettings: {
             placeholder: 'Please Select Resource'
         },
         wbsSettings: {
-            placeholder: 'Please Select WBS'
+            placeholder: 'Please Select WBS (Optional)'
         },
         categorySettings: {
             placeholder: 'Please Select Category'
@@ -421,7 +437,7 @@
             createOk: function(){
                 let isOk = false;
 
-                if(this.dataInput.resource_id == "" || this.dataInput.quantity == "" || this.dataInput.wbs_id == ""){
+                if(this.dataInput.resource_id == "" || this.dataInput.quantity == "" || this.dataInput.description == ""){
                     isOk = true;
                 }
 
@@ -537,6 +553,7 @@
                 this.editInput.wbs_id = "";
                 this.editInput.quantity = "";
                 this.editInput.category_id = "";
+                this.editInput.description = "";
                 this.editInput.start = '';
                 this.editInput.end = '';
                 this.editInput.start_date = '';
@@ -721,10 +738,12 @@
                 return text
             },
             getResource(){
+                if(this.project_id != ""){
                 window.axios.get('/api/getResourceTrx/' + this.project_id).then(({ data }) => {
                     this.modelAssignResource = data;
                     this.newIndex = Object.keys(this.modelAssignResource).length+1;
                 });
+                }
             },
             add(){
                 $('div.overlay').show();            
@@ -790,6 +809,7 @@
                             this.dataInput.resource_detail_id = "";
                             this.dataInput.wbs_id = "";             
                             this.dataInput.quantity = ""; 
+                            this.dataInput.description = ""; 
                             this.dataInput.category_id = ""; 
                             this.dataInput.start = '';
                             this.dataInput.end = '';
@@ -820,7 +840,7 @@
                     var url = "/resource/updateAssignResource/"+this.editInput.id;
                 }else if(this.route == "/resource_repair"){
                     var url = "/resource_repair/updateAssignResource/"+this.editInput.id;
-                }         
+                }  
                 let editInput = JSON.stringify(this.editInput);
                 window.axios.put(url,editInput).then((response) => {
                     if(response.data.error != undefined){
@@ -852,6 +872,7 @@
                 this.editInput.category_id = data.category_id;
                 this.editInput.resource_id = data.resource_id;
                 this.editInput.old_resource_id = data.resource_id;
+                this.editInput.description = data.description;
                 this.editInput.resource_detail_id = data.resource_detail_id;
                 this.editInput.wbs_id = data.wbs_id;
                 this.editInput.quantity = data.quantity;
@@ -897,6 +918,9 @@
                     })
                 }else{
                     this.selectedProject = [];
+                    this.modelAssignResource = "";
+                    this.modelWBS = "";
+                    this.newIndex = this.modelAssignResource.length + 1;
                 }              
             },
             'dataInput.quantity': function(newValue){
@@ -953,6 +977,7 @@
                                 title: "Project: "+TR.project.number + " \n WBS: "+ TR.wbs.number+" - "+TR.wbs.description, 
                                 wbs: TR.wbs.number+" - "+TR.wbs.description, 
                                 project: TR.project.number, 
+                                description: TR.description, 
                                 start: TR.start_date,
                                 end: TR.end_date,
                                 booked_by : TR.user.name,
