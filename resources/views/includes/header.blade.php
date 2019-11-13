@@ -74,6 +74,8 @@
                               <i style="font-size: 25px" class="fa fa-suitcase text-aqua m-t-7"></i>
                             @elseif($data->title == "Purchase Requisition")
                               <i style="font-size: 25px" class="fa fa-file-text-o text-aqua m-t-7"></i>
+                            @elseif($data->title == "Quality Control")
+                              <i style="font-size: 25px" class="fa fa-file-text-o text-aqua m-t-7"></i>
                             @endif
                           </div>
                           <div class="col-sm-11">
