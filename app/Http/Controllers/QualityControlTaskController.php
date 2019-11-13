@@ -9,6 +9,8 @@ use App\Models\QualityControlTask;
 use App\Models\QualityControlTaskDetail;
 use App\Models\QualityControlType;
 use App\Models\QualityControlTypeDetail;
+use App\Models\User;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -224,6 +226,8 @@ class QualityControlTaskController extends Controller
     public function store(Request $request)
     {
         $data = json_decode($request->datas);
+        $menu = $request->route()->getPrefix() == "/qc_task" ? "building" : "repair";
+
         DB::beginTransaction();
         try {
             $qcTask = new QualityControlTask;
@@ -260,6 +264,49 @@ class QualityControlTaskController extends Controller
                     $qcTaskDetail->save();
                 }
             }
+
+            //MAKE NOTIF
+            if ($menu == 'building') {
+                $dataNotif = json_encode([
+                    'text' => 'The Quality Control of WBS(' . $qcTask->wbs->number . '-' . $qcTask->wbs->description . ') is overdue, please do the Quality Control Task',
+                    'time_info' => 'Created at',
+                    'title' => 'Quality Control Overdue',
+                    'url' => '/qc_task/confirm/' . $qcTask->id,
+                ]);
+            } else if ($menu == 'repair') {
+                $dataNotif = json_encode([
+                    'text' => 'The Quality Control of WBS(' . $qcTask->wbs->number . '-' . $qcTask->wbs->description . ') is overdue, please do the Quality Control Task',
+                    'time_info' => 'Created at',
+                    'title' => 'Quality Control Overdue',
+                    'url' => '/qc_task_repair/confirm/' . $qcTask->id,
+                ]);
+            }
+
+            if($menu == 'building'){
+                $users = User::where('role_id', 2)->select('id')->get();
+            }else{
+                $users = User::where('role_id', 3)->select('id')->get();
+            }
+            foreach ($users as $user) {
+                $user->status = 1;
+            }
+            $users = json_encode($users);
+
+            $new_notification = new Notification;
+            $new_notification->type = "Quality Control Overdue";
+            $new_notification->document_id = $qcTask->id;
+            if($menu == 'building'){
+                $new_notification->role_id = 2;
+            }else{
+                $new_notification->role_id = 3;
+            }
+            $new_notification->notification_date = $qcTask->created_at->toDateString();
+            $new_notification->show_date = $qcTask->start_date;
+            $new_notification->data = $dataNotif;
+            $new_notification->user_data = $users;
+            $new_notification->save();
+            //END NOTIF
+
             DB::commit();
             return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Created New Quality Control Task!');
         } catch (\Exception $e) {
@@ -381,6 +428,13 @@ class QualityControlTaskController extends Controller
                 $qcTaskDetail->description = $data->task_description;
                 $qcTaskDetail->save();
             }
+
+            //UPDATE NOTIF
+            $update_notification = Notification::where('type','Quality Control Overdue')->where('document_id',$data->id)->first();
+            $update_notification->show_date = $qcTask->start_date;
+            $update_notification->save();
+            //END NOTIF
+
             DB::commit();
             return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Updated Quality Control Task!');
         } catch (\Exception $e) {
