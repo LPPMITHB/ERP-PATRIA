@@ -198,7 +198,8 @@ class QualityControlTaskController extends Controller
     {
         $qcTask = QualityControlTask::findOrFail($id);
         $route = $request->route()->getPrefix();
-        return view('qc_task.confirm', compact('qcTask', 'route'));
+        $wbs_images = $qcTask->wbs->wbsi;
+        return view('qc_task.confirm', compact('qcTask', 'route','wbs_images'));
     }
 
     /**
@@ -349,7 +350,8 @@ class QualityControlTaskController extends Controller
     {
         $qcTask = QualityControlTask::findOrFail($id);
         $wbs = $qcTask->wbs;
-        return view('qc_task.show', compact('qcTask','wbs'));
+        $wbs_images = $wbs->wbsi;
+        return view('qc_task.show', compact('qcTask','wbs','wbs_images'));
         
     }
 

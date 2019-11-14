@@ -45,8 +45,13 @@
                                 </div>
 
                                 <div class="col-md-2 col-xs-12 pull-right">
-                                    <a v-if="qc_task_ref.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmFinish">CONFIRM FINISHED</a>
-                                    <a v-else-if="qc_task_ref.status == 0" class="btn btn-sm btn-primary pull-right btn-block" @click="cancelFinish">CANCEL FINISH</a>
+                                    <div class="row">
+                                        <a v-if="qc_task_ref.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmFinish">CONFIRM FINISHED</a>
+                                        <a v-else-if="qc_task_ref.status == 0" class="btn btn-sm btn-primary pull-right btn-block" @click="cancelFinish">CANCEL FINISH</a>
+                                    </div>
+                                    <div class="row">
+                                        <a class="btn btn-primary btn-sm pull-right btn-block m-t-10" data-toggle="modal" href="#show_modal_wbs_images">VIEW WBS IMAGES</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -80,6 +85,50 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="show_modal_wbs_images">
+                                <div class="modal-dialog modalPredecessor modalFull">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">View WBS Images</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <table id="qctd-table" class="table table-bordered showTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 5%">No</th>
+                                                                <th style="width: 35%">File Name</th>
+                                                                <th style="width: 45%">Description</th>
+                                                                <th style="width: 4%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(data,index) in wbsImages">
+                                                                <td>{{ index + 1 }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.drawing)">{{ data.drawing }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                                <td>
+                                                                    <a class="btn btn-primary btn-sm" :href="view(data.drawing)">VIEW</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -213,9 +262,17 @@
             name : "",
             description : "",
         },
+        wbsImages : @json($wbs_images),
 
-        
     }
+
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
 
     var vm = new Vue({
         el : '#qc_task',
@@ -248,6 +305,14 @@
             }
         },
         methods : {
+            tooltipText: function(text) {
+                return text
+            },
+            view(drawing){
+                let path = '../../app/documents/wbs_images/'+drawing;
+                
+                return path;
+            },
             clearData(){
                 this.confirm_qc_task.index = "";
                 this.confirm_qc_task.id = "";
