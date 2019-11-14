@@ -44,23 +44,18 @@
                 @else
                     PROJECT COST EVALUATION
                 @endif
-                </a>
+            </a>
         </div>
     @else
-        <div class="box-tools pull-left m-l-15">
-            <a href="{{ route('project_repair.showGanttChart',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
-            <a href="{{ route('wbs_repair.createWBS',['id'=>$project->id]) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE WBS</a>
-            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewWbs']) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
-            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'addAct']) }}" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">EDIT ACTIVITIES</a>
-            <a href="{{ route('project_repair.listWBS',['id'=>$project->id,'menu'=>'viewAct']) }}" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
-            <a href="{{ route('activity_repair.manageNetwork',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
-            <a href="{{ route('project_repair.projectCE',['id'=>$project->id]) }}" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">
-                @if($is_pami)
-                    PROJECT COST MONITORING
-                @else
-                    PROJECT COST EVALUATION
-                @endif
-            </a>
+        <div id="route" class="box-tools pull-left m-l-15">
+            <a :href="generateLink('ganttChart')" class="btn btn-primary btn-sm m-t-5 ">VIEW GANTT CHART</a>
+            <a :href="generateLink('createWBS')" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE WBS</a>
+            <a :href="generateLink('listWBS-viewWbs')" class="btn btn-primary btn-sm m-t-5 mobile_button_view">VIEW WBS</a>
+            <a :href="generateLink('listWBS-addAct')" class="btn btn-primary btn-sm mobile_button_view m-t-5 ">MANAGE ACTIVITIES</a>
+            <a :href="generateLink('listWBS-viewAct')" class="btn btn-primary btn-sm m-t-5 ">VIEW ACTIVITIES</a>
+            <a :href="generateLink('manageNetwork')" class="btn btn-primary btn-sm m-t-5 mobile_button_view">MANAGE NETWORK</a>
+            <a :href="generateLink('projectCE')" class="btn btn-primary btn-sm m-t-5 mobile_device_potrait">PROJECT COST MONITORING</a>
+            <a :href="generateLink('selectStructureAdditional')" class="btn btn-primary btn-sm m-t-5 mobile_button_view">ADD ADDITIONAL WORK</a>
         </div>
     @endif
 </div>
@@ -217,191 +212,153 @@
     </div>
 </div>
 @verbatim
-<div id="confirm_activity">
-    <div class="row">
-        <div class="col-sm-12" style="margin-top: -5px;">
-            <div class="box box-solid">
-                <div class="box-body">
-                    <div class="col-sm-12">
-                        <table class="marginAuto">
-                            <tbody>
-                                <tr>
-                                    <td class="textCenter"><h3 style="margin-top: -1%;">PROGRESS ({{project.progress}} %)</h3></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="progress" style="height:20px">
-                            <div :class="progressBarColor" role="progressbar" :style="styleProgressBar(project.progress)" :aria-valuenow="project.progress" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="col-sm-12" style="margin-top: -5px;">
-            <div class="box box-solid">
-                <div class="box-body">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th style="vertical-align: middle" class="textCenter" rowspan="2">Comp. %</th>
-                                <th class="textCenter" colspan="3">In-Week Performance</th>
-                                <th class="textCenter">Cum. Performance</th>
-                            </tr>
-                            <tr>
-                                <th class="textCenter">Last Week</th>
-                                <th class="textCenter">This Week</th>
-                                <th class="textCenter">In-Week Gain</th>
-                                <th style="width: 10%" class="textCenter">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <th>Expected Comp. %</th>
-                                <td class="textCenter">{{progressStatus.last_week_planned}} %</td>
-                                <td class="textCenter">{{progressStatus.this_week_planned}} %</td>
-                                <td class="textCenter">{{progressStatus.expected_in_week_gain}} %</td>
-                                <td v-if="progressStatus.this_week_actual - progressStatus.this_week_planned < 0" rowspan="2" class="textCenter" style="background-color: red; color: white; font-size:1.2em">
-                                    <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
-                                </td>
-                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned > 0" rowspan="2" class="textCenter" style="background-color: #3db9d3; color: white; font-size:1.2em">
-                                    <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i> {{Math.abs(progressStatus.this_week_actual - progressStatus.this_week_planned)}} %
-                                </td>
-                                <td v-else-if="progressStatus.this_week_actual - progressStatus.this_week_planned == 0" rowspan="2" class="textCenter" style="background-color: #3db9d3; color: white; font-size:1.2em">
-                                    <i>{{getStatus(progressStatus.this_week_actual - progressStatus.this_week_planned)}}</i>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>Actual Comp. %</th>
-                                <td class="textCenter">{{progressStatus.last_week_actual}} %</td>
-                                <td class="textCenter">{{progressStatus.this_week_actual}} %</td>
-                                <td class="textCenter">{{progressStatus.this_week_actual - progressStatus.last_week_actual}} %</td>
-                            </tr>
-                            <tr>
-                                <th v-if="expectedStatus != null">Expected End Date</th>
-                                <td colspan="4" v-if="expectedStatus == 0" style="background-color: #3db9d3; color: white;">{{str_expected_date}}</td>
-                                <td colspan="4" v-else-if="expectedStatus == 1" style="background-color: #3db9d3; color: white;">{{str_expected_date}}</td>
-                                <td colspan="4" v-else-if="expectedStatus == 2" style="background-color: red; color: white;">{{str_expected_date}}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- unused -->
-    <div class="modal fade" id="confirm_activity_modal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <h4 class="modal-title">Confirm Activity <b id="confirm_activity_code"></b></h4>
-                </div>
-                <div class="modal-body">
-                    <table>
-                        <thead>
-                            <th colspan="2">Activity Details</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Planned Start Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b id="planned_start_date"></b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned End Date</td>
-                                <td>:</td>
-                                <td>&ensp;<b id="planned_end_date"></b></td>
-                            </tr>
-                            <tr>
-                                <td>Planned Duration</td>
-                                <td>:</td>
-                                <td>&ensp;<b id="planned_duration"></b></td>
-                            </tr>
-                            <tr>
-                                <td>Predecessor</td>
-                                <td>:</td>
-                                <td>&ensp;<template v-if="havePredecessor == false">-</template></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <template v-if="havePredecessor == false"><br></template>
-                    <template v-if="havePredecessor == true">
-                        <table class="table table-bordered tableFixed">
-                            <thead>
-                                <tr>
-                                    <th class="p-l-5" style="width: 5%">No</th>
-                                    <th style="width: 15%">Code</th>
-                                    <th style="width: 29%">Name</th>
-                                    <th style="width: 29%">Description</th>
-                                    <th style="width: 15%">WBS Number</th>
-                                    <th style="width: 12%">Status</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr v-for="(data,index) in predecessorActivities">
-                                    <td class="p-b-15 p-t-15">{{ index + 1 }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.code)">{{ data.code }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
-                                    <td class="tdEllipsis p-b-15 p-t-15" data-container="body" v-tooltip:top="tooltipText(data.wbs.number)">{{ data.wbs.number }}</td>
-                                    <td class="textCenter">
-                                        <template v-if="data.status == 0">
-                                            <i class='fa fa-check'></i>
-                                        </template>
-                                        <template v-else>
-                                            <i class='fa fa-times'></i>
-                                        </template>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </template>
-                    <div class="row">
-                        <div class="form-group col-sm-6">
-                            <label for="actual_start_date" class=" control-label">Actual Start Date</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
+<div id="show_project">
+    <div class="nav-tabs-custom" style="margin-bottom:0px">
+        <ul id="tab_project" class="nav nav-tabs">
+            <li class="active tab_project_li"><a @click.prevent="findActive('planned')" data-toggle="tab" aria-expanded="true">Planned</a></li>
+            <li class="tab_project_li" v-for="(data,index) in additional_works_data">
+                <a @click.prevent="findActive(data.project.id)" data-toggle="tab" aria-expanded="false">Additional {{index+1}}</a>
+            </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane active row" id="planned">
+                <div class="col-sm-12" style="margin-top: -5px;">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <div class="col-sm-12">
+                                <table class="marginAuto">
+                                    <tbody>
+                                        <tr>
+                                            <td class="textCenter">
+                                                <h3 style="margin-top: -1%;">PROGRESS ({{active_project_progress}} %)</h3>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="progress" style="height:20px">
+                                    <div :class="progressBarColor" role="progressbar" :style="styleProgressBar(active_project_progress)"
+                                        :aria-valuenow="active_project_progress" aria-valuemin="0" aria-valuemax="100">
+                                    </div>
                                 </div>
-                                <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">
                             </div>
                         </div>
-
-                        <div class="form-group col-sm-6">
-                            <label for="actual_end_date" class=" control-label">Actual End Date</label>
-                            <div class="input-group date">
-                                <div class="input-group-addon">
-                                    <i class="fa fa-calendar"></i>
-                                </div>
-                                <input v-model="confirmActivity.actual_end_date" type="text" class="form-control datepicker" id="actual_end_date" placeholder="End Date">
-                            </div>
-                        </div>
-
-
                     </div>
-                    <div class="row">
-                        <div class="form-group col-sm-6">
-                            <label for="duration" class=" control-label">Actual Duration (Days)</label>
-                            <input @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"  type="number" class="form-control" id="actual_duration" placeholder="Duration" >
-                        </div>
-                        <div class="form-group col-sm-6">
-                            <label for="duration" class=" control-label">Current Progress (%)</label>
-                            <input v-model="confirmActivity.current_progress"  type="number" class="form-control" id="current_progress" placeholder="Current Progress" >
-                        </div>
-                    </div>
-
                 </div>
-                <div class="modal-footer">
-                    <button id="btnSave" type="button" class="btn btn-primary" data-dismiss="modal" @click.prevent="confirm">SAVE</button>
+                <div class="col-sm-12" style="margin-top: -5px;">
+                    <div class="box box-solid">
+                        <div class="box-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th style="vertical-align: middle" class="textCenter" rowspan="2">Comp. %</th>
+                                        <th class="textCenter" colspan="3">In-Week Performance</th>
+                                        <th class="textCenter">Cum. Performance</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="textCenter">Last Week</th>
+                                        <th class="textCenter">This Week</th>
+                                        <th class="textCenter">In-Week Gain</th>
+                                        <th style="width: 10%" class="textCenter">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Expected Comp. %</th>
+                                        <td class="textCenter">{{active_progress_status.last_week_planned}} %</td>
+                                        <td class="textCenter">{{active_progress_status.this_week_planned}} %</td>
+                                        <td class="textCenter">{{active_progress_status.expected_in_week_gain}} %</td>
+                                        <td v-if="active_progress_status.this_week_actual - active_progress_status.this_week_planned < 0" rowspan="2"
+                                            class="textCenter" style="background-color: red; color: white; font-size:1.2em">
+                                            <i>{{getStatus(active_progress_status.this_week_actual - active_progress_status.this_week_planned)}}</i>
+                                            {{Math.abs(active_progress_status.this_week_actual - active_progress_status.this_week_planned)}} %
+                                        </td>
+                                        <td v-else-if="active_progress_status.this_week_actual - active_progress_status.this_week_planned > 0"
+                                            rowspan="2" class="textCenter"
+                                            style="background-color: #3db9d3; color: white; font-size:1.2em">
+                                            <i>{{getStatus(active_progress_status.this_week_actual - active_progress_status.this_week_planned)}}</i>
+                                            {{Math.abs(active_progress_status.this_week_actual - active_progress_status.this_week_planned)}} %
+                                        </td>
+                                        <td v-else-if="active_progress_status.this_week_actual - active_progress_status.this_week_planned == 0"
+                                            rowspan="2" class="textCenter"
+                                            style="background-color: #3db9d3; color: white; font-size:1.2em">
+                                            <i>{{getStatus(active_progress_status.this_week_actual - active_progress_status.this_week_planned)}}</i>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Actual Comp. %</th>
+                                        <td class="textCenter">{{active_progress_status.last_week_actual}} %</td>
+                                        <td class="textCenter">{{active_progress_status.this_week_actual}} %</td>
+                                        <td class="textCenter">{{active_progress_status.this_week_actual - active_progress_status.last_week_actual}} %
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th v-if="expectedStatus != null">Expected End Date</th>
+                                        <td colspan="4" v-if="expectedStatus == 0" style="background-color: #3db9d3; color: white;">
+                                            {{active_str_expected_date}}</td>
+                                        <td colspan="4" v-else-if="expectedStatus == 1"
+                                            style="background-color: #3db9d3; color: white;">{{active_str_expected_date}}</td>
+                                        <td colspan="4" v-else-if="expectedStatus == 2" style="background-color: red; color: white;">
+                                            {{active_str_expected_date}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-12" style="margin-top: -5px;">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <h4><b>Gantt Chart</b></h4>
+                        </div>
+                        <div id="planned_gantt_container" class="box-body gantt_chart_mobile">
+                            <label>View by :</label>
+                            <label><input type="radio" name="scale" value="day" />Day scale</label>
+                            <label><input type="radio" name="scale" value="month" checked />Month scale</label>
+                            <label><input type="radio" name="scale" value="year" />Year scale</label>
+                            <div class="col-sm-12 col-xs-12 no-padding-left">
+                                <div id="ganttChart" style='width:100%; height:490px;'></div>
+                            </div>
+                        </div>
+                        <div class="box-body gantt_chart_mobile_notification">
+                            <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="margin-top: -5px;">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <h4><b>Planned Cost Vs. Actual Cost</b></h4>
+                        </div>
+                        <div class="box-body" style="">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="chart">
+                                        <canvas id="cost" width="703" height="350"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6" style="margin-top: -5px;">
+                    <div class="box box-solid">
+                        <div class="box-header with-border">
+                            <h4><b>Planned Progress Vs. Actual Progress</b></h4>
+                        </div>
+                        <div class="box-body" style="">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="chart">
+                                        <canvas id="progress" width="703" height="350"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <!-- /.modal-content -->
         </div>
-        <!-- /.modal-dialog -->
+        <!-- /.tab-content -->
     </div>
 
     <div class="modal fade" id="mm_prod_info">
@@ -690,57 +647,6 @@
 </div>
 @endverbatim
 
-<div class="row">
-    <div class="col-sm-12" style="margin-top: -5px;">
-        <div class="box box-solid">
-            <div class="box-header with-border"><h4><b>Gantt Chart</b></h4></div>
-            <div class="box-body gantt_chart_mobile">
-                <label>View by :</label>
-                <label><input type="radio" name="scale" value="day" />Day scale</label>
-                <label><input type="radio" name="scale" value="month" checked/>Month scale</label>
-                <label><input type="radio" name="scale" value="year"/>Year scale</label>
-                <div class="col-sm-12 col-xs-12 no-padding-left">
-                    <div id="ganttChart" style='width:100%; height:490px;'></div>
-                </div>
-            </div>
-            <div class="box-body gantt_chart_mobile_notification">
-                <div class="col-xs-12 textCenter"><b>Please view Gantt Chart in Landscape Mode</b></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="row">
-    <div class="col-sm-6" style="margin-top: -5px;">
-        <div class="box box-solid">
-            <div class="box-header with-border"><h4><b>Planned Cost Vs. Actual Cost</b></h4></div>
-            <div class="box-body" style="">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="chart">
-                            <canvas id="cost" width="703" height="350"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-sm-6" style="margin-top: -5px;">
-        <div class="box box-solid">
-            <div class="box-header with-border"><h4><b>Planned Progress Vs. Actual Progress</b></h4></div>
-            <div class="box-body" style="">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="chart">
-                            <canvas id="progress" width="703" height="350"></canvas>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
 {{-- <div class="row">
     <div class="col-sm-6" style="margin-top: -5px;">
         <div class="box box-solid">
@@ -805,193 +711,47 @@
     });
     jQuery('.dataTable').wrap('<div class="dataTables_scroll" />');
 
-    var costCanvas = document.getElementById("cost").getContext("2d");
-    var progressCanvas = $('#progress').get(0).getContext('2d');
-    var horizonalLinePlugin = {
-        afterDraw: function(chartInstance) {
-            var yScale = chartInstance.scales["y-axis-0"];
-            var canvas = chartInstance.chart;
-            var ctx = canvas.ctx;
-            var index;
-            var line;
-            var style;
+    /* global gantt */
+    function setScaleConfig(level) {
+        switch (level) {
+            case "day":
+                gantt.config.scale_unit = "day";
+                gantt.config.step = 1;
+                gantt.config.date_scale = "%d %M";
+                gantt.templates.date_scale = null;
 
-            if (chartInstance.options.horizontalLine) {
-            for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
-                line = chartInstance.options.horizontalLine[index];
+                gantt.config.scale_height = 27;
 
-                if (!line.style) {
-                    style = "rgba(169,169,169, .6)";
-                } else {
-                    style = line.style;
-                }
+                gantt.config.subscales = [];
+                break;
+            case "month":
+                gantt.config.scale_unit = "month";
+                gantt.config.date_scale = "%F, %Y";
+                gantt.templates.date_scale = null;
 
-                if (line.y) {
-                    yValue = yScale.getPixelForValue(line.y);
-                } else {
-                    yValue = 0;
-                }
+                gantt.config.scale_height = 50;
 
-                ctx.lineWidth = 3;
+                gantt.config.subscales = [
+                    {unit: "week", step: 1, date: "%j"}
+                ];
 
-                if (yValue) {
-                    ctx.beginPath();
-                    ctx.moveTo(0, yValue);
-                    ctx.lineTo(canvas.width, yValue);
-                    ctx.strokeStyle = style;
-                    ctx.stroke();
-                }
+                break;
+            case "year":
+                gantt.config.scale_unit = "year";
+                gantt.config.step = 1;
+                gantt.config.date_scale = "%Y";
+                gantt.templates.date_scale = null;
 
-                if (line.text) {
-                    ctx.fillStyle = style;
-                    ctx.fillText(line.text, 0, yValue + ctx.lineWidth + 10);
-                }
-            }
-            return;
-            };
+                gantt.config.min_column_width = 50;
+                gantt.config.scale_height = 90;
+
+                gantt.config.subscales = [
+                    {unit: "month", step: 1, date: "%M"}
+                ];
+                break;
         }
-    };
-    Chart.pluginService.register(horizonalLinePlugin);
-    var configCost = {
-        type: 'line',
-        data: {
-            datasets: [
-                {
-                    label: "EVM Cost",
-                    backgroundColor: "rgba(0, 0, 0, 0)",
-                    borderColor : "rgba(122, 122, 211, 122)",
-                    data: @json($dataEvm),
-                },
-                {
-                    label: "Planned Cost",
-                    borderColor: "rgba(0, 0, 255, 0.7)",
-                    data: @json($dataPlannedCost),
-                },
-                {
-                    label: "Actual Cost",
-                    borderColor: "green",
-                    data: @json($dataActualCost),
-                },
-            ]
-        },
-        options: {
-            "horizontalLine": [{
-                "y": @json($project->budget_value/1000000),
-                "style": "rgba(255, 0, 0, .4)",
-                "text": "Budget Value"
-            }],
-            elements: {
-                point: {
-                    radius: 4,
-                    hitRadius: 4,
-                    hoverRadius: 6
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        var value = tooltipItem.yLabel;
-                        if(parseInt(value) >= 1000){
-                            return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                        } else {
-                            return 'Rp' + value;
-                        }
-                    }
-                } // end callbacks:
-            }, //end tooltips
-            responsive: true,
-            scales: {
-                xAxes: [{
-                    type: 'time',
-                    time: {
-                        tooltipFormat: 'll',
-                        unit: 'week',
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        display:false
-                    },
-                    ticks: {
-                        beginAtZero:true,
-                        callback: function(value, index, values) {
-                            if(parseInt(value) >= 1000){
-                               return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                            } else {
-                               return 'Rp' + value;
-                            }
-                       },
-                       suggestedMax : @json($project->budget_value/1000000),
-                    },
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'in million'
-                    }
-                }]
-            },
-        }
-    };
-
-    var costChart = new Chart(costCanvas, configCost);
-
-    var configProgress = {
-        type: 'line',
-        data: {
-            datasets: [
-                {
-                    label: "Planned Progress",
-                    borderColor: "rgba(0, 0, 255, 0.7)",
-                    data: @json($dataPlannedProgress),
-                },
-                {
-                    label: "Actual Progress",
-                    borderColor: "green",
-                    data: @json($dataActualProgress),
-                }
-            ]
-        },
-        options: {
-            elements: {
-                point: {
-                    radius: 4,
-                    hitRadius: 4,
-                    hoverRadius: 6
-                }
-            },
-            tooltips: {
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                        var value = tooltipItem.yLabel;
-                            return value + "%";
-                    }
-                } // end callbacks:
-            }, //end tooltips
-            responsive: true,
-            scales: {
-                xAxes: [{
-                    type: 'time',
-                    time: {
-                        tooltipFormat: 'll',
-                        unit: 'week',
-                    }
-                }],
-                yAxes: [{
-                    gridLines: {
-                        display:false
-                    },
-                    ticks: {
-                        beginAtZero:true,
-                        callback: function(value, index, values) {
-                            return value + "%";
-                       }
-                    }
-                }]
-            }
-        }
-    };
-
-    var progress = new Chart(progressCanvas, configProgress);
-
+        
+    }
     $(document).ready(function(){
         var outstanding_item = @json($outstanding_item);
         $('#treeview').jstree({
@@ -1002,165 +762,6 @@
             // you get two params - event & data - check the core docs for a detailed description
             $(this).jstree("open_all");
         });
-        var project = @json($ganttData);
-        var links = @json($links);
-
-
-        gantt.config.columns = [
-            {name:"text", label:"Task name", width:"*", tree:true,
-                template:function(obj){
-                    var text = "";
-                    function myFunction(x) {
-                        if (x.matches) { // If media query matches
-                            text = '<b>'+obj.text+'</b>';
-                        }else{
-                            text = '<div class="tdEllipsis" data-placement="left" data-container="body" data-toggle="tooltip" title="'+obj.text+'"><b>'+obj.text+'</b></div>';
-                        }
-                    }
-
-                    var x = window.matchMedia("(max-width: 500px)")
-                    myFunction(x) // Call listener function at run time
-                    x.addListener(myFunction) // Attach listener function on state changes
-
-                    var x = window.matchMedia("(max-width: 1024px)")
-                    myFunction(x) // Call listener function at run time
-                    x.addListener(myFunction) // Attach listener function on state changes
-                    return text ;
-                }
-            },
-
-            {name:"progress", label:"Progress", align: "center",
-                template:function(obj){
-                    if(obj.status != undefined){
-                        if(obj.status == 0){
-                            return "<i class='fa fa-check text-success'></i>"
-                        }else{
-                            return "<i class='fa fa-times text-danger'></i>"
-                        }
-                    }else{
-                        return obj.progress * 100+" %"
-                    }
-                },
-                width:"70px"
-            },
-        ];
-
-        gantt.config.grid_width = 290;
-
-        gantt.templates.rightside_text = function(start, end, task){
-            if(task.status != undefined){
-                if(task.status == 0){
-                    var text = task.text.replace('[Actual]','');
-                    return "<b>"+text+" Completed</b>"
-                }else{
-                    return "<b>"+task.text+"</b>"
-                }
-            }else{
-                if(task.$level != 0){
-                    return "<b>"+task.text+"</b> | Progress: <b>" + task.progress*100+ "%</b>"
-                }else{
-                    return "Progress: <b>" + task.progress*100+ "%</b>";
-                }
-            }
-        };
-
-        gantt.templates.task_text=function(start,end,task){
-            if(task.$level == 0){
-                return "<b>"+task.text+"</b>";
-            }else{
-                if(task.is_cpm){
-                    return "(!)";
-                }else{
-                    return "";
-                }
-            }
-        };
-
-
-        var tasks = {
-            data:project,
-            links:links
-        };
-
-        var markerId = gantt.addMarker({
-            start_date: new Date(),
-            css: "today",
-            text: "Now",
-            title: new Date().toString(),
-        });
-        gantt.getMarker(markerId); //->{css:"today", text:"Now", id:...}
-        gantt.config.readonly = true;
-        gantt.config.open_tree_initially = true;
-        gantt.templates.grid_folder = function(item) {
-            return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>";
-        };
-        gantt.templates.grid_file = function(item) {
-            if(item.id.indexOf("WBS") != -1){
-                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>";
-            }else{
-                return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>";
-            }
-        };
-
-        /* global gantt */
-        function setScaleConfig(level) {
-            switch (level) {
-                case "day":
-                    gantt.config.scale_unit = "day";
-                    gantt.config.step = 1;
-                    gantt.config.date_scale = "%d %M";
-                    gantt.templates.date_scale = null;
-
-                    gantt.config.scale_height = 27;
-
-                    gantt.config.subscales = [];
-                    break;
-                case "month":
-                    gantt.config.scale_unit = "month";
-                    gantt.config.date_scale = "%F, %Y";
-                    gantt.templates.date_scale = null;
-
-                    gantt.config.scale_height = 50;
-
-                    gantt.config.subscales = [
-                        {unit: "week", step: 1, date: "%j"}
-                    ];
-
-                    break;
-                case "year":
-                    gantt.config.scale_unit = "year";
-                    gantt.config.step = 1;
-                    gantt.config.date_scale = "%Y";
-                    gantt.templates.date_scale = null;
-
-                    gantt.config.min_column_width = 50;
-                    gantt.config.scale_height = 90;
-
-                    gantt.config.subscales = [
-                        {unit: "month", step: 1, date: "%M"}
-                    ];
-                    break;
-            }
-        }
-
-        setScaleConfig("month");
-        gantt.init("ganttChart");
-        gantt.parse(tasks);
-        gantt.showDate(new Date());
-        gantt.sort("start_date", false);
-
-        var els = document.querySelectorAll("input[name='scale']");
-        for (var i = 0; i < els.length; i++) {
-            els[i].onclick = function(e){
-                e = e || window.event;
-                var el = e.target || e.srcElement;
-                var value = el.value;
-                setScaleConfig(value);
-                gantt.render();
-                $('[data-toggle="tooltip"]').tooltip();
-            };
-        }
-        $('[data-toggle="tooltip"]').tooltip();
 
         Vue.directive('tooltip', function(el, binding){
             $(el).tooltip({
@@ -1170,25 +771,13 @@
             })
         })
 
-
         var data = {
             menu : @json($menu),
+            additional_works_data : @json($additional_works_data),
             project_id : @json($project->id),
             project : @json($project),
             today : @json($today),
-            activities : @json($activities),
-            wbss : @json($wbss),
             progressStatus : @json($progressStatus),
-            predecessorActivities : [],
-            activity:"",
-            confirmActivity : {
-                activity_id : "",
-                actual_start_date : "",
-                actual_end_date : "",
-                actual_duration : "",
-                current_progress : 0,
-            },
-            havePredecessor : false,
             active_pr : [],
             active_po : [],
             active_gr : [],
@@ -1197,36 +786,329 @@
             active_prod : [],
             str_expected_date : @json($str_expected_date),
             expectedStatus : @json($expectedStatus),
+            active_tab : "",
+            ganttData : @json($ganttData),
+            links : @json($links),
+            dataEvm : @json($dataEvm),
+            dataPlannedProgress : @json($dataPlannedProgress),
+            dataPlannedCost : @json($dataPlannedCost),
+            dataActualProgress : @json($dataActualProgress),
+            dataActualCost : @json($dataActualCost),
+
+            active_project_progress : @json($project->progress),
+            active_progress_status : @json($progressStatus),
+            active_str_expected_date : @json($str_expected_date),
+
+            costChart : null,
+            progressChart : null,
         };
         var vm = new Vue({
-            el: '#confirm_activity',
+            el: '#show_project',
             data: data,
             mounted() {
-                $('.datepicker').datepicker({
-                    autoclose : true,
-                });
+                var project = @json($ganttData);
+                var links = @json($links);
 
-                $("#actual_start_date").datepicker().on(
-                    "changeDate", () => {
-                        this.confirmActivity.actual_start_date = $('#actual_start_date').val();
-                        if(this.confirmActivity.actual_end_date != "" && this.confirmActivity.actual_start_date != ""){
-                            this.confirmActivity.actual_duration = datediff(parseDate(this.confirmActivity.actual_start_date), parseDate(this.confirmActivity.actual_end_date));
-                        }else{
-                            this.confirmActivity.actual_duration ="";
+                gantt.config.columns = [
+                    {name:"text", label:"Task name", width:"*", tree:true,
+                        template:function(obj){
+                            var text = "";
+                            function myFunction(x) {
+                                if (x.matches) { // If media query matches
+                                    text = '<b>'+obj.text+'</b>';
+                                }else{
+                                    text = '<div class="tdEllipsis" data-placement="left" data-container="body" data-toggle="tooltip" title="'+obj.text+'"><b>'+obj.text+'</b></div>';
+                                }
+                            }
+
+                            var x = window.matchMedia("(max-width: 500px)")
+                            myFunction(x) // Call listener function at run time
+                            x.addListener(myFunction) // Attach listener function on state changes
+
+                            var x = window.matchMedia("(max-width: 1024px)")
+                            myFunction(x) // Call listener function at run time
+                            x.addListener(myFunction) // Attach listener function on state changes
+                            return text ;
                         }
-                        this.setEndDateEdit();
-                    }
-                );
-                $("#actual_end_date").datepicker().on(
-                    "changeDate", () => {
-                        this.confirmActivity.actual_end_date = $('#actual_end_date').val();
-                        if(this.confirmActivity.actual_start_date != "" && this.confirmActivity.actual_end_date != ""){
-                            this.confirmActivity.actual_duration = datediff(parseDate(this.confirmActivity.actual_start_date), parseDate(this.confirmActivity.actual_end_date));
+                    },
+
+                    {name:"progress", label:"Progress", align: "center",
+                        template:function(obj){
+                            if(obj.status != undefined){
+                                if(obj.status == 0){
+                                    return "<i class='fa fa-check text-success'></i>"
+                                }else{
+                                    return "<i class='fa fa-times text-danger'></i>"
+                                }
+                            }else{
+                                return obj.progress * 100+" %"
+                            }
+                        },
+                        width:"70px"
+                    },
+                ];
+
+                gantt.config.grid_width = 290;
+
+                gantt.templates.rightside_text = function(start, end, task){
+                    if(task.status != undefined){
+                        if(task.status == 0){
+                            var text = task.text.replace('[Actual]','');
+                            return "<b>"+text+" Completed</b>"
                         }else{
-                            this.confirmActivity.actual_duration ="";
+                            return "<b>"+task.text+"</b>"
+                        }
+                    }else{
+                        if(task.$level != 0){
+                            return "<b>"+task.text+"</b> | Progress: <b>" + task.progress*100+ "%</b>"
+                        }else{
+                            return "Progress: <b>" + task.progress*100+ "%</b>";
                         }
                     }
-                );
+                };
+
+                gantt.templates.task_text=function(start,end,task){
+                    if(task.$level == 0){
+                        return "<b>"+task.text+"</b>";
+                    }else{
+                        if(task.is_cpm){
+                            return "(!)";
+                        }else{
+                            return "";
+                        }
+                    }
+                };
+
+
+                var tasks = {
+                    data:project,
+                    links:links
+                };
+
+                var markerId = gantt.addMarker({
+                    start_date: new Date(),
+                    css: "today",
+                    text: "Now",
+                    title: new Date().toString(),
+                });
+                gantt.getMarker(markerId); //->{css:"today", text:"Now", id:...}
+                gantt.config.readonly = true;
+                gantt.config.open_tree_initially = true;
+                gantt.templates.grid_folder = function(item) {
+                    return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>";
+                };
+                gantt.templates.grid_file = function(item) {
+                    if(item.id.indexOf("WBS") != -1){
+                        return "<div class='gantt_tree_icon textCenter'><i class='fa fa-suitcase'></i></div>";
+                    }else{
+                        return "<div class='gantt_tree_icon textCenter'><i class='fa fa-clock-o'></i></div>";
+                    }
+                };
+
+                setScaleConfig("month");
+                gantt.init("ganttChart");
+                gantt.parse(tasks);
+                gantt.showDate(new Date());
+                gantt.sort("start_date", false);
+
+                var els = document.querySelectorAll("input[name='scale']");
+                for (var i = 0; i < els.length; i++) {
+                    els[i].onclick = function(e){
+                        e = e || window.event;
+                        var el = e.target || e.srcElement;
+                        var value = el.value;
+                        setScaleConfig(value);
+                        gantt.render();
+                        $('[data-toggle="tooltip"]').tooltip();
+                    };
+                }
+                $('[data-toggle="tooltip"]').tooltip();
+
+                var costCanvas = document.getElementById("cost").getContext("2d");
+                var progressCanvas = $('#progress').get(0).getContext('2d');
+                var horizonalLinePlugin = {
+                    afterDraw: function(chartInstance) {
+                        var yScale = chartInstance.scales["y-axis-0"];
+                        var canvas = chartInstance.chart;
+                        var ctx = canvas.ctx;
+                        var index;
+                        var line;
+                        var style;
+
+                        if (chartInstance.options.horizontalLine) {
+                        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+                            line = chartInstance.options.horizontalLine[index];
+
+                            if (!line.style) {
+                                style = "rgba(169,169,169, .6)";
+                            } else {
+                                style = line.style;
+                            }
+
+                            if (line.y) {
+                                yValue = yScale.getPixelForValue(line.y);
+                            } else {
+                                yValue = 0;
+                            }
+
+                            ctx.lineWidth = 3;
+
+                            if (yValue) {
+                                ctx.beginPath();
+                                ctx.moveTo(0, yValue);
+                                ctx.lineTo(canvas.width, yValue);
+                                ctx.strokeStyle = style;
+                                ctx.stroke();
+                            }
+
+                            if (line.text) {
+                                ctx.fillStyle = style;
+                                ctx.fillText(line.text, 0, yValue + ctx.lineWidth + 10);
+                            }
+                        }
+                        return;
+                        };
+                    }
+                };
+                Chart.pluginService.register(horizonalLinePlugin);
+                var configCost = {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: "EVM Cost",
+                                backgroundColor: "rgba(0, 0, 0, 0)",
+                                borderColor : "rgba(122, 122, 211, 122)",
+                                data: @json($dataEvm),
+                            },
+                            {
+                                label: "Planned Cost",
+                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                data: @json($dataPlannedCost),
+                            },
+                            {
+                                label: "Actual Cost",
+                                borderColor: "green",
+                                data: @json($dataActualCost),
+                            },
+                        ]
+                    },
+                    options: {
+                        "horizontalLine": [{
+                            "y": @json($project->budget_value/1000000),
+                            "style": "rgba(255, 0, 0, .4)",
+                            "text": "Budget Value"
+                        }],
+                        elements: {
+                            point: {
+                                radius: 4,
+                                hitRadius: 4,
+                                hoverRadius: 6
+                            }
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    var value = tooltipItem.yLabel;
+                                    if(parseInt(value) >= 1000){
+                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                    } else {
+                                        return 'Rp' + value;
+                                    }
+                                }
+                            } // end callbacks:
+                        }, //end tooltips
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    tooltipFormat: 'll',
+                                    unit: 'week',
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display:false
+                                },
+                                ticks: {
+                                    beginAtZero:true,
+                                    callback: function(value, index, values) {
+                                        if(parseInt(value) >= 1000){
+                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                        } else {
+                                        return 'Rp' + value;
+                                        }
+                                },
+                                suggestedMin : @json($project->budget_value/1000000),
+                                },
+                                scaleLabel: {
+                                    display: true,
+                                    labelString: 'in million'
+                                }
+                            }]
+                        },
+                    }
+                };
+                var costChart = new Chart(costCanvas, configCost);
+
+                var configProgress = {
+                    type: 'line',
+                    data: {
+                        datasets: [
+                            {
+                                label: "Planned Progress",
+                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                data: @json($dataPlannedProgress),
+                            },
+                            {
+                                label: "Actual Progress",
+                                borderColor: "green",
+                                data: @json($dataActualProgress),
+                            }
+                        ]
+                    },
+                    options: {
+                        elements: {
+                            point: {
+                                radius: 4,
+                                hitRadius: 4,
+                                hoverRadius: 6
+                            }
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    var value = tooltipItem.yLabel;
+                                        return value + "%";
+                                }
+                            } // end callbacks:
+                        }, //end tooltips
+                        responsive: true,
+                        scales: {
+                            xAxes: [{
+                                type: 'time',
+                                time: {
+                                    tooltipFormat: 'll',
+                                    unit: 'week',
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display:false
+                                },
+                                ticks: {
+                                    beginAtZero:true,
+                                    callback: function(value, index, values) {
+                                        return value + "%";
+                                }
+                                }
+                            }]
+                        }
+                    }
+                };
+
+                this.progressCost = new Chart(progressCanvas, configProgress);
             },
             computed:{
                 progressBarColor: function(){
@@ -1315,255 +1197,704 @@
                 tooltipText: function(text) {
                     return text
                 },
-                openConfirmModal(data){
-                    window.axios.get('/api/getActivity/'+data).then(({ data }) => {
-                        this.activity = data[0];
-                        var isOkPredecessor = true;
-                        if(this.activity.predecessor != null){
-                            this.havePredecessor = true;
-                            window.axios.get('/api/getPredecessor/'+this.activity.id).then(({ data }) => {
-                                this.predecessorActivities = data;
-                                this.predecessorActivities.forEach(activity => {
-                                    if(activity.status == 1){
-                                        isOkPredecessor = false;
-                                        this.confirmActivity.actual_start_date = "";
-                                        this.confirmActivity.actual_end_date = "";
-                                        this.confirmActivity.actual_duration = "";
-                                        document.getElementById("actual_start_date").disabled = true;
-                                        document.getElementById("current_progress").disabled = true;
-                                    }
+                findActive: function(id){
+                    if(this.active_tab == ""){
+                        this.active_tab = id;
 
-                                    if(isOkPredecessor){
-                                        $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
-                                        $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
-                                        document.getElementById("actual_start_date").disabled = false;
-                                        document.getElementById("current_progress").disabled = false;
-                                        if(this.confirmActivity.current_progress != 100){
-                                            document.getElementById("actual_end_date").disabled = true;
-                                            document.getElementById("actual_duration").disabled = true;
-                                            this.confirmActivity.actual_end_date = "";
-                                            this.confirmActivity.actual_duration = "";
-                                        }else{
-                                            document.getElementById("actual_end_date").disabled = false;
-                                            document.getElementById("actual_duration").disabled = false;
-                                            if(this.confirmActivity.actual_end_date == ""){
-                                                document.getElementById("btnSave").disabled = true;
-                                            }else{
-                                                document.getElementById("btnSave").disabled = false;
+                        var project = [];
+                        var links = [];
+                        this.additional_works_data.forEach(data => {
+                            if(data.project.id == id){
+                                project = data.ganttData;
+                                links = data.links;
+
+                                this.active_project_progress = data.project.progress;
+                                this.active_progress_status = data.progressStatus;
+                                this.active_str_expected_date = data.str_expected_date;
+
+                                var costCanvas = document.getElementById("cost").getContext("2d");
+                                var progressCanvas = $('#progress').get(0).getContext('2d');
+                                var horizonalLinePlugin = {
+                                    afterDraw: function(chartInstance) {
+                                        var yScale = chartInstance.scales["y-axis-0"];
+                                        var canvas = chartInstance.chart;
+                                        var ctx = canvas.ctx;
+                                        var index;
+                                        var line;
+                                        var style;
+
+                                        if (chartInstance.options.horizontalLine) {
+                                        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+                                            line = chartInstance.options.horizontalLine[index];
+
+                                            if (!line.style) {
+                                                style = "rgba(169,169,169, .6)";
+                                            } else {
+                                                style = line.style;
+                                            }
+
+                                            if (line.y) {
+                                                yValue = yScale.getPixelForValue(line.y);
+                                            } else {
+                                                yValue = 0;
+                                            }
+
+                                            ctx.lineWidth = 3;
+
+                                            if (yValue) {
+                                                ctx.beginPath();
+                                                ctx.moveTo(0, yValue);
+                                                ctx.lineTo(canvas.width, yValue);
+                                                ctx.strokeStyle = style;
+                                                ctx.stroke();
+                                            }
+
+                                            if (line.text) {
+                                                ctx.fillStyle = style;
+                                                ctx.fillText(line.text, 0, yValue + ctx.lineWidth + 10);
                                             }
                                         }
-                                    }else{
-                                        this.confirmActivity.actual_start_date = "";
-                                        this.confirmActivity.actual_end_date = "";
-                                        this.confirmActivity.actual_duration = "";
+                                        return;
+                                        };
                                     }
-                                });
-                            });
-                        }else{
-                            isOkPredecessor = true;
-                            this.havePredecessor = false;
-                            this.predecessorActivities = [];
-                        }
-                        this.confirmActivity.current_progress = this.activity.progress;
+                                };
+                                Chart.pluginService.register(horizonalLinePlugin);
+                                var configCost = {
+                                    type: 'line',
+                                    data: {
+                                        datasets: [
+                                            {
+                                                label: "EVM Cost",
+                                                backgroundColor: "rgba(0, 0, 0, 0)",
+                                                borderColor : "rgba(122, 122, 211, 122)",
+                                                data: data.dataEvm,
+                                            },
+                                            {
+                                                label: "Planned Cost",
+                                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                                data: data.dataPlannedCost,
+                                            },
+                                            {
+                                                label: "Actual Cost",
+                                                borderColor: "green",
+                                                data: data.dataActualCost,
+                                            },
+                                        ]
+                                    },
+                                    options: {
+                                        "horizontalLine": [{
+                                            "y": @json($project->budget_value/1000000),
+                                            "style": "rgba(255, 0, 0, .4)",
+                                            "text": "Budget Value"
+                                        }],
+                                        elements: {
+                                            point: {
+                                                radius: 4,
+                                                hitRadius: 4,
+                                                hoverRadius: 6
+                                            }
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function(tooltipItem, data) {
+                                                    var value = tooltipItem.yLabel;
+                                                    if(parseInt(value) >= 1000){
+                                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                    } else {
+                                                        return 'Rp' + value;
+                                                    }
+                                                }
+                                            } // end callbacks:
+                                        }, //end tooltips
+                                        responsive: true,
+                                        scales: {
+                                            xAxes: [{
+                                                type: 'time',
+                                                time: {
+                                                    tooltipFormat: 'll',
+                                                    unit: 'week',
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display:false
+                                                },
+                                                ticks: {
+                                                    beginAtZero:true,
+                                                    callback: function(value, index, values) {
+                                                        if(parseInt(value) >= 1000){
+                                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                        } else {
+                                                        return 'Rp' + value;
+                                                        }
+                                                },
+                                                suggestedMin : @json($project->budget_value/1000000),
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'in million'
+                                                }
+                                            }]
+                                        },
+                                    }
+                                };
+                                var costChart = new Chart(costCanvas, configCost);
 
-                        if(isOkPredecessor){
-                            $('#actual_start_date').datepicker('setDate', (this.activity.actual_start_date != null ? new Date(this.activity.actual_start_date):new Date(this.activity.planned_start_date)));
-                            $('#actual_end_date').datepicker('setDate', (this.activity.actual_end_date != null ? new Date(this.activity.actual_end_date):null));
-                            document.getElementById("actual_start_date").disabled = false;
-                            document.getElementById("current_progress").disabled = false;
-                            if(this.confirmActivity.current_progress != 100){
-                                document.getElementById("actual_end_date").disabled = true;
-                                document.getElementById("actual_duration").disabled = true;
-                                this.confirmActivity.actual_end_date = "";
-                                this.confirmActivity.actual_duration = "";
-                            }else{
-                                document.getElementById("actual_end_date").disabled = false;
-                                document.getElementById("actual_duration").disabled = false;
-                                if(this.confirmActivity.actual_end_date == ""){
-                                    document.getElementById("btnSave").disabled = true;
-                                }else{
-                                    document.getElementById("btnSave").disabled = false;
-                                }
+                                var configProgress = {
+                                    type: 'line',
+                                    data: {
+                                        datasets: [
+                                            {
+                                                label: "Planned Progress",
+                                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                                data: data.dataPlannedProgress,
+                                            },
+                                            {
+                                                label: "Actual Progress",
+                                                borderColor: "green",
+                                                data: data.dataActualProgress,
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        elements: {
+                                            point: {
+                                                radius: 4,
+                                                hitRadius: 4,
+                                                hoverRadius: 6
+                                            }
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function(tooltipItem, data) {
+                                                    var value = tooltipItem.yLabel;
+                                                        return value + "%";
+                                                }
+                                            } // end callbacks:
+                                        }, //end tooltips
+                                        responsive: true,
+                                        scales: {
+                                            xAxes: [{
+                                                type: 'time',
+                                                time: {
+                                                    tooltipFormat: 'll',
+                                                    unit: 'week',
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display:false
+                                                },
+                                                ticks: {
+                                                    beginAtZero:true,
+                                                    callback: function(value, index, values) {
+                                                        return value + "%";
+                                                }
+                                                }
+                                            }]
+                                        }
+                                    }
+                                };
+
+                                var progressCost = new Chart(progressCanvas, configProgress);
                             }
-                        }else{
-                            this.confirmActivity.actual_start_date = "";
-                            this.confirmActivity.actual_end_date = "";
-                            this.confirmActivity.actual_duration = "";
-                        }
-
-                        document.getElementById("confirm_activity_code").innerHTML= this.activity.code;
-                        document.getElementById("planned_start_date").innerHTML= this.activity.planned_start_date;
-                        document.getElementById("planned_end_date").innerHTML= this.activity.planned_end_date;
-                        document.getElementById("planned_duration").innerHTML= this.activity.planned_duration+" Days";
-
-                        this.confirmActivity.activity_id = this.activity.id;
-
-                    });
-                },
-                setEndDateEdit(){
-                    if(this.confirmActivity.actual_duration != "" && this.confirmActivity.actual_start_date != ""){
-                        var actual_duration = parseInt(this.confirmActivity.actual_duration);
-                        var actual_start_date = this.confirmActivity.actual_start_date;
-                        var actual_end_date = new Date(actual_start_date);
-
-                        actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
-                        $('#actual_end_date').datepicker('setDate', actual_end_date);
-                    }else{
-                        this.confirmActivity.actual_end_date = "";
-                    }
-                },
-                confirm(){
-                    var confirmActivity = this.confirmActivity;
-                    var url = "";
-                    if(this.menu == "building"){
-                        url = "/activity/updateActualActivity/"+confirmActivity.activity_id;
-                    }else{
-                        url = "/activity_repair/updateActualActivity/"+confirmActivity.activity_id;
-                    }
-                    confirmActivity = JSON.stringify(confirmActivity);
-                    window.axios.put(url,confirmActivity)
-                    .then((response) => {
-                        if(response.data.error != undefined){
-                            iziToast.warning({
-                                displayMode: 'replace',
-                                title: response.data.error,
-                                position: 'topRight',
-                            });
-                        }else{
-                            iziToast.success({
-                                displayMode: 'replace',
-                                title: response.data.response,
-                                position: 'topRight',
-                            });
-                        }
-
-                        window.axios.get('/api/getDataGantt/'+this.project_id).then(({ data }) => {
-                            var tasks = {
-                                data:data.data,
-                                links:data.links
+                        });
+                        
+                        var tasks = {
+                            data:project,
+                            links:links
+                        };
+                       
+                        gantt.clearAll();       
+                        gantt.parse(tasks);
+                        gantt.render();
+                        gantt.showDate(new Date());
+                        gantt.sort("start_date", false);
+                        setScaleConfig("month");
+                        var els = document.querySelectorAll("input[name='scale']");
+                        for (var i = 0; i < els.length; i++) {
+                            els[i].onclick = function(e){
+                                e = e || window.event;
+                                var el = e.target || e.srcElement;
+                                var value = el.value;
+                                setScaleConfig(value);
+                                gantt.render();
+                                $('[data-toggle="tooltip"]').tooltip();
                             };
-                            gantt.render();
-                            gantt.parse(tasks);
-                            gantt.eachTask(function(task){
-                                if(task.id.indexOf("WBS") !== -1){
-                                    gantt.open(task.id);
-                                }
-                            })
+                        }
+                        $('[data-toggle="tooltip"]').tooltip();
+                    }else{
+                        var previous_active_tab  = document.getElementById(this.active_tab+"_gantt_container");
+                        this.active_tab = id;
+                        var project = [];
+                        var links = [];
+                        this.additional_works_data.forEach(data => {
+                            if(data.project.id == id){
+                                project = data.ganttData;
+                                links = data.links;
+
+                                this.active_project_progress = data.project.progress;
+                                this.active_progress_status = data.progressStatus;
+                                this.active_str_expected_date = data.str_expected_date;
+
+                                var costCanvas = document.getElementById("cost").getContext("2d");
+                                var progressCanvas = $('#progress').get(0).getContext('2d');
+                                var horizonalLinePlugin = {
+                                    afterDraw: function(chartInstance) {
+                                        var yScale = chartInstance.scales["y-axis-0"];
+                                        var canvas = chartInstance.chart;
+                                        var ctx = canvas.ctx;
+                                        var index;
+                                        var line;
+                                        var style;
+
+                                        if (chartInstance.options.horizontalLine) {
+                                        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+                                            line = chartInstance.options.horizontalLine[index];
+
+                                            if (!line.style) {
+                                                style = "rgba(169,169,169, .6)";
+                                            } else {
+                                                style = line.style;
+                                            }
+
+                                            if (line.y) {
+                                                yValue = yScale.getPixelForValue(line.y);
+                                            } else {
+                                                yValue = 0;
+                                            }
+
+                                            ctx.lineWidth = 3;
+
+                                            if (yValue) {
+                                                ctx.beginPath();
+                                                ctx.moveTo(0, yValue);
+                                                ctx.lineTo(canvas.width, yValue);
+                                                ctx.strokeStyle = style;
+                                                ctx.stroke();
+                                            }
+
+                                            if (line.text) {
+                                                ctx.fillStyle = style;
+                                                ctx.fillText(line.text, 0, yValue + ctx.lineWidth + 10);
+                                            }
+                                        }
+                                        return;
+                                        };
+                                    }
+                                };
+                                Chart.pluginService.register(horizonalLinePlugin);
+                                var configCost = {
+                                    type: 'line',
+                                    data: {
+                                        datasets: [
+                                            {
+                                                label: "EVM Cost",
+                                                backgroundColor: "rgba(0, 0, 0, 0)",
+                                                borderColor : "rgba(122, 122, 211, 122)",
+                                                data: data.dataEvm,
+                                            },
+                                            {
+                                                label: "Planned Cost",
+                                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                                data: data.dataPlannedCost,
+                                            },
+                                            {
+                                                label: "Actual Cost",
+                                                borderColor: "green",
+                                                data: data.dataActualCost,
+                                            },
+                                        ]
+                                    },
+                                    options: {
+                                        "horizontalLine": [{
+                                            "y": @json($project->budget_value/1000000),
+                                            "style": "rgba(255, 0, 0, .4)",
+                                            "text": "Budget Value"
+                                        }],
+                                        elements: {
+                                            point: {
+                                                radius: 4,
+                                                hitRadius: 4,
+                                                hoverRadius: 6
+                                            }
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function(tooltipItem, data) {
+                                                    var value = tooltipItem.yLabel;
+                                                    if(parseInt(value) >= 1000){
+                                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                    } else {
+                                                        return 'Rp' + value;
+                                                    }
+                                                }
+                                            } // end callbacks:
+                                        }, //end tooltips
+                                        responsive: true,
+                                        scales: {
+                                            xAxes: [{
+                                                type: 'time',
+                                                time: {
+                                                    tooltipFormat: 'll',
+                                                    unit: 'week',
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display:false
+                                                },
+                                                ticks: {
+                                                    beginAtZero:true,
+                                                    callback: function(value, index, values) {
+                                                        if(parseInt(value) >= 1000){
+                                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                        } else {
+                                                        return 'Rp' + value;
+                                                        }
+                                                },
+                                                suggestedMin : @json($project->budget_value/1000000),
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'in million'
+                                                }
+                                            }]
+                                        },
+                                    }
+                                };
+                                var costChart = new Chart(costCanvas, configCost);
+
+                                var configProgress = {
+                                    type: 'line',
+                                    data: {
+                                        datasets: [
+                                            {
+                                                label: "Planned Progress",
+                                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                                data: data.dataPlannedProgress,
+                                            },
+                                            {
+                                                label: "Actual Progress",
+                                                borderColor: "green",
+                                                data: data.dataActualProgress,
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        elements: {
+                                            point: {
+                                                radius: 4,
+                                                hitRadius: 4,
+                                                hoverRadius: 6
+                                            }
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function(tooltipItem, data) {
+                                                    var value = tooltipItem.yLabel;
+                                                        return value + "%";
+                                                }
+                                            } // end callbacks:
+                                        }, //end tooltips
+                                        responsive: true,
+                                        scales: {
+                                            xAxes: [{
+                                                type: 'time',
+                                                time: {
+                                                    tooltipFormat: 'll',
+                                                    unit: 'week',
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display:false
+                                                },
+                                                ticks: {
+                                                    beginAtZero:true,
+                                                    callback: function(value, index, values) {
+                                                        return value + "%";
+                                                }
+                                                }
+                                            }]
+                                        }
+                                    }
+                                };
+
+                                var progressCost = new Chart(progressCanvas, configProgress);
+                            }else if(id == "planned"){
+                                project = this.ganttData;
+                                links = this.links;
+
+                                this.active_project_progress = this.project.progress;
+                                this.active_progress_status = this.progressStatus;
+                                this.active_str_expected_date = this.str_expected_date;
+
+                                var costCanvas = document.getElementById("cost").getContext("2d");
+                                var progressCanvas = $('#progress').get(0).getContext('2d');
+                                var horizonalLinePlugin = {
+                                    afterDraw: function(chartInstance) {
+                                        var yScale = chartInstance.scales["y-axis-0"];
+                                        var canvas = chartInstance.chart;
+                                        var ctx = canvas.ctx;
+                                        var index;
+                                        var line;
+                                        var style;
+
+                                        if (chartInstance.options.horizontalLine) {
+                                        for (index = 0; index < chartInstance.options.horizontalLine.length; index++) {
+                                            line = chartInstance.options.horizontalLine[index];
+
+                                            if (!line.style) {
+                                                style = "rgba(169,169,169, .6)";
+                                            } else {
+                                                style = line.style;
+                                            }
+
+                                            if (line.y) {
+                                                yValue = yScale.getPixelForValue(line.y);
+                                            } else {
+                                                yValue = 0;
+                                            }
+
+                                            ctx.lineWidth = 3;
+
+                                            if (yValue) {
+                                                ctx.beginPath();
+                                                ctx.moveTo(0, yValue);
+                                                ctx.lineTo(canvas.width, yValue);
+                                                ctx.strokeStyle = style;
+                                                ctx.stroke();
+                                            }
+
+                                            if (line.text) {
+                                                ctx.fillStyle = style;
+                                                ctx.fillText(line.text, 0, yValue + ctx.lineWidth + 10);
+                                            }
+                                        }
+                                        return;
+                                        };
+                                    }
+                                };
+                                Chart.pluginService.register(horizonalLinePlugin);
+                                var configCost = {
+                                    type: 'line',
+                                    data: {
+                                        datasets: [
+                                            {
+                                                label: "EVM Cost",
+                                                backgroundColor: "rgba(0, 0, 0, 0)",
+                                                borderColor : "rgba(122, 122, 211, 122)",
+                                                data: this.dataEvm,
+                                            },
+                                            {
+                                                label: "Planned Cost",
+                                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                                data: this.dataPlannedCost,
+                                            },
+                                            {
+                                                label: "Actual Cost",
+                                                borderColor: "green",
+                                                data: this.dataActualCost,
+                                            },
+                                        ]
+                                    },
+                                    options: {
+                                        "horizontalLine": [{
+                                            "y": @json($project->budget_value/1000000),
+                                            "style": "rgba(255, 0, 0, .4)",
+                                            "text": "Budget Value"
+                                        }],
+                                        elements: {
+                                            point: {
+                                                radius: 4,
+                                                hitRadius: 4,
+                                                hoverRadius: 6
+                                            }
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function(tooltipItem, data) {
+                                                    var value = tooltipItem.yLabel;
+                                                    if(parseInt(value) >= 1000){
+                                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                    } else {
+                                                        return 'Rp' + value;
+                                                    }
+                                                }
+                                            } // end callbacks:
+                                        }, //end tooltips
+                                        responsive: true,
+                                        scales: {
+                                            xAxes: [{
+                                                type: 'time',
+                                                time: {
+                                                    tooltipFormat: 'll',
+                                                    unit: 'week',
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display:false
+                                                },
+                                                ticks: {
+                                                    beginAtZero:true,
+                                                    callback: function(value, index, values) {
+                                                        if(parseInt(value) >= 1000){
+                                                        return 'Rp' + value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                                                        } else {
+                                                        return 'Rp' + value;
+                                                        }
+                                                },
+                                                suggestedMin : @json($project->budget_value/1000000),
+                                                },
+                                                scaleLabel: {
+                                                    display: true,
+                                                    labelString: 'in million'
+                                                }
+                                            }]
+                                        },
+                                    }
+                                };
+                                var costChart = new Chart(costCanvas, configCost);
+
+                                var configProgress = {
+                                    type: 'line',
+                                    data: {
+                                        datasets: [
+                                            {
+                                                label: "Planned Progress",
+                                                borderColor: "rgba(0, 0, 255, 0.7)",
+                                                data: this.dataPlannedProgress,
+                                            },
+                                            {
+                                                label: "Actual Progress",
+                                                borderColor: "green",
+                                                data: this.dataActualProgress,
+                                            }
+                                        ]
+                                    },
+                                    options: {
+                                        elements: {
+                                            point: {
+                                                radius: 4,
+                                                hitRadius: 4,
+                                                hoverRadius: 6
+                                            }
+                                        },
+                                        tooltips: {
+                                            callbacks: {
+                                                label: function(tooltipItem, data) {
+                                                    var value = tooltipItem.yLabel;
+                                                        return value + "%";
+                                                }
+                                            } // end callbacks:
+                                        }, //end tooltips
+                                        responsive: true,
+                                        scales: {
+                                            xAxes: [{
+                                                type: 'time',
+                                                time: {
+                                                    tooltipFormat: 'll',
+                                                    unit: 'week',
+                                                }
+                                            }],
+                                            yAxes: [{
+                                                gridLines: {
+                                                    display:false
+                                                },
+                                                ticks: {
+                                                    beginAtZero:true,
+                                                    callback: function(value, index, values) {
+                                                        return value + "%";
+                                                }
+                                                }
+                                            }]
+                                        }
+                                    }
+                                };
+
+                                var progressCost = new Chart(progressCanvas, configProgress);
+                            }
                         });
-
-                        window.axios.get('/api/getProjectActivity/'+this.project_id).then(({ data }) => {
-                            this.project = data;
-                        });
-
-                        window.axios.get('/api/getActualStartDate/'+this.project_id).then(({ data }) => {
-                            document.getElementById('project-actual_start_date').innerHTML = "<b>: "+data+"</b>";
-                        });
-
-                        window.axios.get('/api/getDataChart/'+this.project_id).then(({ data }) => {
-                            var updateChart =[
-                                {
-                                    label: "Planned Progress",
-                                    backgroundColor: "rgba(242, 38, 2, 0.7)",
-                                    data: data.dataPlannedProgress,
-                                },
-                                {
-                                    label: "Actual Progress",
-                                    backgroundColor: "rgba(0, 0, 255, 0.7)",
-                                    data:data.dataActualProgress,
-                                }
-
-                            ];
-                            progress.config.data.datasets = updateChart;
-                            window.progress.update();
-                        });
-
-                        window.axios.get('/api/getDataJstree/'+this.project_id).then(({ data }) => {
-                            $('#treeview').jstree(true).settings.core.data = data;
-                            $('#treeview').jstree(true).refresh();
-                        });
-
-
-                        this.confirmActivity.activity_id = "";
-                        this.confirmActivity.actual_start_date = "";
-                        this.confirmActivity.actual_end_date = "";
-                        this.confirmActivity.actual_duration = "";
-                        this.havePredecessor = false;
-                        this.predecessorActivities = [];
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    })
-
-                }
+                        
+                        var tasks = {
+                            data:project,
+                            links:links
+                        };
+                       
+                        gantt.clearAll();       
+                        gantt.parse(tasks);
+                        gantt.render();
+                        gantt.showDate(new Date());
+                        gantt.sort("start_date", false);
+                        setScaleConfig("month");
+                        var els = document.querySelectorAll("input[name='scale']");
+                        for (var i = 0; i < els.length; i++) {
+                            els[i].onclick = function(e){
+                                e = e || window.event;
+                                var el = e.target || e.srcElement;
+                                var value = el.value;
+                                setScaleConfig(value);
+                                gantt.render();
+                                $('[data-toggle="tooltip"]').tooltip();
+                            };
+                        }
+                        $('[data-toggle="tooltip"]').tooltip();
+                    }
+                    
+                },
             },
             watch: {
-                confirmActivity:{
-                    handler: function(newValue) {
-                        if(this.confirmActivity.actual_start_date == ""){
-                            document.getElementById("actual_end_date").disabled = true;
-                            document.getElementById("actual_duration").disabled = true;
-                            document.getElementById("btnSave").disabled = true;
-                            document.getElementById("current_progress").disabled = true;
-                        }else{
-                            document.getElementById("actual_end_date").disabled = false;
-                            document.getElementById("actual_duration").disabled = false;
-                            document.getElementById("btnSave").disabled = false;
-                            document.getElementById("current_progress").disabled = false;
-                        }
-
-                        this.predecessorActivities.forEach(activity => {
-                            if(activity.status == 1){
-                                document.getElementById("actual_start_date").disabled = true;
-                                document.getElementById("actual_end_date").disabled = true;
-                                document.getElementById("actual_duration").disabled = true;
-                                document.getElementById("btnSave").disabled = true;
-                                document.getElementById("current_progress").disabled = true;
-                            }
-                        });
-
-                        if(this.confirmActivity.current_progress != 100){
-                            document.getElementById("actual_end_date").disabled = true;
-                            document.getElementById("actual_duration").disabled = true;
-                            this.confirmActivity.actual_end_date = "";
-                            this.confirmActivity.actual_duration = "";
-                        }else{
-                            document.getElementById("actual_end_date").disabled = false;
-                            document.getElementById("actual_duration").disabled = false;
-                            if(this.confirmActivity.actual_end_date == ""){
-                                document.getElementById("btnSave").disabled = true;
-                            }else{
-                                document.getElementById("btnSave").disabled = false;
-                            }
-                        }
-                    },
-                    deep: true
-                },
-                'confirmActivity.actual_start_date' :function(newValue){
-                    if(newValue == ""){
-                        $('#actual_end_date').datepicker('setDate', null);
-                        this.confirmActivity.actual_duration = "";
-                    }
-                },
-                'confirmActivity.actual_duration' : function(newValue){
-                    this.confirmActivity.actual_duration = newValue+"".replace(/\D/g, "");
-                        if(parseInt(newValue) < 1 ){
-                            iziToast.warning({
-                                displayMode: 'replace',
-                                title: 'End Date cannot be ahead Start Date',
-                                position: 'topRight',
-                            });
-                            this.confirmActivity.actual_duration = "";
-                            this.confirmActivity.actual_end_date = "";
-                        }
-                },
             },
             created: function(){
+                this.additional_works_data.forEach(data => {
+                    data.progressStatus.last_week_actual = parseFloat(data.progressStatus.last_week_actual).toFixed(2);
+                    data.progressStatus.last_week_planned = parseFloat(data.progressStatus.last_week_planned).toFixed(2);
+                    data.progressStatus.this_week_actual = parseFloat(data.progressStatus.this_week_actual).toFixed(2);
+                    data.progressStatus.this_week_planned = parseFloat(data.progressStatus.this_week_planned).toFixed(2);
+                    data.progressStatus.expected_in_week_gain = parseFloat(data.progressStatus.this_week_planned - data.progressStatus.last_week_planned).toFixed(2);
+                });
                 this.progressStatus.last_week_actual = parseFloat(this.progressStatus.last_week_actual).toFixed(2);
                 this.progressStatus.last_week_planned = parseFloat(this.progressStatus.last_week_planned).toFixed(2);
                 this.progressStatus.this_week_actual = parseFloat(this.progressStatus.this_week_actual).toFixed(2);
                 this.progressStatus.this_week_planned = parseFloat(this.progressStatus.this_week_planned).toFixed(2);
                 this.progressStatus.expected_in_week_gain = parseFloat(this.progressStatus.this_week_planned - this.progressStatus.last_week_planned).toFixed(2);
                 $('div.overlay').hide();
+            }
+        });
+
+        var route = new Vue({
+            el: "#route",
+            methods:{
+                generateLink(menu){
+                    if(menu == "selectStructureAdditional"){
+                        var project_id = vm.project.id;
+                        var project_standard_id = vm.project.project_standard_id;
+                        return "selectStructureAdditional/"+project_standard_id+"/"+project_id;
+                    }else{
+                        var route = menu.split("-");
+                        if(vm.active_tab == ""){
+                            var project_id = vm.project.id;
+                        }else{
+                            var project_id = vm.active_tab;
+                        }
+
+                        if(route.length > 1){
+                            return route[0]+"/"+project_id+"/"+route[1];
+                        }else{
+                            if(menu == "createWBS"){
+                                return "/wbs_repair/"+route[0]+"/"+project_id;
+                            }else if(menu == "manageNetwork"){
+                                return "/activity_repair/"+route[0]+"/"+project_id;
+                            }
+                            else{
+                                return route[0]+"/"+project_id;
+                            }
+
+                        }
+                    }
+                }
             }
         });
 

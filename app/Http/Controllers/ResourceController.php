@@ -535,8 +535,11 @@ class ResourceController extends Controller
         DB::beginTransaction();
         try {
             $resource_ref->resource_id = $data['resource_id'];
+            $resource_ref->category_id = $data['category_id'];
+
             $resource_ref->wbs_id = $data['wbs_id'];
             $resource_ref->quantity = $data['quantity'];
+            $resource_ref->description = $data['description'];
             if($data['category_id'] == 4){
                 if($data['resource_detail_id'] != "" && $data['resource_detail_id'] != null){
                     $resource_ref->resource_detail_id = $data['resource_detail_id'];
@@ -552,6 +555,8 @@ class ResourceController extends Controller
                     $resource_ref->start_date = null;
                     $resource_ref->end_date = null;
                 }
+            }else if($data['category_id'] != 4){
+                $resource_ref->resource_detail_id = null;
             }
 
             if(!$resource_ref->save()){
@@ -576,11 +581,16 @@ class ResourceController extends Controller
             $resource = new ResourceTrx;
             $resource->category_id = $data['category_id'];
             $resource->resource_id = $data['resource_id'];
+            $resource->description = $data['description'];
             if($data['resource_detail_id'] != ''){
                 $resource->resource_detail_id = $data['resource_detail_id'];
             }
-            $resource->project_id = $data['project_id'];
-            $resource->wbs_id = $data['wbs_id'];
+            if($data['project_id'] != ''){
+                $resource->project_id = $data['project_id'];
+            }
+            if($data['wbs_id'] != ''){
+                $resource->wbs_id = $data['wbs_id'];
+            }
             $resource->quantity = $data['quantity'];
             if($data['start_date'] != ''){
                 $resource->start_date = $data['start_date'];
@@ -829,7 +839,6 @@ class ResourceController extends Controller
 
     public function getResourceTrxApi($id){
         $resourceTrx = ResourceTrx::with('project','resource','wbs','resourceDetail')->where('project_id',$id)->get()->jsonSerialize();
-
         return response($resourceTrx, Response::HTTP_OK);
     }
 

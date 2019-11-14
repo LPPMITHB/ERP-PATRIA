@@ -181,11 +181,12 @@
                         data.forEach(TR =>{
                             let start_date = new Date((TR.start_date+"").replace(/-/g,"/"));
                             let end_date = new Date((TR.end_date+"").replace(/-/g,"/"));
-
+                            
+                            if(TR.project != null || TR.wbs != null){
                             this.events.push({
-                                title: "Project: "+TR.project.number + " \n WBS: "+ TR.wbs.number+" - "+TR.wbs.description, 
-                                wbs: TR.wbs.number+" - "+TR.wbs.description, 
-                                project: TR.project.number, 
+                                title: "Project: "+TR.project.number + " \n WBS: "+ TR.wbs.number+" - "+TR.wbs.description,
+                                wbs: TR.wbs.number+" - "+TR.wbs.description,
+                                project: TR.project.number,
                                 start: TR.start_date,
                                 end: TR.end_date,
                                 booked_by : TR.user.name,
@@ -195,6 +196,18 @@
                                 color : '#007bff',
                                 textColor : 'black',
                             })
+                            }else{
+                            this.events.push({
+                                start: TR.start_date,
+                                end: TR.end_date,
+                                booked_by : TR.user.name,
+                                start_date : this.buildingDate(start_date),
+                                end_date : this.buildingDate(end_date),
+                                clickable : true,
+                                color : '#007bff',
+                                textColor : 'black',
+                            })
+                            }
                         });
                         this.buildFullCalendar();
                         $('div.overlay').hide();
@@ -208,6 +221,7 @@
                         console.log(error);
                         $('div.overlay').hide();
                     })
+                    console.log(this.events);
                 }
             }
         },

@@ -15,12 +15,13 @@ class CreateMstQualityTypesTable extends Migration
     {
         Schema::create('mst_quality_control_type', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('ship_id')->nullable();
-            
+            $table->unsignedInteger('ship_id')->nullable(); //quality Plan
+            $table->unsignedInteger('peran')->nullable();//peran config
             $table->string('name');
             $table->text('description')->nullable();
+
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('branch_id');  
+            $table->unsignedInteger('branch_id');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

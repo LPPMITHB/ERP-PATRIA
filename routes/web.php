@@ -656,6 +656,10 @@ Route::name('project_repair.')->prefix('project_repair')->group(function() {
 
     Route::get('/selectStructure/{project_standard_id}/{project_id}', 'ProjectController@selectStructure')->name('selectStructure')->middleware('can:create-project-repair');
 
+    Route::get('/selectStructureAdditional/{project_standard_id}/{project_id}', 'ProjectController@selectStructureAdditional')->name('selectStructureAdditional')->middleware('can:create-project-repair');
+
+    Route::post('/storeAdditionalWork', 'ProjectController@storeAdditionalWork')->name('storeAdditionalWork')->middleware('can:create-project-repair');
+
     Route::post('/storeCopyProjectStructure', 'ProjectController@storeCopyProjectStructure')->name('storeCopyProjectStructure')->middleware('can:create-project-repair');
 
     Route::post('/storeSelectedStructure', 'ProjectController@storeSelectedStructure')->name('storeSelectedStructure')->middleware('can:create-project-repair');
@@ -2090,7 +2094,7 @@ Route::name('qc_type.')->prefix('qc_type')->group(function() {
 
     Route::patch('/update', 'QualityControlTypeController@update')->name('update')->middleware('can:edit-qc-type');
 
-    Route::put('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster')->middleware('can:edit-qc-type');
+    Route::patch('/updatemaster', 'QualityControlTypeController@updateMaster')->name('updatemaster')->middleware('can:edit-qc-type');
 
     Route::put('/updatedetail', 'QualityControlTypeController@updateDetail')->name('updatedetail')->middleware('can:edit-qc-type');
 

@@ -68,15 +68,15 @@
                                                     </a>
                                                 </div>
                                             </div>
-                                            <div class="col-sm-12 p-l-5 p-r-5 p-b-0">
+                                            <div class="col-sm-12 p-l-5 p-r-0 p-b-0">
                                                 <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
                                                     <a class="btn btn-primary btn-xs col-xs-12" @click="openEditModal(material,index)" data-toggle="modal"
-                                                        href="#edit_item">
+                                                        href="#edit_wbs">
                                                         EDIT
                                                     </a>
                                                 </div>
                                                 <div class="col-sm-6 col-xs-12 no-padding p-r-5 p-b-5">
-                                                    <a href="#" @click="removeRow(index)" class="btn btn-danger btn-xs">
+                                                    <a class="btn btn-danger btn-xs col-xs-12" @click="removeRow(index)" data-toggle="modal">
                                                         DELETE
                                                     </a>
                                                 </div>
@@ -84,31 +84,6 @@
                                         </td>
                                     </tr>
                                 </tbody>
-                                <div class="modal fade" id="edit_remark">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">×</span>
-                                                </button>
-                                                <h4 class="modal-title">Input Remark</h4>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="row">
-                                                    <div class="col-sm-12">
-                                                        <label for="remark" class="control-label">Remark</label>
-                                                        <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark"
-                                                            class="form-control"></textarea>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-primary" data-dismiss="modal"
-                                                    @click.prevent="updateRemark">SAVE</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
                                 <tfoot>
                                     <td>{{ newIndex }}</td>
                                     <td class="p-l-0 textLeft no-padding">
@@ -139,7 +114,7 @@
                                         <input type="text" class="form-control" v-model="dataInput.quantity">
                                     </td>
                                     <td class="p-l-0 textCenter">
-                                        <button @click.prevent="add" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
+                                        <button @click.prevent="addRemark" :disabled="createOk" class="btn btn-primary btn-xs" id="btnSubmit">ADD</button>
                                     </td>
                                 </tfoot>
                             </table><br>
@@ -147,6 +122,59 @@
                                 <button @click.prevent="submitForm" class="btn btn-primary pull-right" :disabled="allOk">CREATE</button>
                             </div>
                         </div>
+
+                        <div class="modal fade" id="edit_remark">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Remark</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="remark" class="control-label">Remark</label>
+                                                <textarea name="remark" id="remark" rows="3" v-model="editRemark.remark"
+                                                    class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                            @click.prevent="updateRemark">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal fade" id="add_remark">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">×</span>
+                                        </button>
+                                        <h4 class="modal-title">Input Remark</h4>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="row">
+                                            <div class="col-sm-12">
+                                                <label for="remark" class="control-label">Remark</label>
+                                                <textarea name="remark" id="remark" rows="3" v-model="dataInput.remark"
+                                                    class="form-control"></textarea>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal"
+                                            @click.prevent="add">SAVE</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div class="modal fade" id="edit_item">
                             <div class="modal-dialog">
                                 <div class="modal-content">
@@ -312,6 +340,9 @@ var vm = new Vue({
         }
     },
     methods : {
+        addRemark(){
+            $('#add_remark').modal();
+        },
         add(){
             var material_id = this.dataInput.material_id;
             var sloc_id = this.dataInput.sloc_id;
@@ -343,6 +374,7 @@ var vm = new Vue({
                         this.dataInput.available = "";
                         this.dataInput.unit = "";
                         this.dataInput.is_decimal = "";
+                        this.dataInput.remark = "";
                         this.newIndex = Object.keys(this.dataMaterial).length+1;
                         $('div.overlay').hide();
                     })

@@ -102,4 +102,14 @@ class Project extends Model
     {
         return $this->hasMany('App\Models\Post');
     }
+
+    public function additionalWorks()
+    {
+        return $this->hasMany(self::class, 'project_id');
+    }
+
+    public function parentProject()
+    {
+        return $this->belongsTo(self::class, 'project_id');
+    }
 }

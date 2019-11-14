@@ -36,6 +36,26 @@
                             <div class="col-md-7 col-xs-8 no-padding tdEllipsis"><b>: DONE</b></div>
                         @endif
 
+                        <div class="col-md-3 col-xs-4 no-padding">Start Date</div>
+                        @php
+                        $date = DateTime::createFromFormat('Y-m-d', $qcTask->start_date);
+                        $date = $date->format('d-m-Y');
+                        @endphp
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$date}}"><b>: {{$date}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">End Date</div>
+                        @php
+                        $date = DateTime::createFromFormat('Y-m-d', $qcTask->end_date);
+                        $date = $date->format('d-m-Y');
+                        @endphp
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$date}}"><b>: {{$date}}</b></div>
+
+                        <div class="col-md-3 col-xs-4 no-padding">External Join</div>
+                        @if ($qcTask->external_join == 1)
+                            <div class="col-md-7 col-xs-8 no-padding tdEllipsis"><b>: Yes</b></div>
+                        @elseif($qcTask->external_join == 0)
+                            <div class="col-md-7 col-xs-8 no-padding tdEllipsis"><b>: No</b></div>
+                        @endif
                     </div>
 
                     <div class="col-xs-12 col-lg-4 col-md-12">    
