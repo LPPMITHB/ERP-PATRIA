@@ -615,5 +615,34 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        // Quality Plan Configuration
+        $quality_plan = array(
+            0 => array(
+                'id' => 1,
+                'value' => 'internal',
+            ),
+            1 => array(
+                'id' => 2,
+                'value' => 'class',
+            ),
+            2 => array(
+                'id' => 3,
+                'value' => 'owner',
+            ),
+            3 => array(
+                'id' => 4,
+                'value' => 'regulator'
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'peran-quality-plan',
+            'title' => 'Peran Quality Plan',
+            'value' =>  json_encode($quality_plan),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }
