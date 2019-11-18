@@ -21,6 +21,7 @@
             <div class="box-body">
                 <div class="box-tools pull-right">
                     <a href="{{ route('qc_task.edit',['id'=>$qcTask->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    <a class="btn btn-primary btn-sm" data-toggle="modal" href="#show_modal_wbs_images">VIEW WBS IMAGES</a>
                 </div>
                 <div class="row">
                     <div class="col-xs-12 col-lg-4 col-md-12">    
@@ -121,6 +122,47 @@
                             </tr>
                         </tbody>
                     </table>
+                    <div class="modal fade" id="show_modal_wbs_images">
+                        <div class="modal-dialog modalPredecessor modalFull">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">×</span>
+                                    </button>
+                                    <h4 class="modal-title">View WBS Images</h4>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-sm-12">
+                                            <table id="qctd-table" class="table table-bordered showTable">
+                                                <thead>
+                                                    <tr>
+                                                        <th style="width: 5%">No</th>
+                                                        <th style="width: 35%">File Name</th>
+                                                        <th style="width: 45%">Description</th>
+                                                        <th style="width: 4%"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="(data,index) in wbsImages">
+                                                        <td>{{ index + 1 }}</td>
+                                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.drawing)">{{ data.drawing }}</td>
+                                                        <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                        <td>
+                                                            <a class="btn btn-primary btn-sm" :href="view(data.drawing)">VIEW</a>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 @endverbatim
             </div>
@@ -136,15 +178,33 @@
     });
     var data = {
         qcTaskDetail: @json($qcTask->qualityControlTaskDetails),
+        wbsImages: @json($wbs_images),
     };
+
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
+    
     var vm = new Vue({
         el: '#index_qcTaskDetail',
         data: data,
         methods: {
+            tooltipText: function(text) {
+                return text
+            },
             createRouteEdit(id) {
                 var url = "/qc_task/" + id + "/edit";
                 return url;
-            }
+            },
+            view(drawing){
+                let path = '../../app/documents/wbs_images/'+drawing;
+                
+                return path;
+            },
         }
     });
     $(document).ready(function() {
