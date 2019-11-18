@@ -356,9 +356,9 @@ class QualityControlTaskController extends Controller
             }
 
             if($menu == 'building'){
-                $users = User::where('role_id', 2)->select('id')->get();
+                $users = User::where('role_id', 4)->select('id')->get();
             }else{
-                $users = User::where('role_id', 3)->select('id')->get();
+                $users = User::where('role_id', 5)->select('id')->get();
             }
             foreach ($users as $user) {
                 $user->status = 1;

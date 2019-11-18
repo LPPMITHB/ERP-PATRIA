@@ -173,7 +173,7 @@ class MasterDataMenuSeeder extends Seeder
             'icon' => 'fa-wrench',
             'route_name' => 'yard.index',
             'is_active' => true,
-            'roles' => 'ADMIN,PMP',
+            'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $masterData,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
@@ -213,6 +213,18 @@ class MasterDataMenuSeeder extends Seeder
             'menu_id' => $qcType,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
+        ]);
+
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Email Template',
+            'icon' => 'fa-wrench',
+            'route_name' => 'email_template.index',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $masterData,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
         ]);
     }
 }

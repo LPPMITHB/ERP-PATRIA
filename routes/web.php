@@ -91,6 +91,23 @@ Route::name('dimension_type.')->prefix('dimension_type')->group(function() {
     Route::put('/add', 'ConfigurationController@dimensionTypeAdd')->name('add')->middleware('can:manage-dimension-type-configuration');
 });
 
+// Email Template Routes
+Route::name('email_template.')->prefix('email_template')->group(function() {
+    Route::get('/create', 'EmailTemplateController@create')->name('create')->middleware('can:create-email-template');
+
+    Route::get('/', 'EmailTemplateController@index')->name('index')->middleware('can:list-email-template');
+
+    Route::get('/{id}', 'EmailTemplateController@show')->name('show')->middleware('can:show-email-template');
+
+    Route::get('/{id}/edit', 'EmailTemplateController@edit')->name('edit')->middleware('can:edit-email-template');
+
+    Route::patch('/{id}', 'EmailTemplateController@update')->name('update')->middleware('can:edit-email-template');
+
+    Route::post('/', 'EmailTemplateController@store')->name('store')->middleware('can:create-email-template');
+
+    Route::delete('/{id}', 'EmailTemplateController@destroy')->name('destroy')->middleware('can:destroy-email-template');
+});
+
 // Daily Weather Routes
 Route::name('daily_weather.')->prefix('daily_weather')->group(function() {
     Route::get('/', 'WeatherController@index')->name('index')->middleware('can:manage-weather');
