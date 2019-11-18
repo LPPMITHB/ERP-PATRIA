@@ -149,6 +149,7 @@
                                                             <p>
                                                                 <b v-if="confirm_qc_task.status_second == 'OK'" class="text-success">{{confirm_qc_task.status_second}}</b>
                                                                 <b v-else-if="confirm_qc_task.status_second == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_second}}</b>
+                                                                <b v-else>-</b>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -270,6 +271,7 @@
                 this.confirm_qc_task.name = qc_task_detail.name;
                 this.confirm_qc_task.description = qc_task_detail.description;
                 this.confirm_qc_task.status_first = qc_task_detail.status_first;
+                this.confirm_qc_task.status_second = qc_task_detail.status_second;
                 this.confirm_qc_task.status_first_ref = qc_task_detail.status_first;
                 this.confirm_qc_task.notes = qc_task_detail.notes;
                 if(qc_task_detail.status_second == "OK"){

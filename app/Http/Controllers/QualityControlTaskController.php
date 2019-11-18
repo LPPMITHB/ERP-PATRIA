@@ -14,6 +14,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
+use App\Exports\SummaryReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 use DateTime;
 use Auth;
 use DB;
@@ -159,7 +161,7 @@ class QualityControlTaskController extends Controller
                     } 
                 }
             }else{
-                return redirect()->route('qc_task_repair.selectProject')->with('error', 'Project isn\'t exist, Please try again !');
+                return redirect()->route('qc_task_repair.selectProject')->with('error', 'Project doesn\'t exist, Please try again !');
             }
         }
         return view('qc_task.selectWBS', compact('project','data','route'));
@@ -185,11 +187,81 @@ class QualityControlTaskController extends Controller
 
     public function summaryReport(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::find($id);
         $wbss = $project->wbss->pluck('id')->toArray();
-        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->with('wbs','qualityControlTaskDetails')->get();
+        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->with('wbs','qualityControlTaskDetails','qualityControlType.qualityControlTypeDetails')->get();
 
-        return view('qc_task.summaryReport', compact('project','modelQcTasks'));
+        $wbss = WBS::where('project_id', $id)->with('qualityControlTask')->get();
+        $data = Collection::make();
+
+        $data->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        $rejected = 0;
+        $approved = 0;
+        foreach ($modelQcTasks as $qc_task) {
+            foreach ($qc_task->qualityControlTaskDetails as $qc_task_detail) {
+                if($qc_task_detail->status_first == "OK"){
+                    $approved++;
+                }elseif($qc_task_detail->status_first == "NOT OK"){
+                    $rejected++;
+                }
+            }
+        }
+
+        $rejection_ratio = $rejected/$approved;
+
+
+        foreach($wbss as $wbs){
+            $qc_task = QualityControlTask::where('wbs_id',$wbs->id)->first();
+            if($qc_task){
+                if($qc_task->status == 0){
+                    $status = "DONE";
+                }else{
+                    $status = "NOT DONE";
+                }
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>['.$status.']</b>',
+                        "icon" => "fa fa-suitcase",
+                        "qc_task_id" => $qc_task->id,
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>['.$status.']</b>',
+                        "icon" => "fa fa-suitcase",
+                        "qc_task_id" => $qc_task->id,
+                    ]);
+                } 
+            }else{
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                } 
+            } 
+        }
+
+        return view('qc_task.summaryReport', compact('route','project','modelQcTasks','data','wbss','rejection_ratio','approved','rejected'));
     }
 
     public function confirm(Request $request, $id)
@@ -304,6 +376,13 @@ class QualityControlTaskController extends Controller
         $wbs = $qcTask->wbs;
         return view('qc_task.show', compact('qcTask','wbs'));
         
+    }
+
+    public function exportToExcel($id, Request $request)
+    {
+        $project = Project::find($id);
+        $now = date("Y_m_d_H_i_s");
+        return Excel::download(new SummaryReportExport($id), 'Summary_Report_'.$project->number.'_' . $now . '.xlsx');
     }
 
     /**

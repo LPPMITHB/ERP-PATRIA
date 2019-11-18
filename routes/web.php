@@ -2146,6 +2146,7 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
     Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy');
     // ->middleware('can:destroy-qc-task');
 
+    Route::get('/exportToExcel/{id}', 'QualityControlTaskController@exportToExcel')->name('exportToExcel')->middleware('can:show-qc-task');
 });
 
 // Sales Plan Routes
