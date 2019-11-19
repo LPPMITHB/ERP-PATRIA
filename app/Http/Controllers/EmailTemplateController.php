@@ -2,7 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmailTemplate;
+
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
+use Auth;
+use DB;
+use Illuminate\Http\JsonResponse;
 
 class EmailTemplateController extends Controller
 {
@@ -13,7 +21,7 @@ class EmailTemplateController extends Controller
      */
     public function index()
     {
-        //
+        return view('email_template.index');
     }
 
     /**
@@ -23,7 +31,7 @@ class EmailTemplateController extends Controller
      */
     public function create()
     {
-        //
+        return view('email_template.create');
     }
 
     /**
@@ -80,5 +88,13 @@ class EmailTemplateController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    //API
+    public function apiGetEmailTemplateMaster()
+    {
+        $dataEmailTemplate = EmailTemplate::all()->jsonSerialize();
+        return response($dataEmailTemplate, Response::HTTP_OK);
     }
 }

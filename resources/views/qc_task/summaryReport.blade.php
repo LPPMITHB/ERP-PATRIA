@@ -65,17 +65,17 @@
                 <div id="summary_report">
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
-                                <li class=""><a href="#last_status" data-toggle="tab" aria-expanded="true">By WBS</a></li>
-                                <li class="active"><a href="#qc_type" data-toggle="tab" aria-expanded="false">By QC Type</a></li>
+                                <li class="active"><a href="#last_status" data-toggle="tab" aria-expanded="true">By WBS</a></li>
+                                <li class=""><a href="#qc_type" data-toggle="tab" aria-expanded="false">By QC Type</a></li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane" id="last_status">
+                                <div class="tab-pane active" id="last_status">
                                     <div id="treeview">
                                     
                                     </div>
                                 </div>
                                 <!-- /.tab-pane -->
-                                <div class="tab-pane active" id="qc_type">
+                                <div class="tab-pane" id="qc_type">
                                     <h4>Summary Rejection Rate : <b>{{rejection_ratio}}</b></h4>
                                     <h5>Approved : <b>{{approved}}</b></h5>
                                     <h5>Rejected : <b>{{rejected}}</b></h5>

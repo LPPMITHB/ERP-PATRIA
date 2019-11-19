@@ -4256,6 +4256,7 @@ return array(
     'TrxSalesOrderDetailTableSeeder' => $baseDir . '/database/seeds/TrxSalesOrderDetailTableSeeder.php',
     'TrxSalesOrderTableSeeder' => $baseDir . '/database/seeds/TrxSalesOrderTableSeeder.php',
     'UOMTableSeeder' => $baseDir . '/database/seeds/UOMTableSeeder.php',
+    'Unisharp\\Ckeditor\\ServiceProvider' => $vendorDir . '/unisharp/laravel-ckeditor/ServiceProvider.php',
     'UpdateHelper\\ComposerPlugin' => $vendorDir . '/kylekatarnls/update-helper/src/UpdateHelper/ComposerPlugin.php',
     'UpdateHelper\\NotUpdateInterfaceInstanceException' => $vendorDir . '/kylekatarnls/update-helper/src/UpdateHelper/NotUpdateInterfaceInstanceException.php',
     'UpdateHelper\\UpdateHelper' => $vendorDir . '/kylekatarnls/update-helper/src/UpdateHelper/UpdateHelper.php',

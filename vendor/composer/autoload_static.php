@@ -94,6 +94,10 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
             'Whoops\\' => 7,
             'Webmozart\\Assert\\' => 17,
         ),
+        'U' => 
+        array (
+            'Unisharp\\Ckeditor\\' => 18,
+        ),
         'T' => 
         array (
             'TijsVerkoyen\\CssToInlineStyles\\' => 31,
@@ -219,6 +223,10 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Unisharp\\Ckeditor\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/unisharp/laravel-ckeditor',
         ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
@@ -4739,6 +4747,7 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'TrxSalesOrderDetailTableSeeder' => __DIR__ . '/../..' . '/database/seeds/TrxSalesOrderDetailTableSeeder.php',
         'TrxSalesOrderTableSeeder' => __DIR__ . '/../..' . '/database/seeds/TrxSalesOrderTableSeeder.php',
         'UOMTableSeeder' => __DIR__ . '/../..' . '/database/seeds/UOMTableSeeder.php',
+        'Unisharp\\Ckeditor\\ServiceProvider' => __DIR__ . '/..' . '/unisharp/laravel-ckeditor/ServiceProvider.php',
         'UpdateHelper\\ComposerPlugin' => __DIR__ . '/..' . '/kylekatarnls/update-helper/src/UpdateHelper/ComposerPlugin.php',
         'UpdateHelper\\NotUpdateInterfaceInstanceException' => __DIR__ . '/..' . '/kylekatarnls/update-helper/src/UpdateHelper/NotUpdateInterfaceInstanceException.php',
         'UpdateHelper\\UpdateHelper' => __DIR__ . '/..' . '/kylekatarnls/update-helper/src/UpdateHelper/UpdateHelper.php',
