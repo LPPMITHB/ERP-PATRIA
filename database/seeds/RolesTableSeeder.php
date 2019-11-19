@@ -128,6 +128,7 @@ class RolesTableSeeder extends Seeder
                 'manage-customer-visit-repair' => true,
                 'manage-delivery-document' => true, 'list-delivery-document' => true, 'show-delivery-document' => true,
                 'close-project' => true,
+                'list-email-template' => true, 'create-email-template' => true, 'show-email-template' => true, 'edit-email-template' => true,
                 
                 ]),
             'created_at' => date('Y-m-d'),
@@ -236,6 +237,7 @@ class RolesTableSeeder extends Seeder
                 'manage-customer-visit' => true,
                 'manage-delivery-document' => true, 'list-delivery-document' => true, 'show-delivery-document' => true,
                 'close-project' => true,
+                'list-email-template' => true, 'create-email-template' => true, 'show-email-template' => true, 'edit-email-template' => true,
 
             ]),
             'created_at' => date('Y-m-d'),
@@ -336,6 +338,7 @@ class RolesTableSeeder extends Seeder
                 'manage-sales-plan-repair' => true,   
                 'manage-weather' => true, 'manage-tidal' => true, 'manage-daily-man-hour' => true,
                 'manage-customer-visit-repair' => true,
+                'list-email-template' => true, 'create-email-template' => true, 'show-email-template' => true, 'edit-email-template' => true,
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

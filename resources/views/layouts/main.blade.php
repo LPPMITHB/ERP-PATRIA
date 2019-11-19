@@ -176,7 +176,6 @@
                 lengthChange    : false,
                 info            : false,
             });
-
         </script>
         @stack('script')
     </body>

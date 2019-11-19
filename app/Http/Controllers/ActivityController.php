@@ -666,7 +666,7 @@ class ActivityController extends Controller
 
             $wbs = $activity->wbs;
             if(count($wbs->qualityControlTasks) > 0){
-                $qcTaskId = $wbs->qualityControlTasks->first();
+                $qcTaskId = $wbs->qualityControlTask;
                 //MAKE NOTIFICATION
                 if ($menu == 'building') {
                     $dataNotif = json_encode([
