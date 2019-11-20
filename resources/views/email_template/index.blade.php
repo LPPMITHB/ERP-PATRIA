@@ -82,7 +82,7 @@
             loading();
             window.axios.get('/api/get/email_template_master')
             .then(({ data }) => {
-                this.email_template = data;
+                this.email_templates = data;
             })
             .finally(function(){
                 $('#email-template-table').DataTable({

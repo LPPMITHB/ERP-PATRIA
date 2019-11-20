@@ -249,3 +249,4 @@ Route::get('/getMaterialPartsPS/{id}', 'ProjectStandardController@getMaterialPar
 
 //Email Template 
 Route::get('/get/email_template_master', 'EmailTemplateController@apiGetEmailTemplateMaster')->name('api.qc_type.get_email_template_master');
+Route::get('/get/email_template_edit/{id}', 'EmailTemplateController@apiGetEmailTemplateEdit')->name('api.qc_type.get_email_template_edit');

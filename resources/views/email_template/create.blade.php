@@ -61,16 +61,19 @@
 <script>
     const form = document.querySelector('form#create-email-template');
     $(document).ready(function() {
-        CKEDITOR.replace( 'summary-ckeditor' ,{
+        var editor = CKEDITOR.replace( 'summary-ckeditor' ,{
             language: 'en',
             removeButtons : "",
             toolbar : null,
         });
         $('div.overlay').hide();
+
+        editor.on( 'change', function( evt ) {
+            app.input.template = evt.editor.getData();
+        });
     });
 
     var data = {
-        newIndex: 1,
         sumbitedForm: {
             name: '',
             description: '',
