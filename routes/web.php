@@ -2351,3 +2351,26 @@ Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
     // ->middleware('can:destroy-qc-task');
 
 });
+
+// RFI Routes
+Route::name('rfi.')->prefix('rfi')->group(function() {
+    Route::get('/create/{id}', 'RfiController@create')->name('create')->middleware('can:create-rfi');
+
+    Route::get('/selectProject', 'RfiController@selectProject')->name('selectProject')->middleware('can:create-rfi');
+    
+    Route::get('/selectQcTask/{id}', 'RfiController@selectQcTask')->name('selectQcTask')->middleware('can:create-rfi');
+
+    Route::get('/selectProjectIndex', 'RfiController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-rfi');
+
+    Route::get('/', 'RfiController@index')->name('index')->middleware('can:list-rfi');
+
+    Route::get('/{id}', 'RfiController@show')->name('show')->middleware('can:show-rfi');
+
+    // Route::get('/{id}/edit', 'RfiController@edit')->name('edit')->middleware('can:edit-rfi');
+
+    // Route::patch('/{id}', 'RfiController@update')->name('update')->middleware('can:edit-rfi');
+
+    Route::post('/', 'RfiController@store')->name('store')->middleware('can:create-rfi');
+
+    // Route::delete('/{id}', 'RfiController@destroy')->name('destroy')->middleware('can:destroy-rfi');
+});

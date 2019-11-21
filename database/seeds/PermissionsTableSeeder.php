@@ -3516,5 +3516,32 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+        //RFI
+        $rfiIndex = Menu::where('route_name', 'rfi.selectProjectIndex')->select('id')->first()->id;
+        $rfiCreate = Menu::where('route_name', 'rfi.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Email Template',
+            'menu_id' => $rfiIndex,
+            'middleware' => 'list-rfi',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Create Email Template',
+            'menu_id' => $rfiCreate,
+            'middleware' => 'create-rfi',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Email Template',
+            'menu_id' => $rfiIndex,
+            'middleware' => 'show-rfi',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
     }
 }
