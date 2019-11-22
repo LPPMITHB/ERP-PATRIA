@@ -6,7 +6,7 @@
             'title' => 'Create RFI » Select Project',
             'items' => [
                 'Dashboard' => route('index'),
-                'Select Project' => route('close_project.selectProject'),
+                'Select Project' => route('rfi.selectProject'),
             ]
         ]
     )

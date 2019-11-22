@@ -6,6 +6,7 @@
     'subtitle' => '',
     'items' => [
         'Dashboard' => route('index'),
+        'Select Project'=> route('rfi.selectProject'),
         'Create RFI » Select Quality Control Task' => '',
     ]
 ])
