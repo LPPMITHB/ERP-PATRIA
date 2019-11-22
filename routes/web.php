@@ -2328,7 +2328,7 @@ Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
 
     Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');//gausah pakemiddleware
 
-    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
+    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task-repair');;
 
     Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task-repair');
     // ->middleware('can:show-qc-task');
@@ -2339,13 +2339,13 @@ Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
     Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task-repair');
     // ->middleware('can:edit-qc-task');
 
-    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish')->middleware('can:confirm-finish-qc-task-repair');
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish')->middleware('can:confirm-qc-task-repair');
 
     Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish')->middleware('can:cancel-finish-qc-task-repair');
 
-    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-finish-qc-task-repair');
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-qc-task-repair');
 
-    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task-repair');
 
     Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:delete-qc-task-repair');
     // ->middleware('can:destroy-qc-task');

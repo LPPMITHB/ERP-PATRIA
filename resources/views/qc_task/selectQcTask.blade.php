@@ -1,15 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb([
-    'title' => 'Quality Control Task Confirmation » Select Quality Control Task',
-    'subtitle' => '',
-    'items' => [
-        'Dashboard' => route('index'),
-        'Quality Control Task Confirmation » Select Quality Control Task' => '',
-    ]
-])
-@endbreadcrumb
+@if($project->business_unit_id == 1)
+    @breadcrumb([
+        'title' => 'Quality Control Task Confirmation » Select Quality Control Task',
+        'subtitle' => '',
+        'items' => [
+            'Dashboard' => route('index'),
+            'Select Project' => route('qc_task.selectProject'),
+            'Quality Control Task Confirmation » Select Quality Control Task' => '',
+        ]
+    ])
+    @endbreadcrumb
+@elseif($project->business_unit_id == 2)
+    @breadcrumb([
+        'title' => 'Quality Control Task Confirmation » Select Quality Control Task',
+        'subtitle' => '',
+        'items' => [
+            'Dashboard' => route('index'),
+            'Select Project' => route('qc_task_repair.selectProject'),
+            'Quality Control Task Confirmation » Select Quality Control Task' => '',
+        ]
+    ])
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -85,7 +99,11 @@
                                     <td>DONE</td>
                                 @endif
                                 <td class="text-center">
-                                    <a href="{{ route('qc_task.confirm',$data->id) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @if($project->business_unit_id == 1)
+                                        <a href="{{ route('qc_task.confirm',$data->id) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @elseif($project->business_unit_id == 2)
+                                        <a href="{{ route('qc_task_repair.confirm',$data->id) }}" class="btn btn-primary btn-xs">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

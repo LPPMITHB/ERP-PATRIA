@@ -1,15 +1,27 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb([
-    'title' => 'Show Quality Control Task',
-    'items' => [
-        'Dashboard' => route('index'),
-        'Show All Quality Control Task' => route('qc_task.index',$wbs->project_id),
-        $qcTask->name => route('qc_type.show',$qcTask->id),
-    ]
-])
-@endbreadcrumb
+@if ($route == "/qc_task")
+    @breadcrumb([
+        'title' => 'Show Quality Control Task',
+        'items' => [
+            'Dashboard' => route('index'),
+            'Show All Quality Control Task' => route('qc_task.index',$wbs->project_id),
+            $qcTask->description => route('qc_type.show',$qcTask->id),
+        ]
+    ])
+    @endbreadcrumb
+@elseif($route == "/qc_task_repair")
+    @breadcrumb([
+        'title' => 'Show Quality Control Task',
+        'items' => [
+            'Dashboard' => route('index'),
+            'Show All Quality Control Task' => route('qc_task_repair.index',$wbs->project_id),
+            $qcTask->description => route('qc_type.show',$qcTask->id),
+        ]
+    ])
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -20,7 +32,11 @@
         <div class="box">
             <div class="box-body">
                 <div class="box-tools pull-right">
-                    <a href="{{ route('qc_task.edit',['id'=>$qcTask->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @if ($route == "/qc_task")
+                        <a href="{{ route('qc_task.edit',['id'=>$qcTask->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @elseif($route == "/qc_task_repair")
+                        <a href="{{ route('qc_task_repair.edit',['id'=>$qcTask->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    @endif
                     <a class="btn btn-primary btn-sm" data-toggle="modal" href="#show_modal_wbs_images">VIEW WBS IMAGES</a>
                 </div>
                 <div class="row">
@@ -195,10 +211,6 @@
         methods: {
             tooltipText: function(text) {
                 return text
-            },
-            createRouteEdit(id) {
-                var url = "/qc_task/" + id + "/edit";
-                return url;
             },
             view(drawing){
                 let path = '../../app/documents/wbs_images/'+drawing;
