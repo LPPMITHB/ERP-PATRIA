@@ -135,7 +135,12 @@ class PurchaseRequisitionController extends Controller
     public function repeatOrder(Request $request)
     {
         $route = $request->route()->getPrefix();
-        $modelPRs = PurchaseRequisition::where('business_unit_id', 2)->where('status', 2)->get();
+		$ids = [0,2];
+		if($route == "/purchase_requisition") {
+			$modelPRs = PurchaseRequisition::where('business_unit_id', 1)->whereIn('status', $ids)->get();
+		} elseif ($route == "/purchase_requisition_repair") {
+			$modelPRs = PurchaseRequisition::where('business_unit_id', 2)->whereIn('status', $ids)->get();
+		}
         return view('purchase_requisition.repeatOrder', compact('modelPRs', 'route'));
     }
 
@@ -169,7 +174,7 @@ class PurchaseRequisitionController extends Controller
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
         $pr_number = $this->generatePRNumber();
-        //   if()  
+        //   if()
 
         DB::beginTransaction();
         try {
@@ -934,7 +939,7 @@ class PurchaseRequisitionController extends Controller
 
             $type = "";
             if($PR->type == 1){
-                $type = "Material";                
+                $type = "Material";
             }elseif($PR->type == 2){
                 $type = "Resource";
             }elseif($PR->type == 3){
@@ -2055,7 +2060,7 @@ class PurchaseRequisitionController extends Controller
     {
         $pr_value = 0;
         if ($pr_type == "Subcon") {
-            
+
         } elseif($pr_type == "Resource") {
             foreach ($prds as $prd) {
                 $pr_value += $prd->resource->cost_standard_price * $prd->quantity;
@@ -2152,7 +2157,7 @@ class PurchaseRequisitionController extends Controller
 
     public function getRepeatAPI($id)
     {
-        $pr = PurchaseRequisition::where('id', $id)->with('user', 'purchaseRequisitionDetails.material.uom')->first();
+        $pr = PurchaseRequisition::where('id', $id)->with('user', 'purchaseRequisitionDetails.material.uom','purchaseRequisitionDetails.resource','purchaseRequisitionDetails.wbs.project')->first();
         $old_created = date_create($pr->created_at);
         $new_created = date_format($old_created, "d-m-Y H:i:s");
         $pr->new_created = $new_created;

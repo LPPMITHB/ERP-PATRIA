@@ -39,12 +39,18 @@
                 $user_id = auth()->user()->id;
                 $notifications = auth()->user()->role->notifications;
                 foreach ($notifications as $key => $notification) {
-                  $user_data = json_decode($notification->user_data);
+                  $now = date('Y-m-d');
 
-                  foreach ($user_data as $data) {
-                    if($data->id == $user_id){
-                      if($data->status == 0){
-                        $notifications->forget($key);
+                  if($notification->show_date > $now){
+                    $notifications->forget($key);
+                  }else{
+                    $user_data = json_decode($notification->user_data);
+  
+                    foreach ($user_data as $data) {
+                      if($data->id == $user_id){
+                        if($data->status == 0){
+                          $notifications->forget($key);
+                        }
                       }
                     }
                   }
@@ -74,6 +80,10 @@
                               <i style="font-size: 25px" class="fa fa-suitcase text-aqua m-t-7"></i>
                             @elseif($data->title == "Purchase Requisition")
                               <i style="font-size: 25px" class="fa fa-file-text-o text-aqua m-t-7"></i>
+                            @elseif($data->title == "Quality Control")
+                              <i style="font-size: 25px" class="fa fa-file-text-o text-aqua m-t-7"></i>
+                            @elseif($data->title == "Quality Control Overdue")
+                              <i style="font-size: 25px" class="fa fa-exclamation-triangle text-aqua m-t-7"></i>
                             @endif
                           </div>
                           <div class="col-sm-11">

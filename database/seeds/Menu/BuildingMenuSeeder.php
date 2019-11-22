@@ -23,7 +23,7 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-       
+
 
         DB::table('menus')->insert([
             'level' => 1,
@@ -34,7 +34,7 @@ class BuildingMenuSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
-        
+
         $building = Menu::where('name', 'Ship Building')->select('id')->first()->id;
 
         // Building - Marketing and Sales
@@ -635,6 +635,19 @@ class BuildingMenuSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+		// Building - Material Management - Purchase Requisition - Repeat Order
+		DB::table('menus')->insert([
+			'level' => 4,
+			'name' => 'Repeat Order',
+			'icon' => 'fa-file-text-o',
+			'route_name' => 'purchase_requisition.repeatOrder',
+			'is_active' => true,
+			'roles' => 'ADMIN,PMP,PAMI',
+			'menu_id' => $purchase_requisition,
+			'created_at' => date('Y-m-d'),
+			'updated_at' => date('Y-m-d')
+		]);
 
         // Building - Material Management - Purchase Order
         DB::table('menus')->insert([
@@ -1259,7 +1272,7 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
-        // Building - Resource Management 
+        // Building - Resource Management
         DB::table('menus')->insert([
             'level' => 2,
             'name' => 'Resource Management',
@@ -1560,6 +1573,46 @@ class BuildingMenuSeeder extends Seeder
             'roles' => 'ADMIN,PMP,PAMI',
             'menu_id' => $quality_control,
             'route_name' => 'qc_task.selectProjectSummary',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // Building - Quality Control(QC) - QC Task
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'RFI',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $quality_control,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $rfi =  Menu::where('name', 'RFI')->where('menu_id', $quality_control)->select('id')->first()->id;
+
+        // Building - Quality Control(QC) - QC Task - Create QC Task
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'Create RFI',
+            'icon' => 'fa-wrench',
+            'route_name' => 'rfi.selectProject',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $rfi,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // Building - Quality Control(QC) - QC Task - View & Edit QC Task
+        DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View RFI',
+            'icon' => 'fa-wrench',
+            'route_name' => 'rfi.selectProjectIndex',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $rfi,
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);

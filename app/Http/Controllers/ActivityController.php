@@ -604,6 +604,8 @@ class ActivityController extends Controller
 
     public function updateActualActivity(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+
         $dataActivity = json_decode($request->dataConfirmActivity);
         $dataFile = $request->file;
         DB::beginTransaction();
@@ -663,7 +665,26 @@ class ActivityController extends Controller
             $project->actual_start_date = $earliest_date;
 
             $wbs = $activity->wbs;
-            self::changeWbsProgress($wbs);
+            if(count($wbs->qualityControlTasks) > 0){
+                $qcTaskId = $wbs->qualityControlTask;
+                //MAKE NOTIFICATION
+                if ($menu == 'building') {
+                    $dataNotif = json_encode([
+                        'text' => 'The WBS (' . $wbs->number . '-' . $wbs->description . ') has finished, please continue with the Quality Control Task',
+                        'time_info' => 'Created at',
+                        'title' => 'Quality Control',
+                        'url' => '/qc_task/confirm/' . $qcTaskId->id,
+                    ]);
+                } else if ($menu == 'repair') {
+                    $dataNotif = json_encode([
+                        'text' => 'The WBS (' . $wbs->number . '-' . $wbs->description .') has finished, please continue with the Quality Control Task',
+                        'time_info' => 'Created at',
+                        'title' => 'Quality Control',
+                        'url' => '/qc_task_repair/confirm/' . $qcTaskId->id,
+                    ]);
+                }
+            }
+            self::changeWbsProgress($wbs,$dataNotif,$menu);
 
             $project = $wbs->project;
             $oldestWorks= $project->wbss->where('wbs_id', null);
@@ -839,7 +860,7 @@ class ActivityController extends Controller
         }
     }
 
-    function changeWbsProgress($wbs){
+    function changeWbsProgress($wbs,$dataNotif,$menu){
         if($wbs){
             if($wbs->wbs){
                 $progress = 0;
@@ -856,7 +877,35 @@ class ActivityController extends Controller
                 }
                 $wbs->progress = ($progress /$wbs->weight) *100;
                 $wbs->save();
-                self::changeWbsProgress($wbs->wbs);
+
+                //NOTIF
+                if($wbs->progress == 100 && count($wbs->qualityControlTasks) > 0){
+                    if($menu == 'building'){
+                        $users = User::where('role_id', 2)->select('id')->get();
+                    }else{
+                        $users = User::where('role_id', 3)->select('id')->get();
+                    }
+                    foreach ($users as $user) {
+                        $user->status = 1;
+                    }
+                    $users = json_encode($users);
+    
+                    $new_notification = new Notification;
+                    $new_notification->type = "Quality Control";
+                    $new_notification->document_id = $wbs->id;
+                    if($menu == 'building'){
+                        $new_notification->role_id = 2;
+                    }else{
+                        $new_notification->role_id = 3;
+                    }
+                    $new_notification->notification_date = $wbs->created_at->toDateString();
+                    $new_notification->data = $dataNotif;
+                    $new_notification->user_data = $users;
+                    $new_notification->save();
+                }
+                //END NOTIF
+
+                self::changeWbsProgress($wbs->wbs,$dataNotif,$menu);
             }else{
                 $progress = 0;
                 if($wbs->activities){
@@ -872,6 +921,33 @@ class ActivityController extends Controller
                 }
                 $wbs->progress = ($progress /$wbs->weight) *100;
                 $wbs->save();
+
+                //NOTIF
+                if($wbs->progress == 100 && count($wbs->qualityControlTasks) > 0){
+                    if($menu == 'building'){
+                        $users = User::where('role_id', 2)->select('id')->get();
+                    }else{
+                        $users = User::where('role_id', 3)->select('id')->get();
+                    }
+                    foreach ($users as $user) {
+                        $user->status = 1;
+                    }
+                    $users = json_encode($users);
+    
+                    $new_notification = new Notification;
+                    $new_notification->type = "Quality Control";
+                    $new_notification->document_id = $wbs->id;
+                    if($menu == 'building'){
+                        $new_notification->role_id = 2;
+                    }else{
+                        $new_notification->role_id = 3;
+                    }
+                    $new_notification->notification_date = $wbs->created_at->toDateString();
+                    $new_notification->data = $dataNotif;
+                    $new_notification->user_data = $users;
+                    $new_notification->save();
+                }
+                //END NOTIF
             }
         }
     }

@@ -233,5 +233,22 @@ class MasterDataSidenavSeeder extends Seeder
             'menu_id' => $manageService,
             'route_name' => 'service.edit',
         ]);
+
+        // Master Data - Email Template
+        $manageEmailTemplate = Menu::where('route_name', 'email_template.index')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageEmailTemplate,
+            'route_name' => 'email_template.index',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageEmailTemplate,
+            'route_name' => 'email_template.create',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageEmailTemplate,
+            'route_name' => 'email_template.edit',
+        ]);
     }
 }
