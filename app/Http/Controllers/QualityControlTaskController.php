@@ -236,7 +236,11 @@ class QualityControlTaskController extends Controller
             }
         }
 
-        $rejection_ratio = $rejected/$approved;
+        if($approved != 0){
+            $rejection_ratio = $rejected/$approved;
+        }else{
+            $rejection_ratio = 0;
+        }
 
 
         foreach($wbss as $wbs){
