@@ -179,7 +179,7 @@ class PhysicalInventoryController extends Controller
 
     public function exportToExcel($id, Request $request)
     {
-        $modelSnapshot = Snapshot::find($id);
+        // $modelSnapshot = Snapshot::find($id);
         $now = date("Y_m_d_H_i_s");
         return Excel::download(new PhysicalInventoryExport($id), 'Stock_Taking_' . $now . '.xlsx');
     }

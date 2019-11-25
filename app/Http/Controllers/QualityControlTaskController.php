@@ -16,6 +16,8 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Carbon;
+use App\Exports\SummaryReportExport;
+use Maatwebsite\Excel\Facades\Excel;
 use DateTime;
 use Auth;
 use DB;
@@ -27,32 +29,52 @@ class QualityControlTaskController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function selectProject()
+    public function selectProject(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $route = $request->route()->getPrefix();
+        if($route == "/qc_task"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/qc_task_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
         return view('qc_task.selectProject',compact('modelProject'));
     }
 
-    public function selectProjectIndex()
+    public function selectProjectIndex(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $route = $request->route()->getPrefix();
+        if($route == "/qc_task"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/qc_task_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
-        return view('qc_task.selectProjectIndex',compact('modelProject'));
+        return view('qc_task.selectProjectIndex',compact('route','modelProject'));
     }
     
-    public function selectProjectConfirm()
+    public function selectProjectConfirm(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $route = $request->route()->getPrefix();
+        if($route == "/qc_task"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/qc_task_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
-        return view('qc_task.selectProjectConfirm',compact('modelProject'));
+        return view('qc_task.selectProjectConfirm',compact('route','modelProject'));
     }
     
-    public function selectProjectSummary()
+    public function selectProjectSummary(Request $request)
     {
-        $modelProject = Project::where('status',1)->get();
+        $route = $request->route()->getPrefix();
+        if($route == "/qc_task"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/qc_task_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
-        return view('qc_task.selectProjectSummary',compact('modelProject'));
+        return view('qc_task.selectProjectSummary',compact('route','modelProject'));
     }
 
     public function selectWBS(Request $request, $id)
@@ -129,7 +151,7 @@ class QualityControlTaskController extends Controller
                                 "parent" => $wbs->wbs->code,
                                 "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('qc_task_repair.edit',$bom->id)],
+                                "a_attr" =>  ["href" => route('qc_task_repair.edit',$qc_task->id)],
                             ]);
                         }else{
                             $data->push([
@@ -137,7 +159,7 @@ class QualityControlTaskController extends Controller
                                 "parent" => $project->number,
                                 "text" => $wbs->number.' - '.$wbs->description.'<b>'.$qc_task_number.'</b>',
                                 "icon" => "fa fa-suitcase",
-                                "a_attr" =>  ["href" => route('qc_task_repair.edit',$bom->id)],
+                                "a_attr" =>  ["href" => route('qc_task_repair.edit',$qc_task->id)],
                             ]);
                         } 
                     }else{
@@ -161,7 +183,7 @@ class QualityControlTaskController extends Controller
                     } 
                 }
             }else{
-                return redirect()->route('qc_task_repair.selectProject')->with('error', 'Project isn\'t exist, Please try again !');
+                return redirect()->route('qc_task_repair.selectProject')->with('error', 'Project doesn\'t exist, Please try again !');
             }
         }
         return view('qc_task.selectWBS', compact('project','data','route'));
@@ -187,18 +209,93 @@ class QualityControlTaskController extends Controller
 
     public function summaryReport(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $project = Project::find($id);
         $wbss = $project->wbss->pluck('id')->toArray();
-        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->with('wbs','qualityControlTaskDetails')->get();
+        $modelQcTasks = QualityControlTask::whereIn('wbs_id',$wbss)->with('wbs','qualityControlTaskDetails','qualityControlType.qualityControlTypeDetails')->get();
 
-        return view('qc_task.summaryReport', compact('project','modelQcTasks'));
+        $wbss = WBS::where('project_id', $id)->with('qualityControlTask')->get();
+        $data = Collection::make();
+
+        $data->push([
+            "id" => $project->number , 
+            "parent" => "#",
+            "text" => $project->name,
+            "icon" => "fa fa-ship"
+        ]);
+
+        $rejected = 0;
+        $approved = 0;
+        foreach ($modelQcTasks as $qc_task) {
+            foreach ($qc_task->qualityControlTaskDetails as $qc_task_detail) {
+                if($qc_task_detail->status_first == "OK"){
+                    $approved++;
+                }elseif($qc_task_detail->status_first == "NOT OK"){
+                    $rejected++;
+                }
+            }
+        }
+
+        if($approved != 0){
+            $rejection_ratio = $rejected/$approved;
+        }else{
+            $rejection_ratio = 0;
+        }
+
+
+        foreach($wbss as $wbs){
+            $qc_task = QualityControlTask::where('wbs_id',$wbs->id)->first();
+            if($qc_task){
+                if($qc_task->status == 0){
+                    $status = "DONE";
+                }else{
+                    $status = "NOT DONE";
+                }
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>['.$status.']</b>',
+                        "icon" => "fa fa-suitcase",
+                        "qc_task_id" => $qc_task->id,
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->number.' - '.$wbs->description.' <b>['.$status.']</b>',
+                        "icon" => "fa fa-suitcase",
+                        "qc_task_id" => $qc_task->id,
+                    ]);
+                } 
+            }else{
+                if($wbs->wbs){
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $wbs->wbs->code,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                }else{
+                    $data->push([
+                        "id" => $wbs->code , 
+                        "parent" => $project->number,
+                        "text" => $wbs->number.' - '.$wbs->description.'<b>',
+                        "icon" => "fa fa-suitcase",
+                    ]);
+                } 
+            } 
+        }
+
+        return view('qc_task.summaryReport', compact('route','project','modelQcTasks','data','wbss','rejection_ratio','approved','rejected'));
     }
 
     public function confirm(Request $request, $id)
     {
         $qcTask = QualityControlTask::findOrFail($id);
         $route = $request->route()->getPrefix();
-        return view('qc_task.confirm', compact('qcTask', 'route'));
+        $wbs_images = $qcTask->wbs->wbsi;
+        return view('qc_task.confirm', compact('qcTask', 'route','wbs_images'));
     }
 
     /**
@@ -212,8 +309,12 @@ class QualityControlTaskController extends Controller
         $route = $request->route()->getPrefix();
         $modelQcType = QualityControlType::all();
         $modelWbs = WBS::findOrFail($id);
-        $planned_end_date = DateTime::createFromFormat('Y-m-d', $modelWbs->planned_end_date);
-        $modelWbs->planned_end_date = $planned_end_date->format('d-m-Y');
+        if($modelWbs->planned_end_date != null){
+            $planned_end_date = DateTime::createFromFormat('Y-m-d', $modelWbs->planned_end_date);
+            $modelWbs->planned_end_date = $planned_end_date->format('d-m-Y');
+        }else{
+            return redirect()->route('qc_task_repair.selectWBS', $modelWbs->project_id)->with('error', 'Please define end date for the WBS!');
+        }
         return view('qc_task.create', compact('route','modelQcType','modelWbs'));
     }
 
@@ -283,9 +384,9 @@ class QualityControlTaskController extends Controller
             }
 
             if($menu == 'building'){
-                $users = User::where('role_id', 2)->select('id')->get();
+                $users = User::where('role_id', 4)->select('id')->get();
             }else{
-                $users = User::where('role_id', 3)->select('id')->get();
+                $users = User::where('role_id', 5)->select('id')->get();
             }
             foreach ($users as $user) {
                 $user->status = 1;
@@ -308,7 +409,11 @@ class QualityControlTaskController extends Controller
             //END NOTIF
 
             DB::commit();
-            return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Created New Quality Control Task!');
+            if($menu == "building"){
+                return redirect()->route('qc_task.show', $qcTask->id)->with('success', 'Success Created New Quality Control Task!');
+            }else{
+                return redirect()->route('qc_task_repair.show', $qcTask->id)->with('success', 'Success Created New Quality Control Task!');
+            }
         } catch (\Exception $e) {
             DB::rollback();
             return redirect()->route('qc_task.selectProject')->with('error', $e->getMessage())->withInput();
@@ -345,12 +450,21 @@ class QualityControlTaskController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
+        $route = $request->route()->getPrefix();
         $qcTask = QualityControlTask::findOrFail($id);
         $wbs = $qcTask->wbs;
-        return view('qc_task.show', compact('qcTask','wbs'));
+        $wbs_images = $wbs->wbsi;
+        return view('qc_task.show', compact('route','qcTask','wbs','wbs_images'));
         
+    }
+
+    public function exportToExcel($id, Request $request)
+    {
+        $project = Project::find($id);
+        $now = date("Y_m_d_H_i_s");
+        return Excel::download(new SummaryReportExport($id), 'Summary_Report_'.$project->number.'_' . $now . '.xlsx');
     }
 
     /**
@@ -450,36 +564,62 @@ class QualityControlTaskController extends Controller
     public function confirmFinish(Request $request,$id){
         DB::beginTransaction();
         try{
+            $route = $request->route()->getPrefix();
             $qc_task = QualityControlTask::find($id);
             $qc_task->status = 0;
 
             if(!$qc_task->update()){
-                return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+                if($route == "/qc_task"){
+                    return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+                }elseif($route == "/qc_task_repair"){
+                    return redirect()->route('qc_task_repair.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+                }
             }else{
                 DB::commit();
-                return redirect()->route('qc_task.selectQcTask', $qc_task->wbs->project_id)->with('success', 'Success to confirm Finish QC Task!');
+                if($route == "/qc_task"){
+                    return redirect()->route('qc_task.selectQcTask', $qc_task->wbs->project_id)->with('success', 'Success to confirm Finish QC Task!');
+                }elseif($route == "/qc_task_repair"){
+                    return redirect()->route('qc_task_repair.selectQcTask', $qc_task->wbs->project_id)->with('success', 'Success to confirm Finish QC Task!');
+                }
             }
         }catch(\Exception $e){
             DB::rollback();
-            return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', $e->getMessage());
+            if($route == "/qc_task"){
+                return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', $e->getMessage());
+            }elseif($route == "/qc_task_repair"){
+                return redirect()->route('qc_task_repair.confirm', $qc_task->id)->with('error', $e->getMessage());
+            }
         }
     }
 
     public function cancelFinish(Request $request,$id){
         DB::beginTransaction();
         try{
+            $route = $request->route()->getPrefix();
             $qc_task = QualityControlTask::find($id);
             $qc_task->status = 1;
 
             if(!$qc_task->update()){
-                return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+                if($route == "/qc_task"){
+                    return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+                }elseif($route == "/qc_task_repair"){
+                    return redirect()->route('qc_task_repair.confirm', $qc_task->id)->with('error', 'Failed to save, please try again!');
+                }
             }else{
+                if($route == "/qc_task"){
+                    return redirect()->route('qc_task.confirm', $qc_task->id)->with('success', 'Success to cancel Finish QC Task!');
+                }elseif($route == "/qc_task_repair"){
+                    return redirect()->route('qc_task_repair.confirm', $qc_task->id)->with('success', 'Success to cancel Finish QC Task!');
+                }
                 DB::commit();
-                return redirect()->route('qc_task.confirm', $qc_task->id)->with('success', 'Success to cancel Finish QC Task!');
             }
         }catch(\Exception $e){
+            if($route == "/qc_task"){
+                return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', $e->getMessage());
+            }elseif($route == "/qc_task_repair"){
+                return redirect()->route('qc_task_repair.confirm', $qc_task->id)->with('error', $e->getMessage());
+            }
             DB::rollback();
-            return redirect()->route('qc_task.confirm', $qc_task->id)->with('error', $e->getMessage());
         }
     }
     /**

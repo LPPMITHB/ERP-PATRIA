@@ -19,11 +19,10 @@
         <div class="box">
             <div class="box-body">
                 @if($route == '/qc_task')
-                <form id="create-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task.store') }}">
-                    @else
-                    {{-- <form id="create-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.store') }}">
-                    --}}
-                    @endif
+                    <form id="create-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task.store') }}">
+                @elseif($route == "/qc_task_repair")
+                    <form id="create-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.store') }}">
+                @endif
                     @csrf
                     @verbatim
                     <div id="qc_task">

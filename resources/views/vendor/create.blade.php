@@ -3,27 +3,27 @@
 
 @if($vendor->id)
 @breadcrumb(
-[
-'title' => 'Edit Vendor',
-'items' => [
-'Dashboard' => route('index'),
-'View All Vendors' => route('vendor.index'),
-$vendor->name => route('vendor.show',$vendor->id),
-'Edit Vendor' => route('vendor.edit',$vendor->id),
-]
-]
+    [
+        'title' => 'Edit Vendor',
+        'items' => [
+            'Dashboard' => route('index'),
+            'View All Vendors' => route('vendor.index'),
+            $vendor->name => route('vendor.show',$vendor->id),
+            'Edit Vendor' => route('vendor.edit',$vendor->id),
+        ]
+    ]
 )
 @endbreadcrumb
 @else
 @breadcrumb(
-[
-'title' => 'Create Vendor',
-'items' => [
-'Dashboard' => route('index'),
-'View All Vendors' => route('vendor.index'),
-'Create Vendor' => route('vendor.create'),
-]
-]
+    [
+        'title' => 'Create Vendor',
+        'items' => [
+            'Dashboard' => route('index'),
+            'View All Vendors' => route('vendor.index'),
+            'Create Vendor' => route('vendor.create'),
+        ]
+    ]
 )
 @endbreadcrumb
 @endif

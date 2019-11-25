@@ -68,9 +68,9 @@ class WBS extends Model
         return $this->hasOne('App\Models\GoodsReceipt', 'wbs_id');
     }
 
-    public function qualityControlTasks()
+    public function qualityControlTask()
     {
-        return $this->hasMany('App\Models\QualityControlTask', 'wbs_id');
+        return $this->hasOne('App\Models\QualityControlTask', 'wbs_id');
     }
 
     public function wbsi()

@@ -1,15 +1,29 @@
 @extends('layouts.main')
 
 @section('content-header')
-@breadcrumb([
-    'title' => 'View All Quality Control Task',
-    'subtitle' => '',
-    'items' => [
-        'Dashboard' => route('index'),
-        'View All Quality Control Task' => '',
-    ]
-])
-@endbreadcrumb
+@if($project->business_unit_id == 1)
+    @breadcrumb([
+        'title' => 'View All Quality Control Task',
+        'subtitle' => '',
+        'items' => [
+            'Dashboard' => route('index'),
+            'Select Project' => route('qc_task.selectProject'),
+            'View All Quality Control Task' => '',
+        ]
+    ])
+    @endbreadcrumb
+@elseif($project->business_unit_id == 2)
+    @breadcrumb([
+        'title' => 'View All Quality Control Task',
+        'subtitle' => '',
+        'items' => [
+            'Dashboard' => route('index'),
+            'Select Project' => route('qc_task_repair.selectProject'),
+            'View All Quality Control Task' => '',
+        ]
+    ])
+    @endbreadcrumb
+@endif
 @endsection
 
 @section('content')
@@ -85,10 +99,13 @@
                                     <td>DONE</td>
                                 @endif
                                 <td class="text-center">
-                                    
+                                    @if($project->business_unit_id == 1)
                                         <a href="{{ route('qc_task.show',$data->id) }}" class="btn btn-primary btn-xs">VIEW</a>
                                         <a href="{{ route('qc_task.edit',$data->id) }}" class="btn btn-primary btn-xs">EDIT</a>
-                                    
+                                    @elseif($project->business_unit_id == 2)
+                                        <a href="{{ route('qc_task_repair.show',$data->id) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                        <a href="{{ route('qc_task_repair.edit',$data->id) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

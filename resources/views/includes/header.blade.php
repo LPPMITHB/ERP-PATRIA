@@ -40,6 +40,7 @@
                 $notifications = auth()->user()->role->notifications;
                 foreach ($notifications as $key => $notification) {
                   $now = date('Y-m-d');
+
                   if($notification->show_date > $now){
                     $notifications->forget($key);
                   }else{

@@ -20,6 +20,7 @@ class CreateTrxQualityControlTaskDetailTable extends Migration
             $table->text('description')->nullable();
             $table->text('notes')->nullable();
             $table->string('status_first')->nullable();
+            // $table->unsignedBigInteger('peran');
             $table->string('status_second')->nullable();
             
             $table->timestamps();
