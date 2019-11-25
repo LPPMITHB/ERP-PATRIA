@@ -928,7 +928,7 @@ var vm = new Vue({
                 || this.newActivity.weight == ""
                 || this.newActivity.planned_duration == "")
                 {
-                    isOk = true;
+                    isOk = false;
                 }
             return isOk;
         },

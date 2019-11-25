@@ -2168,6 +2168,14 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
     Route::get('/exportToExcel/{id}', 'QualityControlTaskController@exportToExcel')->name('exportToExcel')->middleware('can:show-qc-task');
 });
 
+//quality control plan
+Route::name('qc_plan.')->prefix('qc_plan')->group(function(){
+    Route::get('/project/{id}','QualityPlanController@index')->name('planIndex');
+    // ->middleware('can:')
+    Route::get('/selectProject', 'QualityPlanController@selectProject')->name('selectProject');
+    // ->middleware('can:');
+});
+
 // Sales Plan Routes
 Route::name('sales_plan.')->prefix('sales_plan')->group(function() {
     Route::get('/create/{id}', 'SalesPlanController@create')->name('create')->middleware('can:manage-sales-plan');

@@ -77,6 +77,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxResourceTableSeeder::class);
         $this->call(MstPartDetailStandardTableSeeder::class);
         $this->call(MstQualityControlTypeTableSeeder::class);
+        $this->call(QualityPlanSeeder::class);
         //test
         // $this->call(SidenavsV3TableSeeder::class);
     }
