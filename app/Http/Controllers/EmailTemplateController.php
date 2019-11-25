@@ -2,7 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmailTemplate;
+
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Carbon;
+use Auth;
+use DB;
+use Illuminate\Http\JsonResponse;
 
 class EmailTemplateController extends Controller
 {
@@ -13,7 +21,7 @@ class EmailTemplateController extends Controller
      */
     public function index()
     {
-        //
+        return view('email_template.index');
     }
 
     /**
@@ -23,7 +31,7 @@ class EmailTemplateController extends Controller
      */
     public function create()
     {
-        //
+        return view('email_template.create');
     }
 
     /**
@@ -34,7 +42,21 @@ class EmailTemplateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $datas = json_decode($request->datas);
+        DB::beginTransaction();
+        try {
+            $email_template = new EmailTemplate;
+            $email_template->name = $datas->name;
+            $email_template->description = $datas->description;
+            $email_template->template = $datas->template;
+            $email_template->save();
+
+            DB::commit();
+            return redirect()->route('email_template.show', $email_template->id)->with('success', 'Success Created New Email Template!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('email_template.create')->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -45,7 +67,8 @@ class EmailTemplateController extends Controller
      */
     public function show($id)
     {
-        //
+        $email_template = EmailTemplate::find($id);
+        return view('email_template.show', compact('email_template'));
     }
 
     /**
@@ -56,7 +79,7 @@ class EmailTemplateController extends Controller
      */
     public function edit($id)
     {
-        //
+        return view('email_template.edit',compact('id'));
     }
 
     /**
@@ -68,7 +91,22 @@ class EmailTemplateController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $datas = json_decode($request->datas);
+
+        DB::beginTransaction();
+        try {
+            $email_template = EmailTemplate::find($id);
+            $email_template->name = $datas->name;
+            $email_template->description = $datas->description;
+            $email_template->template = $datas->template;
+            $email_template->update();
+
+            DB::commit();
+            return redirect()->route('email_template.show', $email_template->id)->with('success', 'Success Updated Email Template!');
+        } catch (\Exception $e) {
+            DB::rollback();
+            return redirect()->route('email_template.edit',$id)->with('error', $e->getMessage());
+        }
     }
 
     /**
@@ -80,5 +118,19 @@ class EmailTemplateController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+
+    //API
+    public function apiGetEmailTemplateMaster()
+    {
+        $dataEmailTemplate = EmailTemplate::all()->jsonSerialize();
+        return response($dataEmailTemplate, Response::HTTP_OK);
+    }
+
+    public function apiGetEmailTemplateEdit($id)
+    {
+        $dataEmailTemplate = EmailTemplate::find($id)->jsonSerialize();
+        return response($dataEmailTemplate, Response::HTTP_OK);
     }
 }

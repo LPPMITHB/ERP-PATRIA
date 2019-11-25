@@ -79,6 +79,35 @@ class QualityControlSidenavSeeder extends Seeder
             'route_name' => 'qc_task.summaryReport',
         ]);
 
+        //RFI
+        $viewRfiBuilding = Menu::where('route_name', 'rfi.selectProjectIndex')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRfiBuilding,
+            'route_name' => 'rfi.selectProjectIndex',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $viewRfiBuilding,
+            'route_name' => 'rfi.index',
+        ]);
+        
+        $createRfiBuilding = Menu::where('route_name', 'rfi.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createRfiBuilding,
+            'route_name' => 'rfi.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createRfiBuilding,
+            'route_name' => 'rfi.selectQcTask',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createRfiBuilding,
+            'route_name' => 'rfi.create',
+        ]);
+        
+
         /**
          * ========================================================================
          * =                                REPAIRING STAGE
@@ -93,6 +122,16 @@ class QualityControlSidenavSeeder extends Seeder
         ]);
 
         $createQcTaskRepair = Menu::where('route_name', 'qc_task_repair.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTaskRepair,
+            'route_name' => 'qc_task_repair.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $createQcTaskRepair,
+            'route_name' => 'qc_task.selectWBS',
+        ]);
+
         DB::table('sidenav')->insert([
             'menu_id' => $createQcTaskRepair,
             'route_name' => 'qc_task_repair.create',

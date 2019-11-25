@@ -65,59 +65,62 @@
                 <div id="summary_report">
                         <div class="nav-tabs-custom">
                             <ul class="nav nav-tabs">
-                                <li class=""><a href="#last_status" data-toggle="tab" aria-expanded="true">By WBS</a></li>
-                                <li class="active"><a href="#qc_type" data-toggle="tab" aria-expanded="false">By QC Type</a></li>
+                                <li class="active"><a href="#last_status" data-toggle="tab" aria-expanded="true">By WBS</a></li>
+                                <li class=""><a href="#qc_type" data-toggle="tab" aria-expanded="false">By QC Type</a></li>
                             </ul>
                             <div class="tab-content">
-                                <div class="tab-pane" id="last_status">
+                                <div class="tab-pane active" id="last_status">
                                     <div id="treeview">
                                     
                                     </div>
                                 </div>
                                 <!-- /.tab-pane -->
-                                <div class="tab-pane active" id="qc_type">
-                                    <h4>Summary Rejection Rate : <b>{{rejection_ratio}}</b></h4>
-                                    <h5>Approved : <b>{{approved}}</b></h5>
-                                    <h5>Rejected : <b>{{rejected}}</b></h5>
-                                    <div id="table-scroll" class="table-scroll ">
-                                        <div class="table-wrap">
-                                            <table class="main-table tableFixed">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 200px" rowspan="2" class="fixed-side" scope="col">&nbsp;</th>
-                                                        <th v-for="(data,index) in model_qc_tasks" :colspan="data.quality_control_type.quality_control_type_details.length"
-                                                            class="textCenter tdEllipsis" scope="col" width="300px" data-container="body" v-tooltip:top="tooltipText(data.quality_control_type.name+' - '+data.quality_control_type.description)">{{data.quality_control_type.name}} -
-                                                            {{data.quality_control_type.description}}</th>
-                                                    </tr>
-                                                    <tr>
-                                                        <template v-for="(data,index) in model_qc_tasks">
-                                                            <th v-for="(data_detail,index) in data.quality_control_type.quality_control_type_details" class="textCenter tdEllipsis" scope="col"
-                                                            data-container="body" v-tooltip:top="tooltipText(data_detail.name+' - '+data_detail.task_description)"
-                                                            >
-                                                                {{data_detail.name}} - {{data_detail.task_description}}</th>
-                                                        </template>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(data_wbs,index) in wbss">
-                                                        <td style="width: 200px" class="fixed-side tdEllipsis" width="200px" 
-                                                        data-container="body" v-tooltip:top="tooltipText(data_wbs.number+' - '+data_wbs.description)">{{data_wbs.number}} - {{data_wbs.description}}</td>
-                                                        <template v-for="(data_qc_task,index) in model_qc_tasks">
-                                                            <td v-if="data_wbs.id == data_qc_task.wbs_id" v-for="(data_detail,index) in data_qc_task.quality_control_task_details"
-                                                                class="textCenter tdEllipsis" scope="col" >
-                                                                <b v-if="data_detail.status_first == 'OK'" class="text-success">OK</b>
-                                                                <b v-else-if="data_detail.status_first == 'NOT OK'" class="text-danger">NOT OK</b>
-                                                            </td>
-                                                            <td v-else class="textCenter">-</td>
-                                                        </template>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
+                                <div class="tab-pane" id="qc_type">
+                                    <div class="box-body">
+                                        
+                                        <h4>Summary Rejection Rate : <b>{{rejection_ratio}}</b></h4>
+                                        <h5>Approved : <b>{{approved}}</b></h5>
+                                        <h5>Rejected : <b>{{rejected}}</b></h5>
+                                        <div id="table-scroll" class="table-scroll ">
+                                            <div class="table-wrap">
+                                                <table class="main-table tableFixed">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 200px" rowspan="2" class="fixed-side" scope="col">&nbsp;</th>
+                                                            <th v-for="(data,index) in model_qc_tasks" :colspan="data.quality_control_type.quality_control_type_details.length"
+                                                                class="textCenter tdEllipsis" scope="col" width="300px" data-container="body" v-tooltip:top="tooltipText(data.quality_control_type.name+' - '+data.quality_control_type.description)">{{data.quality_control_type.name}} -
+                                                                {{data.quality_control_type.description}}</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <template v-for="(data,index) in model_qc_tasks">
+                                                                <th v-for="(data_detail,index) in data.quality_control_type.quality_control_type_details" class="textCenter tdEllipsis" scope="col"
+                                                                data-container="body" v-tooltip:top="tooltipText(data_detail.name+' - '+data_detail.task_description)"
+                                                                >
+                                                                    {{data_detail.name}} - {{data_detail.task_description}}</th>
+                                                            </template>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr v-for="(data_wbs,index) in wbss">
+                                                            <td style="width: 200px" class="fixed-side tdEllipsis" width="200px" 
+                                                            data-container="body" v-tooltip:top="tooltipText(data_wbs.number+' - '+data_wbs.description)">{{data_wbs.number}} - {{data_wbs.description}}</td>
+                                                            <template v-for="(data_qc_task,index) in model_qc_tasks">
+                                                                <td v-if="data_wbs.id == data_qc_task.wbs_id" v-for="(data_detail,index) in data_qc_task.quality_control_task_details"
+                                                                    class="textCenter tdEllipsis" scope="col" >
+                                                                    <b v-if="data_detail.status_first == 'OK'" class="text-success">OK</b>
+                                                                    <b v-else-if="data_detail.status_first == 'NOT OK'" class="text-danger">NOT OK</b>
+                                                                </td>
+                                                                <td v-else class="textCenter">-</td>
+                                                            </template>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="col-md-12 m-b-10 p-r-0 p-t-10">
-                                        <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank"
-                                            :href="routeToExport(project.id)">EXPORT TO EXCEL</a>
+                                        <div class="col-md-12 m-b-10 p-r-0 p-t-10">
+                                            <a class="col-xs-12 col-md-2 btn btn-primary pull-right" target="_blank"
+                                                :href="routeToExport(project.id)">EXPORT TO EXCEL</a>
+                                        </div>
                                     </div>
                                 </div>
                                 <!-- /.tab-pane -->

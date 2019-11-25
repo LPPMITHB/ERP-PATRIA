@@ -2336,7 +2336,7 @@ Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
 
     Route::get('/selectWBS/{id}', 'QualityControlTaskController@selectWBS')->name('selectWBS');//gausah pakemiddleware
 
-    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task');;
+    Route::get('/create/{id}', 'QualityControlTaskController@create')->name('create')->middleware('can:create-qc-task-repair');;
 
     Route::get('/{id}', 'QualityControlTaskController@show')->name('show')->middleware('can:show-qc-task-repair');
     // ->middleware('can:show-qc-task');
@@ -2347,15 +2347,38 @@ Route::name('qc_task_repair.')->prefix('qc_task_repair')->group(function () {
     Route::patch('/', 'QualityControlTaskController@update')->name('update')->middleware('can:edit-qc-task-repair');
     // ->middleware('can:edit-qc-task');
 
-    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish')->middleware('can:confirm-finish-qc-task-repair');
+    Route::patch('/confirmFinish/{id}', 'QualityControlTaskController@confirmFinish')->name('confirmFinish')->middleware('can:confirm-qc-task-repair');
 
     Route::patch('/cancelFinish/{id}', 'QualityControlTaskController@cancelFinish')->name('cancelFinish')->middleware('can:cancel-finish-qc-task-repair');
 
-    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-finish-qc-task-repair');
+    Route::put('/storeConfirm', 'QualityControlTaskController@storeConfirm')->name('storeConfirm')->middleware('can:confirm-qc-task-repair');
 
-    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task');
+    Route::post('/', 'QualityControlTaskController@store')->name('store')->middleware('can:create-qc-task-repair');
 
     Route::delete('/{id}', 'QualityControlTaskController@destroy')->name('destroy')->middleware('can:delete-qc-task-repair');
     // ->middleware('can:destroy-qc-task');
 
+});
+
+// RFI Routes
+Route::name('rfi.')->prefix('rfi')->group(function() {
+    Route::get('/create/{id}', 'RfiController@create')->name('create')->middleware('can:create-rfi');
+
+    Route::get('/selectProject', 'RfiController@selectProject')->name('selectProject')->middleware('can:create-rfi');
+    
+    Route::get('/selectQcTask/{id}', 'RfiController@selectQcTask')->name('selectQcTask')->middleware('can:create-rfi');
+
+    Route::get('/selectProjectIndex', 'RfiController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-rfi');
+
+    Route::get('/', 'RfiController@index')->name('index')->middleware('can:list-rfi');
+
+    Route::get('/{id}', 'RfiController@show')->name('show')->middleware('can:show-rfi');
+
+    // Route::get('/{id}/edit', 'RfiController@edit')->name('edit')->middleware('can:edit-rfi');
+
+    // Route::patch('/{id}', 'RfiController@update')->name('update')->middleware('can:edit-rfi');
+
+    Route::post('/', 'RfiController@store')->name('store')->middleware('can:create-rfi');
+
+    // Route::delete('/{id}', 'RfiController@destroy')->name('destroy')->middleware('can:destroy-rfi');
 });

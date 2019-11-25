@@ -15,44 +15,51 @@
 @section('content')
 <div class="row">
     <div class="col-xs-12 p-b-20">
-        <div class="box">
+        <div class="nav-tabs-custom" style="margin-bottom:0px">
+            <ul id="tab_project" class="nav nav-tabs">
+                <li class="active"><a href="#project" data-toggle="tab">Project</a></li>
+                <li><a href="#nonproject" data-toggle="tab">Non Project</a></li>
+            </ul>
             <div class="box-body">
                 @csrf
                     @verbatim
                     <div id="assignRsc">
-                        <div class="box-header no-padding">
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-xs-12 col-md-4">
-                                    <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Project Number</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
-                                    
-                                    <div class="col-xs-5 no-padding">Ship Type</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
-            
-                                    <div class="col-xs-5 no-padding">Customer</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">Start Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
-
-                                    <div class="col-xs-5 no-padding">End Date</div>
-                                    <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
-                                </div>
-                            </template>
-                            <div class="col-xs-12 col-md-4">
-                                <label for="" >Project Name</label>
-                                <selectize v-model="project_id" :settings="projectSettings">
-                                    <option v-for="(project, index) in projects" :value="project.id">{{ project.number }} - {{ project.name }}</option>
-                                </selectize>  
+                        <div class="tab-pane active row" id="project">
+                            <div class="box-header no-padding">
+                                <template v-if="selectedProject.length > 0">
+                                    <div class="col-xs-12 col-md-4">
+                                        <div class="col-sm-12 no-padding"><b>Project Information</b></div>
+                                        
+                                        <div class="col-xs-5 no-padding">Project Number</div>
+                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].number}}</b></div>
+                                        
+                                        <div class="col-xs-5 no-padding">Ship Type</div>
+                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].ship.type}}</b></div>
+                                        
+                                        <div class="col-xs-5 no-padding">Customer</div>
+                                        <div class="col-xs-7 no-padding tdEllipsis" v-tooltip:top="tooltip(selectedProject[0].customer.name)"><b>: {{selectedProject[0].customer.name}}</b></div>
+                                        
+                                        <div class="col-xs-5 no-padding">Start Date</div>
+                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_start_date}}</b></div>
+                                        
+                                        <div class="col-xs-5 no-padding">End Date</div>
+                                        <div class="col-xs-7 no-padding tdEllipsis"><b>: {{selectedProject[0].planned_end_date}}</b></div>
+                                    </div>
+                                </template>
+                                    <div class="col-xs-12 col-md-4">
+                                        <label for="" >Project Name</label>
+                                        <selectize v-model="project_id" :settings="projectSettings">
+                                            <option v-for="(project, index) in projects" :value="project.id">{{ project.number }} - {{ project.name }}</option>
+                                        </selectize>  
+                                    </div>
+                                <template v-if="selectedProject.length > 0">
+                                    <div class="col-md-4">
+                                        <button type="button" class="btn btn-primary pull-right" @click.prevent="openSchedule">RESOURCE SCHEDULE</button>
+                                    </div>
+                                </template>
                             </div>
-                            <template v-if="selectedProject.length > 0">
-                                <div class="col-md-4">
-                                    <button type="button" class="btn btn-primary pull-right" @click.prevent="openSchedule">RESOURCE SCHEDULE</button>
-                                </div>
-                            </template>
                         </div>
+
                             <div class="row">
                                 <div class="col sm-12 p-l-15 p-r-10 p-t-10 p-r-15">
                                     <table id="assign-rsc" class="table table-bordered tableFixed" style="border-collapse:collapse;">
@@ -60,9 +67,9 @@
                                             <tr>
                                                 <th style="width: 5%">No</th>
                                                 <th style="width: 15%">Category</th>
-                                                <th style="width: 25%">Resource</th>
+                                                <th style="width: 26%">Resource</th>
                                                 <th style="width: 20%">Resource Detail</th>
-                                                <th style="width: 10%">Quantity</th>
+                                                <th style="width: 9%">Quantity</th>
                                                 <th style="width: 15%">Description</th>
                                                 <th style="width: 25%">WBS</th>
                                                 <th style="width: 14%"></th>
@@ -76,7 +83,7 @@
                                                 <td v-else-if="data.category_id == 3">External Equipment</td>
                                                 <td v-else-if="data.category_id == 4">Internal Equipment</td>
                                                 <td v-else-if="data.category_id == null"> - </td>
-                                                <td>{{ data.resource.code }} - {{ data.resource.name }}</td>
+                                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.resource.code)">{{ data.resource.code }} - {{ data.resource.name }}</td>
                                                 <td v-if="data.resource_detail != null && data.resource_detail.serial_number == null || data.resource_detail != null && data.resource_detail.serial_number == ''">{{ data.resource_detail.code }}</td>
                                                 <td v-else-if="data.resource_detail != null && data.resource_detail.serial_number != null && data.resource_detail.serial_number != ''">{{ data.resource_detail.code }} - {{ data.resource_detail.serial_number }}</td>
                                                 <td v-else-if="data.resource_detail_id == null">-</td>
@@ -304,10 +311,7 @@
                             </div>
                         </div>
                     </div>
-                    @endverbatim
-            </div>
-            <div class="overlay">
-                <i class="fa fa-refresh fa-spin"></i>
+                @endverbatim
             </div>
         </div>
     </div>

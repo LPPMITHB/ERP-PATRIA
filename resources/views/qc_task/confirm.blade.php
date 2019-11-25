@@ -181,7 +181,7 @@
                                                     </div>
                                                 </div>
 
-                                                <div class="col-sm-3" v-show="confirm_qc_task.status_first_ref != '' && confirm_qc_task.status_first_ref != null">
+                                                <div class="col-sm-3" v-show="confirm_qc_task.status_first_ref != '' && confirm_qc_task.status_first_ref != null && confirm_qc_task.status_first_ref != 'OK'">
                                                     <label for="quantity" class="control-label">Status Reinspect</label>
                                                     <div v-if="qc_task_ref.status == 1" class="row">
                                                         <div class="col-sm-12">
@@ -229,9 +229,15 @@
                             <input type="hidden" name="_method" value="PATCH">
                             @csrf
                         </form>
-                    @else
-                        {{-- <form id="edit-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.store') }}">
-                        --}}
+                    @elseif($route == "/qc_task_repair")
+                        <form id="confirm-finish-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.confirmFinish',['id'=>$qcTask->id]) }}">
+                            <input type="hidden" name="_method" value="PATCH">
+                            @csrf
+                        </form>
+                        <form id="cancel-finish-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.cancelFinish',['id'=>$qcTask->id]) }}">
+                            <input type="hidden" name="_method" value="PATCH">
+                            @csrf
+                        </form>
                     @endif
                 </div>
             </div>
@@ -377,8 +383,8 @@
                 var url = "";
                 if(this.route == "/qc_task"){
                     url = "{{ route('qc_task.storeConfirm') }}";
-                }else{
-                    // url = "{{ route('wbs_repair.store') }}";              
+                }else if(this.route == "/qc_task_repair"){
+                    url = "{{ route('qc_task_repair.storeConfirm') }}";
                 }
                 $('div.overlay').show();            
                 window.axios.put(url,confirm_qc_task)

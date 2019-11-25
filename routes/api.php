@@ -246,3 +246,7 @@ Route::get('/getComments/{project_id}', 'CustomerPortalController@getCommentsAPI
 //Material Standard
 Route::get('/getMaterialProjectStandard/{id}', 'ProjectStandardController@getMaterialAPI')->name('api.project_standard.getMaterialAPI');
 Route::get('/getMaterialPartsPS/{id}', 'ProjectStandardController@getMaterialPartsPSAPI')->name('api.project_standard.getMaterialPartsPSAPI');
+
+//Email Template 
+Route::get('/get/email_template_master', 'EmailTemplateController@apiGetEmailTemplateMaster')->name('api.qc_type.get_email_template_master');
+Route::get('/get/email_template_edit/{id}', 'EmailTemplateController@apiGetEmailTemplateEdit')->name('api.qc_type.get_email_template_edit');

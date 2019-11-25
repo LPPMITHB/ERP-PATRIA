@@ -1,17 +1,31 @@
 @extends('layouts.main')
 
 @section('content-header')
-    @breadcrumb(
-        [
-            'title' => 'Create QC Task » Select WBS',
-            'items' => [
-                'Dashboard' => route('index'),
-                'Select Project' => route('qc_task.selectProject'),
-                'Select WBS' => '',
+    @if($route == "/qc_task")
+        @breadcrumb(
+            [
+                'title' => 'Create QC Task » Select WBS',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'Select Project' => route('qc_task.selectProject'),
+                    'Select WBS' => '',
+                ]
             ]
-        ]
-    )
-    @endbreadcrumb
+        )
+        @endbreadcrumb
+    @elseif($route == "/qc_task_repair")
+        @breadcrumb(
+            [
+                'title' => 'Create QC Task » Select WBS',
+                'items' => [
+                    'Dashboard' => route('index'),
+                    'Select Project' => route('qc_task_repair.selectProject'),
+                    'Select WBS' => '',
+                ]
+            ]
+        )
+        @endbreadcrumb
+    @endif
 
 @endsection
 
