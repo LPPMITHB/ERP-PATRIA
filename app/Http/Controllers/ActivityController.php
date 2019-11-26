@@ -665,7 +665,8 @@ class ActivityController extends Controller
             $project->actual_start_date = $earliest_date;
 
             $wbs = $activity->wbs;
-            if(count($wbs->qualityControlTasks) > 0){
+            $dataNotif = null;
+            if($wbs->qualityControlTask != null){
                 $qcTaskId = $wbs->qualityControlTask;
                 //MAKE NOTIFICATION
                 if ($menu == 'building') {
@@ -879,7 +880,7 @@ class ActivityController extends Controller
                 $wbs->save();
 
                 //NOTIF
-                if($wbs->progress == 100 && count($wbs->qualityControlTasks) > 0){
+                if($wbs->progress == 100 && $wbs->qualityControlTask != null){
                     if($menu == 'building'){
                         $users = User::where('role_id', 2)->select('id')->get();
                     }else{
@@ -923,7 +924,7 @@ class ActivityController extends Controller
                 $wbs->save();
 
                 //NOTIF
-                if($wbs->progress == 100 && count($wbs->qualityControlTasks) > 0){
+                if($wbs->progress == 100 && $wbs->qualityControlTask != null){
                     if($menu == 'building'){
                         $users = User::where('role_id', 2)->select('id')->get();
                     }else{

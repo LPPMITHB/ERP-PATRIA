@@ -872,7 +872,7 @@ Route::name('activity_repair.')->prefix('activity_repair')->group(function() {
 
     Route::get('/confirmActivity/{id}', 'ActivityController@confirmActivity')->name('confirmActivity')->middleware('can:show-project-repair');
 
-    Route::put('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');
+    Route::post('updateActualActivity/{id}', 'ActivityController@updateActualActivity')->name('updateActualActivity')->middleware('can:edit-project-repair');
 
     //Activity
     Route::get('/create/{id}', 'ActivityController@create')->name('create')->middleware('can:create-project-repair');
