@@ -144,6 +144,62 @@ class PurchaseRequisitionController extends Controller
         return view('purchase_requisition.repeatOrder', compact('modelPRs', 'route'));
     }
 
+	public function editRepeatOrder(Request $request, $id)
+	{
+		$route = $request->route()->getPrefix();
+        $modelPR = PurchaseRequisition::findOrFail($id);
+
+        $PRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $modelPR->id)->with('material', 'project', 'resource', 'material.uom', 'purchaseRequisition')->get();
+        $modelPRD = Collection::make();
+        foreach ($PRD as $data) {
+            if ($data->purchaseRequisition->type == 1) {
+                $modelPRD->push([
+                    "id" => $data->id,
+                    "material_id" => $data->material_id,
+                    "material_name" => $data->material->description,
+                    "material_code" => $data->material->code,
+                    "quantity" => $data->quantity,
+                    "unit" => $data->material->uom->unit,
+                    "project_id" => $data->project_id,
+                    "project_number" => ($data->project != null) ? $data->project->number : '',
+                    "required_date" => $data->required_date,
+                    "alocation" => $data->alocation,
+                ]);
+            } elseif ($data->purchaseRequisition->type == 2) {
+                $modelPRD->push([
+                    "id" => $data->id,
+                    "resource_id" => $data->resource_id,
+                    "resource_name" => $data->resource->description,
+                    "resource_code" => $data->resource->code,
+                    "quantity" => $data->quantity,
+                    "unit" => '-',
+                    "project_id" => $data->project->id,
+                    "project_number" => ($data->project != null) ? $data->project->number : '',
+                    "required_date" => $data->required_date,
+                    "alocation" => $data->alocation,
+                ]);
+            } elseif ($data->purchaseRequisition->type == 3) {
+                $modelPRD->push([
+                    "id" => $data->id,
+                    "project_number" => $data->project->number,
+                    "wbs_number" => $data->wbs->number,
+                    "wbs_description" => $data->wbs->description,
+                    "job_order" => $data->job_order,
+                ]);
+            }
+        }
+
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $resources = Resource::orderBy('code')->get()->jsonSerialize();
+
+        if ($route == "/purchase_requisition") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 1)->get()->jsonSerialize();
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 2)->get()->jsonSerialize();
+        }
+        return view('purchase_requisition.edit', compact('modelPR', 'modelPRD', 'materials', 'resources', 'route', 'modelProject'));
+	}
+
     /**
      * Show the form for creating a new resource.
      *

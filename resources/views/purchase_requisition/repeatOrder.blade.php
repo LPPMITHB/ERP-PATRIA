@@ -98,7 +98,7 @@
                                 </thead>
                                 <tbody>
 									<!-- Type Material -->
-									<template v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details" v-if="selectedPR[0].type == 1">
+									<template v-if="selectedPR[0].type == 1" v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details">
 										<tr>
 											<td>{{ index + 1 }}</td>
                                             <td>{{ selectedPRD.material.code }} - {{ selectedPRD.material.description }}</td>
@@ -107,7 +107,7 @@
 										</tr>
 									</template>
 									<!-- Type Resource -->
-                                    <template v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details" v-else-if="selectedPR[0].type == 2">
+                                    <template v-else-if="selectedPR[0].type == 2" v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details">
                                         <tr>
                                             <td>{{ index + 1}}</td>
                                             <td>{{ selectedPRD.resource.code }}</td>
@@ -116,7 +116,7 @@
                                         </tr>
                                     </template>
 									<!-- Type Subcon -->
-                                    <template v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details" v-else-if="selectedPR[0].type == 3">
+                                    <template v-else-if="selectedPR[0].type == 3" v-for="(selectedPRD,index) in selectedPR[0].purchase_requisition_details">
                                         <tr>
 											<td>{{ index + 1 }}</td>
                                             <td>{{ selectedPRD.wbs.project.number }}</td>
@@ -130,7 +130,7 @@
                                 </tbody>
                             </table>
                         </div>
-    					<a class="col-xs-12 col-md-2 btn btn-primary pull-right m-r-5">CREATE</a>
+    					<a class="col-xs-12 col-md-2 btn btn-primary pull-right m-r-5" href="{{ route('purchase_requisition.repeatOrder', ['id'=>$modelPR->id]) }}">CREATE</a>
                     </div>
                 </div>
             @endverbatim
@@ -199,7 +199,7 @@
                 this.editInput.alocation = data.alocation;
                 this.editInput.index = index;
                 this.editInput.is_decimal = data.is_decimal;
-            },
+            }
         },
         watch : {
             'selectedPR_id' : function(newValue){

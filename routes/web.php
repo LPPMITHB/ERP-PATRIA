@@ -1081,6 +1081,8 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
 	Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
 
+	Route::get('/editRepeatOrder','PurchaseRequisitionController@editRepeatOrder')->name('editRepeatOrder')->middleware('can:create-purchase-requisition');
+
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
     Route::delete('/', 'PurchaseRequisitionController@destroyPRD')->name('destroyPRD')->middleware('can:consolidation-purchase-requisition');
@@ -1119,6 +1121,8 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
     Route::get('/approval', 'PurchaseRequisitionController@approval')->name('approval')->middleware('can:approve-purchase-requisition-repair');
 
     Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
+
+	Route::get('/editRepeatOrder','PurchaseRequisitionController@editRepeatOrder')->name('editRepeatOrder')->middleware('can:create-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
 
