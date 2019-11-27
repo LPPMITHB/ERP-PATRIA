@@ -14,10 +14,16 @@ use File;
 
 class CloseProjectController extends Controller
 {
-    public function selectProject(){
-        $modelProject = Project::where('status',1)->get();
+    public function selectProject(Request $request){
+        
+        $route = $request->route()->getPrefix();
+        if($route =="/close_project"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/close_project_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
-        return view('close_project.selectProject', compact('modelProject'));
+        return view('close_project.selectProject', compact('modelProject','route'));
     }
 
     public function show(Request $request,$id){

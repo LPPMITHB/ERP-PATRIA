@@ -36,7 +36,11 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('delivery_document.manage', ['id'=>$project->id]) }}">SELECT</a>
+                                    @if($route == "/delivery_document")
+                                        <a class="btn btn-primary btn-xs" href="{{ route('delivery_document.manage', ['id'=>$project->id]) }}">SELECT</a>
+                                    @elseif($route == "/delivery_document_repair")
+                                        <a class="btn btn-primary btn-xs" href="{{ route('delivery_document_repair.manage', ['id'=>$project->id]) }}">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach
