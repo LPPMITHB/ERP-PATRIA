@@ -13,16 +13,27 @@ use File;
 
 class DeliveryDocumentController extends Controller
 {
-    public function selectProject(){
-        $modelProject = Project::where('status',1)->get();
+    public function selectProject(Request $request){
 
-        return view('delivery_document.selectProject', compact('modelProject'));
+        $route = $request->route()->getPrefix();
+        if($route =="/delivery_document"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/delivery_document_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
+
+        return view('delivery_document.selectProject', compact('modelProject','route'));
     }
 
-    public function selectProjectIndex(){
-        $modelProject = Project::where('status',1)->get();
+    public function selectProjectIndex(Request $request){
+        $route = $request->route()->getPrefix();
+        if($route =="/delivery_document"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',1)->get();
+        }elseif($route == "/delivery_document_repair"){
+            $modelProject = Project::where('status',1)->where('business_unit_id',2)->get();
+        }
 
-        return view('delivery_document.selectProjectIndex', compact('modelProject'));
+        return view('delivery_document.selectProjectIndex', compact('modelProject','route'));
     }
 
     public function manage(Request $request,$id){
@@ -30,7 +41,7 @@ class DeliveryDocumentController extends Controller
         $project = Project::find($id);
         $deliveryDocuments = $project->deliveryDocuments;
 
-        return view('delivery_document.manage', compact('deliveryDocuments','route','project'));
+        return view('delivery_document.manage', compact('deliveryDocuments','route','project','route'));
     }
 
     public function show(Request $request,$id){

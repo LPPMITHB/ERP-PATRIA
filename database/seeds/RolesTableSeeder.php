@@ -339,6 +339,9 @@ class RolesTableSeeder extends Seeder
                 'manage-customer-visit-repair' => true,
                 'list-email-template' => true, 'create-email-template' => true, 'show-email-template' => true, 'edit-email-template' => true,
                 'list-rfi' => true, 'create-rfi' => true, 'show-rfi' => true,
+                'manage-delivery-document-repair' => true, 'list-delivery-document-repair' => true, 'show-delivery-document-repair' => true,
+                'close-project-repair' => true,
+
             ]),
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),

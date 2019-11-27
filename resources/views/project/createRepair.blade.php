@@ -175,6 +175,16 @@
                                 </div>
                             </div>
 
+                            <div class="form-group">
+                                <label for="sales_order_id" class="col-sm-2 control-label">Sales Order</label>
+                            
+                                <div class="col-sm-10">
+                                    <selectize name="sales_order_id" id="sales_order_id">
+                                        <option v-for="(so, index) in salesOrders" :value="so.id">{{ so.number }}</option>
+                                    </selectize>
+                                </div>
+                            </div>
+
                             <div class="box-footer">
                                 <button v-if="projectUpdate!=''" type="submit" class="btn btn-primary pull-right">SAVE</button>
                                 <button v-else @click.prevent="submitForm()" type="button" class="btn btn-primary pull-right">NEXT</button>
@@ -216,6 +226,7 @@ $(document).ready(function(){
     });
 
     var data = {
+        salesOrders : @json($sales_orders),
         oldData : {
             number : @json(Request::old('number')),
             name : @json(Request::old('name')),
@@ -234,6 +245,7 @@ $(document).ready(function(){
             budget_value : @json(Request::old('budget_value')),
             ship_id : @json(Request::old('ship_id')),
             project_standard_id : @json(Request::old('project_standard_id')),
+            sales_order_id : @json(Request::old('sales_order_id')),
         },
         projectUpdate:  @json($project->id== null ? "": $project->id),
         customers : @json($customers),
@@ -259,6 +271,7 @@ $(document).ready(function(){
             budget_value : @json($project->budget_value == null ? "": $project->budget_value),
             ship_id : @json($project->ship_id == null ? "": $project->ship_id),
             project_standard_id : @json($project->project_standard_id == null ? "": $project->project_standard_id),
+            sales_order_id : @json($project->sales_order_id == null ? "": $project->sales_order_id),
         },
         customer: "",
         menu : @json($menu),

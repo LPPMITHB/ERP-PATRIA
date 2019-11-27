@@ -2240,6 +2240,25 @@ Route::name('delivery_document.')->prefix('delivery_document')->group(function()
     Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy')->middleware('can:manage-delivery-document');
 });
 
+// Delivery Document Routes
+Route::name('delivery_document_repair.')->prefix('delivery_document_repair')->group(function() {
+    Route::get('/selectProject', 'DeliveryDocumentController@selectProject')->name('selectProject')->middleware('can:manage-delivery-document-repair');
+
+    Route::get('/selectProjectIndex', 'DeliveryDocumentController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-delivery-document-repair');
+
+    Route::get('/manage/{id}', 'DeliveryDocumentController@manage')->name('manage')->middleware('can:manage-delivery-document-repair');
+
+    Route::get('/{id}', 'DeliveryDocumentController@show')->name('show')->middleware('can:show-delivery-document-repair');
+
+    Route::get('/{id}/edit', 'DeliveryDocumentController@edit')->name('edit')->middleware('can:manage-delivery-document-repair');
+
+    Route::post('/{id}', 'DeliveryDocumentController@update')->name('update')->middleware('can:manage-delivery-document-repair');
+
+    Route::post('/', 'DeliveryDocumentController@store')->name('store')->middleware('can:manage-delivery-document-repair');
+
+    Route::delete('/{id}', 'DeliveryDocumentController@destroy')->name('destroy')->middleware('can:manage-delivery-document-repair');
+});
+
 // Project Close Routes
 Route::name('close_project.')->prefix('close_project')->group(function() {
     Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject')->middleware('can:close-project');
@@ -2249,6 +2268,19 @@ Route::name('close_project.')->prefix('close_project')->group(function() {
     Route::get('/{id}', 'CloseProjectController@show')->name('show')->middleware('can:close-project');
 
     Route::patch('/{id}', 'CloseProjectController@close')->name('close')->middleware('can:close-project');
+
+    Route::delete('/{id}', 'CloseProjectController@destroy')->name('destroy');
+});
+
+// Project Close Routes
+Route::name('close_project_repair.')->prefix('close_project_repair')->group(function() {
+    Route::get('/selectProject', 'CloseProjectController@selectProject')->name('selectProject')->middleware('can:close-project-repair');
+
+    // Route::get('/', 'CloseProjectController@index')->name('index');
+
+    Route::get('/{id}', 'CloseProjectController@show')->name('show')->middleware('can:close-project-repair');
+
+    Route::patch('/{id}', 'CloseProjectController@close')->name('close')->middleware('can:close-project-repair');
 
     Route::delete('/{id}', 'CloseProjectController@destroy')->name('destroy');
 });

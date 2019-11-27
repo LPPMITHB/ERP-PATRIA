@@ -18,7 +18,7 @@
                 'title' => 'View Delivery Document',
                 'items' => [
                     'Dashboard' => route('index'),
-                    // 'Select Project' => route('delivery_document_repair.index'),
+                    'Select Project' => route('delivery_document_repair.selectProjectIndex'),
                     'View Delivery Document' => ""
                 ]
             ]

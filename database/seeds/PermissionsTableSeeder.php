@@ -3483,6 +3483,43 @@ class PermissionsTableSeeder extends Seeder
             'updated_at' => date('Y-m-d'),
         ]);
 
+        // Delivery Document Repair
+        $menu_manage_delivery_document_repair = Menu::where('route_name', 'delivery_document_repair.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Manage Delivery Document Repair',
+            'menu_id' => $menu_manage_delivery_document_repair,
+            'middleware' => 'manage-delivery-document-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        $menu_view_delivery_document_repair = Menu::where('route_name', 'delivery_document_repair.selectProjectIndex')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'List Delivery Document',
+            'menu_id' => $menu_view_delivery_document_repair,
+            'middleware' => 'list-delivery-document-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        DB::table('permissions')->insert([
+            'name' => 'Show Delivery Document',
+            'menu_id' => $menu_view_delivery_document_repair,
+            'middleware' => 'show-delivery-document-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
+        //Close Project
+        $menu_close_project_repair = Menu::where('route_name', 'close_project_repair.selectProject')->select('id')->first()->id;
+        DB::table('permissions')->insert([
+            'name' => 'Close Project Repair',
+            'menu_id' => $menu_close_project_repair,
+            'middleware' => 'close-project-repair',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d'),
+        ]);
+
         //Master Data Email Template
         $email_template = Menu::where('route_name', 'email_template.index')->select('id')->first()->id;
         DB::table('permissions')->insert([
