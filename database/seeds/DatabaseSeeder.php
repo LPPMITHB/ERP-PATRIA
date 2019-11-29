@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstVendorTableSeeder::class);
         $this->call(BusinessUnitsTableSeeder::class);
         // $this->call(StocksTableSeeder::class);
+        $this->call(PamiTugboatWbsStandardSeeder::class);
         $this->call(PamiMaterialTableSeeder::class);
         $this->call(YardsTableSeeder::class);
         $this->call(MstResourceTableSeeder::class);
@@ -82,5 +83,6 @@ class DatabaseSeeder extends Seeder
         $this->call(QualityPlanSeeder::class);
         //test
         // $this->call(SidenavsV3TableSeeder::class);
+        
     }
 }

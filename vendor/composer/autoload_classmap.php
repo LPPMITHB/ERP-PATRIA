@@ -2564,6 +2564,7 @@ return array(
     'PHP_Token_YIELD' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PHP_Token_YIELD_FROM' => $vendorDir . '/phpunit/php-token-stream/src/Token.php',
     'PamiMaterialTableSeeder' => $baseDir . '/database/seeds/PrimarySeeder/PamiMaterialTableSeeder.php',
+    'PamiTugboatWbsStandardSeeder' => $baseDir . '/database/seeds/PrimarySeeder/ConfigSeeder/PamiTugboatWbsStandardSeeder.php',
     'Parsedown' => $vendorDir . '/erusev/parsedown/Parsedown.php',
     'PermissionManagementSidenavSeeder' => $baseDir . '/database/seeds/Sidenav/PermissionManagementSidenavSeeder.php',
     'PermissionsTableSeeder' => $baseDir . '/database/seeds/PermissionsTableSeeder.php',

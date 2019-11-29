@@ -3055,6 +3055,7 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'PHP_Token_YIELD' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_YIELD_FROM' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PamiMaterialTableSeeder' => __DIR__ . '/../..' . '/database/seeds/PrimarySeeder/PamiMaterialTableSeeder.php',
+        'PamiTugboatWbsStandardSeeder' => __DIR__ . '/../..' . '/database/seeds/PrimarySeeder/ConfigSeeder/PamiTugboatWbsStandardSeeder.php',
         'Parsedown' => __DIR__ . '/..' . '/erusev/parsedown/Parsedown.php',
         'PermissionManagementSidenavSeeder' => __DIR__ . '/../..' . '/database/seeds/Sidenav/PermissionManagementSidenavSeeder.php',
         'PermissionsTableSeeder' => __DIR__ . '/../..' . '/database/seeds/PermissionsTableSeeder.php',
