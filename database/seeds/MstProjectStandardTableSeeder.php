@@ -31,9 +31,9 @@ class MstProjectStandardTableSeeder extends Seeder
             1 => 
             array (
                 'id' => 2,
-                'name' => 'Barge Large',
-                'description' => 'Barge Large',
-                'ship_id' => 3,
+                'name' => 'Tug Boat',
+                'description' => 'Tug Boat',
+                'ship_id' => 1,
                 'user_id' => 3,
                 'branch_id' => 2,
                 'created_at' => '2019-08-16 09:30:27',
