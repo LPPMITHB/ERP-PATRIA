@@ -14,7 +14,7 @@ class MstWbsStandardTableSeeder extends Seeder
     {
         
 
-        \DB::table('mst_wbs_standard')->delete();
+        // \DB::table('mst_wbs_standard')->delete();
         
         // \DB::table('mst_wbs_standard')->insert(array (
         //     0 => 

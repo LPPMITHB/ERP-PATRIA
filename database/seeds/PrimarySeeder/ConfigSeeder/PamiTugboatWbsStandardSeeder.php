@@ -1414,7 +1414,7 @@ class PamiTugboatWbsStandardSeeder extends Seeder
                 'description' => $level_1[$i][1],
                 'deliverables' => $level_1[$i][1],
                 'duration' => intval($level_1[$i][3]),
-                'project_standard_id' => Null,
+                'project_standard_id' => 1,
                 'wbs_id' => $level_1[$i][5] == '' ? Null : intval($level_1[$i][5]),
                 'user_id' => 1,
                 'branch_id' => 1,

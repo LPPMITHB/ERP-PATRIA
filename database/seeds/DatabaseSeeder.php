@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call(MstVendorTableSeeder::class);
         $this->call(BusinessUnitsTableSeeder::class);
         // $this->call(StocksTableSeeder::class);
-        $this->call(PamiTugboatWbsStandardSeeder::class);
+       
         $this->call(PamiMaterialTableSeeder::class);
         $this->call(YardsTableSeeder::class);
         $this->call(MstResourceTableSeeder::class);
@@ -47,6 +47,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxSalesOrderTableSeeder::class);
         $this->call(TrxSalesOrderDetailTableSeeder::class);
         $this->call(MstProjectStandardTableSeeder::class);
+        $this->call(PamiTugboatWbsStandardSeeder::class);
         $this->call(ProProjectTableSeeder::class);
         // $this->call(MstActivityConfigurationTableSeeder::class);
         $this->call(TrxPurchaseRequisitionTableSeeder::class);
