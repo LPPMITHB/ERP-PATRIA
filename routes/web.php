@@ -1069,6 +1069,8 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
     Route::get('/cancelApproval/{id}', 'PurchaseRequisitionController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-requisition');
 
+	Route::post('/storeRepeatOrder','PurchaseRequisitionController@storeRepeatOrder')->name('storeRepeatOrder')->middleware('can:create-purchase-requisition');
+
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition');
@@ -1081,7 +1083,7 @@ Route::name('purchase_requisition.')->prefix('purchase_requisition')->group(func
 
 	Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
 
-	Route::get('/editRepeatOrder','PurchaseRequisitionController@editRepeatOrder')->name('editRepeatOrder')->middleware('can:create-purchase-requisition');
+	Route::get('/editRepeatOrder/{id}','PurchaseRequisitionController@editRepeatOrder')->name('editRepeatOrder')->middleware('can:create-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition');
 
@@ -1110,6 +1112,8 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
     Route::get('/cancelApproval/{id}', 'PurchaseRequisitionController@cancelApproval')->name('cancelApproval')->middleware('can:cancel-approval-purchase-requisition-repair');
 
+	Route::post('/storeRepeatOrder','PurchaseRequisitionController@storeRepeatOrder')->name('storeRepeatOrder')->middleware('can:create-purchase-requisition');
+
     Route::post('/storeConsolidation', 'PurchaseRequisitionController@storeConsolidation')->name('storeConsolidation')->middleware('can:consolidation-purchase-requisition-repair');
 
     Route::patch('/{id}', 'PurchaseRequisitionController@update')->name('update')->middleware('can:edit-purchase-requisition-repair');
@@ -1122,7 +1126,7 @@ Route::name('purchase_requisition_repair.')->prefix('purchase_requisition_repair
 
     Route::get('/repeatOrder', 'PurchaseRequisitionController@repeatOrder')->name('repeatOrder')->middleware('can:create-purchase-requisition');
 
-	Route::get('/editRepeatOrder','PurchaseRequisitionController@editRepeatOrder')->name('editRepeatOrder')->middleware('can:create-purchase-requisition');
+	Route::get('/editRepeatOrder/{id}','PurchaseRequisitionController@editRepeatOrder')->name('editRepeatOrder')->middleware('can:create-purchase-requisition');
 
     Route::delete('/{id}', 'PurchaseRequisitionController@destroy')->name('destroy')->middleware('can:edit-purchase-requisition-repair');
 
@@ -2361,7 +2365,7 @@ Route::name('rfi.')->prefix('rfi')->group(function() {
     Route::get('/create/{id}', 'RfiController@create')->name('create')->middleware('can:create-rfi');
 
     Route::get('/selectProject', 'RfiController@selectProject')->name('selectProject')->middleware('can:create-rfi');
-    
+
     Route::get('/selectQcTask/{id}', 'RfiController@selectQcTask')->name('selectQcTask')->middleware('can:create-rfi');
 
     Route::get('/selectProjectIndex', 'RfiController@selectProjectIndex')->name('selectProjectIndex')->middleware('can:list-rfi');
