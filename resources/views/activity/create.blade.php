@@ -145,6 +145,7 @@
                         <thead v-if="menu == 'repair'">
                             <tr>
                                 <th style="width: 5%">No</th>
+                                <th style="width: 12%">Type</th>
                                 <th style="width: 12%">Name</th>
                                 <th style="width: 12%">Description</th>
                                 <th style="width: 11%">Start Date</th>
@@ -174,6 +175,7 @@
                         <tbody v-if="menu == 'repair'">
                             <tr v-for="(data,index) in activities">
                                 <td>{{ index + 1 }}</td>
+                                <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.type)">{{ data.type }} </td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.name)">{{ data.name }}</td>
                                 <td class="tdEllipsis" data-container="body" v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
                                 <td>{{ data.planned_start_date }}</td>
@@ -249,6 +251,13 @@
                         <tfoot v-if="menu == 'repair' && index == false">
                             <tr>
                                 <td class="p-l-10">{{newIndex}}</td>
+                                <td class="p-l-0 textLeft no-padding">
+                                    <selectize v-model="newActivity.type" :settings="actTypeSettings">
+                                        <option value="Upload">Upload</option>
+                                        <option value="Document Number">Document Number</option>
+                                        <option value="General">General</option>
+                                    </selectize>
+                                </td>
                                 <td class="p-l-0">
                                     <textarea v-model="newActivity.name" class="form-control width100" rows="3" id="name" name="name"
                                         placeholder="Name"></textarea>
@@ -623,6 +632,13 @@
                                     <h4 class="modal-title">Edit Activity <b id="edit_activity_code"></b></h4>
                                 </div>
                                 <div class="modal-body">
+
+                                    <div class="p-l-0 form-group col-sm-12">
+                                        <label for="type" class="control-label">Type</label>
+                                        <selectize v-model="editActivity.type">
+                                            <option v-for="(type, index) in types" :value="type">{{ type }}</option>
+                                        </selectize>
+                                    </div>
 
                                     <div class="p-l-0 form-group col-sm-12">
                                         <label for="name" class="control-label">Name</label>
