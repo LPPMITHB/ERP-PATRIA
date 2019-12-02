@@ -497,6 +497,7 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
     );
 
     public static $classMap = array (
+        'AppTableSeeder' => __DIR__ . '/../..' . '/database/seeds/App/AppTableSeeder.php',
         'App\\Console\\Kernel' => __DIR__ . '/../..' . '/app/Console/Kernel.php',
         'App\\Exceptions\\Handler' => __DIR__ . '/../..' . '/app/Exceptions/Handler.php',
         'App\\Exports\\PhysicalInventoryExport' => __DIR__ . '/../..' . '/app/Exports/PhysicalInventoryExport.php',
@@ -730,6 +731,8 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'DailyInformationMenuSeeder' => __DIR__ . '/../..' . '/database/seeds/Menu/DailyInformationMenuSeeder.php',
         'DailyInformationSidenavSeeder' => __DIR__ . '/../..' . '/database/seeds/Sidenav/DailyInformationSidenavSeeder.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
+        'Database\\Data\\MenuDataSeeder' => __DIR__ . '/../..' . '/database/seeds/data/MenuDataSeeder.php',
+        'Database\\Data\\SidenavDataSeeder' => __DIR__ . '/../..' . '/database/seeds/data/SidenavDataSeeder.php',
         'DeepCopy\\DeepCopy' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
         'DeepCopy\\Exception\\CloneException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/CloneException.php',
         'DeepCopy\\Exception\\PropertyException' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/Exception/PropertyException.php',

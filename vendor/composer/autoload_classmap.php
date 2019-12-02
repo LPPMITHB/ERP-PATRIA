@@ -6,6 +6,7 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AppTableSeeder' => $baseDir . '/database/seeds/App/AppTableSeeder.php',
     'App\\Console\\Kernel' => $baseDir . '/app/Console/Kernel.php',
     'App\\Exceptions\\Handler' => $baseDir . '/app/Exceptions/Handler.php',
     'App\\Exports\\PhysicalInventoryExport' => $baseDir . '/app/Exports/PhysicalInventoryExport.php',
@@ -239,6 +240,8 @@ return array(
     'DailyInformationMenuSeeder' => $baseDir . '/database/seeds/Menu/DailyInformationMenuSeeder.php',
     'DailyInformationSidenavSeeder' => $baseDir . '/database/seeds/Sidenav/DailyInformationSidenavSeeder.php',
     'DatabaseSeeder' => $baseDir . '/database/seeds/DatabaseSeeder.php',
+    'Database\\Data\\MenuDataSeeder' => $baseDir . '/database/seeds/data/MenuDataSeeder.php',
+    'Database\\Data\\SidenavDataSeeder' => $baseDir . '/database/seeds/data/SidenavDataSeeder.php',
     'DeepCopy\\DeepCopy' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/DeepCopy.php',
     'DeepCopy\\Exception\\CloneException' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/Exception/CloneException.php',
     'DeepCopy\\Exception\\PropertyException' => $vendorDir . '/myclabs/deep-copy/src/DeepCopy/Exception/PropertyException.php',
