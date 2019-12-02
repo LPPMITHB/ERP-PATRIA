@@ -3,6 +3,8 @@
     use Illuminate\Database\Seeder;
     use Database\Data\MenuDataSeeder;
     use Database\Data\SidenavDataSeeder;
+    use Database\Data\PermissionsDataSeeder;
+    use App\Models\Permission;
 
     class AppTableSeeder extends Seeder
     {
@@ -15,12 +17,12 @@
         {
             $dataMenu = MenuDataSeeder::getData();
             $dataSidenav =  SidenavDataSeeder::getData();
+            $dataPermissions = PermissionsDataSeeder::getData();
 
             usort($dataMenu, function ($a, $b) {
                 return $a['level'] <=> $b['level'];
             });
-            echo "   Seeding The App...\n";
-            $this->command->getOutput()->progressStart(count($dataMenu) + count($dataSidenav));
+            $this->command->getOutput()->progressStart(count($dataMenu) + count($dataSidenav) + count($dataPermissions) + 1);
             for ($i = 0; $i < count($dataMenu); $i++) {
                 // DB::table('mst_material')->insert([]);
                 if (intval($dataMenu[$i]['menu_id']) == 0) {
@@ -42,6 +44,9 @@
                 ]);
                 $this->command->getOutput()->progressAdvance();
             }
+
+
+
             for ($i = 0; $i < count($dataSidenav); $i++) {
                 DB::table('sidenav')->insert([
                     'id' => $dataSidenav[$i]['id'],
@@ -54,6 +59,31 @@
             }
 
 
+
+            for ($i = 0; $i < count($dataPermissions); $i++) {
+                DB::table('permissions')->insert([
+                    'id' => $dataPermissions[$i]['id'],
+                    'name' => $dataPermissions[$i]['name'],
+                    'menu_id' => $dataPermissions[$i]['menu_id'],
+                    'middleware' => $dataPermissions[$i]['middleware'],
+                    'created_at' => date('Y-m-d'),
+                    'updated_at' => date('Y-m-d'),
+                ]);
+                $this->command->getOutput()->progressAdvance();
+            }
+
+
+
+            $getDbPermissions = Permission::all();
+            $arrPermissions = [];
+            foreach ($getDbPermissions as $dbPermissions) {
+                $arrPermissions = $arrPermissions + [$dbPermissions->middleware => true];
+            }
+            DB::table('roles')->insert([
+                'name' => 'ADMIN',
+                'description' => 'All Access',
+                'permissions' => json_encode($arrPermissions)
+            ]);
 
             $this->command->getOutput()->progressFinish();
             echo " \n \n ";

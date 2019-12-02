@@ -12,7 +12,6 @@ class PamiTugboatWbsStandardSeeder extends Seeder
     public function run()
     {
         $level_1 = array(
-            0 => array('', '', '', '', '', '', '', '', ''),
             1 => array('Working', 'Working', 'Working', '1', '1', '', '1', '1'),
             2 => array('Steelwork', 'Steelwork', 'Steelwork', '1', '1', '1', '1', '1'),
             3 => array('Blasting and Coating', 'Blasting and Coating', 'Blasting and Coating', '1', '1', '1', '1', '1'),
@@ -1407,9 +1406,9 @@ class PamiTugboatWbsStandardSeeder extends Seeder
             1392 => array('Round Bar', 'Round Bar', 'Round Bar', '1', '1', '1387', '1', '1'),
         );
         $this->command->getOutput()->progressStart(3706);
-        for ($i = 0; $i < count($level_1); $i++) {
+        for ($i = 1; $i < count($level_1); $i++) {
             DB::table('mst_wbs_standard')->insert([
-                'id' => 1 + $i,
+                'id' => $i,
                 'number' => $level_1[$i][1],
                 'description' => $level_1[$i][1],
                 'deliverables' => $level_1[$i][1],

@@ -144,6 +144,65 @@ class PurchaseRequisitionController extends Controller
         return view('purchase_requisition.repeatOrder', compact('modelPRs', 'route'));
     }
 
+	public function editRepeatOrder(Request $request, $id)
+	{
+		$route = $request->route()->getPrefix();
+        $modelPR = PurchaseRequisition::findOrFail($id);
+
+        $PRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $modelPR->id)->with('material', 'project', 'resource', 'material.uom', 'purchaseRequisition')->get();
+        $modelPRD = Collection::make();
+        foreach ($PRD as $data) {
+            if ($data->purchaseRequisition->type == 1) {
+                $modelPRD->push([
+                    "id" => $data->id,
+                    "material_id" => $data->material_id,
+                    "material_name" => $data->material->description,
+                    "material_code" => $data->material->code,
+                    "quantity" => $data->quantity,
+                    "unit" => $data->material->uom->unit,
+                    "project_id" => $data->project_id,
+                    "project_number" => ($data->project != null) ? $data->project->number : '',
+                    "required_date" => null,
+                    "alocation" => $data->alocation,
+                ]);
+            } elseif ($data->purchaseRequisition->type == 2) {
+                $modelPRD->push([
+                    "id" => $data->id,
+                    "resource_id" => $data->resource_id,
+                    "resource_name" => $data->resource->description,
+                    "resource_code" => $data->resource->code,
+                    "quantity" => $data->quantity,
+                    "unit" => '-',
+                    "project_id" => $data->project->id,
+                    "project_number" => ($data->project != null) ? $data->project->number : '',
+                    "required_date" => null,
+                    "alocation" => $data->alocation,
+                ]);
+            } elseif ($data->purchaseRequisition->type == 3) {
+                $modelPRD->push([
+                    "id" => $data->id,
+					"project_id" => $data->project->id,
+                    "project_number" => $data->project->number,
+					"wbs_id" => $data->wbs->id,
+                    "wbs_number" => $data->wbs->number,
+                    "wbs_description" => $data->wbs->description,
+                    "job_order" => $data->job_order,
+                ]);
+            }
+        }
+
+        $materials = Material::orderBy('code')->get()->jsonSerialize();
+        $resources = Resource::orderBy('code')->get()->jsonSerialize();
+		$newNumber = $this->generatePRNumber();
+
+        if ($route == "/purchase_requisition") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 1)->get()->jsonSerialize();
+        } elseif ($route == "/purchase_requisition_repair") {
+            $modelProject = Project::where('status', 1)->where('business_unit_id', 2)->get()->jsonSerialize();
+        }
+        return view('purchase_requisition.editRepeatOrder', compact('modelPR', 'modelPRD', 'materials', 'resources', 'route', 'modelProject', 'newNumber'));
+	}
+
     /**
      * Show the form for creating a new resource.
      *
@@ -400,6 +459,244 @@ class PurchaseRequisitionController extends Controller
                 return redirect()->route('purchase_requisition.create')->with('error', $e->getMessage());
             } elseif ($route == "/purchase_requisition_repair") {
                 return redirect()->route('purchase_requisition_repair.create')->with('error', $e->getMessage());
+            }
+        }
+    }
+
+	public function storeRepeatOrder(Request $request)
+    {
+        $route = $request->route()->getPrefix();
+        $datas = json_decode($request->datas);
+        $pr_number = $this->generatePRNumber();
+		$oldPR = json_decode(PurchaseRequisition::where('id',$datas->pr_id)->get());
+		$oldPRtype = $oldPR[0]->type;
+        //   if()
+
+        DB::beginTransaction();
+        try {
+            if ($oldPRtype == 1) {
+                $PR = new PurchaseRequisition;
+                $PR->description = $datas->description;
+                $PR->number = $pr_number;
+                if ($route == '/purchase_requisition') {
+                    $PR->business_unit_id = 1;
+                } else if ($route == '/purchase_requisition_repair') {
+                    $PR->business_unit_id = 2;
+                }
+                $PR->status = 1;
+                $PR->type = 1;
+                $PR->user_id = Auth::user()->id;
+                $PR->branch_id = Auth::user()->branch->id;
+                $PR->save();
+
+                foreach ($datas->datas as $data) {
+                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $PR->id)->get();
+                    $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
+                    if ($required_date) {
+                        $required_date = $required_date->format('Y-m-d');
+                    } else {
+                        $required_date = null;
+                    }
+                    if (count($modelPRD) > 0) {
+                        $status = 0;
+                        foreach ($modelPRD as $PurchaseRD) {
+                            if ($PurchaseRD->material_id == $data->material_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->alocation == $data->alocation && $PurchaseRD->required_date == $required_date) {
+                                $PurchaseRD->quantity += $data->quantity;
+                                $PurchaseRD->update();
+
+                                $status = 1;
+                            }
+                        }
+                        if ($status == 0) {
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->quantity = $data->quantity;
+                            $PRD->material_id = $data->material_id;
+                            $PRD->alocation = $data->alocation;
+                            $PRD->required_date = $required_date;
+                            if ($data->project_id != null) {
+                                $PRD->project_id = $data->project_id;
+                            }
+                            $PRD->user_id = Auth::user()->id;
+                            $PRD->save();
+                        }
+                    } else {
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->quantity = $data->quantity;
+                        $PRD->material_id = $data->material_id;
+                        $PRD->alocation = $data->alocation;
+                        $PRD->required_date = $required_date;
+                        if ($data->project_id != null) {
+                            $PRD->project_id = $data->project_id;
+                        }
+                        $PRD->user_id = Auth::user()->id;
+                        $PRD->save();
+                    }
+                }
+            } elseif ($oldPRtype == 2) {
+                $PR = new PurchaseRequisition;
+                $PR->description = $datas->description;
+                $PR->number = $pr_number;
+                if ($route == '/purchase_requisition') {
+                    $PR->business_unit_id = 1;
+                } else if ($route == '/purchase_requisition_repair') {
+                    $PR->business_unit_id = 2;
+                }
+                $PR->status = 1;
+                $PR->type = 2;
+                $PR->user_id = Auth::user()->id;
+                $PR->branch_id = Auth::user()->branch->id;
+                $PR->save();
+
+                foreach ($datas->datas as $data) {
+                    $modelPRD = PurchaseRequisitionDetail::where('purchase_requisition_id', $PR->id)->get();
+                    $required_date = DateTime::createFromFormat('d-m-Y', $data->required_date);
+                    if ($required_date) {
+                        $required_date = $required_date->format('Y-m-d');
+                    } else {
+                        $required_date = null;
+                    }
+                    if (count($modelPRD) > 0) {
+                        $status = 0;
+                        foreach ($modelPRD as $PurchaseRD) {
+                            if ($PurchaseRD->resource_id == $data->resource_id && $PurchaseRD->project_id == $data->project_id && $PurchaseRD->required_date == $required_date) {
+                                $PurchaseRD->quantity += $data->quantity;
+                                $PurchaseRD->update();
+
+                                $status = 1;
+                            }
+                        }
+                        if ($status == 0) {
+                            $PRD = new PurchaseRequisitionDetail;
+                            $PRD->purchase_requisition_id = $PR->id;
+                            $PRD->quantity = $data->quantity;
+                            $PRD->resource_id = $data->resource_id;
+                            $PRD->required_date = $required_date;
+                            if ($data->project_id != null) {
+                                $PRD->project_id = $data->project_id;
+                            }
+                            $PRD->user_id = Auth::user()->id;
+                            $PRD->save();
+                        }
+                    } else {
+                        $PRD = new PurchaseRequisitionDetail;
+                        $PRD->purchase_requisition_id = $PR->id;
+                        $PRD->quantity = $data->quantity;
+                        $PRD->resource_id = $data->resource_id;
+                        $PRD->required_date = $required_date;
+                        if ($data->project_id != null) {
+                            $PRD->project_id = $data->project_id;
+                        }
+                        $PRD->user_id = Auth::user()->id;
+                        $PRD->save();
+                    }
+                }
+            } elseif ($oldPRtype == 3) {
+
+                $PR = new PurchaseRequisition;
+                $PR->description = $datas->description;
+                $PR->number = $pr_number;
+                if ($route == '/purchase_requisition') {
+                    $PR->business_unit_id = 1;
+                } else if ($route == '/purchase_requisition_repair') {
+                    $PR->business_unit_id = 2;
+                }
+                $PR->status = 1;
+                $PR->type = 3;
+                $PR->user_id = Auth::user()->id;
+                $PR->branch_id = Auth::user()->branch->id;
+                $PR->save();
+                foreach ($datas->datas as $data) {
+                    $PRD = new PurchaseRequisitionDetail;
+                    $PRD->purchase_requisition_id = $PR->id;
+                    $PRD->quantity = 1;
+                    $PRD->project_id = $data->project_id;
+                    $PRD->wbs_id = $data->wbs_id;
+                    $PRD->job_order = $data->job_order;
+                    $PRD->user_id = Auth::user()->id;
+                    $PRD->status = 1;
+                    $PRD->save();
+                }
+            }
+
+            //MAKE NOTIFICATION
+            if ($route == '/purchase_requisition') {
+                $data = json_encode([
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been created, action required',
+                    'time_info' => 'Created at',
+                    'title' => 'Purchase Requisition',
+                    'url' => '/purchase_requisition/showApprove/' . $PR->id,
+                ]);
+            } else if ($route == '/purchase_requisition_repair') {
+                $data = json_encode([
+                    'text' => 'Purchase Requisition (' . $PR->number . ') has been created, action required',
+                    'time_info' => 'Created at',
+                    'title' => 'Purchase Requisition',
+                    'url' => '/purchase_requisition_repair/showApprove/' . $PR->id,
+                ]);
+            }
+
+			$pr_value = $this->checkValueMaterial($PR->purchaseRequisitionDetails, $oldPRtype);
+            $approval_config = Configuration::get('approval-pr')[0];
+            foreach ($approval_config->value as $pr_config) {
+                if ($pr_config->minimum <= $pr_value && $pr_config->maximum >= $pr_value) {
+                    if ($pr_config->role_id_1 != null) {
+                        $users = User::where('role_id', $pr_config->role_id_1)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $PR->id;
+                        $new_notification->role_id = $pr_config->role_id_1;
+                        $new_notification->notification_date = $PR->created_at->toDateString();
+                        $new_notification->data = $data;
+                        $new_notification->user_data = $users;
+                        $new_notification->save();
+
+                        $PR->role_approve_1 = $pr_config->role_id_1;
+                        $PR->save();
+                    }
+
+                    if ($pr_config->role_id_2 != null) {
+                        $users = User::where('role_id', $pr_config->role_id_2)->select('id')->get();
+                        foreach ($users as $user) {
+                            $user->status = 1;
+                        }
+                        $users = json_encode($users);
+
+                        $new_notification = new Notification;
+                        $new_notification->type = "Purchase Requisition";
+                        $new_notification->document_id = $PR->id;
+                        $new_notification->role_id = $pr_config->role_id_2;
+                        $new_notification->notification_date = $PR->created_at->toDateString();
+                        $new_notification->data = $data;
+                        $new_notification->user_data = $users;
+                        $new_notification->save();
+
+                        $PR->role_approve_2 = $pr_config->role_id_2;
+                        $PR->save();
+                    }
+                }
+            }
+            // END MAKE NOTIF
+
+            DB::commit();
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.show', $PR->id)->with('success', 'Purchase Requisition Created');
+            } elseif ($route == "/purchase_requisition_repair") {
+                return redirect()->route('purchase_requisition_repair.show', $PR->id)->with('success', 'Purchase Requisition Created');
+            }
+        } catch (\Exception $e) {
+            DB::rollback();
+            if ($route == "/purchase_requisition") {
+                return redirect()->route('purchase_requisition.repeatOrder')->with('error', $e->getMessage());
+            } elseif ($route == "/purchase_requisition_repair") {
+				dd($e);
+                return redirect()->route('purchase_requisition_repair.repeatOrder')->with('error', $e->getMessage());
             }
         }
     }
@@ -2057,13 +2354,13 @@ class PurchaseRequisitionController extends Controller
     public function checkValueMaterial($prds, $pr_type)
     {
         $pr_value = 0;
-        if ($pr_type == "Subcon") {
+        if ($pr_type == "Subcon" || $pr_type == 3) {
 
-        } elseif($pr_type == "Resource") {
+        } elseif($pr_type == "Resource" || $pr_type == 2) {
             foreach ($prds as $prd) {
                 $pr_value += $prd->resource->cost_standard_price * $prd->quantity;
             }
-        } elseif($pr_type== "Material"){
+        } elseif($pr_type== "Material" || $pr_type == 1){
             foreach ($prds as $prd) {
                 $pr_value += $prd->material->cost_standard_price * $prd->quantity;
             }
