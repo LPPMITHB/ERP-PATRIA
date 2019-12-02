@@ -12,7 +12,7 @@ class PamiTugboatWbsStandardSeeder extends Seeder
     public function run()
     {
         $level_1 = array(
-            0=>array('','','','','','','','',''),
+            0 => array('', '', '', '', '', '', '', '', ''),
             1 => array('Working', 'Working', 'Working', '1', '1', '', '1', '1'),
             2 => array('Steelwork', 'Steelwork', 'Steelwork', '1', '1', '1', '1', '1'),
             3 => array('Blasting and Coating', 'Blasting and Coating', 'Blasting and Coating', '1', '1', '1', '1', '1'),
