@@ -79,7 +79,9 @@ class MaterialRequisitionController extends Controller
         foreach($stocks as $stock){
             $stock['available'] = $stock->quantity - $stock->reserved;
         }
-        return view('material_requisition.createRepair', compact('modelProject','menu','stocks'));
+        $all_materials = Material::all();
+
+        return view('material_requisition.createRepair', compact('modelProject','menu','stocks','all_materials'));
     }
 
     public function store(Request $request)

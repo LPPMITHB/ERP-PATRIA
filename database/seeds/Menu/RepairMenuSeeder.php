@@ -1459,5 +1459,58 @@ class RepairMenuSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        // Building - Project Delivery
+        DB::table('menus')->insert([
+            'level' => 2,
+            'name' => 'Project Delivery',
+            'icon' => 'fa-database',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $repair,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        $delivery = Menu::where('name', 'Project Delivery')->where('menu_id', $repair)->select('id')->first()->id;
+
+        // Building - Project Delivery - Manage Delivery Document
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Manage Delivery Document',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'delivery_document_repair.selectProject',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $delivery,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // Building - Project Delivery - View Delivery Document
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'View Delivery Document',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'delivery_document_repair.selectProjectIndex',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $delivery,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // Building - Project Delivery - Close Project
+        DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'Close Project',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'route_name' => 'close_project_repair.selectProject',
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $delivery,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

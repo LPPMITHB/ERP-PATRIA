@@ -1,16 +1,16 @@
 @extends('layouts.main')
 
 @section('content-header')
-    @breadcrumb(
-        [
-            'title' => 'Project Closing » Select Project',
-            'items' => [
-                'Dashboard' => route('index'),
-                'Select Project' => route('close_project.selectProject'),
-            ]
-        ]
-    )
-    @endbreadcrumb
+@breadcrumb(
+[
+'title' => 'View All Quality Control Plan » Select Project',
+'items' => [
+'Dashboard' => route('index'),
+'Select Project' => route('qc_plan.selectProject'),
+]
+]
+)
+@endbreadcrumb
 @endsection
 
 @section('content')
@@ -21,7 +21,7 @@
                 <h3 class="box-title">List of Projects</h3>
             </div> <!-- /.box-header -->
             <div class="box-body">
-                <table class="table table-bordered" id="boms-table">
+                <table class="table table-bordered" id="projects-table">
                     <thead>
                         <tr>
                             <th width="5%">No</th>
@@ -33,19 +33,16 @@
                     </thead>
                     <tbody>
                         @foreach($modelProject as $project)
-                            <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $project->name }}</td>
-                                <td>{{ $project->customer->name }}</td>
-                                <td>{{ $project->ship->type }}</td>
-                                <td class="p-l-5 p-r-5" align="center">
-                                    @if($route == "/close_project")
-                                        <a class="btn btn-primary btn-xs" href="{{ route('close_project.show', ['id'=>$project->id]) }}">SELECT</a>
-                                    @elseif($route == "/close_project_repair")
-                                        <a class="btn btn-primary btn-xs" href="{{ route('close_project_repair.show', ['id'=>$project->id]) }}">SELECT</a>
-                                    @endif
-                                </td>
-                            </tr>
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $project->name }}</td>
+                            <td>{{ $project->customer->name }}</td>
+                            <td>{{ $project->ship->type }}</td>
+                            <td class="p-l-5 p-r-5" align="center">
+                                <a class="btn btn-primary btn-xs"
+                                    href="{{ route('qc_plan.planIndex', ['id'=>$project->id]) }}">SELECT</a>
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
@@ -61,7 +58,7 @@
 @push('script')
 <script>
     $(document).ready(function(){
-        $('#boms-table').DataTable({
+        $('#projects-table').DataTable({
             'paging'      : true,
             'lengthChange': false,
             'searching'   : false,

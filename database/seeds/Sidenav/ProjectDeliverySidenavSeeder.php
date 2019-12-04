@@ -56,5 +56,38 @@ class ProjectDeliverySidenavSeeder extends Seeder
          * =                                REPAIRING STAGE
          * ========================================================================
          */
+        // Delivery Documents
+        $manageDeliveryDocumentsRepair = Menu::where('route_name', 'delivery_document_repair.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageDeliveryDocumentsRepair,
+            'route_name' => 'delivery_document_repair.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $manageDeliveryDocumentsRepair,
+            'route_name' => 'delivery_document_repair.manage',
+        ]);
+        // Delivery Documents
+        $showDeliveryDocumentsRepair = Menu::where('route_name', 'delivery_document_repair.selectProjectIndex')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $showDeliveryDocumentsRepair,
+            'route_name' => 'delivery_document_repair.selectProjectIndex',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $showDeliveryDocumentsRepair,
+            'route_name' => 'delivery_document_repair.index',
+        ]);
+        // Close Project
+        $closeProjectRepair = Menu::where('route_name', 'close_project_repair.selectProject')->select('id')->first()->id;
+        DB::table('sidenav')->insert([
+            'menu_id' => $closeProjectRepair,
+            'route_name' => 'close_project_repair.selectProject',
+        ]);
+
+        DB::table('sidenav')->insert([
+            'menu_id' => $closeProjectRepair,
+            'route_name' => 'close_project_repair.index',
+        ]);
     }
 }

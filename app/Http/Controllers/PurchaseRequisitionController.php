@@ -893,16 +893,14 @@ class PurchaseRequisitionController extends Controller
         $notifications = Notification::where('type', "Purchase Requisition")->where('document_id', $id)->orderBy('created_at', 'desc')->get();
         foreach ($notifications as $notification) {
             $data = json_decode($notification->data);
-            if ($data->url == "/purchase_requisition/" . $id) {
-                $user_datas = json_decode($notification->user_data);
-                foreach ($user_datas as $user_data) {
-                    if ($user_id == $user_data->id) {
-                        $user_data->status = 0;
-                    }
+            $user_datas = json_decode($notification->user_data);
+            foreach ($user_datas as $user_data) {
+                if ($user_id == $user_data->id) {
+                    $user_data->status = 0;
                 }
-                $notification->user_data = json_encode($user_datas);
-                $notification->update();
             }
+            $notification->user_data = json_encode($user_datas);
+            $notification->update();
         }
 
         $approval_type = Configuration::get('approval-pr')[0]->type;

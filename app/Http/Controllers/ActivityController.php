@@ -665,7 +665,8 @@ class ActivityController extends Controller
             $project->actual_start_date = $earliest_date;
 
             $wbs = $activity->wbs;
-            if(count($wbs->qualityControlTasks) > 0){
+            $dataNotif = null;
+            if($wbs->qualityControlTask != null){
                 $qcTaskId = $wbs->qualityControlTask;
                 //MAKE NOTIFICATION
                 if ($menu == 'building') {
@@ -684,16 +685,17 @@ class ActivityController extends Controller
                     ]);
                 }
             }
-            self::changeWbsProgress($wbs,$dataNotif,$menu);
-
             $project = $wbs->project;
-            $oldestWorks= $project->wbss->where('wbs_id', null);
-            $progress = 0;
+            self::changeWbsProgress($wbs,$dataNotif,$menu);
+            $oldestWorks= WBS::where('project_id', $project->id)->where('wbs_id', null)->get();
+
+            $progress_project = 0;
             foreach($oldestWorks as $wbs){
-                $progress += $wbs->progress* ($wbs->weight /100);
+                $progress_project += $wbs->progress * ($wbs->weight /100);
             }
-            $project->progress = $progress;
-            $project->update();
+
+            $project->progress = $progress_project;
+            $project->save();
             if($project->progress == 100){
                 $wbss = $project->wbss->pluck('id')->toArray();
                 $latest_date = Activity::whereIn('wbs_id',$wbss)->get()->groupBy('actual_end_date')->all();
@@ -861,94 +863,92 @@ class ActivityController extends Controller
     }
 
     function changeWbsProgress($wbs,$dataNotif,$menu){
-        if($wbs){
-            if($wbs->wbs){
-                $progress = 0;
-                if($wbs->activities){
-                    foreach($wbs->activities as $activity){
-                        $progress += $activity->progress * ($activity->weight/100);
-                    }
+        if($wbs->wbs){
+            $progress = 0;
+            if($wbs->activities){
+                foreach($wbs->activities as $activity){
+                    $progress += $activity->progress * ($activity->weight/100);
                 }
-
-                if($wbs->wbss){
-                    foreach($wbs->wbss as $child_wbs){
-                        $progress += $child_wbs->progress * ($child_wbs->weight/100);
-                    }
-                }
-                $wbs->progress = ($progress /$wbs->weight) *100;
-                $wbs->save();
-
-                //NOTIF
-                if($wbs->progress == 100 && count($wbs->qualityControlTasks) > 0){
-                    if($menu == 'building'){
-                        $users = User::where('role_id', 2)->select('id')->get();
-                    }else{
-                        $users = User::where('role_id', 3)->select('id')->get();
-                    }
-                    foreach ($users as $user) {
-                        $user->status = 1;
-                    }
-                    $users = json_encode($users);
-    
-                    $new_notification = new Notification;
-                    $new_notification->type = "Quality Control";
-                    $new_notification->document_id = $wbs->id;
-                    if($menu == 'building'){
-                        $new_notification->role_id = 2;
-                    }else{
-                        $new_notification->role_id = 3;
-                    }
-                    $new_notification->notification_date = $wbs->created_at->toDateString();
-                    $new_notification->data = $dataNotif;
-                    $new_notification->user_data = $users;
-                    $new_notification->save();
-                }
-                //END NOTIF
-
-                self::changeWbsProgress($wbs->wbs,$dataNotif,$menu);
-            }else{
-                $progress = 0;
-                if($wbs->activities){
-                    foreach($wbs->activities as $activity){
-                        $progress += $activity->progress * ($activity->weight/100);
-                    }
-                }
-
-                if($wbs->wbss){
-                    foreach($wbs->wbss as $child_wbs){
-                        $progress += $child_wbs->progress * ($child_wbs->weight/100);
-                    }
-                }
-                $wbs->progress = ($progress /$wbs->weight) *100;
-                $wbs->save();
-
-                //NOTIF
-                if($wbs->progress == 100 && count($wbs->qualityControlTasks) > 0){
-                    if($menu == 'building'){
-                        $users = User::where('role_id', 2)->select('id')->get();
-                    }else{
-                        $users = User::where('role_id', 3)->select('id')->get();
-                    }
-                    foreach ($users as $user) {
-                        $user->status = 1;
-                    }
-                    $users = json_encode($users);
-    
-                    $new_notification = new Notification;
-                    $new_notification->type = "Quality Control";
-                    $new_notification->document_id = $wbs->id;
-                    if($menu == 'building'){
-                        $new_notification->role_id = 2;
-                    }else{
-                        $new_notification->role_id = 3;
-                    }
-                    $new_notification->notification_date = $wbs->created_at->toDateString();
-                    $new_notification->data = $dataNotif;
-                    $new_notification->user_data = $users;
-                    $new_notification->save();
-                }
-                //END NOTIF
             }
+
+            if($wbs->wbss){
+                foreach($wbs->wbss as $child_wbs){
+                    $progress += $child_wbs->progress * ($child_wbs->weight/100);
+                }
+            }
+            $wbs->progress = ($progress /$wbs->weight) *100;
+            $wbs->save();
+
+            //NOTIF
+            if($wbs->progress == 100 && $wbs->qualityControlTask != null){
+                if($menu == 'building'){
+                    $users = User::where('role_id', 2)->select('id')->get();
+                }else{
+                    $users = User::where('role_id', 3)->select('id')->get();
+                }
+                foreach ($users as $user) {
+                    $user->status = 1;
+                }
+                $users = json_encode($users);
+
+                $new_notification = new Notification;
+                $new_notification->type = "Quality Control";
+                $new_notification->document_id = $wbs->id;
+                if($menu == 'building'){
+                    $new_notification->role_id = 2;
+                }else{
+                    $new_notification->role_id = 3;
+                }
+                $new_notification->notification_date = $wbs->created_at->toDateString();
+                $new_notification->data = $dataNotif;
+                $new_notification->user_data = $users;
+                $new_notification->save();
+            }
+            //END NOTIF
+
+            self::changeWbsProgress($wbs->wbs,$dataNotif,$menu);
+        }else{
+            $progress = 0;
+            if($wbs->activities){
+                foreach($wbs->activities as $activity){
+                    $progress += $activity->progress * ($activity->weight/100);
+                }
+            }
+            
+            if($wbs->wbss){
+                foreach($wbs->wbss as $child_wbs){
+                    $progress += $child_wbs->progress * ($child_wbs->weight/100);
+                }
+            }
+            $wbs->progress = ($progress /$wbs->weight) *100;
+            $wbs->save();
+
+            //NOTIF
+            if($wbs->progress == 100 && $wbs->qualityControlTask != null){
+                if($menu == 'building'){
+                    $users = User::where('role_id', 2)->select('id')->get();
+                }else{
+                    $users = User::where('role_id', 3)->select('id')->get();
+                }
+                foreach ($users as $user) {
+                    $user->status = 1;
+                }
+                $users = json_encode($users);
+
+                $new_notification = new Notification;
+                $new_notification->type = "Quality Control";
+                $new_notification->document_id = $wbs->id;
+                if($menu == 'building'){
+                    $new_notification->role_id = 2;
+                }else{
+                    $new_notification->role_id = 3;
+                }
+                $new_notification->notification_date = $wbs->created_at->toDateString();
+                $new_notification->data = $dataNotif;
+                $new_notification->user_data = $users;
+                $new_notification->save();
+            }
+            //END NOTIF
         }
     }
 
