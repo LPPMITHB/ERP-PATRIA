@@ -1577,6 +1577,33 @@ class BuildingMenuSeeder extends Seeder
             'updated_at' => date('Y-m-d')
         ]);
 
+		// Building - Quality Control(QC) - QC Plan
+		DB::table('menus')->insert([
+            'level' => 3,
+            'name' => 'QC Plan',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $quality_control,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+		$quality_control_plan =  Menu::where('name', 'QC Plan')->where('menu_id', $quality_control)->select('id')->first()->id;
+
+		// Building - Quality Control(QC) - QC Plan - View & Edit QC Task
+		DB::table('menus')->insert([
+            'level' => 4,
+            'name' => 'View & Edit QC Plan',
+            'icon' => 'fa-wrench',
+            'is_active' => true,
+            'roles' => 'ADMIN,PMP,PAMI',
+            'menu_id' => $quality_control_plan,
+			'route_name' => 'qc_plan.selectProject',
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
         // Building - Quality Control(QC) - QC Task
         DB::table('menus')->insert([
             'level' => 3,
