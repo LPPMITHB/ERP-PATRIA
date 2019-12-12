@@ -38,11 +38,44 @@ class RolesDataSeeder
             'cancel-finish-qc-task',
             'summary-report-qc-task',
             'show-project-progress',
-            'create-post',
-            // 'list-estimator-wbs',
-            // 'create-estimator-wbs',
-            // 'edit-estimator-wbs',
-            // 'delete-estimator-wbs',
+            'create-post'
+        ])->get();
+
+        $array_data = array();
+
+        foreach ($data as $datas) {
+            $array_data[$datas->middleware] = true;
+        }
+        return json_encode($array_data);
+    }
+    public static function getDataPmpPermissions()
+    {
+        $data = Permission::whereNotIn('middleware', [
+            'create-bom-repair',
+            'confirm-bom-repair',
+            'create-actual-other-cost-repair',
+            'approve-work-order-repair',
+            'approve-work-request-repair',
+            'cancel-purchase-requisition-repair',
+            'cancel-approval-purchase-requisition-repair',
+            'approve-purchase-requisition-repair',
+            'consolidation-purchase-requisition-repair',
+            'approve-material-requisition-repair',
+            'cancel-purchase-order-repair',
+            'cancel-approval-purchase-order-repair',
+            'approve-purchase-order-repair',
+            'count-stock-repair',
+            'adjust-stock-repair',
+            'approve-goods-return-repair',
+            'create-currencies',
+            'approve-material-write-off-repair',
+            'confirm-production-order-repair',
+            'assign-resource-repair',
+            'create-cost-standard-repair',
+            'create-estimator-profile-repair',
+            'confirm-qc-task-repair',
+            'cancel-finish-qc-task-repair',
+            'close-project-repair'
         ])->get();
 
         $array_data = array();

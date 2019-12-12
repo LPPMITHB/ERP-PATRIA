@@ -23,7 +23,12 @@
             usort($dataMenu, function ($a, $b) {
                 return $a['level'] <=> $b['level'];
             });
-            $this->command->getOutput()->progressStart(count($dataMenu) + count($dataSidenav) + count($dataPermissions) + 1 + 3);
+            $this->command->getOutput()->progressStart(
+                count($dataMenu) +
+                    count($dataSidenav) +
+                    count($dataPermissions) +
+                    1 + 3
+            );
             for ($i = 0; $i < count($dataMenu); $i++) {
                 // DB::table('mst_material')->insert([]);
                 if (intval($dataMenu[$i]['menu_id']) == 0) {
@@ -98,25 +103,14 @@
             ]);
             $this->command->getOutput()->progressAdvance();
 
-            // DB::table('roles')->insert([
-            //     'name' => 'PMP',
-            //     'description' => 'PMP Access',
-            //     'permissions' =>  RolesDataSeeder::getDataPmpPermissions();
-            //     'created_at' => date('Y-m-d'),
-            //     'updated_at' => date('Y-m-d')
-            // ]);
-            // $this->command->getOutput()->progressAdvance();
-        
-
-            // DB::table('roles')->insert([
-            //     'name' => 'PMP',
-            //     'description' => 'PMP Access',
-            //     'permissions' =>  RolesDataSeeder::getDataPmpPermissions();
-            //     'created_at' => date('Y-m-d'),
-            //     'updated_at' => date('Y-m-d')
-            // ]);
-            // $this->command->getOutput()->progressAdvance();
-
+            DB::table('roles')->insert([
+                'name' => 'PMP',
+                'description' => 'PMP Access',
+                'permissions' =>  RolesDataSeeder::getDataPmpPermissions(),
+                'created_at' => date('Y-m-d'),
+                'updated_at' => date('Y-m-d')
+            ]);
+            $this->command->getOutput()->progressAdvance();
 
 
 
