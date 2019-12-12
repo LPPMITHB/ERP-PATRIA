@@ -401,6 +401,7 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
+        
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
         if($menu=="repair"){
             $projects = Project::orderBy('planned_start_date', 'asc')->where('business_unit_id', 2)->get();
