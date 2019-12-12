@@ -2176,10 +2176,10 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
     Route::get('/exportToExcel/{id}', 'QualityControlTaskController@exportToExcel')->name('exportToExcel')->middleware('can:show-qc-task');
 });
 
-//quality control plan
+// QC Plan Routes
 Route::name('qc_plan.')->prefix('qc_plan')->group(function(){
     Route::get('/project/{id}','QualityPlanController@index')->name('planIndex');
-    // ->middleware('can:')
+    // ->middleware('can:');
     Route::get('/selectProject', 'QualityPlanController@selectProject')->name('selectProject');
     // ->middleware('can:');
 });

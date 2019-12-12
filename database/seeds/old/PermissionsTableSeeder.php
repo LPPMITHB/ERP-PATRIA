@@ -308,7 +308,7 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
-        
+
         DB::table('permissions')->insert([
             'name' => 'Edit Bom',
             'menu_id' => $manageBOM,
@@ -2614,6 +2614,9 @@ class PermissionsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d'),
         ]);
+
+		// Quality Control Plan
+		// To-do
 
         // Quality Control Type
         $qcType = Menu::where('name', 'Create QC Type')->select('id')->first()->id;

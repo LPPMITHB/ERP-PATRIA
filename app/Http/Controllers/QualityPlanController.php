@@ -36,7 +36,6 @@ class QualityPlanController extends Controller
             $qualityPlanTable[$i]->id = $this->ConfigurationFinder2d($configurationQualityPlanTable, "id", $qualityPlanTable[$i])->value;
             $i++;
         }
-        dd($qualityPlanTable);
         $wbs = null;
         $wbs_images = null;
         return view('qc_plan.show', compact('qualityPlanTable',));
