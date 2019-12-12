@@ -39,20 +39,18 @@ class RolesDataSeeder
             'summary-report-qc-task',
             'show-project-progress',
             'create-post',
-            'list-estimator-wbs',
-            'create-estimator-wbs',
-            'edit-estimator-wbs',
-            'delete-estimator-wbs',
+            // 'list-estimator-wbs',
+            // 'create-estimator-wbs',
+            // 'edit-estimator-wbs',
+            // 'delete-estimator-wbs',
         ])->get();
 
         $array_data = array();
 
         foreach ($data as $datas) {
             $array_data[$datas->middleware] = true;
-            // array_push($array_data, [$datas->middleware => true]);
         }
         return json_encode($array_data);
-        // return json_encode([]);
     }
     // public function pamis()
     // {
