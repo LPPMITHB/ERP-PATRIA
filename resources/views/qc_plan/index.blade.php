@@ -66,24 +66,40 @@
                 <table id="qctask-table" class="table table-bordered tableFixed">
                     <thead>
                         <tr>
-                            <th>No</th>
-							<th>QC Task</th>
-							<th>Role</th>
-							<th>Configuration</th>
-							<th></th>
+                            @foreach($qualityPlanTablee as $qualityPlanTables)
+                            <th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th><th width="">No</th>
+                            <script>
+                                console.log('im isset');
+                            </script>
+                            @endforeach
+                            <th width="5%">No</th>
+                            <th width="45%">Description</th>
+                            <th width="30%">WBS</th>
+                            <th width="10%">Status</th>
+                            <th width="10%"></th>
                         </tr>
                     </thead>
                     <tbody>
+                        @foreach ($modelQcTasks as $data)
                         <tr>
-                            <td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $data->description }}</td>
+                            <td>{{ $data->wbs->number }} - {{ $data->wbs->description }}</td>
+                            @if ($data->status == 1)
+                            <td>NOT DONE</td>
+                            @else
+                            <td>DONE</td>
+                            @endif
                             <td class="text-center">
+
                                 <a href="{{ route('qc_task.show',$data->id) }}" class="btn btn-primary btn-xs">VIEW</a>
                                 <a href="{{ route('qc_task.edit',$data->id) }}" class="btn btn-primary btn-xs">EDIT</a>
+
                             </td>
                         </tr>
+                        @endforeach
+
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->

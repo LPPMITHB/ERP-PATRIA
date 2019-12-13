@@ -61,8 +61,9 @@
                         <thead>
                             <tr>
                                 <th>No</th>
-                                <th>QC Task</th>
                                 <th>QC Type</th>
+                                <th>Role</th>
+								<th>Configuration</th>
 								<th></th>
                             </tr>
                         </thead>
@@ -72,6 +73,7 @@
                                 <td></td>
                                 <td></td>
 								<td></td>
+								<td></td>
                             </tr>
                         </tbody>
 						<tfoot>
@@ -79,7 +81,8 @@
 								<td></td>
 								<td></td>
 								<td></td>
-								<td><a class="btn btn-primary btn-xs">ADD</a></td>
+								<td></td>
+								<td class="p-l-0 textCenter"><a class="btn btn-primary btn-xs">ADD</a></td>
 							</tr>
 						</tfoot>
                         @verbatim
