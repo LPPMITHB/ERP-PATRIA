@@ -32,10 +32,12 @@ class QualityPlanController extends Controller
         $ade = (array) $configurationQualityPlanTable;
         // dd($ade->id);
 
+		/* Broken
         foreach ($qualityPlanTable as $qualityPlanTablese) {
             $qualityPlanTable[$i]->id = $this->ConfigurationFinder2d($configurationQualityPlanTable, "id", $qualityPlanTable[$i])->value;
             $i++;
         }
+		*/
         $wbs = null;
         $wbs_images = null;
         return view('qc_plan.show', compact('qualityPlanTable',));

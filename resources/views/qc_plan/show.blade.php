@@ -60,43 +60,31 @@
                     <table id="qctd-table" class="table table-bordered showTable nowrap" style="width:100%">
                         <thead>
                             <tr>
-                                @foreach($qualityPlanTable as $qualityPlanTables)
                                 <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                <th>No</th>
-                                @endforeach
-
+                                <th>QC Type</th>
+                                <th>Role</th>
+								<th>Configuration</th>
+								<th></th>
                             </tr>
                         </thead>
-
                         <tbody>
-                            <tr v-for="(data,index) in qcTaskDetail">
-
-                            </tr>
-                            <tr>
-                                @foreach($qualityPlanTable as $qualityPlanTables)
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-                                <td>no</td>
-
-
-                                @endforeach
+							<tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+								<td></td>
+								<td></td>
                             </tr>
                         </tbody>
+						<tfoot>
+							<tr>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td></td>
+								<td class="p-l-0 textCenter"><a class="btn btn-primary btn-xs">ADD</a></td>
+							</tr>
+						</tfoot>
                         @verbatim
                     </table>
                     <div class="modal fade" id="show_modal_wbs_images">
@@ -167,10 +155,10 @@
         $(el).tooltip({
             title: binding.value,
             placement: binding.arg,
-            trigger: 'hover'             
+            trigger: 'hover'
         })
     })
-    
+
     var vm = new Vue({
         el: '#index_qcTaskDetail',
         data: data,
