@@ -3876,7 +3876,7 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'RepairMenuSeeder' => __DIR__ . '/../..' . '/database/seeds/old/Menu/RepairMenuSeeder.php',
         'ResourceManagementSidenavSeeder' => __DIR__ . '/../..' . '/database/seeds/old/Sidenav/ResourceManagementSidenavSeeder.php',
         'RoleManagementSidenavSeeder' => __DIR__ . '/../..' . '/database/seeds/old/Sidenav/RoleManagementSidenavSeeder.php',
-        'RolesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/RolesTableSeeder.php',
+        'RolesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/old/RolesTableSeeder.php',
         'Sabberworm\\CSS\\CSSList\\AtRuleBlockList' => __DIR__ . '/..' . '/sabberworm/php-css-parser/lib/Sabberworm/CSS/CSSList/AtRuleBlockList.php',
         'Sabberworm\\CSS\\CSSList\\CSSBlockList' => __DIR__ . '/..' . '/sabberworm/php-css-parser/lib/Sabberworm/CSS/CSSList/CSSBlockList.php',
         'Sabberworm\\CSS\\CSSList\\CSSList' => __DIR__ . '/..' . '/sabberworm/php-css-parser/lib/Sabberworm/CSS/CSSList/CSSList.php',

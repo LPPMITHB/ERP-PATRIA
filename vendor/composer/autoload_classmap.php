@@ -3385,7 +3385,7 @@ return array(
     'RepairMenuSeeder' => $baseDir . '/database/seeds/old/Menu/RepairMenuSeeder.php',
     'ResourceManagementSidenavSeeder' => $baseDir . '/database/seeds/old/Sidenav/ResourceManagementSidenavSeeder.php',
     'RoleManagementSidenavSeeder' => $baseDir . '/database/seeds/old/Sidenav/RoleManagementSidenavSeeder.php',
-    'RolesTableSeeder' => $baseDir . '/database/seeds/RolesTableSeeder.php',
+    'RolesTableSeeder' => $baseDir . '/database/seeds/old/RolesTableSeeder.php',
     'Sabberworm\\CSS\\CSSList\\AtRuleBlockList' => $vendorDir . '/sabberworm/php-css-parser/lib/Sabberworm/CSS/CSSList/AtRuleBlockList.php',
     'Sabberworm\\CSS\\CSSList\\CSSBlockList' => $vendorDir . '/sabberworm/php-css-parser/lib/Sabberworm/CSS/CSSList/CSSBlockList.php',
     'Sabberworm\\CSS\\CSSList\\CSSList' => $vendorDir . '/sabberworm/php-css-parser/lib/Sabberworm/CSS/CSSList/CSSList.php',

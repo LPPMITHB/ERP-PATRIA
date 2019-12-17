@@ -11,11 +11,12 @@ use App\Models\Material;
 use App\Models\Stock;
 use App\Models\WBS;
 use App\Models\Activity;
-use App\Models\ActivityDetail;
+// use App\Models\ActivityDetail;
 use App\Models\Bom;
 use App\Models\BomPrep;
 use App\Models\BomDetail;
 use App\Models\Project;
+use App\Models\WbsMaterial;
 use DateTime;
 use Auth;
 use DB;
@@ -750,7 +751,7 @@ class WorkRequestController extends Controller
     public function getMaterialActivityWIPAPI($id){
         $data = array();
 
-        $data['activity'] = ActivityDetail::where('activity_id',$id)->where('source','WIP')->with('material')->get();
+        $data['activity'] = WbsMaterial::where('id',$id)->where('source','WIP')->with('material')->get();
 
         return response($data, Response::HTTP_OK);
     }
