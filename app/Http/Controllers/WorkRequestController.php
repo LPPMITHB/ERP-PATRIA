@@ -750,8 +750,8 @@ class WorkRequestController extends Controller
 
     public function getMaterialActivityWIPAPI($id){
         $data = array();
-
-        $data['activity'] = WbsMaterial::where('id',$id)->where('source','WIP')->with('material')->get();
+        $get_wbs_material_id = Activity::where('id',$id)->first();
+        $data['activity'] = WbsMaterial::where('wbs_id',$get_wbs_material_id->wbs_id)->where('source','WIP')->with('material')->get();
 
         return response($data, Response::HTTP_OK);
     }
