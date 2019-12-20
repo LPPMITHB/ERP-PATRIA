@@ -16,7 +16,6 @@
 <div class="row">
     <div class="col-sm-12">
 		@csrf
-		@verbatim
         <div class="box">
             <div class="box-body">
                 <div class="box-tools pull-right">
@@ -28,15 +27,16 @@
                     <div class="col-xs-12 col-lg-4 col-md-12">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         <div class="col-md-3 col-xs-4 no-padding">Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelProject->number}}</b></div>
                         <div class="col-md-3 col-xs-4 no-padding">Owner</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelProject->person_in_charge}}</b></div>
                         <div class="col-md-3 col-xs-4 no-padding">Status</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelProject->status}}</b></div><!--To Do : Display Status as string-->
 
 
                     </div>
 
+					<!-- Note : Is WBS Information required?-->
                     <div class="col-xs-12 col-lg-4 col-md-12">
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
 
@@ -52,6 +52,7 @@
                 </div>
             </div>
             <div>
+				@verbatim
                 <div id="index_qcTaskDetail" class="tab-pane active " id="general_info">
                     <table id="qctd-table" class="table table-bordered tableFixed m-b-0" style="width:100%">
                         <thead>
@@ -64,7 +65,7 @@
                             </tr>
                         </thead>
                         <tbody>
-							<tr>
+							<tr v-show=""><!-- To-Do = Display row if content isn't empty-->
 								<!-- To-Do = Display previously existing qc plan info -->
                                 <td></td>
                                 <td></td>
@@ -78,7 +79,7 @@
 								<td></td>
 								<td class="p-l-0 textLeft">
 									<selectize :settings="typeSettings">
-										<option v-for="(type, index) in qc_types" :value="type">{{ type }}</option>
+										<option v-for="(type, index) in qc_types" :value="type.id">{{ type.name }}</option>
 									</selectize>
 								</td>
 								<td class="p-l-0 textLeft">
@@ -96,9 +97,9 @@
 						</tfoot>
                     </table>
                 </div>
+				@endverbatim
             </div>
         </div>
-		@endverbatim
     </div>
 </div>
 
@@ -112,9 +113,10 @@
 		// To-Do : Get Project and WBS Data
 		// project : json_decode etc,
 		// wbs : json_decode etc,
+		project : @json($modelProject),
         qcp_roles : ["Internal", "Class", "Owner", "Regulator"],
 		qcp_configs : ["Witness", "Review", "Etc"],
-		qc_types : [],
+		qc_types : @json($modelQCT),
 		typeSettings : {
 			placeholder : "Select QC Type",
 		},

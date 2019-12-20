@@ -40,7 +40,7 @@
                             <td>{{ $project->ship->type }}</td>
                             <td class="p-l-5 p-r-5" align="center">
                                 <a class="btn btn-primary btn-xs"
-                                    href="{{ route('qc_plan.planIndex', ['id'=>$project->id]) }}">SELECT</a>
+                                    href="{{ route('qc_plan.editPlan', ['id'=>$project->id]) }}">SELECT</a>
                             </td>
                         </tr>
                         @endforeach

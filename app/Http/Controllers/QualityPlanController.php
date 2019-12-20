@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Project;
 use App\Models\QualityPlan;
+use App\Models\QualityControlType;
 use App\Models\Configuration;
 use App\Models\QualityPlanDetail;
 
@@ -21,6 +22,7 @@ class QualityPlanController extends Controller
 
         $qualityPlan = QualityPlan::findOrFail($id);
         $qualityPlanDetail = QualityPlanDetail::where('quality_plan_id', 'qualityPlan')->get();
+		$project = Project::findOrFail($id);
 
         $qualityPlanTable = json_decode($qualityPlan->tables);
         $configurationQualityPlanTable = Configuration::where('slug', 'peran-quality-plan-role')->first();
@@ -31,16 +33,14 @@ class QualityPlanController extends Controller
         $i = 0;
         $ade = (array) $configurationQualityPlanTable;
         // dd($ade->id);
-
-		/* Broken
+		/*
         foreach ($qualityPlanTable as $qualityPlanTablese) {
             $qualityPlanTable[$i]->id = $this->ConfigurationFinder2d($configurationQualityPlanTable, "id", $qualityPlanTable[$i])->value;
             $i++;
-        }
-		*/
+        }*/
         $wbs = null;
         $wbs_images = null;
-        return view('qc_plan.show', compact('qualityPlanTable',));
+        return view('qc_plan.index', compact('qualityPlanTable','project'));
     }
 
 
@@ -71,9 +71,16 @@ class QualityPlanController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        //
+		$route = $request->route()->getPrefix();
+		$modelProject = Project::findOrFail($id);
+		$modelQP = QualityPlan::where('project_id',$id)->first();
+		$modelQPD = QualityPlanDetail::where('quality_plan_id',$modelQP->id)->get();
+		$modelQCT = QualityControlType::where('ship_id',$modelProject->ship_id)->get();
+
+		//To-Do : Throwback error if fail to retrieve data.
+        return view('qc_plan.show', compact('modelProject','modelQP','modelQPD','modelQCT','route'));
     }
 
     /**

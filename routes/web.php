@@ -2178,10 +2178,12 @@ Route::name('qc_task.')->prefix('qc_task')->group(function() {
 
 // QC Plan Routes
 Route::name('qc_plan.')->prefix('qc_plan')->group(function(){
-    Route::get('/project/{id}','QualityPlanController@index')->name('planIndex');
+    //Route::get('/project/{id}','QualityPlanController@index')->name('planIndex'); DEPRECATED
     // ->middleware('can:');
+	Route::get('/project/{id}','QualityPlanController@show')->name('editPlan');
+	// ->middleware('can:');
     Route::get('/selectProject', 'QualityPlanController@selectProject')->name('selectProject');
-    // ->middleware('can:');
+	// ->middleware('can:');
 });
 
 // Sales Plan Routes
