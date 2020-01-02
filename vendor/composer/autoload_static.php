@@ -683,6 +683,8 @@ class ComposerStaticInitb65d8fd3c92d5c12ee4a897739e65361
         'App\\Models\\WorkRequestDetail' => __DIR__ . '/../..' . '/app/Models/WorkRequestDetail.php',
         'App\\Models\\Yard' => __DIR__ . '/../..' . '/app/Models/Yard.php',
         'App\\Models\\YardPlan' => __DIR__ . '/../..' . '/app/Models/YardPlan.php',
+        'App\\MstResourceOwn' => __DIR__ . '/../..' . '/app/MstResourceOwn.php',
+        'App\\MstResourceRent' => __DIR__ . '/../..' . '/app/MstResourceRent.php',
         'App\\Notifications\\CustomDB' => __DIR__ . '/../..' . '/app/Notifications/customDB.php',
         'App\\Notifications\\MailResetPasswordToken' => __DIR__ . '/../..' . '/app/Notifications/MailResetPasswordToken.php',
         'App\\Notifications\\PRApproval' => __DIR__ . '/../..' . '/app/Notifications/PRApproval.php',
