@@ -83,8 +83,7 @@ class WarehouseController extends Controller
     public function show($id)
     {
         $warehouse = Warehouse::findOrFail($id);
-    
-        $pic = User::where('id',$warehouse->pic)->first();
+        $pic = User::findOrFail($warehouse->pic);
 
         return view('warehouse.show', compact('warehouse','pic'));
     }

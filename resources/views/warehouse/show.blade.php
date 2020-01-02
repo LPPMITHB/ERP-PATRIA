@@ -56,7 +56,7 @@
                         <tr>
                             <td>5</td>
                             <td>Person In-Charge</td>
-                            <td>{{ $pic==null?'not defined':$pic->name }}
+                            <td>{{ $pic->name }}
                         </tr>
                         <tr>
                             <td>4</td>

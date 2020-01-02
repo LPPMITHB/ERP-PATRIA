@@ -505,7 +505,7 @@ Route::name('warehouse.')->prefix('warehouse')->group(function() {
 
     Route::patch('/{id}', 'WarehouseController@update')->name('update')->middleware('can:edit-warehouse');
 
-    Route::post('/store', 'WarehouseController@store')->name('store')->middleware('can:create-warehouse');
+    Route::post('/', 'WarehouseController@store')->name('store')->middleware('can:create-warehouse');
 });
 
 //Yard Routes
