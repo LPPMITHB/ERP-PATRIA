@@ -15,7 +15,7 @@
 
 <div class="row">
     <div class="col-sm-12">
-
+		@csrf
         <div class="box">
             <div class="box-body">
                 <div class="box-tools pull-right">
@@ -27,15 +27,16 @@
                     <div class="col-xs-12 col-lg-4 col-md-12">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
                         <div class="col-md-3 col-xs-4 no-padding">Number</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelProject->number}}</b></div>
                         <div class="col-md-3 col-xs-4 no-padding">Owner</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelProject->person_in_charge}}</b></div>
                         <div class="col-md-3 col-xs-4 no-padding">Status</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: {{$modelProject->status}}</b></div><!--To Do : Display Status as string-->
 
 
                     </div>
 
+					<!-- Note : Is WBS Information required?-->
                     <div class="col-xs-12 col-lg-4 col-md-12">
                         <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
 
@@ -43,32 +44,29 @@
                         <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
 
                         <div class="col-md-3 col-xs-4 no-padding">Description</div>
-                        <div class="col-md-7 col-xs-8 no-padding"><b>:$</b></div>
+                        <div class="col-md-7 col-xs-8 no-padding"><b>: $</b></div>
 
                         <div class="col-md-3 col-xs-4 no-padding">Deliverable</div>
-                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip"
-                            title="#"><b>: $</b></div>
-
-
+                        <div class="col-md-7 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="#"><b>: $</b></div>
                     </div>
                 </div>
             </div>
-
-            <div class="box-body">
-
+            <div>
+				@verbatim
                 <div id="index_qcTaskDetail" class="tab-pane active " id="general_info">
-                    <table id="qctd-table" class="table table-bordered showTable nowrap" style="width:100%">
+                    <table id="qctd-table" class="table table-bordered tableFixed m-b-0" style="width:100%">
                         <thead>
                             <tr>
-                                <th>No</th>
+                                <th width="4%">No</th>
                                 <th>QC Type</th>
                                 <th>Role</th>
 								<th>Configuration</th>
-								<th></th>
+								<th width="10%"></th>
                             </tr>
                         </thead>
                         <tbody>
-							<tr>
+							<tr v-show=""><!-- To-Do = Display row if content isn't empty-->
+								<!-- To-Do = Display previously existing qc plan info -->
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -79,62 +77,27 @@
 						<tfoot>
 							<tr>
 								<td></td>
-								<td></td>
-								<td></td>
-								<td></td>
+								<td class="p-l-0 textLeft">
+									<selectize :settings="typeSettings">
+										<option v-for="(type, index) in qc_types" :value="type.id">{{ type.name }}</option>
+									</selectize>
+								</td>
+								<td class="p-l-0 textLeft">
+									<selectize :settings="roleSettings">
+										<option v-for="(role, index) in qcp_roles" :value="role">{{ role }}</option>
+									</selectize>
+								</td>
+								<td class="p-l-0 textLeft">
+									<selectize :settings="configSettings">
+										<option v-for="(config, index) in qcp_configs" :value="config">{{ config }}</option>
+									</selectize>
+								</td>
 								<td class="p-l-0 textCenter"><a class="btn btn-primary btn-xs">ADD</a></td>
 							</tr>
 						</tfoot>
-                        @verbatim
                     </table>
-                    <div class="modal fade" id="show_modal_wbs_images">
-                        <div class="modal-dialog modalPredecessor modalFull">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">×</span>
-                                    </button>
-                                    <h4 class="modal-title">View WBS Images</h4>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="row">
-                                        <div class="col-sm-12">
-                                            <table id="qctd-table" class="table table-bordered showTable">
-                                                <thead>
-                                                    <tr>
-                                                        <th style="width: 5%">No</th>
-                                                        <th style="width: 35%">File Name</th>
-                                                        <th style="width: 45%">Description</th>
-                                                        <th style="width: 4%"></th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr v-for="(data,index) in wbsImages">
-                                                        <td>{{ index + 1 }}</td>
-                                                        <td class="tdEllipsis" data-container="body"
-                                                            v-tooltip:top="tooltipText(data.drawing)">{{ data.drawing }}
-                                                        </td>
-                                                        <td class="tdEllipsis" data-container="body"
-                                                            v-tooltip:top="tooltipText(data.description)">
-                                                            {{ data.description }}</td>
-                                                        <td>
-                                                            <a class="btn btn-primary btn-sm"
-                                                                :href="view(data.drawing)">VIEW</a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-                @endverbatim
+				@endverbatim
             </div>
         </div>
     </div>
@@ -147,8 +110,22 @@
         $('div.overlay').hide();
     });
     var data = {
-        qcTaskDetail: null,
-        wbsImages: null,
+		// To-Do : Get Project and WBS Data
+		// project : json_decode etc,
+		// wbs : json_decode etc,
+		project : @json($modelProject),
+        qcp_roles : ["Internal", "Class", "Owner", "Regulator"],
+		qcp_configs : ["Witness", "Review", "Etc"],
+		qc_types : @json($modelQCT),
+		typeSettings : {
+			placeholder : "Select QC Type",
+		},
+		roleSettings : {
+			placeholder : "Select Role",
+		},
+		configSettings : {
+			placeholder : "Select Configuration",
+		},
     };
 
     Vue.directive('tooltip', function(el, binding){
@@ -171,19 +148,6 @@
                 return url;
             },
         }
-    });
-    $(document).ready(function() {
-        $('#qctd-table').DataTable({
-            'paging': true,
-            'lengthChange': false,
-            'scrollX': true,
-            'ordering': true,
-            'info': true,
-            'bFilter': true,
-            'initComplete': function() {
-                $('div.overlay').hide();
-            }
-        });
     });
 </script>
 @endpush
