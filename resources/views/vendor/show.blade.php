@@ -6,8 +6,8 @@
         'title' => 'Vendor',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Vendors' => route('vendor.index'),
-            $vendor->name => route('vendor.show',$vendor->id),
+            'View All Vendors' => route('vendors.index'),
+            $vendor->name => route('vendors.show',$vendor->id),
         ]
     ]
 )
@@ -21,12 +21,12 @@
         <div class="box box-solid">
             <div class="box-tools pull-right p-t-5 p-r-10">
                 @can('edit-vendor')
-                    <a href="{{ route('vendor.edit',['id'=>$vendor->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
+                    <a href="{{ route('vendors.edit',['id'=>$vendor->id]) }}" class="btn btn-primary btn-sm">EDIT</a>
                 @endcan
             </div>
             <div class="row p-t-15 m-l-15">
                 <div class="col-xs-12 col-lg-5 col-md-12">
-                    <div class="col-md-4 col-xs-6 no-padding">Code</div>
+                    <div class="col-md-4 col-xs-6 no-padding">Code {{Route::currentRouteName()}}</div>
                     <div class="col-md-8 col-xs-6 no-padding"><b>: {{$vendor->code}}</b></div>
 
                     <div class="col-md-4 col-xs-6 no-padding">Name</div>

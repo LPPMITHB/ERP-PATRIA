@@ -227,9 +227,10 @@ class SidenavDataSeeder
             array('id' => '209', 'menu_id' => '263',        'route_name' => 'material.index'),
             array('id' => '210', 'menu_id' => '263',        'route_name' => 'material.create'),
             array('id' => '211', 'menu_id' => '263',        'route_name' => 'material.edit'),
-            array('id' => '212', 'menu_id' => '268',        'route_name' => 'vendor.index'),
-            array('id' => '213', 'menu_id' => '268',        'route_name' => 'vendor.create'),
-            array('id' => '214', 'menu_id' => '268',        'route_name' => 'vendor.edit'),
+            array('id' => '212', 'menu_id' => '268',        'route_name' => 'vendors.index'),
+            array('id' => '213', 'menu_id' => '268',        'route_name' => 'vendors.create'),
+            array('id' => '214', 'menu_id' => '268',        'route_name' => 'vendors.edit'),
+            //vendor show down
             array('id' => '215', 'menu_id' => '269',        'route_name' => 'warehouse.index'),
             array('id' => '216', 'menu_id' => '269',        'route_name' => 'warehouse.create'),
             array('id' => '217', 'menu_id' => '269',        'route_name' => 'warehouse.edit'),
@@ -486,6 +487,7 @@ class SidenavDataSeeder
             array('id' => '468', 'menu_id' => '126',        'route_name' => 'estimator_repair.createProfile'),
             array('id' => '469', 'menu_id' => '126',        'route_name' => 'estimator_repair.showProfile'),
             array('id' => '470', 'menu_id' => '126',        'route_name' => 'estimator_repair.editProfile'),
+            array('id' => '471', 'menu_id' => '268',        'route_name' => 'vendors.show'),
         );
     }
 }
