@@ -986,8 +986,10 @@ class WBSController extends Controller
     public function generateWbsCode($id){
         $code = 'WBS';
         $project = Project::find($id);
+
         $projectSequence = $project->project_sequence;
         $businessUnit = $project->business_unit_id;
+        
         $year = $project->created_at->year % 100;
 
         $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
