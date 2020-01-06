@@ -6,7 +6,7 @@
     <div class="login-box-body">
       <div class="row">
           <div class="text-center p-b-20">
-            <img src="{{ asset('images/logo-PMP.png') }}" alt="" srcset="">
+            <img src="{{ asset('images/logo-pami.png') }}" alt="" srcset="">
           </div>
       </div>
   

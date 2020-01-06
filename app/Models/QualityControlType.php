@@ -10,11 +10,11 @@ class QualityControlType extends Model
 
     public function qualityControlTypeDetails()
     {
-        return $this->hasMany('App\Models\qualityControlTypeDetail');
+        return $this->hasMany('App\Models\QualityControlTypeDetail');
     }
 
     public function qualityControlTasks()
     {
-        return $this->hasMany('App\Models\qualityControlType');
+        return $this->hasMany('App\Models\QualityControlType');
     }
 }

@@ -17,8 +17,8 @@
 <div class="row">
     <div class="col-xs-12">
         <div class="box">
-            <div class="box-header m-b-10">
-                <div class="box-tools pull-right p-t-5">
+            <div class="box-header">
+                <div class="box-tools pull-right">
                     @if($route == "/resource")
                         <a href="{{ route('resource.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                     @elseif($route == "/resource_repair")
@@ -26,7 +26,7 @@
                     @endif
                 </div>
             </div>
-            <div class="box-body">
+            <div class="box-body m-t-10">
                 <table class="table table-bordered tablePaging tableFixed">
                     <thead>
                         <tr>

@@ -11,15 +11,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call(MenusTableSeeder::class);
-        $this->call(PermissionsTableSeeder::class);
+        $this->call(AppTableSeeder::class);
+        $this->call(FakerTableSeeder::class);
+        // $this->call(MenusTableSeeder::class);
+        // $this->call(PermissionsTableSeeder::class);
         $this->call(CompaniesTableSeeder::class);
         $this->call(BranchesTableSeeder::class);
-        $this->call(RolesTableSeeder::class);
+        // $this->call(RolesTableSeeder::class);
         $this->call(MstCustomerTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ConfigurationsTableSeeder::class);
-        $this->call(SidenavsTableSeeder::class);
+        // $this->call(SidenavsTableSeeder::class);
         $this->call(UOMTableSeeder::class);
         $this->call(MstMaterialTableSeeder::class);
         $this->call(ShipsTableSeeder::class);
@@ -29,6 +31,8 @@ class DatabaseSeeder extends Seeder
         $this->call(MstVendorTableSeeder::class);
         $this->call(BusinessUnitsTableSeeder::class);
         // $this->call(StocksTableSeeder::class);
+       
+        $this->call(PamiMaterialTableSeeder::class);
         $this->call(YardsTableSeeder::class);
         $this->call(MstResourceTableSeeder::class);
         $this->call(MstResourceDetailTableSeeder::class);
@@ -44,6 +48,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxSalesOrderTableSeeder::class);
         $this->call(TrxSalesOrderDetailTableSeeder::class);
         $this->call(MstProjectStandardTableSeeder::class);
+        $this->call(PamiTugboatWbsStandardSeeder::class);
         $this->call(ProProjectTableSeeder::class);
         // $this->call(MstActivityConfigurationTableSeeder::class);
         $this->call(TrxPurchaseRequisitionTableSeeder::class);
@@ -52,11 +57,11 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxPurchaseOrderDetailTableSeeder::class);
         $this->call(TrxProductionOrderTableSeeder::class);
         $this->call(TrxProductionOrderDetailTableSeeder::class);
-        $this->call(WorkRequestTableSeeder::class); 
-        $this->call(WorkRequestDetailTableSeeder::class); 
+        $this->call(WorkRequestTableSeeder::class);
+        $this->call(WorkRequestDetailTableSeeder::class);
         $this->call(MstWbsProfileTableSeeder::class);
         $this->call(MstActivityProfileTableSeeder::class);
-        $this->call(MstBomProfileTableSeeder::class);        
+        $this->call(MstBomProfileTableSeeder::class);
         $this->call(MstResourceProfileTableSeeder::class);
         $this->call(PurchasingInfoRecordTableSeeder::class);
         $this->call(MstWbsStandardTableSeeder::class);
@@ -76,8 +81,11 @@ class DatabaseSeeder extends Seeder
         $this->call(ProWbsMaterialTableSeeder::class);
         $this->call(TrxResourceTableSeeder::class);
         $this->call(MstPartDetailStandardTableSeeder::class);
-
+        $this->call(MstQualityControlTypeTableSeeder::class);
+        // $this->call(QualityPlanSeeder::class);
         //test
-        // $this->call(SidenavsV3TableSeeder::class);
+        // // $this->call(SidenavsV3TableSeeder::class);
+        
+        
     }
 }

@@ -615,5 +615,55 @@ class ConfigurationsTableSeeder extends Seeder
             'created_at' => date('Y-m-d'),
             'updated_at' => date('Y-m-d')
         ]);
+
+        // Quality Plan Role Configuration
+        $quality_plan_role = array(
+            0 => array(
+                'id' => 1,
+                'value' => 'internal',
+            ),
+            1 => array(
+                'id' => 2,
+                'value' => 'class',
+            ),
+            2 => array(
+                'id' => 3,
+                'value' => 'owner',
+            ),
+            3 => array(
+                'id' => 4,
+                'value' => 'regulator'
+            ),
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'peran-quality-plan-role',
+            'title' => 'Peran Quality Plan Role',
+            'value' =>  json_encode($quality_plan_role),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
+
+        // Quality Plan Role Configuration
+        $quality_plan_role_action = array(
+            0 => array(
+                'id' => 1,
+                'value' => 'Witness',
+            ),
+            1 => array(
+                'id' => 2,
+                'value' => 'Review',
+            )
+        );
+
+        DB::table('mst_configuration')->insert([
+            'slug' => 'peran-quality-plan-role-action',
+            'title' => 'Peran Quality Plan Role Action',
+            'value' =>  json_encode($quality_plan_role_action),
+            'is_active' => true,
+            'created_at' => date('Y-m-d'),
+            'updated_at' => date('Y-m-d')
+        ]);
     }
 }

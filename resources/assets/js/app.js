@@ -97,3 +97,4 @@ require("daterangepicker");
 // magnific-popup
 require("magnific-popup");
 
+

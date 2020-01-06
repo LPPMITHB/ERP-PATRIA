@@ -3,27 +3,27 @@
 
 @if($vendor->id)
 @breadcrumb(
-[
-'title' => 'Edit Vendor',
-'items' => [
-'Dashboard' => route('index'),
-'View All Vendors' => route('vendor.index'),
-$vendor->name => route('vendor.show',$vendor->id),
-'Edit Vendor' => route('vendor.edit',$vendor->id),
-]
-]
+    [
+        'title' => 'Edit Vendor',
+        'items' => [
+            'Dashboard' => route('index'),
+            'View All Vendors' => route('vendors.index'),
+            $vendor->name => route('vendors.show',$vendor->id),
+            'Edit Vendor' => route('vendors.edit',$vendor->id),
+        ]
+    ]
 )
 @endbreadcrumb
 @else
 @breadcrumb(
-[
-'title' => 'Create Vendor',
-'items' => [
-'Dashboard' => route('index'),
-'View All Vendors' => route('vendor.index'),
-'Create Vendor' => route('vendor.create'),
-]
-]
+    [
+        'title' => 'Create Vendor',
+        'items' => [
+            'Dashboard' => route('index'),
+            'View All Vendors' => route('vendors.index'),
+            'Create Vendor' => route('vendors.create'),
+        ]
+    ]
 )
 @endbreadcrumb
 @endif
@@ -36,10 +36,10 @@ $vendor->name => route('vendor.show',$vendor->id),
             <div class="box-body">
 
                 @if($vendor->id)
-                <form class="form-horizontal" method="POST" action="{{ route('vendor.update',['id'=>$vendor->id]) }}">
+                <form class="form-horizontal" method="POST" action="{{ route('vendors.update',['id'=>$vendor->id]) }}">
                     <input type="hidden" name="_method" value="PATCH">
                     @else
-                    <form class="form-horizontal" method="POST" action="{{ route('vendor.store') }}">
+                    <form class="form-horizontal" method="POST" action="{{ route('vendors.store') }}">
                         @endif
                         @csrf
                         <div class="box-body">

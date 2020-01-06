@@ -164,7 +164,7 @@ Route::get('/getProjectStandard/{id}', 'ProjectController@getProjectStandardAPI'
 // wbs
 Route::get('/getWbs/{id}', 'WBSController@getWbsAPI')->name('api.wbs.getWbsAPI');
 Route::get('/getWbsImages/{id}', 'WBSController@getWbsImagesAPI')->name('api.wbs.getWbsImagesAPI');
-Route::get('/getAllImages','WBSController@getAllImagesAPI')->name('api.wbs.getAllImagesAPI');
+Route::get('/getAllImages', 'WBSController@getAllImagesAPI')->name('api.wbs.getAllImagesAPI');
 Route::get('/getWbsProfile/{menu}/{project_type}', 'WBSController@getWbsProfileAPI')->name('api.wbs.getWbsProfileAPI');
 Route::get('/getAllWbs/{id}', 'WBSController@getAllWbsAPI')->name('api.wbs.getAllWbsAPI');
 Route::get('/getSubWbs/{id}', 'WBSController@getSubWbsAPI')->name('api.wbs.getSubWbsAPI');
@@ -228,8 +228,12 @@ Route::get('/getDataYardPlan', 'YardPlanController@getDataYardPlanAPI')->name('a
 // Sales Plan
 Route::get('/getSalesPlan/{year}', 'SalesPlanController@getSalesPlanAPI')->name('api.project.getSalesPlanAPI');
 
+// QC Type
+Route::get('/get/qc_type_master', 'QualityControlTypeController@apiGetQcTypeMaster')->name('api.qc_type.get_qc_type_master');
+
 // QC Task
 Route::get('/getQcType/{id}', 'QualityControlTaskController@getQcTypeApi')->name('api.qc_task.getQcTypeApi');
+Route::get('/getQcTypeDetails/{id}', 'QualityControlTaskController@getQcTypeDetailsApi')->name('api.qc_task.getQcTypeDetailsApi');
 Route::get('/getQcTaskDetails/{id}', 'QualityControlTaskController@getQcTaskDetailsApi')->name('api.qc_task.getQcTaskDetailsApi');
 
 // Delivery Document
@@ -242,3 +246,7 @@ Route::get('/getComments/{project_id}', 'CustomerPortalController@getCommentsAPI
 //Material Standard
 Route::get('/getMaterialProjectStandard/{id}', 'ProjectStandardController@getMaterialAPI')->name('api.project_standard.getMaterialAPI');
 Route::get('/getMaterialPartsPS/{id}', 'ProjectStandardController@getMaterialPartsPSAPI')->name('api.project_standard.getMaterialPartsPSAPI');
+
+//Email Template 
+Route::get('/get/email_template_master', 'EmailTemplateController@apiGetEmailTemplateMaster')->name('api.qc_type.get_email_template_master');
+Route::get('/get/email_template_edit/{id}', 'EmailTemplateController@apiGetEmailTemplateEdit')->name('api.qc_type.get_email_template_edit');

@@ -39,7 +39,11 @@
                                 <td>{{ $project->customer->name }}</td>
                                 <td>{{ $project->ship->type }}</td>
                                 <td class="p-l-5 p-r-5" align="center">
-                                    <a class="btn btn-primary btn-xs" href="{{ route('close_project.show', ['id'=>$project->id]) }}">SELECT</a>
+                                    @if($route == "/close_project")
+                                        <a class="btn btn-primary btn-xs" href="{{ route('close_project.show', ['id'=>$project->id]) }}">SELECT</a>
+                                    @elseif($route == "/close_project_repair")
+                                        <a class="btn btn-primary btn-xs" href="{{ route('close_project_repair.show', ['id'=>$project->id]) }}">SELECT</a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforeach

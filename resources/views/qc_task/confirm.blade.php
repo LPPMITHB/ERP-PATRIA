@@ -45,8 +45,13 @@
                                 </div>
 
                                 <div class="col-md-2 col-xs-12 pull-right">
-                                    <a v-if="qc_task_ref.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmFinish">CONFIRM FINISHED</a>
-                                    <a v-else-if="qc_task_ref.status == 0" class="btn btn-sm btn-primary pull-right btn-block" @click="cancelFinish">CANCEL FINISH</a>
+                                    <div class="row">
+                                        <a v-if="qc_task_ref.status == 1" class="btn btn-sm btn-primary pull-right btn-block" @click="confirmFinish">CONFIRM FINISHED</a>
+                                        <a v-else-if="qc_task_ref.status == 0" class="btn btn-sm btn-primary pull-right btn-block" @click="cancelFinish">CANCEL FINISH</a>
+                                    </div>
+                                    <div class="row">
+                                        <a class="btn btn-primary btn-sm pull-right btn-block m-t-10" data-toggle="modal" href="#show_modal_wbs_images">VIEW WBS IMAGES</a>
+                                    </div>
                                 </div>
                             </div>
                             <div class="row">
@@ -66,8 +71,9 @@
                                                 <td>{{ index + 1 }}</td>
                                                 <td class="tdEllipsis">{{ data.name }}</td>
                                                 <td class="tdEllipsis">{{ data.description }}</td>
-                                                <td class="tdEllipsis" v-if="data.status == null">NOT DONE</td>
-                                                <td class="tdEllipsis" v-else>{{data.status}}</td>
+                                                <td class="tdEllipsis" v-if="data.status_first == null">NOT DONE</td>
+                                                <td class="tdEllipsis" v-else-if="data.status_second != null">{{data.status_second}}</td>
+                                                <td class="tdEllipsis" v-else-if="data.status_second == null && data.status_first != null">{{data.status_first}}</td>
                                                 <td class="p-l-0 textCenter">
                                                     <a v-if="qc_task_ref.status == 1" class="btn btn-primary btn-xs" @click="openConfirmModal(index)">
                                                         CONFIRM
@@ -79,6 +85,50 @@
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+
+                            <div class="modal fade" id="show_modal_wbs_images">
+                                <div class="modal-dialog modalPredecessor modalFull">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">×</span>
+                                            </button>
+                                            <h4 class="modal-title">View WBS Images</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="row">
+                                                <div class="col-sm-12">
+                                                    <table id="qctd-table" class="table table-bordered showTable">
+                                                        <thead>
+                                                            <tr>
+                                                                <th style="width: 5%">No</th>
+                                                                <th style="width: 35%">File Name</th>
+                                                                <th style="width: 45%">Description</th>
+                                                                <th style="width: 4%"></th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr v-for="(data,index) in wbsImages">
+                                                                <td>{{ index + 1 }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.drawing)">{{ data.drawing }}</td>
+                                                                <td class="tdEllipsis" data-container="body"
+                                                                    v-tooltip:top="tooltipText(data.description)">{{ data.description }}</td>
+                                                                <td>
+                                                                    <a class="btn btn-primary btn-sm" :href="view(data.drawing)">VIEW</a>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal">CLOSE</button>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
@@ -103,23 +153,52 @@
                                                     <p>{{confirm_qc_task.description}}</p>
                                                 </div>
 
-                                                <div class="col-sm-12">
+                                                <div class="col-sm-3">
                                                     <label for="quantity" class="control-label">Status</label>
                                                     <div v-if="qc_task_ref.status == 1" class="row">
+                                                        <div v-show="confirm_qc_task.status_first_ref == null" class="col-sm-12">
+                                                            <input class="checkbox_icheck_first" :disabled="finishedOk" type="checkbox" id="OK_first" value="OK">
+                                                            <label class="text-success">OK</label>
+                                                        </div>
+                                                        <div v-show="confirm_qc_task.status_first_ref == null" class="col-sm-12">
+                                                            <input class="checkbox_icheck_first" :disabled="finishedOk" type="checkbox" id="NOT_OK_first"value="NOT OK">
+                                                            <label class="text-danger">NOT OK</label>
+                                                        </div>
+                                                        <div v-show="confirm_qc_task.status_first_ref != null" class="col-sm-12">
+                                                            <p>
+                                                                <b v-if="confirm_qc_task.status_first_ref == 'OK'" class="text-success">{{confirm_qc_task.status_first_ref}}</b>
+                                                                <b v-else-if="confirm_qc_task.status_first_ref == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_first_ref}}</b>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                    <div v-else-if="qc_task_ref.status == 0" class="row">
                                                         <div class="col-sm-12">
-                                                            <input class="checkbox_icheck" :disabled="finishedOk" type="checkbox" id="OK" value="OK">
+                                                            <p>
+                                                                <b v-if="confirm_qc_task.status_first == 'OK'" class="text-success">{{confirm_qc_task.status_first}}</b>
+                                                                <b v-else-if="confirm_qc_task.status_first == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_first}}</b>
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-3" v-show="confirm_qc_task.status_first_ref != '' && confirm_qc_task.status_first_ref != null && confirm_qc_task.status_first_ref != 'OK'">
+                                                    <label for="quantity" class="control-label">Status Reinspect</label>
+                                                    <div v-if="qc_task_ref.status == 1" class="row">
+                                                        <div class="col-sm-12">
+                                                            <input class="checkbox_icheck_second" :disabled="finishedOk" type="checkbox" id="OK_second" value="OK">
                                                             <label class="text-success">OK</label>
                                                         </div>
                                                         <div class="col-sm-12">
-                                                            <input class="checkbox_icheck" :disabled="finishedOk" type="checkbox" id="NOT_OK"value="NOT OK">
+                                                            <input class="checkbox_icheck_second" :disabled="finishedOk" type="checkbox" id="NOT_OK_second" value="NOT OK">
                                                             <label class="text-danger">NOT OK</label>
                                                         </div>
                                                     </div>
                                                     <div v-else-if="qc_task_ref.status == 0" class="row">
                                                         <div class="col-sm-12">
                                                             <p>
-                                                                <b v-if="confirm_qc_task.status == 'OK'" class="text-success">{{confirm_qc_task.status}}</b>
-                                                                <b v-else-if="confirm_qc_task.status == 'NOT OK'" class="text-danger">{{confirm_qc_task.status}}</b>
+                                                                <b v-if="confirm_qc_task.status_second == 'OK'" class="text-success">{{confirm_qc_task.status_second}}</b>
+                                                                <b v-else-if="confirm_qc_task.status_second == 'NOT OK'" class="text-danger">{{confirm_qc_task.status_second}}</b>
+                                                                <b v-else>-</b>
                                                             </p>
                                                         </div>
                                                     </div>
@@ -150,9 +229,15 @@
                             <input type="hidden" name="_method" value="PATCH">
                             @csrf
                         </form>
-                    @else
-                        {{-- <form id="edit-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.store') }}">
-                        --}}
+                    @elseif($route == "/qc_task_repair")
+                        <form id="confirm-finish-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.confirmFinish',['id'=>$qcTask->id]) }}">
+                            <input type="hidden" name="_method" value="PATCH">
+                            @csrf
+                        </form>
+                        <form id="cancel-finish-qc-task" class="form-horizontal" method="POST" action="{{ route('qc_task_repair.cancelFinish',['id'=>$qcTask->id]) }}">
+                            <input type="hidden" name="_method" value="PATCH">
+                            @csrf
+                        </form>
                     @endif
                 </div>
             </div>
@@ -177,48 +262,43 @@
         confirm_qc_task :{
             index : "",
             id : "",
-            status : "",
+            status_first : "",
+            status_first_ref : "",
+            status_second : "",
             notes : "",
             name : "",
             description : "",
         },
+        wbsImages : @json($wbs_images),
 
-        
     }
+
+    Vue.directive('tooltip', function(el, binding){
+        $(el).tooltip({
+            title: binding.value,
+            placement: binding.arg,
+            trigger: 'hover'             
+        })
+    })
 
     var vm = new Vue({
         el : '#qc_task',
         data : data,
         mounted: function(){
-            jQuery('.checkbox_icheck').iCheck({
-                checkboxClass: 'icheckbox_square-blue',
-                radioClass: 'iradio_square-blue',
-                increaseArea: '20%' // optional
-            });
-
-            jQuery('.checkbox_icheck').on('ifChecked', function(e){
-                var value = $(this).val().split('-')[0];
-                var index = $(this).val().split('-')[1];
-
-                if(value == "OK"){
-                    $('#NOT_OK').iCheck('uncheck');
-                }else if(value == "NOT OK"){
-                    $('#OK').iCheck('uncheck');
-                }
-                vm.confirm_qc_task.status = value;
-            });
-            jQuery('.checkbox_icheck').on('ifUnchecked', function(e){
-                var value = $(this).val().split('-')[0];
-                var index = $(this).val().split('-')[1];
-                vm.confirm_qc_task.status = null;
-            });
+            
         },
         computed : {
             confirmOk: function(){
                 let isOk = false;
 
-                if(this.confirm_qc_task.status == "" || this.confirm_qc_task.status == null){
-                    isOk = true;
+                if(this.confirm_qc_task.status_first_ref == null){
+                    if(this.confirm_qc_task.status_first == "" || this.confirm_qc_task.status_first == null){
+                        isOk = true;
+                    }
+                }else{
+                    if(this.confirm_qc_task.status_second == "" || this.confirm_qc_task.status_second == null){
+                        isOk = true;
+                    }
                 }
 
                 return isOk;
@@ -232,15 +312,27 @@
             }
         },
         methods : {
+            tooltipText: function(text) {
+                return text
+            },
+            view(drawing){
+                let path = '../../app/documents/wbs_images/'+drawing;
+                
+                return path;
+            },
             clearData(){
                 this.confirm_qc_task.index = "";
                 this.confirm_qc_task.id = "";
                 this.confirm_qc_task.name = "";
                 this.confirm_qc_task.description = "";
-                this.confirm_qc_task.status = "";
+                this.confirm_qc_task.status_first = "";
+                this.confirm_qc_task.status_first_ref= "";
+                this.confirm_qc_task.status_second = "";
                 this.confirm_qc_task.notes = "";
-                $('#NOT_OK').iCheck('uncheck');
-                $('#OK').iCheck('uncheck');
+                $('#NOT_OK_first').iCheck('uncheck');
+                $('#OK_first').iCheck('uncheck');
+                $('#NOT_OK_second').iCheck('uncheck');
+                $('#OK_second').iCheck('uncheck');
             },
             openConfirmModal(index){
                 this.clearData();
@@ -249,12 +341,14 @@
                 this.confirm_qc_task.id = qc_task_detail.id;
                 this.confirm_qc_task.name = qc_task_detail.name;
                 this.confirm_qc_task.description = qc_task_detail.description;
-                this.confirm_qc_task.status = qc_task_detail.status;
+                this.confirm_qc_task.status_first = qc_task_detail.status_first;
+                this.confirm_qc_task.status_second = qc_task_detail.status_second;
+                this.confirm_qc_task.status_first_ref = qc_task_detail.status_first;
                 this.confirm_qc_task.notes = qc_task_detail.notes;
-                if(qc_task_detail.status == "OK"){
-                    $('#OK').iCheck('check');
-                }else if(qc_task_detail.status == "NOT OK"){
-                    $('#NOT_OK').iCheck('check');
+                if(qc_task_detail.status_second == "OK"){
+                    $('#OK_second').iCheck('check');
+                }else if(qc_task_detail.status_second == "NOT OK"){
+                    $('#NOT_OK_second').iCheck('check');
                 }
 
                 $('#confirm_qc_task_detail').modal();
@@ -289,8 +383,8 @@
                 var url = "";
                 if(this.route == "/qc_task"){
                     url = "{{ route('qc_task.storeConfirm') }}";
-                }else{
-                    // url = "{{ route('wbs_repair.store') }}";              
+                }else if(this.route == "/qc_task_repair"){
+                    url = "{{ route('qc_task_repair.storeConfirm') }}";
                 }
                 $('div.overlay').show();            
                 window.axios.put(url,confirm_qc_task)
@@ -381,7 +475,54 @@
         },
         created : function(){ 
             this.getQcTaskDetails();
+            
         },
+        updated : function(){
+            jQuery('.checkbox_icheck_first').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+
+            jQuery('.checkbox_icheck_first').on('ifChecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+
+                if(value == "OK"){
+                    $('#NOT_OK_first').iCheck('uncheck');
+                }else if(value == "NOT OK"){
+                    $('#OK_first').iCheck('uncheck');
+                }
+                vm.confirm_qc_task.status_first = value;
+            });
+            jQuery('.checkbox_icheck_first').on('ifUnchecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+                vm.confirm_qc_task.status_first = null;
+            });
+            
+            jQuery('.checkbox_icheck_second').iCheck({
+                checkboxClass: 'icheckbox_square-blue',
+                radioClass: 'iradio_square-blue',
+                increaseArea: '20%' // optional
+            });
+            jQuery('.checkbox_icheck_second').on('ifChecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+
+                if(value == "OK"){
+                    $('#NOT_OK_second').iCheck('uncheck');
+                }else if(value == "NOT OK"){
+                    $('#OK_second').iCheck('uncheck');
+                }
+                vm.confirm_qc_task.status_second = value;
+            });
+            jQuery('.checkbox_icheck_second').on('ifUnchecked', function(e){
+                var value = $(this).val().split('-')[0];
+                var index = $(this).val().split('-')[1];
+                vm.confirm_qc_task.status_second = null;
+            });
+        }
     })
 
 </script>

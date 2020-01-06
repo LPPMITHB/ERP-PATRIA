@@ -156,10 +156,10 @@
             index: '',
             name: '',
             description: '',
-        }
+        },
     }
 
-    var vm = new Vue({
+    var app = new Vue({
         el: '#qualityControl',
         data: data,
         methods: {
@@ -222,6 +222,37 @@
                 }
                 return isOk;
             },
+        },
+        directives: {
+            icheck: {
+                inserted: function(el, b, vnode) {
+                    var vdirective = vnode.data.directives,
+                    vModel;
+                    for (var i = 0, vDirLength = vdirective.length; i < vDirLength; i++) {
+                        if (vdirective[i].name == "model") {
+                            vModel = vdirective[i].expression;
+                            break;
+                        }
+                    }
+                    jQuery(el).iCheck({
+                        checkboxClass: "icheckbox_square-blue",
+                        radioClass: "iradio_square-blue",
+                        increaseArea: "20%" // optional
+                    });
+                    jQuery(el).on("ifChanged", function(e) {
+                        if ($(el).attr("type") == "radio") {
+                            app.$data[vModel] = $(this).val();
+                        }
+                        if ($(el).attr("type") == "checkbox") {
+                            let data = app.$data[vModel];
+
+                            $(el).prop("checked")
+                            ? app.$data[vModel] = true
+                            : app.$data[vModel] = false;
+                        }
+                    });
+                }
+            }
         },
     });
 </script>

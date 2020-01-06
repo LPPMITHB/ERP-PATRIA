@@ -198,7 +198,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
@@ -212,7 +212,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
@@ -223,7 +223,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : ".$wbs->weight."%",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $routes.$wbs->id],
@@ -237,7 +237,7 @@ class ProductionOrderController extends Controller
                         $dataWbs->push([
                             "id" => $wbs->code , 
                             "parent" => $wbs->wbs->code,
-                            "text" => $wbs->number. " | Weight : ".$wbs->weight."%",
+                            "text" => $wbs->number.' - '.$wbs->description. " | Weight : ".$wbs->weight."%",
                         "start_date" => $wbs->planned_start_date,                            
                             "icon" => "fa fa-suitcase",
                             "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
@@ -251,7 +251,7 @@ class ProductionOrderController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
-                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                        
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $routes.$wbs->id],
@@ -265,7 +265,7 @@ class ProductionOrderController extends Controller
                     $dataWbs->push([
                         "id" => $wbs->code , 
                         "parent" => $modelProject->number,
-                        "text" => $wbs->number. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
+                        "text" => $wbs->number.' - '.$wbs->description. " | Weight : (".$totalWeight."% / ".$wbs->weight."%)",
                         "start_date" => $wbs->planned_start_date,                        
                         "icon" => "fa fa-suitcase",
                         "a_attr" =>  ["href" => $show.$wbs->productionOrder->id],
@@ -1068,7 +1068,7 @@ class ProductionOrderController extends Controller
     public function storeConfirm(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        $pro_id = $datas->modelPrOD[0]->production_order_id;
+        $pro_id = $datas->modelPrO->id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
         DB::beginTransaction();
         try {
@@ -1246,85 +1246,85 @@ class ProductionOrderController extends Controller
     public function storeConfirmRepair(Request $request){
         $route = $request->route()->getPrefix();
         $datas = json_decode($request->datas);
-        if(count($datas->modelPrOD)==0){
-            $wbs = $datas->modelPrO->wbs;
-            $wbs = WBS::find($wbs->id);
+        // if(count($datas->modelPrOD)==0){
+        //     $wbs = $datas->modelPrO->wbs;
+        //     $wbs = WBS::find($wbs->id);
 
-            $statusAll = $wbs->activities->groupBy('status');
-            $notDone = true;
-            foreach($statusAll as $key => $status){
-                if($key == 1){
-                    $notDone = false;
-                }
-            }
-            $modelPrO = ProductionOrder::find($datas->modelPrO->id);
-            if($notDone){
-                $modelPrO->status = 0;
-                $modelPrO->save();
-            }else{
-                $modelPrO->status = 2;
-                $modelPrO->save();
-            }
+        //     $statusAll = $wbs->activities->groupBy('status');
+        //     $notDone = true;
+        //     foreach($statusAll as $key => $status){
+        //         if($key == 1){
+        //             $notDone = false;
+        //         }
+        //     }
+        //     $modelPrO = ProductionOrder::find($datas->modelPrO->id);
+        //     if($notDone){
+        //         $modelPrO->status = 0;
+        //         $modelPrO->save();
+        //     }else{
+        //         $modelPrO->status = 2;
+        //         $modelPrO->save();
+        //     }
 
-            if($route == "/production_order"){
-                return redirect()->route('production_order.showConfirm',$datas->modelPrO->id)->with('success', 'Production Order Confirmed');
-            }elseif($route == "/production_order_repair"){
-                return redirect()->route('production_order_repair.showConfirm',$datas->modelPrO->id)->with('success', 'Production Order Confirmed');
-            }
-        }
+        //     if($route == "/production_order"){
+        //         return redirect()->route('production_order.showConfirm',$datas->modelPrO->id)->with('success', 'Production Order Confirmed');
+        //     }elseif($route == "/production_order_repair"){
+        //         return redirect()->route('production_order_repair.showConfirm',$datas->modelPrO->id)->with('success', 'Production Order Confirmed');
+        //     }
+        // }
         $pro_id = $datas->modelPrOD[0]->production_order_id;
         $modelPrO = ProductionOrder::findOrFail($pro_id);
 
         DB::beginTransaction();
         try {
-            $statusAll = $modelPrO->wbs->activities->groupBy('status');
-            $notDone = true;
-            foreach($statusAll as $key => $status){
-                if($key == 1){
-                    $notDone = false;
-                }
-            }
-            if($notDone){
-                $modelPrO->status = 0;
-                $modelPrO->save();
-            }else{
-                $modelPrO->status = 2;
-                $modelPrO->save();
-            }
+            // $statusAll = $modelPrO->wbs->activities->groupBy('status');
+            // $notDone = true;
+            // foreach($statusAll as $key => $status){
+            //     if($key == 1){
+            //         $notDone = false;
+            //     }
+            // }
+            // if($notDone){
+            //     $modelPrO->status = 0;
+            //     $modelPrO->save();
+            // }else{
+            //     $modelPrO->status = 2;
+            //     $modelPrO->save();
+            // }
             if($datas->data_changed){
                 foreach ($datas->materials as $material) {
                     $prod = ProductionOrderDetail::find($material->id);
-                    if($material->dimension_uom_id != null){
-                        if($prod->length == null){
-                            if($prod->actual != null){
-                                $prod->actual += $material->quantity > 0 ? $material->quantity : 0;
-                            }else{
-                                $prod->actual = $material->quantity > 0 ? $material->quantity : null;
-                            }
-                            $prod->update();
-                        }
-                        if($material->weight > 0){
-                            $PrOD = new ProductionOrderDetail;
-                            $PrOD->production_order_id = $modelPrO->id;
-                            $PrOD->production_order_detail_id = $prod->id;
-                            $PrOD->material_id = $material->id;
-                            $PrOD->length = $material->lengths;
-                            $PrOD->width = $material->width;
-                            $PrOD->height = $material->height;
-                            $PrOD->weight = $material->weight;
-                            $PrOD->dimension_uom_id = $prod->dimension_uom_id;
-                            $PrOD->quantity = $material->quantity;
-                            $PrOD->source = 'Stock';
-                            $PrOD->save();
-                        }
-                    }else{
-                        if($prod->actual != null){
-                            $prod->actual += $material->quantity > 0 ? $material->quantity : 0;
-                        }else{
-                            $prod->actual = $material->quantity > 0 ? $material->quantity : null;
-                        }
-                        $prod->update();
-                    }
+                    // if($material->dimension_uom_id != null){
+                    //     if($prod->length == null){
+                    //         if($prod->actual != null){
+                    //             $prod->actual += $material->quantity > 0 ? $material->quantity : 0;
+                    //         }else{
+                    //             $prod->actual = $material->quantity > 0 ? $material->quantity : null;
+                    //         }
+                    //         $prod->update();
+                    //     }
+                    //     if($material->weight > 0){
+                    //         $PrOD = new ProductionOrderDetail;
+                    //         $PrOD->production_order_id = $modelPrO->id;
+                    //         $PrOD->production_order_detail_id = $prod->id;
+                    //         $PrOD->material_id = $material->id;
+                    //         $PrOD->length = $material->lengths;
+                    //         $PrOD->width = $material->width;
+                    //         $PrOD->height = $material->height;
+                    //         $PrOD->weight = $material->weight;
+                    //         $PrOD->dimension_uom_id = $prod->dimension_uom_id;
+                    //         $PrOD->quantity = $material->quantity;
+                    //         $PrOD->source = 'Stock';
+                    //         $PrOD->save();
+                    //     }
+                    // }else{
+                    //     if($prod->actual != null){
+                    //         $prod->actual += $material->quantity > 0 ? $material->quantity : 0;
+                    //     }else{
+                    //         $prod->actual = $material->quantity > 0 ? $material->quantity : null;
+                    //     }
+                    //     $prod->update();
+                    // }
                     
                     
     

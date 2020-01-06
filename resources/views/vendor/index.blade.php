@@ -6,7 +6,7 @@
         'title' => 'View All Vendors',
         'items' => [
             'Dashboard' => route('index'),
-            'View All Vendors' => route('vendor.index'),
+            'View All Vendors' => route('vendors.index'),
         ]
     ]
 )
@@ -20,7 +20,7 @@
             <div class="box-body">
                 <div class="col-sm-6 p-l-0">
                     <div class="box-tools pull-left">
-                        <a href="{{ route('vendor.create') }}" class="btn btn-primary btn-sm">CREATE</a>
+                        <a href="{{ route('vendors.create') }}" class="btn btn-primary btn-sm">CREATE</a>
                     </div>
                 </div> 
                 <table class="table table-bordered tableFixed" id="vendor-table">
@@ -47,8 +47,8 @@
                                 <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $vendor->status == "1" ? "Active": "Non Active" }}"> {{ $vendor->status == "1" ? "Active": "Non Active" }}</td>
                                 </td>
                                 <td class="p-l-0 p-r-0" align="center">
-                                    <a href="{{ route('vendor.show', ['id'=>$vendor->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
-                                    <a href="{{ route('vendor.edit', ['id'=>$vendor->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
+                                    <a href="{{ route('vendors.show', ['id'=>$vendor->id]) }}" class="btn btn-primary btn-xs">VIEW</a>
+                                    <a href="{{ route('vendors.edit', ['id'=>$vendor->id]) }}" class="btn btn-primary btn-xs">EDIT</a>
                                 </td>
                             </tr>
                         @endforeach

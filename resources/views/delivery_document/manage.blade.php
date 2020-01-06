@@ -18,7 +18,7 @@
                 'title' => 'Manage Delivery Document',
                 'items' => [
                     'Dashboard' => route('index'),
-                    // 'Select Project' => route('delivery_document_repair.selectProject'),
+                    'Select Project' => route('delivery_document_repair.selectProject'),
                     'Manage Delivery Document' => ""
                 ]
             ]
@@ -294,6 +294,7 @@ var vm = new Vue({
             if(this.route == "/delivery_document"){
                 url = "{{ route('delivery_document.store') }}";
             }else{
+                url = "{{ route('delivery_document_repair.store') }}";
             }
             let data = new FormData();
             data.append('file', document.getElementById('add_document').files[0]);
@@ -329,11 +330,7 @@ var vm = new Vue({
         },
         update(){            
             var editDeliveryDocument = this.editDeliveryDocument;
-            var url = "";
-            if(this.route == "/delivery_document"){
-                url = this.route+"/"+this.editDeliveryDocument.id;
-            }else{
-            }
+            var url = this.route+"/"+this.editDeliveryDocument.id;
             let data = new FormData();
             data.append('file', document.getElementById('edit_document').files[0]);
             data.append('document_name', this.editDeliveryDocument.document_name );
@@ -377,11 +374,7 @@ var vm = new Vue({
                 position: 'center',
                 buttons: [
                     ['<button><b>YES</b></button>', function (instance, toast) {
-                        var url = "";
-                        if(route == "/delivery_document"){
-                            url = route+"/"+data.id;
-                        }else{
-                        }
+                        var url = route+"/"+data.id;
                         $('div.overlay').show();            
                         window.axios.delete(url)
                         .then((response) => {

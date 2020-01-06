@@ -39,10 +39,11 @@ class ActivityController extends Controller
         $menu = $project->business_unit_id == "1" ? "building" : "repair";
         $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
 
+        $index = false;
         if($wbs->weight == null){
             return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
         }else{
-            return view('activity.create', compact('project', 'wbs','menu','services'));
+            return view('activity.create', compact('index','project', 'wbs','menu','services'));
         }
 
     }
@@ -111,14 +112,17 @@ class ActivityController extends Controller
             }
 
             $activity->weight = $data['weight'];
-            $activity->service_id = $data['service_id'];
-            $activity->service_detail_id = $data['service_detail_id'];
             $activity->user_id = Auth::user()->id;
             $activity->branch_id = Auth::user()->branch->id;
 
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->service_id = $data['service_id'];
-                $activity->service_detail_id = $data['service_detail_id'];
+                if($data['service_id'] != ""){
+                    $activity->service_id = $data['service_id'];
+                }
+
+                if($data['service_detail_id'] != ""){
+                    $activity->service_detail_id = $data['service_detail_id'];
+                }
             }
             // if($activity->wbs->project->business_unit_id == 2){
             //     $project_id = $activity->wbs->project_id;
@@ -298,8 +302,13 @@ class ActivityController extends Controller
             }
 
             if($activity->wbs->project->business_unit_id == 2){
-                $activity->service_id = $data['service_id'];
-                $activity->service_detail_id = $data['service_detail_id'];
+                if($data['service_id'] != ""){
+                    $activity->service_id = $data['service_id'];
+                }
+
+                if($data['service_detail_id'] != ""){
+                    $activity->service_detail_id = $data['service_detail_id'];
+                }
             }
             // if(isset($data['deletedActDetail'])){
             //     if(count($data['deletedActDetail'])>0){
@@ -502,23 +511,15 @@ class ActivityController extends Controller
     public function index($id, Request $request)
     {
         $wbs = WBS::find($id);
-        if(count($wbs->wbsConfig->activities)>0){
-            $activity_config = $wbs->wbsConfig->activities;
+        $project = $wbs->project;
+        $menu = $project->business_unit_id == "1" ? "building" : "repair";
+        $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
 
-            $materials = Material::with('dimensionUom')->get();
-            foreach ($materials as $material) {
-                $material['selected'] = false;
-            }
-            $services = Service::where('ship_id', null)->orWhere('ship_id', $wbs->project->ship_id)->with('serviceDetails','ship')->get();
-            $vendors = Vendor::all();
-            $uoms = Uom::all();
-            $project = $wbs->project;
-            $menu = "repair";
-
-            $index = true;
-            return view('activity.createActivityRepair', compact('index','vendors','uoms','materials','services','project', 'wbs','menu','activity_config'));
+        $index = true;
+        if($wbs->weight == null){
+            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please configure weight for WBS '.$wbs->number.' - '.$wbs->description);
         }else{
-            return redirect()->route('project_repair.listWBS', [$wbs->project->id,'addAct'])->with('error', 'Please Make Activity Configuration for WBS '.$wbs->number.' - '.$wbs->description);
+            return view('activity.create', compact('index','project', 'wbs','menu','services'));
         }
     }
 
@@ -603,6 +604,8 @@ class ActivityController extends Controller
 
     public function updateActualActivity(Request $request, $id)
     {
+        $menu = $request->route()->getPrefix() == "/activity" ? "building" : "repair";
+
         $dataActivity = json_decode($request->dataConfirmActivity);
         $dataFile = $request->file;
         DB::beginTransaction();
@@ -662,16 +665,37 @@ class ActivityController extends Controller
             $project->actual_start_date = $earliest_date;
 
             $wbs = $activity->wbs;
-            self::changeWbsProgress($wbs);
-
-            $project = $wbs->project;
-            $oldestWorks= $project->wbss->where('wbs_id', null);
-            $progress = 0;
-            foreach($oldestWorks as $wbs){
-                $progress += $wbs->progress* ($wbs->weight /100);
+            $dataNotif = null;
+            if($wbs->qualityControlTask != null){
+                $qcTaskId = $wbs->qualityControlTask;
+                //MAKE NOTIFICATION
+                if ($menu == 'building') {
+                    $dataNotif = json_encode([
+                        'text' => 'The WBS (' . $wbs->number . '-' . $wbs->description . ') has finished, please continue with the Quality Control Task',
+                        'time_info' => 'Created at',
+                        'title' => 'Quality Control',
+                        'url' => '/qc_task/confirm/' . $qcTaskId->id,
+                    ]);
+                } else if ($menu == 'repair') {
+                    $dataNotif = json_encode([
+                        'text' => 'The WBS (' . $wbs->number . '-' . $wbs->description .') has finished, please continue with the Quality Control Task',
+                        'time_info' => 'Created at',
+                        'title' => 'Quality Control',
+                        'url' => '/qc_task_repair/confirm/' . $qcTaskId->id,
+                    ]);
+                }
             }
-            $project->progress = $progress;
-            $project->update();
+            $project = $wbs->project;
+            self::changeWbsProgress($wbs,$dataNotif,$menu);
+            $oldestWorks= WBS::where('project_id', $project->id)->where('wbs_id', null)->get();
+
+            $progress_project = 0;
+            foreach($oldestWorks as $wbs){
+                $progress_project += $wbs->progress * ($wbs->weight /100);
+            }
+
+            $project->progress = $progress_project;
+            $project->save();
             if($project->progress == 100){
                 $wbss = $project->wbss->pluck('id')->toArray();
                 $latest_date = Activity::whereIn('wbs_id',$wbss)->get()->groupBy('actual_end_date')->all();
@@ -838,40 +862,93 @@ class ActivityController extends Controller
         }
     }
 
-    function changeWbsProgress($wbs){
-        if($wbs){
-            if($wbs->wbs){
-                $progress = 0;
-                if($wbs->activities){
-                    foreach($wbs->activities as $activity){
-                        $progress += $activity->progress * ($activity->weight/100);
-                    }
+    function changeWbsProgress($wbs,$dataNotif,$menu){
+        if($wbs->wbs){
+            $progress = 0;
+            if($wbs->activities){
+                foreach($wbs->activities as $activity){
+                    $progress += $activity->progress * ($activity->weight/100);
                 }
-
-                if($wbs->wbss){
-                    foreach($wbs->wbss as $child_wbs){
-                        $progress += $child_wbs->progress * ($child_wbs->weight/100);
-                    }
-                }
-                $wbs->progress = ($progress /$wbs->weight) *100;
-                $wbs->save();
-                self::changeWbsProgress($wbs->wbs);
-            }else{
-                $progress = 0;
-                if($wbs->activities){
-                    foreach($wbs->activities as $activity){
-                        $progress += $activity->progress * ($activity->weight/100);
-                    }
-                }
-
-                if($wbs->wbss){
-                    foreach($wbs->wbss as $child_wbs){
-                        $progress += $child_wbs->progress * ($child_wbs->weight/100);
-                    }
-                }
-                $wbs->progress = ($progress /$wbs->weight) *100;
-                $wbs->save();
             }
+
+            if($wbs->wbss){
+                foreach($wbs->wbss as $child_wbs){
+                    $progress += $child_wbs->progress * ($child_wbs->weight/100);
+                }
+            }
+            $wbs->progress = ($progress /$wbs->weight) *100;
+            $wbs->save();
+
+            //NOTIF
+            if($wbs->progress == 100 && $wbs->qualityControlTask != null){
+                if($menu == 'building'){
+                    $users = User::where('role_id', 2)->select('id')->get();
+                }else{
+                    $users = User::where('role_id', 3)->select('id')->get();
+                }
+                foreach ($users as $user) {
+                    $user->status = 1;
+                }
+                $users = json_encode($users);
+
+                $new_notification = new Notification;
+                $new_notification->type = "Quality Control";
+                $new_notification->document_id = $wbs->id;
+                if($menu == 'building'){
+                    $new_notification->role_id = 2;
+                }else{
+                    $new_notification->role_id = 3;
+                }
+                $new_notification->notification_date = $wbs->created_at->toDateString();
+                $new_notification->data = $dataNotif;
+                $new_notification->user_data = $users;
+                $new_notification->save();
+            }
+            //END NOTIF
+
+            self::changeWbsProgress($wbs->wbs,$dataNotif,$menu);
+        }else{
+            $progress = 0;
+            if($wbs->activities){
+                foreach($wbs->activities as $activity){
+                    $progress += $activity->progress * ($activity->weight/100);
+                }
+            }
+            
+            if($wbs->wbss){
+                foreach($wbs->wbss as $child_wbs){
+                    $progress += $child_wbs->progress * ($child_wbs->weight/100);
+                }
+            }
+            $wbs->progress = ($progress /$wbs->weight) *100;
+            $wbs->save();
+
+            //NOTIF
+            if($wbs->progress == 100 && $wbs->qualityControlTask != null){
+                if($menu == 'building'){
+                    $users = User::where('role_id', 2)->select('id')->get();
+                }else{
+                    $users = User::where('role_id', 3)->select('id')->get();
+                }
+                foreach ($users as $user) {
+                    $user->status = 1;
+                }
+                $users = json_encode($users);
+
+                $new_notification = new Notification;
+                $new_notification->type = "Quality Control";
+                $new_notification->document_id = $wbs->id;
+                if($menu == 'building'){
+                    $new_notification->role_id = 2;
+                }else{
+                    $new_notification->role_id = 3;
+                }
+                $new_notification->notification_date = $wbs->created_at->toDateString();
+                $new_notification->data = $dataNotif;
+                $new_notification->user_data = $users;
+                $new_notification->save();
+            }
+            //END NOTIF
         }
     }
 
