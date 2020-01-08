@@ -999,7 +999,6 @@ class WBSController extends Controller
 		}
 
         $wbs_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%03d', $projectID).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
-		//dd($wbs_code);
 		return $wbs_code;
     }
 
