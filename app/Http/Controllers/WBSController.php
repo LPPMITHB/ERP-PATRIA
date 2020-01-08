@@ -137,7 +137,7 @@ class WBSController extends Controller
             $wbs_image->user_id = Auth::user()->id;
             $wbs_image->branch_id = Auth::user()->branch->id;
             if($wbs_image->drawing == null){
-                $image_path = public_path("app/documents/wbs_images/".$wbs_image->drawing); 
+                $image_path = public_path("app/documents/wbs_images/".$wbs_image->drawing);
                 if(File::exists($image_path)) {
                     File::delete($image_path);
                 }
@@ -175,7 +175,7 @@ class WBSController extends Controller
         try {
             $wbs_image = WBSImage::findOrFail($id);
 
-            $image_path = public_path("app/documents/wbs_images/".$wbs_image->drawing); 
+            $image_path = public_path("app/documents/wbs_images/".$wbs_image->drawing);
             if(File::exists($image_path)) {
                 File::delete($image_path);
             }
@@ -669,7 +669,7 @@ class WBSController extends Controller
         $array["WBS ".$wbs->number] = "";
         return view('wbs.createSubWBS', compact('project', 'wbs','array','menu','wbs_profiles'));
     }
-    
+
     public function createSubWbsRepair($project_id, $wbs_id, Request $request)
     {
         $wbs = WBS::find($wbs_id);
@@ -988,6 +988,7 @@ class WBSController extends Controller
         $project = Project::find($id);
         $projectSequence = $project->project_sequence;
         $businessUnit = $project->business_unit_id;
+		$projectID = $project->id;
         $year = $project->created_at->year % 100;
 
         $modelWbs = WBS::orderBy('code', 'desc')->where('project_id', $id)->first();
@@ -997,7 +998,8 @@ class WBSController extends Controller
             $number += intval(substr($modelWbs->code, -4));
 		}
 
-        $wbs_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+        $wbs_code = $code.sprintf('%02d', $year).sprintf('%01d', $businessUnit).sprintf('%03d', $projectID).sprintf('%02d', $projectSequence).sprintf('%04d', $number);
+		//dd($wbs_code);
 		return $wbs_code;
     }
 
