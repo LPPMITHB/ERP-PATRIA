@@ -646,11 +646,11 @@ class ProjectController extends Controller
             if($project->name == $request->name){
                 if($menu == "building"){
                     if($request->name != null){
-                        return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
+                        // return redirect()->route('project.create')->with('error','The project name has been taken')->withInput();
                     }
                 }else{
                     if($request->name != null){
-                        return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
+                        // return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
                     }
                 }
             }
@@ -767,7 +767,7 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             if($project->name == $request->name){
                 if($request->name != null){
-                    return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
+                    // return redirect()->route('project_repair.create')->with('error','The project name has been taken')->withInput();
                 }
             }
             if($project->number == $request->number){
@@ -1620,10 +1620,10 @@ class ProjectController extends Controller
         foreach ($projects as $project) {
             if($project->name == $request->name){
                 if($menu == "building"){
-                    return redirect()->route('project.edit',$id)->with('error','The project name has been taken')->withInput();
+                    // return redirect()->route('project.edit',$id)->with('error','The project name has been taken')->withInput();
                 }else{
                     if($request->name != null){
-                        return redirect()->route('project_repair.edit',$id)->with('error','The project name has been taken')->withInput();
+                        // return redirect()->route('project_repair.edit',$id)->with('error','The project name has been taken')->withInput();
                     }
                 }
             }
