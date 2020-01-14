@@ -143,7 +143,7 @@
                             @php($counter = 1)
                             @foreach($modelParentBOMs as $modelParentBOM)
 								<tr>
-									<td colspan="6">{{$modelParentBOM->wbs->code}}</td>
+									<td colspan="6" class="text-center"><b>{{$modelParentBOM->wbs->code}}</b></td>
 								</tr>
 								@foreach($modelParentBOM->bomDetails as $BOMD)
 	                            @if($BOMD->material_id != "")
@@ -244,7 +244,7 @@
 				</table>
 			</div>
 			@endif
-			@if($modelChildBOMs != null)
+			@if(!empty($modelChildBOMs))
 				<div class="box-body p-t-0 p-b-5">
 					<h4>Child WBS Materials</h4>
 					<table class="table table-bordered showTable tableFixed" id="child-material-table">

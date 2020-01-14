@@ -149,7 +149,7 @@ class BOMController extends Controller
                     $bomPrep['bom_details'] = [];
                     $bomPrep['already_prepared'] = 0;
                 }
-                
+
             }
         }else{
             return redirect()->route('bom.selectWBSSum',$wbs->id)->with('error', 'There are no materials accumulation for the selected WBS!');
@@ -161,8 +161,8 @@ class BOMController extends Controller
     public function selectWBSSum(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $wbs = WBS::find($id);
-        $project = Project::find($wbs->project_id);
+        //$wbs = WBS::find($id);
+        $project = Project::find($id);
         $wbss = $project->wbss->where('wbs_id',null);
         $data = Collection::make();
 
@@ -708,12 +708,12 @@ class BOMController extends Controller
                         if($part->area!=""){
                             $activity->area = $part->area;
                         }
-                        
+
                         $activity->wbs_material_id = $wbsMaterial->id;
                         $activity->user_id = Auth::user()->id;
                         $activity->branch_id = Auth::user()->branch->id;
                         $activity->save();
-                        
+
                         $weight = $part->weight;
 
                         $modelBomPrep = BomPrep::where('project_id', $datas->project_id)->where('material_id', $material->material_id)->where('source', $old_material_source)->get();
@@ -1005,7 +1005,7 @@ class BOMController extends Controller
                             $wbsMaterial->update();
                         }
                     }else{
-                        $bomPrep = new BomPrep;                        
+                        $bomPrep = new BomPrep;
                         $bomPrep->project_id = $datas->project_id;
                         $bomPrep->wbs_id = $top_wbs->id;
                         $bomPrep->material_id = $material->material_id;
@@ -1083,7 +1083,7 @@ class BOMController extends Controller
                     $wbsMaterial->delete();
                 }
             }
-                                       
+
             foreach($datas->materials as $material){
                 if(count($material->part_details) > 0){
                     foreach ($material->part_details as $part) {
@@ -1109,7 +1109,7 @@ class BOMController extends Controller
                             }
                             $wbsMaterial->source = $material->source;
                             $wbsMaterial->update();
-                            
+
 
                             if(count($wbsMaterial->getChanges())>0){
                                 $there_are_changes = true;
@@ -1134,7 +1134,7 @@ class BOMController extends Controller
                             if($part->area!=""){
                                 $activity->area = $part->area;
                             }
-                            
+
                             $activity->user_id = Auth::user()->id;
                             $activity->branch_id = Auth::user()->branch->id;
                             $activity->save();
@@ -1180,7 +1180,7 @@ class BOMController extends Controller
                             if($part->area!=""){
                                 $activity->area = $part->area;
                             }
-                            
+
                             $activity->wbs_material_id = $wbsMaterial->id;
                             $activity->user_id = Auth::user()->id;
                             $activity->branch_id = Auth::user()->branch->id;
@@ -1938,12 +1938,12 @@ class BOMController extends Controller
     public function showRepair(Request $request, $id)
     {
         $route = $request->route()->getPrefix();
-        $modelBOM = Bom::where('project_id',$id)->with('project','bomDetails','user','branch','wbs','project.customer','project.ship','rap','purchaseRequisition','purchaseRequisitions')->first();        
+        $modelBOM = Bom::where('project_id',$id)->with('project','bomDetails','user','branch','wbs','project.customer','project.ship','rap','purchaseRequisition','purchaseRequisitions')->first();
         if($modelBOM == null){
             return redirect()->route('bom_repair.selectProject')->with('error', 'BOM doesn\'t exist, Please define BOM first!');
         }
         $modelBOMDetail = BomDetail::where('bom_id',$modelBOM->id)->with('material','service','material.uom')->get();
-        
+
         $temp_bom_detail = Collection::make();
         foreach ($modelBOMDetail as $bom_detail) {
             if(count($temp_bom_detail)==0){
@@ -2357,12 +2357,12 @@ class BOMController extends Controller
                                     if($stock_available_new < 0 && $still_positive){
                                         $bom_detail_input->pr_quantity = $stock->reserved - $stock->quantity;
                                     }
-    
+
                                     $stock->update();
                                 }
-    
+
                                 $bom_detail_input->save();
-    
+
                                 if($rap != null){
                                     $rap_details = $rap->rapDetails;
                                     $material_not_found = true;
@@ -2374,7 +2374,7 @@ class BOMController extends Controller
                                             $material_not_found = false;
                                         }
                                     }
-    
+
                                     if($material_not_found){
                                         $rap_detail = new RapDetail;
                                         $rap_detail->rap_id = $rap->id;
@@ -2388,7 +2388,7 @@ class BOMController extends Controller
                                 $bom_detail_update = BomDetail::find($bom_detail->id);
                                 $temp_quantity = $bom_detail_update->quantity;
                                 $bom_detail_update->quantity = $bom_detail->prepared;
-    
+
                                 $stock = Stock::where('material_id', $bom_detail_update->material_id)->first();
                                 if($stock == null){
                                     $new_stock = new Stock;
@@ -2415,7 +2415,7 @@ class BOMController extends Controller
                                     $stock->update();
                                 }
                                 $bom_detail_update->update();
-    
+
                                 if($rap != null){
                                     $rap_details = $rap->rapDetails;
                                     $material_not_found = true;
@@ -2427,7 +2427,7 @@ class BOMController extends Controller
                                             $material_not_found = false;
                                         }
                                     }
-    
+
                                     if($material_not_found){
                                         $rap_detail = new RapDetail;
                                         $rap_detail->rap_id = $rap->id;
@@ -2456,7 +2456,7 @@ class BOMController extends Controller
                     $PR->save();
                     $pr_id = $PR->id;
                 }
-    
+
                 if($pr_id != null){
                     $bom_details = $bom_prep_model->bomDetails;
                     foreach ($bom_details as $bom_detail) {
@@ -2839,7 +2839,7 @@ class BOMController extends Controller
             return response(["error"=> $e->getMessage()],Response::HTTP_OK);
         }
     }
-    
+
     //Method
     public function checkValueMaterial($prds){
         $pr_value = 0;
