@@ -73,7 +73,7 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{$data['material_code']}}</td>
-                                <td>{{$data['material_description']}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['material_description']}}">{{$data['material_description']}}</td>
                                 <td>{{$data['unit']}}</td>
                                 <td>{{number_format($data['quantity'])}}</td>
                                 <td>{{number_format($data['used'])}}</td>
@@ -121,6 +121,6 @@
         });
         $('div.overlay').hide();
     });
-    
+
 </script>
 @endpush
