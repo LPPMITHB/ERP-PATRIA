@@ -116,14 +116,19 @@
                 "dblclick_toggle": false,
                 "keep_selected_style": false
             },
-            "plugins": ["dnd", "contextmenu"],
+            "plugins": ["dnd", "contextmenu", "checkbox"],
             "contextmenu": {
                 "select_node": false, 
                 "show_at_node": false,
                 'items' : null
             }
         }).on("changed.jstree", function (e, data) {
-        
+            // console.log(data.selected);
+            // console.log($('#treeview').jstree("get_selected"));
+            // console.log($(#treeview).jstree().get_selected(true)[0].text);
+            console.log("hoho"+$("#treeview").jstree("get_selected",true));
+            var selected_val = data;
+            console.log("haha"+selected_val);
         }).on("loaded.jstree", function (event, data) {
             // you get two params - event & data - check the core docs for a detailed description
             $(this).jstree("open_all");
@@ -140,6 +145,7 @@
                     }
                 }
             });
+            
             $(".iCheck").each(function() {
                 $(this).iCheck({
                     checkboxClass: "icheckbox_square-blue",
@@ -147,6 +153,7 @@
                     increaseArea: "20%" // optional
                 }).on('ifChecked', function(event){
                     var selected_val = event.target.value;
+                    // console.log("haha"+selected_val);
                     dataTree.forEach(element => {
                         if(!element.parent.includes("PRO") && !element.parent.includes("#")){
                             if(element.id === selected_val){
@@ -165,6 +172,7 @@
                     });
                 });
             });
+            
         }); 
 
         $('div.overlay').hide();
