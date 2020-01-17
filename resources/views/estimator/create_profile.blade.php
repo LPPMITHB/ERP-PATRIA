@@ -84,13 +84,13 @@
                             <div class="box-header no-padding">
                                 <div class="col-xs-12 col-md-6 p-l-0">
                                     <div class="col-xs-12 col-md-3 p-t-5">
-                                        <label for="">Profile Code</label>
+                                        <label for="">Profile Code*</label>
                                     </div>
                                     <div class="col-xs-12 col-md-9">
                                         <input v-model="submittedForm.code" type="text" class="form-control width100" name="code" id="code" disabled>
                                     </div>
                                     <div class="col-xs-12 col-md-3 p-t-15">
-                                        <label for="" >Ship Type</label>
+                                        <label for="" >Ship Type*</label>
                                     </div>
                                     <div class="col-xs-12 col-md-9 p-t-10">
                                         <selectize v-model="submittedForm.ship_id" :settings="ship_settings">
@@ -98,7 +98,7 @@
                                         </selectize>  
                                     </div>
                                     <div class="col-xs-12 col-md-3 p-t-15">
-                                        <label for="" >Status</label>
+                                        <label for="" >Status*</label>
                                     </div>
                                     <div class="col-xs-12 col-md-9 p-t-10">
                                         <select class="form-control" id="status" name="status" v-model="submittedForm.status">

@@ -11,16 +11,17 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        
-        $this->call(MenusTableSeeder::class);
-        $this->call(PermissionsTableSeeder::class);
+        $this->call(AppTableSeeder::class);
+        $this->call(FakerTableSeeder::class);
+        // $this->call(MenusTableSeeder::class);
+        // $this->call(PermissionsTableSeeder::class);
         $this->call(CompaniesTableSeeder::class);
         $this->call(BranchesTableSeeder::class);
-        $this->call(RolesTableSeeder::class);
+        // $this->call(RolesTableSeeder::class);
         $this->call(MstCustomerTableSeeder::class);
         $this->call(UsersTableSeeder::class);
         $this->call(ConfigurationsTableSeeder::class);
-        $this->call(SidenavsTableSeeder::class);
+        // $this->call(SidenavsTableSeeder::class);
         $this->call(UOMTableSeeder::class);
         $this->call(MstMaterialTableSeeder::class);
         $this->call(ShipsTableSeeder::class);
@@ -81,9 +82,10 @@ class DatabaseSeeder extends Seeder
         $this->call(TrxResourceTableSeeder::class);
         $this->call(MstPartDetailStandardTableSeeder::class);
         $this->call(MstQualityControlTypeTableSeeder::class);
-        $this->call(QualityPlanSeeder::class);
+        // $this->call(QualityPlanSeeder::class);
         //test
-        // $this->call(SidenavsV3TableSeeder::class);
+        // // $this->call(SidenavsV3TableSeeder::class);
+        
         
     }
 }

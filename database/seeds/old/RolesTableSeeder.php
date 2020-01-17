@@ -70,6 +70,7 @@ class RolesTableSeeder extends Seeder
                 'create-yard' => true,'list-yard' => true,'show-yard' => true,'edit-yard' => true,
                 'list-appearence' => true, 'edit-appearence' => true,
                 'show-stock-management' => true,
+                'create-payment-repair'=>true,
                 'show-stock-management-repair' => true,
                 'create-material-write-off' => true,'list-material-write-off' => true,'edit-material-write-off' => true, 'show-material-write-off' => true, 'approve-material-write-off' => true,
                 'create-material-write-off-repair' => true,'list-material-write-off-repair' => true, 'edit-material-write-off-repair' => true, 'show-material-write-off-repair' => true, 'approve-material-write-off-repair' => true,

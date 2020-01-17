@@ -986,6 +986,7 @@ class WBSController extends Controller
     public function generateWbsCode($id){
         $code = 'WBS';
         $project = Project::find($id);
+
         $projectSequence = $project->project_sequence;
         $businessUnit = $project->business_unit_id;
 		$projectID = $project->id;

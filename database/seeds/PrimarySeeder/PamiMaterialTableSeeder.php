@@ -3755,7 +3755,6 @@ $material_data = array(
                         'created_at' => '2019-01-19 00:00:00',
                         'updated_at' => '2019-01-19 00:00:00'
         ]);
-            echo $material_data[$i][1];
                     $this->command->getOutput()->progressAdvance();
         }
                 $this->command->getOutput()->progressFinish();

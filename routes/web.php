@@ -426,7 +426,7 @@ Route::name('unit_of_measurement.')->prefix('unit_of_measurement')->group(functi
 });
 
 //Vendor Routes
-Route::name('vendor.')->prefix('vendor')->group(function() {
+Route::name('vendors.')->prefix('vendors')->group(function() {
     Route::get('/create', 'VendorController@create')->name('create')->middleware('can:create-vendor');
 
     Route::get('/', 'VendorController@index')->name('index')->middleware('can:list-vendor');
