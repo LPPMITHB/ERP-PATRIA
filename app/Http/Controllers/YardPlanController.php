@@ -65,6 +65,18 @@ class YardPlanController extends Controller
     public function create()
     {
         $yardPlan = YardPlan::with('yard')->with('project')->get();
+        $yardPlan->map(function($value){
+            $date = $value->planned_end_date;
+            $date1 = str_replace('-', '/', $date);
+            $tomorrow = date('m-d-Y', strtotime($date1 . "+2 days"));
+            $value->planned_end_date = $tomorrow;
+            return $value;
+        });
+        // $data = null;
+        // foreach ($yardPlan as $yardse) {
+           
+        //     $yardPlan->planned_end_date = $end->addDays(1);
+        // }
         $modelYard = Yard::all();
         $modelProject = Project::where('status',1)->get();
 

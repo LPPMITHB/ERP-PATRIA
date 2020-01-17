@@ -64,7 +64,7 @@
                 <form id="select-structure" class="form-horizontal" method="POST" action="{{route('project_repair.storeSelectedStructure') }}">
                 @csrf
                 <div class="box-footer">
-                    <checkbox type="checkbox" class="btn btn-primary pull-right" onclick="submitForm()">CREATE</checkbox>
+                    <button type="checkbox" class="btn btn-primary pull-right" onclick="submitForm()">CREATE</button>
                 </div>
             </form>
         </div>
@@ -82,9 +82,7 @@
 
     function submitForm() {
         $('div.overlay').show();
-        var selectedWbs = $(".iCheck:checked").map(function(){
-            return $(this).val();
-        }).toArray();
+        var selectedWbs = $("#treeview").jstree("get_checked") +","+ $("#treeview").jstree("get_undetermined");
 
         var jsonData = JSON.stringify(selectedWbs);
         let struturesElem = document.createElement('input');
@@ -116,55 +114,62 @@
                 "dblclick_toggle": false,
                 "keep_selected_style": false
             },
-            "plugins": ["dnd", "contextmenu"],
+            "plugins": ["dnd", "contextmenu", "checkbox"],
             "contextmenu": {
-                "select_node": false, 
-                "show_at_node": false,
+                "select_node": true, 
+                "show_at_node": true,
                 'items' : null
             }
         }).on("changed.jstree", function (e, data) {
-        
+            const top = [$("#treeview").jstree("get_selected")];
+            const checked = [$("#treeview").jstree("get_checked")];
+            const bottom = [$("#treeview").jstree("get_bottom_checked")];
+            var selected_val = data;
+            console.log("haha"+selected_val);
         }).on("loaded.jstree", function (event, data) {
             // you get two params - event & data - check the core docs for a detailed description
-            $(this).jstree("open_all");
+            // $(this).jstree("open_all");
             dataTree.forEach(element => {
-                if("PRO"+project.id != element.id){
-                    const elem = document.getElementById(element.id+"_anchor");
-                    let checkbox = document.createElement('input');
-                    checkbox.setAttribute('type', 'checkbox');
-                    checkbox.setAttribute('class', 'iCheck');
-                    checkbox.setAttribute('id', "i-"+element.id);
-                    checkbox.setAttribute('value', element.id);
-                    if(elem != null){
-                        elem.parentNode.insertBefore(checkbox, elem.nextSibling);
-                    }
-                }
+                // if("PRO"+project.id != element.id){
+                //     const elem = document.getElementById(element.id+"_anchor");
+                //     let checkbox = document.createElement('input');
+                //     checkbox.setAttribute('type', 'checkbox');
+                //     checkbox.setAttribute('class', 'iCheck');
+                //     checkbox.setAttribute('id', "i-"+element.id);
+                //     checkbox.setAttribute('value', element.id);
+                //     if(elem != null){
+                //         elem.parentNode.insertBefore(checkbox, elem.nextSibling);
+                //     }
+                // }
             });
-            $(".iCheck").each(function() {
-                $(this).iCheck({
-                    checkboxClass: "icheckbox_square-blue",
-                    radioClass: "iradio_square-blue",
-                    increaseArea: "20%" // optional
-                }).on('ifChecked', function(event){
-                    var selected_val = event.target.value;
-                    dataTree.forEach(element => {
-                        if(!element.parent.includes("PRO") && !element.parent.includes("#")){
-                            if(element.id === selected_val){
-                                $('#i-'+element.parent).iCheck('check');
-                            }
-                        }
-                    });
-                }).on('ifUnchecked', function(event){
-                    var unselected_val = $(this).val();
-                    dataTree.forEach(element => {
-                        if(!element.parent.includes("PRO") && !element.parent.includes("#")){
-                            if(element.parent === unselected_val){
-                                $('#i-'+element.id).iCheck('uncheck');
-                            }
-                        }
-                    });
-                });
-            });
+            
+            // $(".iCheck").each(function() {
+            //     $(this).iCheck({
+            //         checkboxClass: "icheckbox_square-blue",
+            //         radioClass: "iradio_square-blue",
+            //         increaseArea: "20%" // optional
+            //     }).on('ifChecked', function(event){
+            //         var selected_val = event.target.value;
+            //         // console.log("haha"+selected_val);
+            //         dataTree.forEach(element => {
+            //             if(!element.parent.includes("PRO") && !element.parent.includes("#")){
+            //                 if(element.id === selected_val){
+            //                     $('#i-'+element.parent).iCheck('check');
+            //                 }
+            //             }
+            //         });
+            //     }).on('ifUnchecked', function(event){
+            //         var unselected_val = $(this).val();
+            //         dataTree.forEach(element => {
+            //             if(!element.parent.includes("PRO") && !element.parent.includes("#")){
+            //                 if(element.parent === unselected_val){
+            //                     $('#i-'+element.id).iCheck('uncheck');
+            //                 }
+            //             }
+            //         });
+            //     });
+            // });
+            
         }); 
 
         $('div.overlay').hide();

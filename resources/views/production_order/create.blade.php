@@ -38,10 +38,10 @@
                 <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
                     <div class="box-body no-padding">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-                        
+
                         <div class="col-md-4 col-xs-4 no-padding">Code</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
-                        
+
                         <div class="col-md-4 col-xs-4 no-padding">Ship</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
@@ -73,13 +73,13 @@
 
                     <div class="col-md-4 col-xs-4 no-padding">Name</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-4 no-padding">Description</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
 
                     <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
                     <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
-                    
+
                     <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: @php
                             $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
@@ -125,10 +125,10 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
-            @if($modelBOM != null)
+            @if($modelParentBOMs != null)
                 <div class="box-body p-t-0 p-b-5">
-                    <h4>Top WBS Material</h4>
-                    <table class="table table-bordered showTable tableFixed" id="material-table">
+                    <h4>Parent WBS Materials</h4>
+                    <table class="table table-bordered showTable tableFixed" id="parent-material-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -141,27 +141,32 @@
                         </thead>
                         <tbody>
                             @php($counter = 1)
-                            @foreach($modelBOM->bomDetails as $BOMD)
-                            @if($BOMD->material_id != "")
-                            <tr>
-                                <td>{{ $counter++ }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">
-                                    {{ $BOMD->material->code }}</td>
-                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"
-                                    title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
-                                <td>{{ number_format($BOMD->quantity,2) }}</td>
-                                <td>{{ $BOMD->material->uom->unit }}</td>
-                                <td>{{ $BOMD->source }}</td>
-                            </tr>
-                            @endif
+                            @foreach($modelParentBOMs as $modelParentBOM)
+								<tr>
+									<td colspan="6" class="text-center"><b>{{$modelParentBOM->wbs->code}}</b></td>
+								</tr>
+								@foreach($modelParentBOM->bomDetails as $BOMD)
+	                            @if($BOMD->material_id != "")
+	                            <tr>
+	                                <td>{{ $counter++ }}</td>
+	                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">
+	                                    {{ $BOMD->material->code }}</td>
+	                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip"
+	                                    title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
+	                                <td>{{ number_format($BOMD->quantity,2) }}</td>
+	                                <td>{{ $BOMD->material->uom->unit }}</td>
+	                                <td>{{ $BOMD->source }}</td>
+	                            </tr>
+	                            @endif
+								@endforeach
                             @endforeach
                         </tbody>
                     </table>
                 </div> <!-- /.box-body -->
             @else
                 <div class="box-body p-t-0 p-b-5">
-                    <h4>Top WBS Material</h4>
-                    <table class="table table-bordered showTable tableFixed" id="material-table">
+                    <h4>Parent WBS Materials</h4>
+                    <table class="table table-bordered showTable tableFixed" id="parent-material-table">
                         <thead>
                             <tr>
                                 <th width="5%">No</th>
@@ -182,7 +187,128 @@
                     </table>
                 </div> <!-- /.box-body -->
             @endif
-
+			@if($modelCurrBOM != null)
+			<div class="box-body p-t-0 p-b-5">
+				<h4>Current WBS Materials</h4>
+				<table class="table table-bordered showTable tableFixed" id="current-material-table">
+					<thead>
+						<tr>
+							<th width="5%">No</th>
+							<th width="15%">Material Number</th>
+							<th width="30%">Material Description</th>
+							<th width="10%">Quantity</th>
+							<th width="10%">Unit</th>
+							<th width="10%">Source</th>
+						</tr>
+					</thead>
+					<tbody>
+						@php($counter = 1)
+						@foreach($modelCurrBOM->bomDetails as $BOMD)
+						@if($BOMD->material_id != "")
+						<tr>
+							<td>{{ $counter++ }}</td>
+							<td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">
+								{{ $BOMD->material->code }}</td>
+							<td class="tdEllipsis" data-container="body" data-toggle="tooltip"
+								title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
+							<td>{{ number_format($BOMD->quantity,2) }}</td>
+							<td>{{ $BOMD->material->uom->unit }}</td>
+							<td>{{ $BOMD->source }}</td>
+						</tr>
+						@endif
+						@endforeach
+					</tbody>
+				</table>
+			</div>
+			@else
+			<div class="box-body p-t-0 p-b-5">
+				<h4>Current WBS Materials</h4>
+				<table class="table table-bordered showTable tableFixed" id="current-material-table">
+					<thead>
+						<tr>
+							<th width="5%">No</th>
+							<th width="15%">Material Number</th>
+							<th width="30%">Material Description</th>
+							<th width="10%">Quantity</th>
+							<th width="10%">Unit</th>
+							<th width="10%">Source</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="6" class="text-center">
+								<b>NO BOM DATA</b>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			@endif
+			@if(!empty($modelChildBOMs))
+				<div class="box-body p-t-0 p-b-5">
+					<h4>Child WBS Materials</h4>
+					<table class="table table-bordered showTable tableFixed" id="child-material-table">
+						<thead>
+							<tr>
+								<th width="5%">No</th>
+								<th width="15%">Material Number</th>
+								<th width="30%">Material Description</th>
+								<th width="10%">Quantity</th>
+								<th width="10%">Unit</th>
+								<th width="10%">Source</th>
+							</tr>
+						</thead>
+						<tbody>
+							@php($counter = 1)
+							@foreach($modelChildBOMs as $modelChildBOM)
+								@if($modelChildBOM)
+									<tr>
+										<td colspan="6" class="text-center"><b>{{$modelChildBOM->wbs->number}} - {{$modelChildBOM->wbs->description}}</b></td>
+									</tr>
+									@foreach($modelChildBOM->bomDetails as $BOMD)
+										@if($BOMD->material_id != "")
+										<tr>
+											<td>{{ $counter++ }}</td>
+											<td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{ $BOMD->material->code }}">
+												{{ $BOMD->material->code }}</td>
+											<td class="tdEllipsis" data-container="body" data-toggle="tooltip"
+												title="{{ $BOMD->material->description }}">{{ $BOMD->material->description }}</td>
+											<td>{{ number_format($BOMD->quantity,2) }}</td>
+											<td>{{ $BOMD->material->uom->unit }}</td>
+											<td>{{ $BOMD->source }}</td>
+										</tr>
+										@endif
+									@endforeach
+								@endif
+							@endforeach
+						</tbody>
+					</table>
+				</div> <!-- /.box-body -->
+			@else
+				<div class="box-body p-t-0 p-b-5">
+					<h4>Child WBS Material</h4>
+					<table class="table table-bordered showTable tableFixed" id="child-material-table">
+						<thead>
+							<tr>
+								<th width="5%">No</th>
+								<th width="15%">Material Number</th>
+								<th width="30%">Material Description</th>
+								<th width="10%">Quantity</th>
+								<th width="10%">Unit</th>
+								<th width="10%">Source</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td colspan="6" class="text-center">
+									<b>NO BOM DATA</b>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div> <!-- /.box-body -->
+			@endif
+			@if(json_decode($modelRD) != null)
             <div class="box-body p-t-0 p-b-5">
                 <h4>Resource</h4>
                 <table class="table table-bordered showTable tableFixed" id="resource-table">
@@ -216,7 +342,8 @@
                     </tbody>
                 </table>
             </div> <!-- /.box-body -->
-            
+			@endif
+
             @if($route == '/production_order_repair')
             <div class="box-body p-t-0 p-b-5">
                     <h4>Service</h4>
@@ -231,7 +358,7 @@
                     </thead>
                     <tbody>
                         @php($counter = 1)
-                        @foreach($modelBOM->bomDetails as $BOMD)
+                        @foreach($modelParentBOMs->bomDetails as $BOMD)
                             @if($BOMD->service_id != "")
                                 <tr>
                                     <td>{{ $counter++ }}</td>
@@ -331,7 +458,7 @@
                                         <input class="form-control" v-model="editInput.quantity">
                                     </div>
                                 </div>
-                                
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" :disabled="editOk" data-dismiss="modal" @click.prevent="submitToTable">SAVE</button>
@@ -390,7 +517,7 @@
         materials : @json($materials),
         resources : [],
         services : [],
-        bom : @json($modelBOM != null ? $modelBOM->bomDetails : []),
+        bom : @json($modelCurrBOM != null ? $modelCurrBOM->bomDetails : []),
         assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
@@ -486,7 +613,7 @@
                 datas = JSON.parse(datas);
 
                 datas.forEach(data => {
-                    data.quantity = data.quantity.replace(/,/g , '');      
+                    data.quantity = data.quantity.replace(/,/g , '');
                 });
 
                 this.submittedForm.datas = datas;
@@ -549,7 +676,7 @@
             'dataInput.quantity' : function(newvalue){
                 var is_decimal = this.dataInput.is_decimal;
                 if(is_decimal == 0){
-                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = this.dataInput.quantity.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -562,12 +689,12 @@
                     }else{
                         this.dataInput.quantity = (this.dataInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }  
+                }
             },
             'editInput.quantity' : function(newValue){
                 var is_decimal = this.editInput.is_decimal;
                 if(is_decimal == 0){
-                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }else{
                     var decimal = this.editInput.quantity.replace(/,/g, '').split('.');
                     if(decimal[1] != undefined){
@@ -580,7 +707,7 @@
                     }else{
                         this.editInput.quantity = (this.editInput.quantity+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                     }
-                }    
+                }
             }
         },
         created: function() {

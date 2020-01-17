@@ -56,10 +56,10 @@
 
                 <div class="col-xs-12 col-md-4">
                     <div class="col-sm-12 no-padding"><b>WBS Information</b></div>
-                
+
                     <div class="col-xs-4 no-padding">Code</div>
                     <div class="col-xs-8 no-padding"><b>: {{$wbs->code}}</b></div>
-                    
+
                     <div class="col-xs-4 no-padding">Name</div>
                     <div class="col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
 
@@ -93,7 +93,7 @@
                             <tr>
                                 <td>{{ $counter++ }}</td>
                                 <td>{{$data['material_code']}}</td>
-                                <td>{{$data['material_description']}}</td>
+                                <td class="tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$data['material_description']}}">{{$data['material_description']}}</td>
                                 <td>{{$data['unit']}}</td>
                                 <td>{{number_format($data['budget'])}}</td>
                                 <td>{{number_format($data['requested'])}}</td>
@@ -125,6 +125,6 @@
             }
         });
     });
-    
+
 </script>
 @endpush
