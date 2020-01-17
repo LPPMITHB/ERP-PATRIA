@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Yard;
+use Illuminate\Support\Carbon;
 use Auth;
 use DB;
 
@@ -21,7 +22,7 @@ class YardController extends Controller
     public function index()
     {
         $yards = Yard::all();
-
+        
         return view ('yard.index', compact('yards'));
     }
 
@@ -77,7 +78,9 @@ class YardController extends Controller
     public function show($id)
     {
         $yard = Yard::findOrFail($id);
+        $end = new \Carbon\Carbon($yard->planned_end_date);
 
+        $yard->planned_end_date = $end->addDays(1);
         
         
         return view('yard.show', compact('yard'));
