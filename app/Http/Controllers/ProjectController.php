@@ -305,10 +305,10 @@ class ProjectController extends Controller
                 //     // }
                 // }else{
                     $dataWbs->push([
-                        "id" => "WBS".$wbs->id,
-                        "parent" => "WBS".$wbs->wbs->id,
-                        "text" => $wbs->number." - ".$wbs->description,
-                        "icon" => "fa fa-suitcase",
+                    "id" =>  "WBS" . $wbs->id,
+                    "parent" =>  "WBS" . $wbs->wbs->id,
+                    "text" => $wbs->number." - ".$wbs->description,
+                    "icon" => "fa fa-suitcase",
                     ]);
                 // }
             }else{
@@ -324,7 +324,7 @@ class ProjectController extends Controller
                 // }
 
                 $dataWbs->push([
-                    "id" => "WBS".$wbs->id,
+                    "id" =>  "WBS" . $wbs->id,
                     "parent" => "PRO".$projectStandard->id,
                     "text" => $wbs->number." - ".$wbs->description,
                     "icon" => "fa fa-suitcase",
@@ -842,8 +842,10 @@ class ProjectController extends Controller
 
     public function storeSelectedStructure(Request $request)
     {
+        // dd($re)
+        
         $menu = $request->route()->getPrefix() == "/project" ? "building" : "repair";
-        $datas = json_decode($request->structures);
+        $datas = explode(",", json_decode($request->structures));//
         $project_id = $request->project_id;
         $project_ref = Project::find($project_id);
 
@@ -853,9 +855,9 @@ class ProjectController extends Controller
         try {
             foreach ($datas as $dataTree) {
                 if(strpos($dataTree, 'WBS') !== false) {
-                    $wbs_standard_id = str_replace("WBS", "", $dataTree);
+                $wbs_standard_id = str_replace("WBS", "", $dataTree);
+                    // $wbs_standard_id = $dataTree;
                     $wbs_standard = WbsStandard::find($wbs_standard_id);
-
                     $wbs = new WBS;
                     $wbs->number = $wbs_standard->number;
                     $wbs->description = $wbs_standard->description;
