@@ -634,7 +634,7 @@
                 
                                                 <div class="col-sm-12">
                                                     <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id" :settings="sloc_settings">
-                                                        <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} - {{ sloc.description }}</option>
+                                                        <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} - {{ sloc.name }}</option>
                                                     </selectize>    
                                                 </div>
                                             </div>
@@ -1515,7 +1515,7 @@
                 if(newValue != ""){
                     this.all_materials.forEach(material => {
                         if(material.id == newValue){
-                            this.return_material.material_name = material.code+" - "+material.description;
+                            this.return_material.material_name = material.code+" - "+material.name;
                         }
                     });
                 }else{
@@ -1527,7 +1527,7 @@
                 if(newValue != ""){
                     this.modelSloc.forEach(sloc => {
                         if(sloc.id == newValue){
-                            this.return_material.sloc_name = sloc.code+" - "+sloc.description;
+                            this.return_material.sloc_name = sloc.code+" - "+sloc.name;
                         }
                     });
                 }else{
