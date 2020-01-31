@@ -814,6 +814,7 @@ class WBSController extends Controller
                 $path = $request->file('image')->storeAs('documents/wbs_images',$fileNameToStore);
 
                 $images->wbs_id = $wbs_ref->id;
+				$images->project_id = $wbs_ref->project_id;
                 $images->user_id = Auth::user()->id;
                 $images->branch_id = Auth::user()->branch->id;
                 $images->drawing = $fileNameToStore;
