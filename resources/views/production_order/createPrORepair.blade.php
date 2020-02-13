@@ -38,10 +38,10 @@
                 <div class="col-xs-12 col-lg-4 col-md-12 no-padding">
                     <div class="box-body no-padding">
                         <div class="col-sm-12 no-padding"><b>Project Information</b></div>
-
+                        
                         <div class="col-md-4 col-xs-4 no-padding">Code</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->number}}</b></div>
-
+                        
                         <div class="col-md-4 col-xs-4 no-padding">Ship</div>
                         <div class="col-md-8 col-xs-8 no-padding"><b>: {{$project->ship->type}}</b></div>
 
@@ -73,13 +73,13 @@
 
                     <div class="col-md-4 col-xs-4 no-padding">Name</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->number}}</b></div>
-
+                    
                     <div class="col-md-4 col-xs-4 no-padding">Description</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: {{$wbs->description}}</b></div>
 
                     <div class="col-md-4 col-xs-4 no-padding">Deliverables</div>
                     <div class="col-md-6 col-xs-8 no-padding tdEllipsis" data-container="body" data-toggle="tooltip" title="{{$wbs->deliverables}}"><b>: {{$wbs->deliverables}}</b></div>
-
+                    
                     <div class="col-md-4 col-xs-4 no-padding">Deadline</div>
                     <div class="col-md-6 col-xs-8 no-padding"><b>: @php
                             $date = DateTime::createFromFormat('Y-m-d', $wbs->planned_end_date);
@@ -234,13 +234,13 @@
                                 <td class="p-l-0 textLeft" colspan="2">
                                     <selectize class="selectizeFull" v-model="dataInput.id" :settings="materialSettings" >
                                         <option v-for="(material, index) in materials" :value="material.id">{{ material.code }} - {{ material.description }}</option>
-                                    </selectize>
+                                    </selectize>  
                                 </td>
                                 <td class="p-l-0" v-if="dataInput.id != ''">
-                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity">
+                                    <input class="form-control" v-model="dataInput.quantity" placeholder="Please Input Quantity"> 
                                 </td>
                                 <td class="p-l-0" v-else>
-                                    <input class="form-control" :value="''" placeholder="Please Input Quantity" disabled>
+                                    <input class="form-control" :value="''" placeholder="Please Input Quantity" disabled> 
                                 </td>
                                 <td class="p-l-0 textCenter">
                                     <button @click.prevent="add"  class="btn btn-primary btn-xs" :disabled ="dataOk">ADD</button>
@@ -338,27 +338,27 @@
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div for="length" class="col-sm-3">Service Name</div>
-
+                
                                                 <div class="col-sm-9">
                                                     : <b>{{activityDetailService.service_detail.service.name}} - {{activityDetailService.service_detail.name}}</b>
                                                 </div>
                                             </div>
                                         </div>
-
+                                                
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div for="length" class="col-sm-3">Area</div>
-
+            
                                                 <div class="col-sm-9">
                                                     : <b>{{(activityDetailService.area+"").replace(/[^0-9.]/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",")}} {{activityDetailService.area_uom.unit}}</b>
                                                 </div>
                                             </div>
                                         </div>
-
+                                        
                                         <div class="col-sm-12">
                                             <div class="row">
                                                 <div for="length" class="col-sm-3">Vendor</div>
-
+            
                                                 <div class="col-sm-9">
                                                     : <b>{{activityDetailService.vendor.name}}</b>
                                                 </div>
@@ -399,7 +399,7 @@
         $(el).tooltip({
             title: binding.value,
             placement: binding.arg,
-            trigger: 'hover'
+            trigger: 'hover'             
         })
     })
 
@@ -422,7 +422,7 @@
         resources : @json($resources),
         services : @json($services),
         activities : @json($modelActivities),
-        bom : @json($modelBOMD),
+        bom : @json($modelBOM->bomDetails),
         assignedResource : @json($modelRD),
         newIndex : "",
         submittedForm : {},
@@ -526,7 +526,7 @@
                 datas = JSON.parse(datas);
 
                 datas.forEach(data => {
-                    data.quantity = data.quantity.replace(/,/g , '');
+                    data.quantity = data.quantity.replace(/,/g , '');      
                 });
 
                 this.submittedForm.datas = datas;
@@ -558,10 +558,10 @@
                 }
             },
             'dataInput.quantity' : function(newvalue){
-                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.dataInput.quantity = (this.dataInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             },
             'editInput.quantity' : function(newValue){
-                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.editInput.quantity = (this.editInput.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             }
         },
         created: function() {

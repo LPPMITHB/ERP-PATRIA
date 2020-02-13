@@ -122,11 +122,7 @@
                     <button type="button" class="btn btn-primary pull-right" data-toggle="modal" data-target="#upload_modal">UPLOAD IMAGE</button>
                 </div>
             </div>
-			@if($route == "/production_order")
-				<form id="upload" class="form-horizontal" method="POST" action="{{ route('production_order.upload') }}" enctype="multipart/form-data">
-			@elseif($route == "/production_order_repair")
-				<form id="upload" class="form-horizontal" method="POST" action="{{ route('production_order_repair.upload') }}" enctype="multipart/form-data">
-			@endif
+            <form id="upload" class="form-horizontal" method="POST" action="{{ route('production_order.upload') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="modal fade" id="upload_modal">
                     <div class="modal-dialog">
@@ -180,7 +176,7 @@
             <div id="production_order">
                 <div class="box-body p-t-0 p-b-5">
                     <h4>Activity</h4>
-
+                    
                     <table id="activity-table" class="table table-bordered tableFixed" >
                         <thead>
                             <tr>
@@ -207,29 +203,29 @@
                                         <td style="background-color: green; color: white;">
                                             Ahead {{data.date_diff}} Day(s)
                                         </td>
-                                    </template>
+                                    </template>                                       
                                     <template v-if="data.planned_end_date == data.actual_end_date">
                                         <td style="background-color: green; color: white;">
                                             On Time
                                         </td>
-                                    </template>
+                                    </template>                                       
                                     <template v-if="data.planned_end_date < data.actual_end_date">
                                         <td style="background-color: red; color: white;">
                                             Behind {{data.date_diff}} Day(s)
                                         </td>
-                                    </template>
+                                    </template>                                       
                                 </template>
                                 <template v-else>
                                     <template v-if="data.planned_end_date > today">
                                         <td style="background-color: red; color: white;">
                                             Behind {{data.date_diff}} Day(s)
                                         </td>
-                                    </template>
+                                    </template>                                       
                                     <template v-if="data.planned_end_date == today">
                                         <td style="background-color: green; color: white;">
                                             On Time
                                         </td>
-                                    </template>
+                                    </template>                                       
                                     <template v-if="data.planned_end_date < today">
                                         <td style="background-color: green; color: white;">
                                             Ahead {{data.date_diff}} Day(s)
@@ -307,7 +303,7 @@
                                                         </template>
                                                         <template v-else>
                                                             <i class='fa fa-times text-danger'></i>
-                                                        </template>
+                                                        </template>    
                                                     </td>
                                                 </tr>
                                             </tbody>
@@ -324,7 +320,7 @@
                                                     <input v-model="confirmActivity.actual_start_date" type="text" class="form-control datepicker" id="actual_start_date" placeholder="Start Date">
                                                 </div>
                                             </div>
-
+                                        
                                             <div class=" col-sm-6">
                                                 <label for="actual_end_date" class=" control-label">Actual End Date</label>
                                                 <div class="input-group date">
@@ -348,7 +344,7 @@
                                             </div>
                                         </div>
                                     </template>
-
+                                    
                                     <template v-else-if="confirmActivity.type == 'Document Number'">
                                         <div class="row">
                                             <div class=" col-sm-6">
@@ -361,7 +357,7 @@
                                                         id="actual_start_date" placeholder="Start Date">
                                                 </div>
                                             </div>
-
+                                            
                                             <div class=" col-sm-6">
                                                 <label for="actual_end_date" class=" control-label">Actual End Date</label>
                                                 <div class="input-group date">
@@ -386,7 +382,7 @@
                                             </div>
                                         </div>
                                     </template>
-
+                                    
                                     <template v-else-if="confirmActivity.type == 'Upload'">
                                         <div class="row">
                                             <div class=" col-sm-4">
@@ -399,7 +395,7 @@
                                                         id="actual_start_date" placeholder="Start Date">
                                                 </div>
                                             </div>
-
+                                    
                                             <div class=" col-sm-4">
                                                 <label for="actual_end_date" class=" control-label">Actual End Date</label>
                                                 <div class="input-group date">
@@ -410,13 +406,13 @@
                                                         id="actual_end_date" placeholder="End Date">
                                                 </div>
                                             </div>
-
+                                    
                                             <div class=" col-sm-4">
                                                 <label for="duration" class=" control-label">Actual Duration (Days)</label>
                                                 <input :disabled="checkFile" @keyup="setEndDateEdit" @change="setEndDateEdit" v-model="confirmActivity.actual_duration"
                                                     type="number" class="form-control" id="actual_duration" placeholder="Duration">
                                             </div>
-
+                                    
                                         </div>
                                         <div class="row">
                                             <div class="col-sm-12">
@@ -457,7 +453,7 @@
                                                         id="actual_start_date" placeholder="Start Date">
                                                 </div>
                                             </div>
-
+                                    
                                             <div class=" col-sm-6">
                                                 <label for="actual_end_date" class=" control-label">Actual End Date</label>
                                                 <div class="input-group date">
@@ -761,7 +757,7 @@
                                                 <label for="type" class="control-label p-b-10">Subject</label>
                                                 <input class="form-control" v-model="moraleNotes.subject" placeholder="Please Input Subject">
                                             </div>
-
+                                            
                                             <div class="col-sm-12 p-l-0">
                                                 <label for="type" class="control-label p-b-10">Notes</label>
                                                 <textarea rows="4" class="form-control" v-model="moraleNotes.notes" placeholder="Please Input Notes">
@@ -794,7 +790,7 @@
                                         <div class="col-sm-12">
                                             <div class="form-group">
                                                 <label for="length" class="col-sm-12">Return to</label>
-
+                                            
                                                 <div class="col-sm-12">
                                                     <selectize id="return_type" name="return_type" v-model="return_material.type" :settings="return_type_settings">
                                                         <option value="Storage">Storage</option>
@@ -807,7 +803,7 @@
                                                 <div class="row">
                                                     <div class="col-sm-12">
                                                         <div class="form-group">
-                                                            <label for="length" class="col-sm-12">BOM</label>
+                                                            <label for="length" class="col-sm-12">BOM</label>      
 
                                                             <div class="col-sm-12">
                                                                 <selectize id="bom" name="bom_id" v-model="return_material.bom_id" :settings="bom_settings">
@@ -823,7 +819,7 @@
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="length" class="col-sm-12">Material</label>
-
+                                                
                                                             <div class="col-sm-12">
                                                                 <selectize class="selectizeFull" id="material" name="material_id" v-model="return_material.material_id"
                                                                     :settings="material_settings">
@@ -836,7 +832,7 @@
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="quantity" class="col-sm-12">Quantity</label>
-
+                                                    
                                                             <div class="col-sm-12">
                                                                 <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
                                                                     placeholder="Quantity">
@@ -851,7 +847,7 @@
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="length" class="col-sm-12">Material</label>
-
+                                                        
                                                             <div class="col-sm-12">
                                                                 <selectize class="selectizeFull" id="material" name="material_id" v-model="return_material.material_id" :settings="material_settings">
                                                                     <option v-for="(material, index) in all_materials" :value="material.id">
@@ -863,7 +859,7 @@
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="length" class="col-sm-12">Storage Location</label>
-
+                                                        
                                                             <div class="col-sm-12">
                                                                 <selectize id="sloc" name="sloc_id" v-model="return_material.sloc_id" :settings="sloc_settings">
                                                                     <option v-for="(sloc, index) in modelSloc" :value="sloc.id">{{ sloc.code }} -
@@ -873,12 +869,12 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
+                                                
                                                 <div class="row">
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="quantity" class="col-sm-12">Quantity</label>
-
+                                                        
                                                             <div class="col-sm-12">
                                                                 <input autocomplete="off" class="form-control width100" v-model="return_material.quantity"
                                                                     placeholder="Quantity">
@@ -888,22 +884,22 @@
                                                     <div class="col-sm-6">
                                                         <div class="form-group">
                                                             <label for="quantity" class="col-sm-12">Received Date</label>
-
+                                                        
                                                             <div class="col-sm-12">
                                                                 <input v-model="return_material.received_date" autocomplete="off" type="text" class="form-control datepicker"
                                                                     name="received_date" id="received_date" placeholder="Received Date">
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </template>
-
+                                                </div> 
+                                            </template> 
+                                            
                                             <div class="form-group">
                                                 <div class="m-t-10 col-sm-2">
                                                     <button :disabled="addMaterialOk" type="button" class="btn btn-primary" @click="addMaterial">ADD</button>
                                                 </div>
                                             </div>
-
+                        
                                             <div class="form-group">
                                                 <div class="m-t-10 col-sm-12">
                                                     <table class="table table-bordered" style="border-collapse:collapse; table-layout:fixed;">
@@ -1039,7 +1035,7 @@
 <script>
     const form = document.querySelector('form#confirm-pro');
     const formUpload = document.querySelector('form#upload');
-
+    
     function overlay(){
         $('div.overlayUpload').show();
         $('#upload_modal').modal('hide');
@@ -1050,7 +1046,7 @@
             numFiles = input.get(0).files ? input.get(0).files.length : 1,
             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
             input.trigger('fileselect', [numFiles, label]);
-
+        
         if(input.get(0).id == "add_document"){
             vm.confirmActivity.file = input.get(0).files[0];
         }else{
@@ -1084,7 +1080,7 @@
         $(el).tooltip({
             title: binding.value,
             placement: binding.arg,
-            trigger: 'hover'
+            trigger: 'hover'             
         })
     })
 
@@ -1218,7 +1214,7 @@
         computed : {
             checkFile: function(){
                 let isOk = false;
-                if(this.confirmActivity.file_name == null ||
+                if(this.confirmActivity.file_name == null || 
                 this.confirmActivity.file_name == ""){
                     isOk = true;
                 }
@@ -1255,7 +1251,7 @@
             },
             selectOk: function(){
                 let isOk = false;
-
+                
                 return isOk;
             },
             addMaterialOk: function(){
@@ -1285,7 +1281,7 @@
         methods: {
             viewDoc(file_name){
                 let path = '../../app/documents/activity/'+file_name;
-
+                
                 return path;
             },
             getImages(){
@@ -1315,7 +1311,7 @@
                             }else if(vm.route == "/production_order_repair"){
                                 url = "/production_order_repair/deleteImage/"+id;
                             }
-                            $('div.overlay').show();
+                            $('div.overlay').show();            
                             window.axios.delete(url).then((response) => {
                                 if(response.data.error != undefined){
                                     console.log(response.data.error);
@@ -1344,12 +1340,12 @@
                                     position: 'topRight',
                                 });
                                 console.log(error);
-                                $('div.overlay').hide();
+                                $('div.overlay').hide();            
                             })
                             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                         }, true],
                         ['<button>NO</button>', function (instance, toast) {
-
+                
                             instance.hide({ transitionOut: 'fadeOut' }, toast, 'button');
                         }],
                     ],
@@ -1357,7 +1353,7 @@
             },
             view(data){
                 let path = '../../app/documents/production_order/'+data.picture;
-
+                
                 return path;
             },
             clearEditInput(){
@@ -1418,7 +1414,7 @@
                 });
                 this.moraleNotes.subject = "";
                 this.moraleNotes.notes = "";
-
+                
             },
             updateMoraleNotes(){
                 let resource = this.resources[this.editInput.index].morale[this.moraleNotes.index];
@@ -1432,7 +1428,7 @@
                 this.moraleNotes.subject = "";
                 this.moraleNotes.notes = "";
                 this.moraleNotes.index = "";
-
+                
             },
             removeMoraleNotes: function(index) {
                 this.resources[this.editInput.index].morale.splice(index, 1);
@@ -1548,7 +1544,7 @@
                     this.havePredecessor = false;
                     this.predecessorActivities = [];
                 }
-
+                
                 if(this.confirmActivity.type == "General"){
                     this.confirmActivity.current_progress = data.progress;
                     if(this.confirmActivity.current_progress != 100){
@@ -1600,7 +1596,7 @@
                     var actual_duration = parseInt(this.confirmActivity.actual_duration);
                     var actual_start_date = this.confirmActivity.actual_start_date;
                     var actual_end_date = new Date(actual_start_date.split("-").reverse().join("-"));
-
+                    
                     actual_end_date.setDate(actual_end_date.getDate() + actual_duration-1);
                     $('#actual_end_date').datepicker('setDate', actual_end_date);
 
@@ -1611,7 +1607,7 @@
             getActivities(){
                 window.axios.get('/api/getActivities/'+this.wbs_id).then(({ data }) => {
                     this.activities = data;
-
+                    
                     this.activities.forEach(activity => {
                         if(activity.status == 0){
                             activity.date_diff = Math.abs(datediff(parseDate(activity.planned_end_date.split("-").reverse().join("-")), parseDate(activity.actual_end_date.split("-").reverse().join("-"))) - 1);
@@ -1622,7 +1618,7 @@
                 });
 
             },
-            confirm(){
+            confirm(){       
                 var confirmActivity = this.confirmActivity;
                 var url = "";
                 if(this.menu =="/production_order"){
@@ -1632,7 +1628,7 @@
                 }
 
                 let data = new FormData();
-                data.append('dataConfirmActivity', JSON.stringify(this.confirmActivity));
+                data.append('dataConfirmActivity', JSON.stringify(this.confirmActivity));                
                 if(confirmActivity.type == 'Upload'){
                     data.append('file', document.getElementById('add_document').files[0]);
                 }
@@ -1651,7 +1647,7 @@
                             position: 'topRight',
                         });
                     }
-                    this.getActivities();
+                    this.getActivities();   
                 })
                 .catch((error) => {
                     iziToast.warning({
@@ -1743,7 +1739,7 @@
                     this.deleted_returned_material.push(this.data_return_material[index].id);
                 }
                 this.data_return_material.splice(index,1);
-
+               
                 this.data_changed = true;
             },
         },
@@ -1759,7 +1755,7 @@
                 if(newValue != "Other BOM"){
                     this.return_material.bom_id = "";
                     this.return_material.bom_code = "";
-                    this.return_material.bom_description = "";
+                    this.return_material.bom_description = "";  
                 }
             },
             "return_material.bom_id" : function(newValue){
@@ -1791,7 +1787,7 @@
                         if(this.confirmActivity.type == "General" && document.getElementById("current_progress") != null){
                             document.getElementById("current_progress").disabled = false;
                         }
-                    }
+                    }     
 
                     if(this.confirmActivity.type == "General"){
                         if(this.confirmActivity.current_progress != 100){
@@ -1807,7 +1803,7 @@
                             }else{
                                 document.getElementById("btnSave").disabled = false;
                             }
-                        }
+                        }  
                     }else if(this.confirmActivity.type == "Upload"){
                         if(this.confirmActivity.file_name == "" || this.confirmActivity.file_name == null){
                             document.getElementById("actual_end_date").disabled = true;
@@ -1822,7 +1818,7 @@
                             }else{
                                 document.getElementById("btnSave").disabled = false;
                             }
-                        }
+                        }  
                     }else if(this.confirmActivity.type == "Document Number"){
                         if(this.confirmActivity.document_number == ""){
                             document.getElementById("actual_end_date").disabled = true;
@@ -1837,19 +1833,19 @@
                             }else{
                                 document.getElementById("btnSave").disabled = false;
                             }
-                        }
+                        } 
                     }
                 },
                 deep: true
-            },
+            }, 
             // materials:{
             //     handler: function(newValue) {
             //         this.materials.forEach(material => {
-            //             material.quantity = (material.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            //             material.quantity = (material.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             //         });
             //     },
             //     deep: true
-            // },
+            // }, 
             'confirmActivity.actual_start_date' :function(newValue){
                 if(newValue == ""){
                     $('#actual_end_date').datepicker('setDate', null);
@@ -1871,10 +1867,10 @@
                 }
             },
             'editInput.performance' : function(newValue){
-                this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.editInput.performance = (this.editInput.performance+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             },
             'editInput.usage' : function(newValue){
-                this.editInput.usage = (this.editInput.usage+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                this.editInput.usage = (this.editInput.usage+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
             },
             'return_material.material_id': function(newValue) {
                 if(newValue != ""){
@@ -1976,10 +1972,10 @@
                     if(POD.used < 0){
                         POD.quantity = 0;
                     }
-                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                    POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                     this.materials.push(POD);
                 }
                 // else if(POD.service_id != null){
@@ -1996,10 +1992,10 @@
                 //     if(POD.used < 0){
                 //         POD.quantity = 0;
                 //     }
-                //     POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                //     POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                //     POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                //     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                //     POD.quantity = (POD.quantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     POD.actual = (POD.actual+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     POD.sugQuantity = (POD.sugQuantity+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
+                //     POD.used = (POD.used+"").replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ",");  
                 //     this.services.push(POD);
                 // }
                 else if(POD.resource_id != null){
